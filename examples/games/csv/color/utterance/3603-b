@@ -1,0 +1,105 @@
+"roundNum","gameid","sender","contents","time"
+42,"3603-b","speaker","yellow",1476998381066
+48,"3603-b","speaker","most blue",1476998491686
+43,"3603-b","speaker","most blue",1476998395923
+43,"3603-b","listener","aqua green",1476998399122
+43,"3603-b","listener","light green",1476998402242
+43,"3603-b","listener","or yellow green?",1476998406113
+49,"3603-b","speaker","not the brightest, not the dullest",1476998510033
+24,"3603-b","speaker","blue",1476998131872
+25,"3603-b","speaker","aqua",1476998142144
+26,"3603-b","speaker","lavendar",1476998152394
+27,"3603-b","speaker","green",1476998160861
+20,"3603-b","speaker","sorry!",1476998061212
+20,"3603-b","speaker","green",1476998064076
+20,"3603-b","listener","that looked like a bit of purple",1476998064431
+21,"3603-b","speaker","the one that's blue/gray",1476998083871
+21,"3603-b","speaker","not blue",1476998091302
+21,"3603-b","speaker","npt gray",1476998094830
+21,"3603-b","speaker","blue gray",1476998099334
+22,"3603-b","speaker","bright pink",1476998117594
+23,"3603-b","speaker","gray",1476998124027
+46,"3603-b","speaker","pueple",1476998447550
+46,"3603-b","listener","where you going to say something else, i apologize for cutting off",1476998457321
+47,"3603-b","speaker","no worries!",1476998469135
+47,"3603-b","speaker","brightest green that is not yellow",1476998478316
+44,"3603-b","speaker","aqua",1476998416134
+45,"3603-b","speaker","soooo",1476998430321
+45,"3603-b","listener","salmon?",1476998431826
+45,"3603-b","speaker","no",1476998434897
+45,"3603-b","speaker","other gray",1476998439780
+45,"3603-b","listener","grey",1476998440568
+28,"3603-b","speaker","yellow",1476998168316
+29,"3603-b","speaker","blue",1476998177769
+40,"3603-b","speaker","most purple, not the bluer one",1476998361470
+41,"3603-b","speaker","reddish",1476998374233
+1,"3603-b","listener","Hello",1476997685357
+1,"3603-b","speaker","hi green",1476997689926
+3,"3603-b","speaker","purplest",1476997786211
+2,"3603-b","listener","barney?",1476997701419
+2,"3603-b","speaker","nope",1476997704334
+2,"3603-b","speaker","not pink",1476997714202
+2,"3603-b","listener","the other two are purple just like barney, just saying",1476997730266
+2,"3603-b","speaker","duller purple",1476997731948
+2,"3603-b","speaker","i thought you meant is my name barney",1476997749518
+2,"3603-b","listener","duller?",1476997750164
+2,"3603-b","speaker","hahaha",1476997751149
+2,"3603-b","speaker","squint your eyes",1476997759356
+2,"3603-b","speaker","not the brightest of those purples",1476997767336
+2,"3603-b","listener","we both don't see the same thing",1476997770491
+2,"3603-b","listener","their you go",1476997774034
+2,"3603-b","listener","bright",1476997775508
+5,"3603-b","speaker","brightest green",1476997819833
+4,"3603-b","speaker","pink",1476997806165
+7,"3603-b","speaker","gray",1476997863005
+7,"3603-b","listener","oops sorry about that",1476997864456
+6,"3603-b","speaker","not the purple gray",1476997839515
+6,"3603-b","speaker","more of a yellow gray",1476997847450
+9,"3603-b","speaker","tan gray",1476997898018
+8,"3603-b","speaker","grays are tough, it's okay",1476997875722
+8,"3603-b","speaker","darkest blue",1476997880234
+8,"3603-b","listener","thanks for understanding",1476997885151
+39,"3603-b","speaker","tan",1476998346557
+38,"3603-b","speaker","pink",1476998340470
+11,"3603-b","speaker","ryellow",1476997917477
+10,"3603-b","speaker","lightest",1476997906468
+13,"3603-b","speaker","ack!",1476997945552
+13,"3603-b","speaker","blue gray",1476997953437
+12,"3603-b","speaker","brightest yellow",1476997931706
+15,"3603-b","speaker","gray",1476997971983
+14,"3603-b","speaker","purple",1476997963894
+17,"3603-b","speaker","not the tan green, not the brightest green",1476998021801
+17,"3603-b","listener","blue green?",1476998024942
+17,"3603-b","speaker","yep",1476998027627
+16,"3603-b","speaker","greeny yellow",1476997987875
+19,"3603-b","speaker","most true gray",1476998051431
+18,"3603-b","speaker","bright blue",1476998036715
+18,"3603-b","listener","OJ",1476998037047
+31,"3603-b","speaker","lightest gray",1476998203029
+30,"3603-b","speaker","bright purple",1476998192949
+37,"3603-b","speaker","green",1476998334117
+36,"3603-b","listener","\auqua",1476998287211
+36,"3603-b","listener","light lime",1476998293915
+36,"3603-b","listener","light aqua?",1476998303770
+36,"3603-b","speaker","not the yellowy one, not the brightest one",1476998325229
+35,"3603-b","speaker","green",1476998278674
+35,"3603-b","listener","lime green",1476998279988
+34,"3603-b","speaker","blue",1476998245760
+34,"3603-b","listener","that looked like it hard purple",1476998249618
+34,"3603-b","listener","purple blue",1476998254764
+34,"3603-b","listener","blue greyish?",1476998259154
+34,"3603-b","listener","or just grey",1476998263122
+34,"3603-b","speaker","purple blue",1476998272010
+33,"3603-b","speaker","pink",1476998224653
+33,"3603-b","listener","purple pink?",1476998233187
+33,"3603-b","speaker","no",1476998235246
+33,"3603-b","listener","or just bright pink",1476998237604
+32,"3603-b","speaker","green",1476998211077
+32,"3603-b","listener","oops",1476998211964
+32,"3603-b","listener","sorry",1476998213269
+32,"3603-b","speaker","its ok",1476998217290
+50,"3603-b","speaker","gray",1476998521930
+50,"3603-b","listener","oopp",1476998522449
+50,"3603-b","listener","great work",1476998528256
+50,"3603-b","listener","last one",1476998530615
+50,"3603-b","speaker","you too",1476998531655

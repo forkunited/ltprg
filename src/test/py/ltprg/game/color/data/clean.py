@@ -104,7 +104,7 @@ def make_state_record(record):
                     state["sTarget" + key] = speakerObjs[i][key]
             state["sTargetIndex"] = i;
 
-    return action
+    return state
 
 
 def make_action_record(record):
@@ -191,7 +191,7 @@ def output_csv(file_path, rows):
 
 
 def output_games(state_dir, action_dir, utterance_dir, games_to_state_action_utterances):
-    for game, sua in games_to_state_action_utterances.items():
+    for game, sau in games_to_state_action_utterances.items():
         print "Outputting " + game
         output_csv(os.path.join(state_dir, game), sau[0])
         output_csv(os.path.join(action_dir, game), sau[1])

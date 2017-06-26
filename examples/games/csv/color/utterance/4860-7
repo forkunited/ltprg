@@ -1,0 +1,55 @@
+"roundNum","gameid","sender","contents","time"
+42,"4860-7","speaker","Darker of two similar shades",1476989225328
+48,"4860-7","speaker","Darkest color",1476989366205
+43,"4860-7","speaker","Medium shade",1476989270825
+49,"4860-7","speaker","Color of a rose",1476989380317
+24,"4860-7","speaker","Lightest color",1476988877124
+25,"4860-7","speaker","Color of the sky",1476988888387
+26,"4860-7","speaker","Color of a rose",1476988922286
+27,"4860-7","speaker","Color of grass",1476988931840
+20,"4860-7","speaker","Grape",1476988766499
+21,"4860-7","speaker","Color of a tank",1476988790938
+22,"4860-7","speaker","Darkest color",1476988805129
+23,"4860-7","speaker","Darkest color, but not gray",1476988843702
+46,"4860-7","speaker","Color of an orange",1476989341079
+47,"4860-7","speaker","Color of grass",1476989350256
+44,"4860-7","speaker","Color of cement",1476989287001
+45,"4860-7","speaker","Least similar of the three colors",1476989323993
+28,"4860-7","speaker","Lightest color",1476988945318
+29,"4860-7","speaker","Color of grass",1476988965757
+40,"4860-7","speaker","Color of grass",1476989193737
+41,"4860-7","speaker","Lighter of two similar shades",1476989208334
+1,"4860-7","listener","hello?",1476988270700
+1,"4860-7","speaker","It's the color of a shark.",1476988288034
+3,"4860-7","speaker","It's the color of a valentine.",1476988320105
+2,"4860-7","speaker","It's the color of an orange.",1476988304820
+5,"4860-7","speaker","Color of army camo",1476988362642
+4,"4860-7","speaker","Color of the sky.",1476988331906
+7,"4860-7","speaker","Closest to color of grass",1476988413153
+6,"4860-7","speaker","Color of concrete",1476988375063
+9,"4860-7","speaker","Color of grass",1476988518622
+8,"4860-7","speaker","Not the color of a grape or concrete",1476988454460
+8,"4860-7","listener","is it the darker or lighter gray?",1476988466517
+8,"4860-7","speaker","It's hard to tell with this box around it, but I think lighter",1476988495433
+39,"4860-7","speaker","Color of the sk",1476989180612
+39,"4860-7","speaker","y",1476989182181
+38,"4860-7","speaker","Middle shade",1476989167362
+11,"4860-7","speaker","Not the color of the sky or an orange",1476988592476
+10,"4860-7","speaker","Color of a grape",1476988533889
+13,"4860-7","speaker","Color of a grape",1476988640817
+12,"4860-7","speaker","Color of a grape",1476988610036
+15,"4860-7","speaker","Color grass",1476988679036
+14,"4860-7","speaker","The darkest color",1476988665423
+17,"4860-7","speaker","Grape",1476988701757
+16,"4860-7","speaker","Color of a grape",1476988689784
+19,"4860-7","speaker","Lightest color",1476988752704
+18,"4860-7","speaker","Color of the sky, darker color",1476988722048
+31,"4860-7","speaker","Darker shade of two similar colors",1476988995369
+30,"4860-7","speaker","Color of the sun",1476988974777
+37,"4860-7","speaker","LIghtest shade",1476989143443
+36,"4860-7","speaker","Lightest shade",1476989125474
+35,"4860-7","speaker","Color of mud",1476989102850
+34,"4860-7","speaker","Darkest shade",1476989078197
+33,"4860-7","speaker","Darker shade of two similar colors",1476989032681
+32,"4860-7","speaker","Lighter shade of two similar colors",1476989012060
+50,"4860-7","speaker","Darker of two similar colors",1476989395764

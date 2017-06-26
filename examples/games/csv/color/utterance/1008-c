@@ -1,0 +1,64 @@
+"roundNum","gameid","sender","contents","time"
+42,"1008-c","speaker","teal",1476991771031
+48,"1008-c","speaker","brown",1476991832871
+43,"1008-c","speaker","dull purple",1476991781672
+49,"1008-c","speaker","gray",1476991839559
+24,"1008-c","speaker","purple",1476991526370
+25,"1008-c","speaker","red",1476991533487
+26,"1008-c","speaker","blue",1476991542771
+27,"1008-c","speaker","darker burnt orange",1476991566551
+20,"1008-c","speaker","purlish gray",1476991455203
+20,"1008-c","speaker","not flat gray",1476991483759
+21,"1008-c","speaker","blue",1476991494302
+22,"1008-c","speaker","bright green",1476991502561
+23,"1008-c","speaker","yellowish green",1476991515278
+46,"1008-c","speaker","purple",1476991815436
+47,"1008-c","speaker","blue",1476991824600
+44,"1008-c","speaker","red",1476991787639
+45,"1008-c","speaker","dull blue",1476991794280
+45,"1008-c","speaker","teal",1476991803297
+45,"1008-c","listener","the lighter shade",1476991805328
+28,"1008-c","speaker","florescent teal",1476991585006
+29,"1008-c","speaker","red",1476991593887
+40,"1008-c","speaker","bright green",1476991736440
+41,"1008-c","speaker","brighter purple, not pink",1476991756258
+1,"1008-c","speaker","pinkish purple",1476991182024
+3,"1008-c","speaker","bright green",1476991200897
+2,"1008-c","speaker","blue",1476991190633
+5,"1008-c","speaker","blue",1476991214922
+4,"1008-c","speaker","gray",1476991208231
+7,"1008-c","speaker","darker purple/rose color",1476991270830
+7,"1008-c","listener","wait a minute   I clicked the right color and it chose the other one",1476991271579
+7,"1008-c","speaker","reallY?",1476991276377
+7,"1008-c","listener","no kidding   that was a good description",1476991289181
+7,"1008-c","speaker","hmm",1476991293533
+7,"1008-c","listener","not the bright pink one?",1476991313673
+7,"1008-c","speaker","correct",1476991319510
+6,"1008-c","speaker","darker gray..not with pupleish tint",1476991241958
+9,"1008-c","speaker","dark blue",1476991345421
+8,"1008-c","speaker","green",1476991329742
+8,"1008-c","listener","it did it again",1476991330831
+39,"1008-c","speaker","orange",1476991726685
+38,"1008-c","speaker","purple, not duller or brighter",1476991715183
+11,"1008-c","speaker","blue",1476991361010
+10,"1008-c","speaker","green",1476991354673
+13,"1008-c","speaker","dull green",1476991376614
+12,"1008-c","speaker","green",1476991367934
+15,"1008-c","speaker","dull blue",1476991411510
+14,"1008-c","speaker","purplish pink",1476991394755
+14,"1008-c","speaker","bright",1476991396896
+17,"1008-c","speaker","green",1476991429607
+16,"1008-c","speaker","red",1476991423470
+19,"1008-c","speaker","green",1476991445660
+18,"1008-c","speaker","bright purple",1476991438216
+31,"1008-c","speaker","green",1476991620711
+30,"1008-c","speaker","pea green",1476991602527
+30,"1008-c","speaker","duller green",1476991611521
+37,"1008-c","speaker","purpleish gray",1476991690055
+36,"1008-c","speaker","pink",1476991675615
+35,"1008-c","speaker","green",1476991667471
+34,"1008-c","speaker","water blue (lighter)",1476991656079
+33,"1008-c","speaker","purple",1476991640719
+32,"1008-c","speaker","brighter purple",1476991630863
+50,"1008-c","speaker","pea green, not dullest",1476991857223
+50,"1008-c","speaker","yellowish green",1476991862040

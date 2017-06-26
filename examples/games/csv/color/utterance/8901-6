@@ -1,0 +1,55 @@
+"roundNum","gameid","sender","contents","time"
+42,"8901-6","speaker","purple",1476990974141
+48,"8901-6","speaker","green",1476991051225
+43,"8901-6","speaker","not green or yellow-orange",1476990992456
+49,"8901-6","speaker","purple",1476991059556
+24,"8901-6","speaker","blue",1476990766491
+25,"8901-6","speaker","purple",1476990776162
+26,"8901-6","speaker","pink",1476990786500
+27,"8901-6","speaker","pink",1476990793109
+20,"8901-6","speaker","dull green",1476990718809
+21,"8901-6","speaker","gray",1476990726480
+22,"8901-6","speaker","dark green",1476990739899
+23,"8901-6","speaker","not gray or purple",1476990753756
+46,"8901-6","speaker","blue",1476991032763
+47,"8901-6","speaker","bright green",1476991045128
+44,"8901-6","speaker","brownish",1476991006561
+45,"8901-6","speaker","not purple or gray, middle color",1476991022147
+28,"8901-6","speaker","not pink or purple",1476990804556
+29,"8901-6","speaker","green",1476990812588
+40,"8901-6","speaker","duller purple",1476990953858
+41,"8901-6","speaker","bright purple",1476990965679
+1,"8901-6","speaker","brown",1476990425545
+3,"8901-6","speaker","pink",1476990439093
+2,"8901-6","speaker","olive",1476990432916
+5,"8901-6","speaker","blue",1476990492753
+4,"8901-6","listener","florescent?",1476990480020
+4,"8901-6","speaker","no, the other",1476990484874
+7,"8901-6","speaker","not the bright green",1476990525194
+7,"8901-6","speaker","the one that is in the middle of the colors",1476990536639
+6,"8901-6","speaker","green",1476990499882
+9,"8901-6","speaker","purple",1476990575013
+8,"8901-6","speaker","blueish",1476990567547
+39,"8901-6","speaker","light blue",1476990941433
+38,"8901-6","speaker","purple",1476990933985
+11,"8901-6","speaker","lime green",1476990593037
+10,"8901-6","speaker","royal blue",1476990583212
+13,"8901-6","speaker","one of the browns",1476990621153
+13,"8901-6","speaker","i would call it taupe?",1476990624994
+12,"8901-6","speaker","blue",1476990599722
+15,"8901-6","speaker","not the brightest one, not the duller one",1476990660255
+14,"8901-6","speaker","duller green",1476990637037
+17,"8901-6","speaker","darker blue",1476990680469
+16,"8901-6","speaker","blue",1476990671989
+19,"8901-6","speaker","not pink or orange",1476990704750
+18,"8901-6","speaker","light blue",1476990693633
+31,"8901-6","speaker","blue",1476990829746
+30,"8901-6","speaker","purpleish",1476990823363
+37,"8901-6","speaker","orange",1476990926050
+36,"8901-6","speaker","yellow",1476990912969
+35,"8901-6","speaker","not the yellow green or the lime green",1476990887539
+35,"8901-6","speaker","the dull color",1476990889121
+34,"8901-6","speaker","blue",1476990868332
+33,"8901-6","speaker","purple",1476990859423
+32,"8901-6","speaker","not the brown or gray",1476990849917
+50,"8901-6","speaker","olive",1476991067395

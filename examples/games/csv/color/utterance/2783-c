@@ -1,0 +1,53 @@
+"roundNum","gameid","sender","contents","time"
+42,"2783-c","speaker","hot pink",1477000259036
+48,"2783-c","speaker","dull blue grey",1477000355667
+43,"2783-c","speaker","blue",1477000273776
+49,"2783-c","speaker","grey",1477000375490
+24,"2783-c","listener","Sorry",1476999890895
+24,"2783-c","listener","My bad",1476999893855
+24,"2783-c","speaker","dull pink",1476999904250
+25,"2783-c","speaker","really bright green",1476999925429
+26,"2783-c","speaker","hot pink",1476999943587
+27,"2783-c","speaker","lavender",1476999957380
+20,"2783-c","speaker","orange red",1476999800286
+21,"2783-c","speaker","grey",1476999812836
+22,"2783-c","speaker","dirty brownish pink",1476999840570
+23,"2783-c","speaker","pink",1476999870121
+46,"2783-c","speaker","grey",1477000322458
+47,"2783-c","speaker","grey",1477000333228
+44,"2783-c","speaker","drab olive green",1477000297690
+45,"2783-c","speaker","green",1477000309611
+28,"2783-c","speaker","pink going towards purple",1476999995716
+29,"2783-c","speaker","green",1477000005624
+40,"2783-c","speaker","pink",1477000222383
+41,"2783-c","speaker","darker purple",1477000249278
+1,"2783-c","speaker","lime green",1476999426711
+3,"2783-c","speaker","olive",1476999452950
+2,"2783-c","speaker","tan",1476999441087
+5,"2783-c","speaker","dull pink",1476999483447
+4,"2783-c","speaker","bright purple",1476999469762
+7,"2783-c","speaker","lime green",1476999526175
+6,"2783-c","speaker","pink",1476999507797
+9,"2783-c","speaker","grey",1476999571136
+8,"2783-c","speaker","bright pink",1476999543094
+39,"2783-c","speaker","grey",1477000211411
+38,"2783-c","speaker","grey",1477000196120
+11,"2783-c","speaker","sky blue",1476999605929
+10,"2783-c","speaker","dull pink",1476999586590
+13,"2783-c","speaker","red(ish)",1476999663772
+12,"2783-c","speaker","dull grey purple",1476999632870
+15,"2783-c","speaker","bright grey",1476999701025
+14,"2783-c","speaker","hot punk pink",1476999675205
+17,"2783-c","speaker","sky blue",1476999743543
+16,"2783-c","speaker","puke yellow",1476999722159
+19,"2783-c","speaker","bright sky blue",1476999780034
+18,"2783-c","speaker","easter egg blue",1476999759520
+31,"2783-c","speaker","bright pink",1477000027826
+30,"2783-c","speaker","blue",1477000016162
+37,"2783-c","speaker","sky blue again",1477000183943
+36,"2783-c","speaker","sky blue",1477000167685
+35,"2783-c","speaker","purple",1477000139247
+34,"2783-c","speaker","bright purple",1477000128676
+33,"2783-c","speaker","teal green",1477000063175
+32,"2783-c","speaker","orange",1477000038264
+50,"2783-c","speaker","easter egg blue",1477000390553

@@ -1,0 +1,49 @@
+"roundNum","gameid","sender","contents","time"
+42,"6442-4","speaker","dusty/gray-purple",1459889780998
+48,"6442-4","speaker","blue",1459889832657
+43,"6442-4","speaker","green",1459889789740
+49,"6442-4","speaker","bright sky blue",1459889844784
+24,"6442-4","speaker","target is gray",1459889499279
+25,"6442-4","speaker","target is blue, non targets are more purple",1459889516935
+26,"6442-4","speaker","target is bright sky blue",1459889531641
+27,"6442-4","speaker","target is green",1459889539005
+20,"6442-4","speaker","target is gray blue and dull compared to the non-targets",1459889447862
+21,"6442-4","speaker","target is gray",1459889458004
+22,"6442-4","speaker","target is blue",1459889468346
+23,"6442-4","speaker","target is purple",1459889481477
+23,"6442-4","speaker","bright purple, sorry",1459889486959
+23,"6442-4","listener","thanks",1459889494496
+46,"6442-4","speaker","brighter purple",1459889817581
+47,"6442-4","speaker","gray",1459889824623
+44,"6442-4","speaker","blue",1459889797188
+45,"6442-4","speaker","true gray",1459889806118
+28,"6442-4","speaker","target is brown, non targets orange & purple",1459889551515
+29,"6442-4","speaker","target is orange, non targets gray & coral",1459889564323
+40,"6442-4","speaker","the lighter/more yellow green",1459889734474
+41,"6442-4","speaker","teal, non targets bright green and olive",1459889764193
+2,"6442-4","speaker","the target is a midrange blue. The non-target boxes are gray and light blue",1459888850495
+5,"6442-4","speaker","The target is yellow",1459888943357
+4,"6442-4","speaker","The target is light green. The non-target boxes are yellow and a darker green.",1459888926788
+6,"6442-4","speaker","The target is purple. Non-targets are pink & red.",1459888959077
+9,"6442-4","speaker","Target is a slate blue. Non-targets are gray, and a lighter slate-gray.",1459889146157
+39,"6442-4","speaker","blue",1459889718430
+38,"6442-4","speaker","brightest red",1459889711454
+11,"6442-4","speaker","target is tan",1459889176403
+11,"6442-4","listener","ok thank you",1459889258657
+10,"6442-4","speaker","target is yellow",1459889164520
+13,"6442-4","speaker","target is gray",1459889282040
+12,"6442-4","speaker","target is brown, non targets are teal/green",1459889271090
+15,"6442-4","speaker","target is the duller/grayer of the two tan/brown squares",1459889324986
+14,"6442-4","speaker","target is green",1459889292698
+17,"6442-4","speaker","target is true green, non targets are purple and olive",1459889367659
+16,"6442-4","speaker","target is BRIGHT green, non targets are teal & purple",1459889351998
+19,"6442-4","speaker","target is orange",1459889425755
+18,"6442-4","speaker","oooh boy... okay, target is the more green of the two grayish boxes",1459889405736
+31,"6442-4","speaker","target is red",1459889602512
+30,"6442-4","speaker","target is gray-green... both non-target greens are brighter & more green",1459889588293
+37,"6442-4","speaker","target is purple",1459889703412
+36,"6442-4","speaker","target is the brighter of the two purples",1459889692623
+35,"6442-4","speaker","target is green",1459889678378
+33,"6442-4","speaker","target is the more yellow of the two greens",1459889631571
+32,"6442-4","speaker","target is the darkest green",1459889615031
+50,"6442-4","speaker","purple",1459889852790
