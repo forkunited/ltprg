@@ -3,17 +3,22 @@
 import csv
 import sys
 import json
+from os import listdir
+from os.path import isfile, join
 
 game_groupby = sys.argv[1]
 record_groupby = sys.argv[2]
-input_files = sys.argv[4].split(",")
-input_file_types = sys.argv[5].split(",")
-output_dir = sys.argv[6]
+input_dirs = sys.argv[3].split(",")
+input_file_types = sys.argv[4].split(",")
+output_dir = sys.argv[5]
 
-def process_csv_files():
+def process_csv_files(input_dirs, input_file_types):
     D = dict()
-    for i in range(len(input_files)):
-        process_csv_file(input_files[i], D, input_file_types[i])
+    for i in range(len(input_dirs)):
+        input_files = [join(input_dirs[i], f) for f in listdir(input_dirs[i]) if isfile(join(input_dirs[i], f))]
+        input_file_type = input_file_types[i]
+        for input_file in input_files:
+            process_csv_file(input_file, D, input_file_type)
     return D
 
 def process_csv_file(file_path, D, file_type):
@@ -44,7 +49,7 @@ def process_record(record, D, record_type):
             else:
                 sub_record[key] = record[key]
     sub_record["type"] = record_type
-    annotate_record(sub_record)
+
     D_sub.append(sub_record)
 
 def output_obj(file_path, obj):
@@ -69,4 +74,4 @@ def output_record_files(D):
         document_obj["records"] = records_list
         output_obj(output_dir + "/" + key, document_obj)
 
-output_record_files(process_csv_files())
+output_record_files(process_csv_files(input_dirs, input_file_types))
