@@ -35,22 +35,22 @@ def one_hot(ind, sz):
 
 class ModelTrainer(object):
 	def __init__(self, model_name, hidden_szs, hiddens_nonlinearity,
-				 batch_sz, train_data, validation_data, utt_set_sz,
+				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, visualize_opt,
 				 display_validationset_predictions_opt, **kwargs):
 		# model_name		('ersa', 'nnwc', 'nnwoc')
 		# hidden_szs		(lst of hidden layer szs)
-		# batch_sz			(int)
+		# hiddens_nonlinearity ('relu', 'tanh')
 		# train_data		(lst of dictionaries, e.g.
 		#			 		 {'target_ind': 1, 'alt1_ind': 5,
 		#				 	 'alt2_ind': 18, 'utterance': 4,
 		#				 	 'condition': 'sub-nec'})
 		# validation_data 	(same format as train_data)
 		# utt_set_sz    	(num utterances in fixed alternatives set)
-		# obj_embedding_type ('onehot') # TODO: Add image types
+		# obj_set_sz		(num objects in dataset)
+		# obj_embedding_type ('onehot')
 		# visualize_opt		(plot learning curves in Visdom; True/False)
 		# display_validationset_predictions_opt (print model predictions; True/False)
-		# rsa_level			(optional; level of recursion, from 1)
 		# alpha				(optional; speaker rationality param)
 		# cost_dict			(optional; dict of utterance costs)
 		# cost_weight		(optional; utterance cost weight in RSA model)
@@ -68,7 +68,6 @@ class ModelTrainer(object):
 		self.prep_visualize()
 
 		self.model_name = model_name
-		self.batch_sz   = batch_sz
 		self.train_data = train_data
 		self.validation_data = validation_data
 		self.utt_set_sz = utt_set_sz
@@ -78,7 +77,7 @@ class ModelTrainer(object):
 		if self.model_name == 'ersa':
 			# set RSA params
 			self.rsa_dist_type = 'speaker'
-			self.rsa_level     = kwargs['rsa_level']
+			self.rsa_level     = 1 # do not support other levels yet
 			self.alpha         = kwargs['alpha']
 			self.cost_weight   = kwargs['cost_weight']
 			cost_dict = kwargs['cost_dict']
@@ -368,11 +367,11 @@ def run_example():
 	utt_costs     = load_json(data_path + 'costs_by_utterance.JSON')
 
 	# Train ERSA model
-	trainer = ModelTrainer('ersa', [100], 'tanh', 1, example_train_data, 
+	trainer = ModelTrainer('ersa', [100], 'tanh', example_train_data, 
 				 			example_validation_data, num_utts, num_objs, 
 				 			'onehot', True, True,
 				 			utt_dict=utt_info_dict, obj_dict=obj_info_dict,
-				 			rsa_level=1, alpha=100, cost_dict=utt_costs,
+				 			alpha=100, cost_dict=utt_costs,
 				 			cost_weight=0.1)
 	trainer.train()
 
