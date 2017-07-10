@@ -355,20 +355,23 @@ class ModelTrainer(object):
 
 if __name__=='__main__':
 	data_path = 'example_data/' # temp synthetic data w/ 3300 training examples
-	example_train_data = load_json(data_path 
-		+ 'train_set99_3300train_trials.JSON') 
-	example_validation_data = load_json(data_path 
-		+ 'validation_set99_600validation_trials.JSON')
+	train_data_fname      = data_path + 'train_set99_3300train_trials.JSON'
+	validation_data_fname = data_path + 'validation_set99_600validation_trials.JSON'
+	example_train_data 		= load_json(train_data_fname) 
+	example_validation_data = load_json(validation_data_fname)
 	d = load_json(data_path + 'true_lexicon.JSON')
 	num_utts = len(d)
 	num_objs = len(d['0'])
 
-	trainer = ModelTrainer('ersa', [100], 'tanh',
-				 1, example_train_data, example_validation_data, num_utts,
-				 num_objs, 'onehot', True, True,
-				 rsa_level=1, alpha=100, cost_dict=load_json(
-				 	data_path + 'costs_by_utterance.JSON'),
-				 cost_weight=0.1,
-				 utt_dict=load_json(data_path + 'utt_inds_to_names.JSON'),
-				 obj_dict=load_json(data_path + 'obj_inds_to_names.JSON'))
+	utt_info_dict = load_json(data_path + 'utt_inds_to_names.JSON')
+	obj_info_dict = load_json(data_path + 'obj_inds_to_names.JSON')
+	utt_costs     = load_json(data_path + 'costs_by_utterance.JSON')
+
+	# Train model
+	trainer = ModelTrainer('ersa', [100], 'tanh', 1, example_train_data, 
+				 			example_validation_data, num_utts, num_objs, 
+				 			'onehot', True, True,
+				 			utt_dict=utt_info_dict, obj_dict=obj_info_dict,
+				 			rsa_level=1, alpha=100, cost_dict=utt_costs,
+				 			cost_weight=0.1)
 	trainer.train()
