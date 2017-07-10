@@ -37,7 +37,7 @@ class ModelTrainer(object):
 	def __init__(self, model_name, hidden_szs, hiddens_nonlinearity,
 				 batch_sz, train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, visualize_opt,
-				 **kwargs):
+				 display_validationset_predictions_opt, **kwargs):
 		# model_name		('ersa', 'nnwc', 'nnwoc')
 		# hidden_szs		(lst of hidden layer szs)
 		# batch_sz			(int)
@@ -49,13 +49,20 @@ class ModelTrainer(object):
 		# utt_set_sz    	(num utterances in fixed alternatives set)
 		# obj_embedding_type ('onehot') # TODO: Add image types
 		# visualize_opt		(plot learning curves in Visdom; True/False)
+		# display_validationset_predictions_opt (print model predictions; True/False)
 		# rsa_level			(optional; level of recursion, from 1)
 		# alpha				(optional; speaker rationality param)
 		# cost_dict			(optional; dict of utterance costs)
 		# cost_weight		(optional; utterance cost weight in RSA model)
+		# utt_dict			(optional; dict of utterance inds to names)
+		# obj_dict			(optional; dict of object inds to names)
 
 		assert model_name in ['ersa', 'nnwc', 'nnwoc']
 		assert obj_embedding_type in ['onehot']
+
+		if display_validationset_predictions_opt == True:
+			self.utt_inds_to_names = kwargs['utt_dict']
+			self.obj_inds_to_names = kwargs['obj_dict']
 
 		self.visualize_opt = visualize_opt
 		self.prep_visualize()
@@ -141,8 +148,12 @@ class ModelTrainer(object):
 	def evaluate_datasets(self, epoch):
 		# mean NLL, acc for each dataset
 		train_loss, train_acc = self.mean_performance_dataset(self.train_data)
+
+		self.display_predictions_opt = True
 		validation_loss, validation_acc = self.mean_performance_dataset(
 											self.validation_data)
+		self.display_predictions_opt = False
+
 		self.mean_trainset_loss.append(train_loss)
 		self.mean_trainset_acc.append(train_acc)
 		self.mean_validationset_loss.append(validation_loss)
@@ -165,6 +176,7 @@ class ModelTrainer(object):
 			print 'in your browser\n'
 			raw_input("Press Enter to continue...")
 			self.vis = visdom.Visdom()
+			self.display_predictions_opt = False # print only validation set preds
 
 	def plot_learning_curve(self, epoch):
 		if self.visualize_opt == True:
@@ -238,6 +250,25 @@ class ModelTrainer(object):
 							[self.mean_validationset_acc[-1]]))),
 					win=self.dataset_eval_acc_win)
 
+	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
+						   condition, prediction_dist, label_utt_ind):
+		if self.display_predictions_opt == True:
+			_, predicted_utt_ind = torch.max(prediction_dist, 1)
+			predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
+
+			print '\nCondition: {}'.format(condition)
+			print '	Target: {}'.format(self.obj_inds_to_names[str(
+										target_obj_ind)])
+			print '	Alt 1: {}'.format(self.obj_inds_to_names[str(
+										alt1_obj_ind)])
+			print '	Alt 2: {}'.format(self.obj_inds_to_names[str(
+										alt2_obj_ind)])
+			print 'Label: {}'.format(self.utt_inds_to_names[str(
+										label_utt_ind)])
+			print 'Prediction: {}'.format(self.utt_inds_to_names[str(
+										predicted_utt_ind)])
+			print 'Correct? {}'.format(predicted_utt_ind==label_utt_ind)
+
 	def predict(self, trial):
 		target_obj_ind = trial['target_ind']
 		alt1_obj_ind   = trial['alt1_ind']
@@ -262,6 +293,9 @@ class ModelTrainer(object):
 
 		# format label
 		label = Variable(torch.LongTensor([utt_ind]))
+
+		self.display_prediction(target_obj_ind, alt1_obj_ind, alt2_obj_ind,
+						   		condition, outputs, utt_ind)
 		return outputs, label
 
 	def evaluate(self, prediction, label):
@@ -320,8 +354,7 @@ class ModelTrainer(object):
 				self.evaluate_datasets(epoch)
 
 if __name__=='__main__':
-	data_path = 'example_data/'
-	# temp synthetic data w/ 3300 training examples
+	data_path = 'example_data/' # temp synthetic data w/ 3300 training examples
 	example_train_data = load_json(data_path 
 		+ 'train_set99_3300train_trials.JSON') 
 	example_validation_data = load_json(data_path 
@@ -332,8 +365,10 @@ if __name__=='__main__':
 
 	trainer = ModelTrainer('ersa', [100], 'tanh',
 				 1, example_train_data, example_validation_data, num_utts,
-				 num_objs, 'onehot', True, 
+				 num_objs, 'onehot', True, True,
 				 rsa_level=1, alpha=100, cost_dict=load_json(
 				 	data_path + 'costs_by_utterance.JSON'),
-				 cost_weight=0.1)
+				 cost_weight=0.1,
+				 utt_dict=load_json(data_path + 'utt_inds_to_names.JSON'),
+				 obj_dict=load_json(data_path + 'obj_inds_to_names.JSON'))
 	trainer.train()
