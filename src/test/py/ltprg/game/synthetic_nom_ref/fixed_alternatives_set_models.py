@@ -375,7 +375,7 @@ class ModelTrainer(object):
 		self.optimizer.zero_grad() # zero gradient buffers
 
 	def train(self):
-		start_time = time.time()
+		# start_time = time.time()
 		max_norm = 1 # grad norm
 
 		self.train_loss_by_epoch = [] # learning curve
@@ -391,6 +391,7 @@ class ModelTrainer(object):
 		epoch = 0
 		self.evaluate_datasets(epoch) # establish baseline
 		while True:
+			start_time = time.time()
 			epoch += 1
 			print '\nEpoch {}'.format(epoch)
 
@@ -411,6 +412,8 @@ class ModelTrainer(object):
 			print 'Loss = {}'.format(self.train_loss_by_epoch)
 			print 'Accuracy = {}'.format(self.train_acc_by_epoch)
 			self.plot_learning_curve(epoch)
+
+			print 'Epoch time = {}'.format(time.time() - start_time)
 
 			if epoch % dataset_eval_freq == 0:
 				self.evaluate_datasets(epoch)
@@ -436,6 +439,12 @@ def run_example():
 				 			utt_dict=utt_info_dict, obj_dict=obj_info_dict,
 				 			alpha=100, cost_dict=utt_costs,
 				 			cost_weight=0.1)
+
+	# # NNWC model
+	# trainer = ModelTrainer('nnwc', [100], 'tanh', example_train_data, 
+	# 			 			example_validation_data, num_utts, num_objs, 
+	# 			 			'onehot', True, True,
+	# 			 			utt_dict=utt_info_dict, obj_dict=obj_info_dict)
 	trainer.train()
 
 if __name__=='__main__':

@@ -45,7 +45,8 @@ def collect_term_type_used_by_condition():
 
 	# TODO: loop over dir
 	data_dir = 'datasets_by_num_trials/'
-	dataset_name = 'train_set99_3300train_trials'
+	# dataset_name = 'train_set99_3300train_trials'
+	dataset_name = 'validation_set99_600validation_trials'
 	
 	dataset = load_json(data_dir + dataset_name + '.JSON')
 

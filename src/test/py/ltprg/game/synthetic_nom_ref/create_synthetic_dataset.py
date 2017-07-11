@@ -142,20 +142,6 @@ def visualize_batch(batch, title, obj_names):
 			title=condition_plot_title)
 		)
 
-	# vis.bar(X=trial_type_counts,
-	# 	opts=dict(
-	# 		rownames=trial_type_labels,
-	# 		title=trial_plot_title)
-	# 	)
-
-	# vis.histogram(X=trial_type_counts,
-	# 	opts=dict(
-	# 		numbins=num_bins,
-	# 		xlabel='# Reps of trial type',
-	# 		ylabel='# Trial types w/ this many reps',
-	# 		title=hist_title)
-	# 	)
-
 	mean_reps = np.mean(trial_type_counts)
 	std_reps  = np.std(trial_type_counts)
 	min_reps  = np.min(trial_type_counts)
@@ -353,7 +339,11 @@ class DatasetMaker(object):
 		 # sample utterance
 		utt_ind = torch.multinomial(dist_over_utts_for_target, 
 									1).data.numpy()[0][0]
-		return utt_ind
+
+		log_prob_of_utt = torch.log(dist_over_utts_for_target 
+									+ 10e-06).data.numpy()[0][utt_ind]
+
+		return utt_ind, log_prob_of_utt
 
 	def generate_trial(self, target_name, cond):
 		# Generates trials, including assigning utterance from S1
@@ -414,10 +404,12 @@ class DatasetMaker(object):
 		random.shuffle(distractor_names)
 
 		# Assign utterance
-		utt_ind = self.assign_utterance_to_trial(target_name, distractor_names[0], 
+		utt_ind, log_prob_of_utt = self.assign_utterance_to_trial(target_name, 
+												 distractor_names[0], 
 								   				 distractor_names[1])
 
-		trial = [target_name, distractor_names[0], distractor_names[1], cond, utt_ind]
+		trial = [target_name, distractor_names[0], distractor_names[1], 
+				 cond, utt_ind, log_prob_of_utt]
 
 		if self.print_trial_details:
 			print '\n---------------------------------'
@@ -435,8 +427,11 @@ class DatasetMaker(object):
 			print trial
 			print '\n---------------------------------\n'
 
-		assert(len(list(set(trial))) == 5)
+		assert(len(list(set(trial))) == 6)
 		return trial
+
+	def mean_log_prob_utterances_in_set(self, trials):
+		return np.mean(np.array([t[5] for t in trials]))
 
 	def reformat_trials(self, trials):
 		trials_as_inds = []
@@ -629,28 +624,48 @@ class DatasetMaker(object):
 		num_datasets = len(self.train_sets_by_set_sz)
 		for i in range(num_datasets):
 			# reformats to lst of dicts
-			print 'Reformatting Set # {}'.format(i)
+			print '\nReformatting Set # {}'.format(i)
 
 			train_set      = self.reformat_trials(self.train_sets_by_set_sz[i])
 			validation_set = self.reformat_trials(self.validation_sets_by_set_sz[i])
 			test_set       = self.reformat_trials(self.test_sets_by_set_sz[i])
 
+			train_set_LL = self.mean_log_prob_utterances_in_set(
+								self.train_sets_by_set_sz[i])
+			validation_set_LL = self.mean_log_prob_utterances_in_set(
+								self.validation_sets_by_set_sz[i])
+			test_set_LL = self.mean_log_prob_utterances_in_set(
+								self.test_sets_by_set_sz[i])
+
 			print 'Train set sz = {}, Valid set sz = {}, Test set sz = {}'.format(
 				len(train_set), len(validation_set), len(test_set))
 
+			print 'Train Mean Log-Prob of Utterance = {}'.format(train_set_LL)
+			print 'Validation Mean Log-Prob of Utterance = {}'.format(
+				validation_set_LL)
+			print 'Test Mean Log-Prob of Utterance = {}'.format(test_set_LL)
+
 			# save sets as json
-			self.save_as_json(train_set, self.dataset_save_path 
-							  + 'train_set' + str(i) + '_'
-				              + str(int(self.train_set_szs[i])) 
-				              + 'train_trials.JSON')
-			self.save_as_json(validation_set, self.dataset_save_path 
-							  + 'validation_set' + str(i) + '_'
-							  + str(int(self.validation_set_szs[i])) 
-							  + 'validation_trials.JSON')
-			self.save_as_json(test_set, self.dataset_save_path 
-							  + 'test_set' + str(i) + '_'
-							  + str(int(self.test_set_szs[i])) 
-							  + 'test_trials.JSON')
+			train_name = (self.dataset_save_path + 'train_set' 
+							+ str(i) + '_'
+							+ str(int(self.train_set_szs[i])) 
+							+ 'train_')
+			self.save_as_json(train_set, train_name + 'trials.JSON')
+			self.save_as_json({'LL': float(train_set_LL)}, train_name + 'LL.JSON')
+
+			validation_name = (self.dataset_save_path + 'validation_set' 
+							+ str(i) + '_'
+							+ str(int(self.validation_set_szs[i])) 
+							+ 'validation_')
+			self.save_as_json(validation_set, validation_name + 'trials.JSON')
+			self.save_as_json({'LL': float(validation_set_LL)}, validation_name + 'LL.JSON')
+
+			test_name = (self.dataset_save_path + 'test_set' 
+							+ str(i) + '_'
+							+ str(int(self.test_set_szs[i])) 
+							+ 'test_')
+			self.save_as_json(test_set, test_name + 'trials.JSON')
+			self.save_as_json({'LL': float(test_set_LL)}, test_name + 'LL.JSON')
 
 def wrapper():
 	object_info = DatasetMaker()
