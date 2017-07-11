@@ -111,7 +111,9 @@ class ModelTrainer(object):
 							 'logSoftmax')
 
 		self.criterion = nn.NLLLoss() # neg log-like loss, operates on log probs
-		self.optimizer = optim.Adam(self.model.parameters(), weight_decay=0.00001)
+		self.optimizer = optim.Adam(self.model.parameters(), 
+			weight_decay=0.0000, 
+			lr=0.0001)
 
 	def format_inputs(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind):
 		# returns 2D tensor input to MLP
@@ -137,19 +139,25 @@ class ModelTrainer(object):
 	def mean_performance_dataset(self, data_set):
 		loss_by_trial = []
 		acc_by_trial  = []
+		acc_by_trial_by_condition = {}
 		for trial in data_set:
 			prediction, label = self.predict(trial)
 			loss, accuracy = self.evaluate(prediction, label)
+			if trial['condition'] not in acc_by_trial_by_condition: acc_by_trial_by_condition[trial['condition']] = []
+			acc_by_trial_by_condition[trial['condition']].append(accuracy.data.numpy()[0])
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
-		return np.mean(loss_by_trial), np.mean(acc_by_trial)
+		mean_acc_by_cond = {}
+		for cond in acc_by_trial_by_condition:
+			mean_acc_by_cond[cond] = np.mean(acc_by_trial_by_condition[cond])
+		return np.mean(loss_by_trial), np.mean(acc_by_trial), mean_acc_by_cond
 
 	def evaluate_datasets(self, epoch):
 		# mean NLL, acc for each dataset
-		train_loss, train_acc = self.mean_performance_dataset(self.train_data)
+		train_loss, train_acc, train_acc_by_cond = self.mean_performance_dataset(self.train_data)
 
 		self.display_predictions_opt = True
-		validation_loss, validation_acc = self.mean_performance_dataset(
+		validation_loss, validation_acc, val_acc_by_cond = self.mean_performance_dataset(
 											self.validation_data)
 		self.display_predictions_opt = False
 
@@ -157,6 +165,8 @@ class ModelTrainer(object):
 		self.mean_trainset_acc.append(train_acc)
 		self.mean_validationset_loss.append(validation_loss)
 		self.mean_validationset_acc.append(validation_acc)
+		self.mean_trainset_acc_by_cond = train_acc_by_cond
+		self.mean_validationset_acc_by_cond = val_acc_by_cond
 		self.dataset_eval_epoch.append(epoch)
 		print '\nMean train set loss = '
 		print self.mean_trainset_loss
@@ -166,7 +176,11 @@ class ModelTrainer(object):
 		print self.mean_trainset_acc
 		print 'Mean validation set acc = '
 		print self.mean_validationset_acc
+		print 'Mean train / validation set accuracy by trial = '
+		print train_acc_by_cond
+		print val_acc_by_cond
 		self.plot_mean_dataset_results(epoch)
+		self.plot_mean_acc_by_cond(epoch)
 
 	def prep_visualize(self):
 		if self.visualize_opt == True:
@@ -249,6 +263,55 @@ class ModelTrainer(object):
 							[self.mean_validationset_acc[-1]]))),
 					win=self.dataset_eval_acc_win)
 
+	def plot_mean_acc_by_cond(self, epoch):
+		if self.visualize_opt == True:
+			x = np.array(np.column_stack(([epoch], [epoch], [epoch]))) #FIXME
+			train_conds = self.mean_trainset_acc_by_cond.keys()
+			train_vals = self.mean_trainset_acc_by_cond.values()
+			val_conds = self.mean_validationset_acc_by_cond.keys()
+			val_vals = self.mean_validationset_acc_by_cond.values()
+
+
+			if epoch == 0:
+				self.trainset_eval_by_cond_acc_win = self.vis.line(
+					X=x,
+					Y=np.array(np.column_stack(train_vals)),
+						# np.column_stack(
+						# 	([self.mean_trainset_loss[-1]],
+						# 	[self.mean_validationset_loss[-1]]))),
+					opts=dict(
+						legend=train_conds,
+						title=self.model_name.upper() + ': Mean trainset Acc by condition')
+					)
+				self.valset_eval_by_cond_acc_win = self.vis.line(
+					X=x,
+					Y=np.array(np.column_stack(val_vals)),
+						# np.column_stack(
+						# 	([self.mean_trainset_loss[-1]],
+						# 	[self.mean_validationset_loss[-1]]))),
+					opts=dict(
+						legend=val_conds,
+						title=self.model_name.upper() + ': Mean validationset Acc by condition')
+					)
+
+			else:
+				self.vis.updateTrace(
+					X=x,
+					Y=np.array(np.column_stack(train_vals)),
+						# np.column_stack(
+						# 	([self.mean_trainset_loss[-1]],
+						# 	[self.mean_validationset_loss[-1]]))),
+					win=self.trainset_eval_by_cond_acc_win)
+				self.vis.updateTrace(
+					X=x,
+					Y=np.array(np.column_stack(val_vals)),
+						# np.column_stack(
+						# 	([self.mean_trainset_loss[-1]],
+						# 	[self.mean_validationset_loss[-1]]))),
+					win=self.valset_eval_by_cond_acc_win)
+
+
+
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
 		if self.display_predictions_opt == True:
@@ -318,7 +381,7 @@ class ModelTrainer(object):
 		self.train_loss_by_epoch = [] # learning curve
 		self.train_acc_by_epoch  = []
 		
-		dataset_eval_freq = 10 # every n epochs
+		dataset_eval_freq = 5 # every n epochs
 		self.mean_trainset_loss   = [] # mean of dataset
 		self.mean_trainset_acc    = []
 		self.mean_validationset_loss = []
