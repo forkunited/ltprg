@@ -27,6 +27,18 @@ class FeaturizeSUA(unittest.TestCase):
             15, # Maximum utterance length
             token_fn=lambda x : x.lower())
 
+    def test_utterance_lemma_indices:
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir,
+            join(output_feature_dir, "utterance_lemma_idx"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            "utterance_lemmas_idx"
+            ["utterances[*].nlp.lemmas.lemmas"],
+            15, # Maximum utterance length
+            token_fn=lambda x : x.lower(),
+            indices=True)
+
     def test_listener_clicked:
         mung.feature_helpers.featurize_path_scalars(
             input_data_dir,
@@ -82,7 +94,7 @@ class FeaturizeSUA(unittest.TestCase):
     def speaker_target:
         mung.feature_helpers.featurize_path_scalars(
             input_data_dir,
-            join(output_feature_dir, "speaker_carget"),
+            join(output_feature_dir, "speaker_target"),
             partition_file,
             lambda d : d.get("gameid"),
             "speaker_target",
