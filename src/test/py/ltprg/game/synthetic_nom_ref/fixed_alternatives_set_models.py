@@ -12,6 +12,7 @@ from torch.autograd import Variable
 import torch.optim as optim
 from network_components import MLP
 from rsa import uniform_prior, model_speaker_1
+from vis_embedding import vis_embedding
 
 # TODO: Add checkpoints
 #		Add cuda support
@@ -181,6 +182,7 @@ class ModelTrainer(object):
 		print val_acc_by_cond
 		self.plot_mean_dataset_results(epoch)
 		self.plot_mean_acc_by_cond(epoch)
+		vis_embedding(self.model.get_embedding(), self.vis)
 
 	def prep_visualize(self):
 		if self.visualize_opt == True:

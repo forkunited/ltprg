@@ -36,3 +36,14 @@ class MLP(nn.Module):
 		x = self.final(x)
 		x = self.final_nonlinearity(x)
 		return x
+
+	def get_embedding(self):
+		'''
+		pull out the first layer of weights, which corresponds to 
+		an embedding of input 1-hot vector.
+		'''
+		first_layer = self.layers[0]
+		params = list(first_layer.parameters())
+		weights = params[0].data.numpy().transpose() #transpose or no?
+		#first element in params is multiplicative (FC), second is additive (bias)
+		return weights
