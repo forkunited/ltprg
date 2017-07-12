@@ -177,16 +177,16 @@ class ModelTrainer(object):
 		gold_stardard_S1_dist, label = self.predict(trial)
 		self.use_gold_standard_lexicon = False
 
-		print '\n\n'
-		np.set_printoptions(suppress=True)
-		print 'Pred 	Goldstandard S1 	Label'
-		print np.column_stack((
-			torch.exp(prediction).data.numpy()[0], 
-			torch.exp(gold_stardard_S1_dist).data.numpy()[0],
-			one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
+		# print '\n\n'
+		# np.set_printoptions(suppress=True)
+		# print 'Pred 	Goldstandard S1 	Label'
+		# print np.column_stack((
+		# 	torch.exp(prediction).data.numpy()[0], 
+		# 	torch.exp(gold_stardard_S1_dist).data.numpy()[0],
+		# 	one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
 
-		print '\n KL from label:'
-		print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
+		# print '\n KL from label:'
+		# print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
 
 		# compute KL-divergence
 		# 	KLDivLoss takes in x, targets, where x is log-probs
@@ -446,6 +446,14 @@ class ModelTrainer(object):
 						# 	[self.mean_validationset_loss[-1]]))),
 					win=self.valset_eval_by_cond_acc_win)
 
+	def save_checkpoint(self, epoch, is_best):
+		filename = self.save_path + 'checkpoint.pth.tar'
+		d = {'epoch': epoch, 'state_dict': self.model.state_dict(), 
+			 'optimizer': self.optimizer.state_dict()}
+		torch.save(d, filename)
+		if is_best == True:
+			shutil.copyfile(filename, self.save_path + 'model_best.pth.tar')
+
 	def save_results(self):
 		# save results dictionaries as npy files
 		learning_curves = dict()
@@ -464,6 +472,13 @@ class ModelTrainer(object):
 		dataset_evals['Mean_validationset_acc_by_cond'] = self.mean_validationset_acc_by_cond
 		dataset_evals['Mean_validationset_dist_from_goldstandard_S1'] = self.mean_validationset_dist_from_goldstandard_S1
 		np.save(self.save_path + 'DatasetEvaluations.npy', dataset_evals)
+
+		# save checkpoint(s)
+		is_best = False
+		if self.mean_validationset_loss[-1] < self.best_validationset_loss:
+			self.best_validationset_loss = self.mean_validationset_loss[-1]
+			is_best = True
+		self.save_checkpoint(self.dataset_eval_epoch[-1], is_best)
 
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
@@ -562,6 +577,7 @@ class ModelTrainer(object):
 
 		epoch = 0
 		self.evaluate_datasets(epoch) # establish baseline
+		self.best_validationset_loss = self.mean_validationset_loss[-1]
 		while epoch < num_epochs:
 			start_time = time.time()
 			epoch += 1
