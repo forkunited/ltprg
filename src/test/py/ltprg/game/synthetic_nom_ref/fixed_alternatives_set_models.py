@@ -147,11 +147,24 @@ class ModelTrainer(object):
 															  prediction):
 		# returns scalar KL-divergence(S1 given gold-standard lexicon,
 		# S1 given learn lexicon)
-
+   
 		# S1 on gold-standard lexicon
 		self.use_gold_standard_lexicon = True
-		gold_stardard_S1_dist, _ = self.predict(trial)
+		gold_stardard_S1_dist, label = self.predict(trial)
 		self.use_gold_standard_lexicon = False
+
+		print 
+
+		print '\n\n'
+		np.set_printoptions(suppress=True)
+		print 'Pred 	Goldstandard S1 	Label'
+		print np.column_stack((
+			torch.exp(prediction).data.numpy()[0], 
+			torch.exp(gold_stardard_S1_dist).data.numpy()[0],
+			one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
+
+		print '\n KL from label:'
+		print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
 
 		# compute KL-divergence
 		# 	KLDivLoss takes in x, targets, where x is log-probs
@@ -453,7 +466,7 @@ class ModelTrainer(object):
 			if self.use_gold_standard_lexicon == True:
 				# uses ground-truth lexicon (for comparison w/ 
 				# model predictions); grab objects for this trial
-				inds = Variable(torch.LongTensor([target_obj_ind, alt1_obj_ind, alt2_obj_ind]))
+				inds = Variable(torch.LongTensor([alt1_obj_ind, alt2_obj_ind, target_obj_ind]))
 				lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
 			else:
 				# uses learned params
