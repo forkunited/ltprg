@@ -60,7 +60,8 @@ class ModelTrainer(object):
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
 				 visualize_opt, display_validationset_predictions_opt, 
-				 alpha, cost_dict, cost_weight, gold_standard_lexicon):
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path):
 		# model_name		('ersa', 'nnwc', 'nnwoc':
 		# hidden_szs		(lst of hidden layer szs; specifies both the
 		#					 number of hidden layers and their sizes)
@@ -93,6 +94,7 @@ class ModelTrainer(object):
 		# cost_weight		(utterance cost weight in RSA model)
 		# gold_stardard_lexicon (num utterances x num objects np array of 
 		#					 ground-truth lexicon used to generate data)
+		# save_path			(where to save results)
 
 		assert model_name in ['ersa', 'nnwc', 'nnwoc']
 		assert obj_embedding_type in ['onehot']
@@ -119,6 +121,8 @@ class ModelTrainer(object):
 		self.use_gold_standard_lexicon = False # do not change
 		self.gold_standard_lexicon = Variable(torch.FloatTensor(
 										gold_standard_lexicon))
+
+		self.save_path = save_path
 
 		# create model
 		if self.model_name == 'ersa':
@@ -173,8 +177,6 @@ class ModelTrainer(object):
 		self.use_gold_standard_lexicon = True
 		gold_stardard_S1_dist, label = self.predict(trial)
 		self.use_gold_standard_lexicon = False
-
-		print 
 
 		print '\n\n'
 		np.set_printoptions(suppress=True)
@@ -446,7 +448,24 @@ class ModelTrainer(object):
 						# 	[self.mean_validationset_loss[-1]]))),
 					win=self.valset_eval_by_cond_acc_win)
 
+	def save_results(self):
+		# save results dictionaries as npy files
+		learning_curves = dict()
+		learning_curves['Train_loss_by_epoch'] = self.train_loss_by_epoch
+		learning_curves['Train_acc_by_epoch'] = self.train_acc_by_epoch
+		np.save(self.save_path + 'LearningCurves.npy', learning_curves)
 
+		dataset_evals = dict()
+		dataset_evals['Dataset_eval_epochs_collected'] = self.dataset_eval_epoch
+		dataset_evals['Mean_trainset_loss'] = self.mean_trainset_loss
+		dataset_evals['Mean_trainset_acc'] = self.mean_trainset_acc
+		dataset_evals['Mean_trainset_acc_by_cond'] = self.mean_trainset_acc_by_cond
+		dataset_evals['Mean_trainset_dist_from_goldstandard_S1'] = self.mean_trainset_dist_from_goldstandard_S1
+		dataset_evals['Mean_validationset_loss'] = self.mean_validationset_loss
+		dataset_evals['Mean_validationset_acc'] = self.mean_validationset_acc
+		dataset_evals['Mean_validationset_acc_by_cond'] = self.mean_validationset_acc_by_cond
+		dataset_evals['Mean_validationset_dist_from_goldstandard_S1'] = self.mean_validationset_dist_from_goldstandard_S1
+		np.save(self.save_path + 'DatasetEvaluations.npy', dataset_evals)
 
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
@@ -524,11 +543,12 @@ class ModelTrainer(object):
 	def train(self):
 		# start_time = time.time()
 		max_norm = 1 # grad norm
+		num_epochs = 1000 # epochs to train
 
 		self.train_loss_by_epoch = [] # learning curve
 		self.train_acc_by_epoch  = []
 		
-		dataset_eval_freq = 5 # every n epochs
+		dataset_eval_freq = 1#5 # every n epochs
 		self.mean_trainset_loss   = [] # mean of dataset
 		self.mean_trainset_acc    = []
 		self.mean_validationset_loss = []
@@ -544,7 +564,7 @@ class ModelTrainer(object):
 
 		epoch = 0
 		self.evaluate_datasets(epoch) # establish baseline
-		while True:
+		while epoch < num_epochs:
 			start_time = time.time()
 			epoch += 1
 			print '\nEpoch {}'.format(epoch)
@@ -571,6 +591,10 @@ class ModelTrainer(object):
 
 			if epoch % dataset_eval_freq == 0:
 				self.evaluate_datasets(epoch)
+				self.save_results()
+
+		print 'Train time = {}'.format(time.time() - start_time)
+		self.save_results()
 
 def run_example():
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
@@ -595,18 +619,19 @@ def run_example():
 	decay = 0.00001
 	lr = 0.0001
 
-	# # Train ERSA model
-	# trainer = ModelTrainer('ersa', [100], 'tanh', example_train_data, 
+	# Train ERSA model
+	trainer = ModelTrainer('ersa', [100], 'tanh', example_train_data, 
+				 			example_validation_data, num_utts, num_objs, 
+				 			'onehot', utt_info_dict, obj_info_dict, 
+				 			decay, lr, True, True,
+				 			100, utt_costs, 0.1, true_lexicon,
+				 			'results/')
+	# # NNWC model
+	# trainer = ModelTrainer('nnwc', [100], 'tanh', example_train_data, 
 	# 			 			example_validation_data, num_utts, num_objs, 
 	# 			 			'onehot', utt_info_dict, obj_info_dict, 
 	# 			 			decay, lr, True, True,
 	# 			 			100, utt_costs, 0.1, true_lexicon)
-	# NNWC model
-	trainer = ModelTrainer('nnwc', [100], 'tanh', example_train_data, 
-				 			example_validation_data, num_utts, num_objs, 
-				 			'onehot', utt_info_dict, obj_info_dict, 
-				 			decay, lr, True, True,
-				 			100, utt_costs, 0.1, true_lexicon)
 
 	trainer.train()
 
