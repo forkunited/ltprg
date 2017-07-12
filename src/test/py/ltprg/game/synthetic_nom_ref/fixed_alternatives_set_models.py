@@ -4,6 +4,7 @@ import time
 import random
 import json
 import shutil
+import os
 import numpy as np 
 import visdom
 import torch
@@ -31,14 +32,13 @@ from rsa import uniform_prior, model_speaker_1
 #				position
 # - NEURAL NETWORK WITHOUT CONTEXT MODEL ('nnwoc') produces distribution 
 #				over utterances given target object emebdding only
-
-# TODO: Add checkpoints
-#		Add cuda support
+#
+# TODO: Add commandline args
 #		Switch to inplace where possible
-#		Add commandline args
-#		Add image embedding options
+#		Add cuda support (though not really necessary yet given training speed)
 # 		Troubleshoot ReLU nan gradient issue
-#		Add mini-batches (currently sz 1)
+#		Add mini-batches (currently sz 1) (lower priority)
+#		Add image embedding options (lower priority)
 
 random.seed(3)
 
@@ -53,13 +53,20 @@ def one_hot(ind, sz):
 	out[0, ind] = 1
 	return out
 
+def init_cond_dict(conditions):
+	d = dict()
+	for k in conditions:
+		d[k] = []
+	return d
+
 class ModelTrainer(object):
 	def __init__(self, model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
 				 visualize_opt, display_validationset_predictions_opt, 
-				 alpha, cost_dict, cost_weight, gold_standard_lexicon):
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path):
 		# model_name		('ersa', 'nnwc', 'nnwoc':
 		# hidden_szs		(lst of hidden layer szs; specifies both the
 		#					 number of hidden layers and their sizes)
@@ -92,6 +99,7 @@ class ModelTrainer(object):
 		# cost_weight		(utterance cost weight in RSA model)
 		# gold_stardard_lexicon (num utterances x num objects np array of 
 		#					 ground-truth lexicon used to generate data)
+		# save_path			(where to save results)
 
 		assert model_name in ['ersa', 'nnwc', 'nnwoc']
 		assert obj_embedding_type in ['onehot']
@@ -119,6 +127,9 @@ class ModelTrainer(object):
 		self.gold_standard_lexicon = Variable(torch.FloatTensor(
 										gold_standard_lexicon))
 
+		self.conditions = list(set([trial['condition'] for trial in self.train_data]))
+		self.save_path = save_path
+		
 		# create model
 		if self.model_name == 'ersa':
 			if self.obj_embedding_type == 'onehot':
@@ -173,18 +184,16 @@ class ModelTrainer(object):
 		gold_stardard_S1_dist, label = self.predict(trial)
 		self.use_gold_standard_lexicon = False
 
-		print 
+		# print '\n\n'
+		# np.set_printoptions(suppress=True)
+		# print 'Pred 	Goldstandard S1 	Label'
+		# print np.column_stack((
+		# 	torch.exp(prediction).data.numpy()[0], 
+		# 	torch.exp(gold_stardard_S1_dist).data.numpy()[0],
+		# 	one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
 
-		print '\n\n'
-		np.set_printoptions(suppress=True)
-		print 'Pred 	Goldstandard S1 	Label'
-		print np.column_stack((
-			torch.exp(prediction).data.numpy()[0], 
-			torch.exp(gold_stardard_S1_dist).data.numpy()[0],
-			one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
-
-		print '\n KL from label:'
-		print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
+		# print '\n KL from label:'
+		# print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
 
 		# compute KL-divergence
 		# 	KLDivLoss takes in x, targets, where x is log-probs
@@ -202,18 +211,17 @@ class ModelTrainer(object):
 	def mean_performance_dataset(self, data_set):
 		loss_by_trial = []
 		acc_by_trial  = []
-		acc_by_trial_by_condition = {}
+		acc_by_trial_by_condition = init_cond_dict(self.conditions)
 		S1_dist_goldstandard_learned = []
 		baseline_kl_from_uniform     = []
 		for trial in data_set:
 			prediction, label = self.predict(trial)
 			loss, accuracy = self.evaluate(prediction, label)
 
-			# break down acc by condition
-			if trial['condition'] not in acc_by_trial_by_condition: acc_by_trial_by_condition[trial['condition']] = []
-			acc_by_trial_by_condition[trial['condition']].append(accuracy.data.numpy()[0])
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
+			acc_by_trial_by_condition[trial['condition']].append(
+							accuracy.data.numpy()[0][0])
 
 			# assess KL-divergence(S1 from gold-standard lexicon, S1 from 
 			# learned lexicon)
@@ -222,9 +230,9 @@ class ModelTrainer(object):
 					trial, prediction))
 			baseline_kl_from_uniform.append(self.kl_baseline(prediction))
 
-		mean_acc_by_cond = {}
-		for cond in acc_by_trial_by_condition:
-			mean_acc_by_cond[cond] = np.mean(acc_by_trial_by_condition[cond])
+		mean_acc_by_cond = dict()
+		for k in acc_by_trial_by_condition.keys():
+			mean_acc_by_cond[k] = np.mean(acc_by_trial_by_condition[k])
 
 		mean_loss = np.mean(loss_by_trial)
 		mean_acc = np.mean(acc_by_trial)
@@ -253,8 +261,9 @@ class ModelTrainer(object):
 		self.mean_validationset_loss.append(validation_loss)
 		self.mean_validationset_acc.append(validation_acc)
 		
-		self.mean_trainset_acc_by_cond = train_acc_by_cond
-		self.mean_validationset_acc_by_cond = val_acc_by_cond
+		for k in self.conditions:
+			self.mean_trainset_acc_by_cond[k].append(train_acc_by_cond[k])
+			self.mean_validationset_acc_by_cond[k].append(val_acc_by_cond[k])
 
 		self.dataset_eval_epoch.append(epoch)
 
@@ -303,148 +312,128 @@ class ModelTrainer(object):
 
 	def plot_learning_curve(self, epoch):
 		if self.visualize_opt == True:
+			x = np.array([epoch])
+			y_loss = np.array([self.train_loss_by_epoch[-1]])
+			y_acc = np.array([self.train_acc_by_epoch[-1]])
 			if epoch == 1:
-				self.loss_win = self.vis.line(
-					X=np.array([epoch]),
-					Y=np.array([self.train_loss_by_epoch[-1]]),
+				self.loss_win = self.vis.line(X=x, Y=y_loss,
 					opts=dict(
 						title=self.model_name.upper() + ': NLLLoss Over Training')
 					)
-
-				self.acc_win = self.vis.line(
-					X=np.array([epoch]),
-					Y=np.array([self.train_acc_by_epoch[-1]]),
+				self.acc_win = self.vis.line(X=x, Y=y_acc,
 					opts=dict(
 						title=self.model_name.upper() + ': Accuracy Over Training')
 					)
-
 			else:
-				self.vis.updateTrace(
-					X=np.array([epoch]),
-					Y=np.array([self.train_loss_by_epoch[-1]]),
-					win=self.loss_win)
-
-				self.vis.updateTrace(
-					X=np.array([epoch]),
-					Y=np.array([self.train_acc_by_epoch[-1]]),
-					win=self.acc_win)
+				self.vis.updateTrace(X=x, Y=y_loss, win=self.loss_win)
+				self.vis.updateTrace(X=x, Y=y_acc, win=self.acc_win)
 
 	def plot_mean_dataset_results(self, epoch):
 		if self.visualize_opt == True:
 			x = np.array(np.column_stack(([epoch], [epoch])))
-			
-			if epoch == 0:
-				self.dataset_eval_loss_win = self.vis.line(
-					X=x,
-					Y=np.array(
+			y_loss = np.array(
 						np.column_stack(
 							([self.mean_trainset_loss[-1]],
-							[self.mean_validationset_loss[-1]]))),
+							[self.mean_validationset_loss[-1]])))
+			y_acc = np.array(
+						np.column_stack(
+							([self.mean_trainset_acc[-1]],
+							[self.mean_validationset_acc[-1]])))
+			y_kl = np.array(
+						np.column_stack(
+							([self.mean_trainset_dist_from_goldstandard_S1[-1]],
+							 [self.mean_validationset_dist_from_goldstandard_S1[-1]],
+							 [self.mean_trainset_kl_from_uniform[-1]],
+							 [self.mean_validationset_kl_from_uniform[-1]])))
+			if epoch == 0:
+				self.dataset_eval_loss_win = self.vis.line(X=x, Y=y_loss,
 					opts=dict(
 						legend=['Train Set', 'Validation Set'],
 						title=self.model_name.upper() + ': Mean NLLLoss of Datasets')
 					)
-
 				self.dataset_eval_acc_win = self.vis.line(
 					X=x,
-					Y=np.array(
-						np.column_stack(
-							([self.mean_trainset_acc[-1]],
-							[self.mean_validationset_acc[-1]]))),
+					Y=y_acc,
 					opts=dict(
 						legend=['Train Set', 'Validation Set'],
 						title=self.model_name.upper() + ': Mean Accuracy of Datasets')
 					)
-
-
 				self.dataset_eval_dist_from_goldstandard_win = self.vis.line(
 					X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
-					Y=np.array(
-						np.column_stack(
-							([self.mean_trainset_dist_from_goldstandard_S1[-1]],
-							 [self.mean_validationset_dist_from_goldstandard_S1[-1]],
-							 [self.mean_trainset_kl_from_uniform[-1]],
-							 [self.mean_validationset_kl_from_uniform[-1]]))),
+					Y=y_kl,
 					opts=dict(
 						legend=['Train Set', 'Validation Set', 'Train Baseline (KL Div from Uniform)', 'Validation Baseline'],
 						title=self.model_name.upper() + ': Mean KL-Div from Goldstandard S1 of Datasets')
 					)
-
 			else:
-				self.vis.updateTrace(
-					X=x,
-					Y=np.array(
-						np.column_stack(
-							([self.mean_trainset_loss[-1]],
-							[self.mean_validationset_loss[-1]]))),
-					win=self.dataset_eval_loss_win)
-
-				self.vis.updateTrace(
-					X=x,
-					Y=np.array(
-						np.column_stack(
-							([self.mean_trainset_acc[-1]],
-							[self.mean_validationset_acc[-1]]))),
-					win=self.dataset_eval_acc_win)
-
-				self.vis.updateTrace(
-					X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
-					Y=np.array(
-						np.column_stack(
-							([self.mean_trainset_dist_from_goldstandard_S1[-1]],
-							 [self.mean_validationset_dist_from_goldstandard_S1[-1]],
-							 [self.mean_trainset_kl_from_uniform[-1]],
-							 [self.mean_validationset_kl_from_uniform[-1]]))),
-					win=self.dataset_eval_dist_from_goldstandard_win)
+				self.vis.updateTrace(X=x, Y=y_loss, win=self.dataset_eval_loss_win)
+				self.vis.updateTrace(X=x, Y=y_acc, win=self.dataset_eval_acc_win)
+				self.vis.updateTrace(X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
+					Y=y_kl, win=self.dataset_eval_dist_from_goldstandard_win)
 
 	def plot_mean_acc_by_cond(self, epoch):
 		if self.visualize_opt == True:
-			x = np.array(np.column_stack(([epoch], [epoch], [epoch]))) #FIXME
-			train_conds = self.mean_trainset_acc_by_cond.keys()
-			train_vals = self.mean_trainset_acc_by_cond.values()
-			val_conds = self.mean_validationset_acc_by_cond.keys()
-			val_vals = self.mean_validationset_acc_by_cond.values()
-
-
+			x = np.array(
+				np.column_stack(
+					tuple([epoch] * len(self.conditions))))
+			y_train = np.array(
+				np.column_stack(
+					tuple([self.mean_trainset_acc_by_cond[k][-1] for k in self.conditions])))
+			y_validation = np.array(
+				np.column_stack(
+					tuple([self.mean_validationset_acc_by_cond[k][-1] for k in self.conditions])))
 			if epoch == 0:
 				self.trainset_eval_by_cond_acc_win = self.vis.line(
-					X=x,
-					Y=np.array(np.column_stack(train_vals)),
-						# np.column_stack(
-						# 	([self.mean_trainset_loss[-1]],
-						# 	[self.mean_validationset_loss[-1]]))),
-					opts=dict(
-						legend=train_conds,
-						title=self.model_name.upper() + ': Mean trainset Acc by condition')
-					)
-				self.valset_eval_by_cond_acc_win = self.vis.line(
-					X=x,
-					Y=np.array(np.column_stack(val_vals)),
-						# np.column_stack(
-						# 	([self.mean_trainset_loss[-1]],
-						# 	[self.mean_validationset_loss[-1]]))),
-					opts=dict(
-						legend=val_conds,
-						title=self.model_name.upper() + ': Mean validationset Acc by condition')
-					)
+					X=x, Y=y_train, opts=dict(
+						legend=self.conditions, 
+						title=self.model_name.upper() 
+						+ ' : Mean Train Set Acc by Condition'))
 
+				self.validationset_eval_by_cond_acc_win = self.vis.line(
+					X=x, Y=y_validation, opts=dict(
+						legend=self.conditions, 
+						title=self.model_name.upper() 
+						+ ' : Mean Validation Set Acc by Condition'))
 			else:
-				self.vis.updateTrace(
-					X=x,
-					Y=np.array(np.column_stack(train_vals)),
-						# np.column_stack(
-						# 	([self.mean_trainset_loss[-1]],
-						# 	[self.mean_validationset_loss[-1]]))),
-					win=self.trainset_eval_by_cond_acc_win)
-				self.vis.updateTrace(
-					X=x,
-					Y=np.array(np.column_stack(val_vals)),
-						# np.column_stack(
-						# 	([self.mean_trainset_loss[-1]],
-						# 	[self.mean_validationset_loss[-1]]))),
-					win=self.valset_eval_by_cond_acc_win)
+				self.vis.updateTrace(X=x, Y=y_train, 
+									 win=self.trainset_eval_by_cond_acc_win)
 
+				self.vis.updateTrace(X=x, Y=y_validation, 
+									 win=self.validationset_eval_by_cond_acc_win)
 
+	def save_checkpoint(self, epoch, is_best):
+		filename = self.save_path + 'checkpoint.pth.tar'
+		d = {'epoch': epoch, 'state_dict': self.model.state_dict(), 
+			 'optimizer': self.optimizer.state_dict()}
+		torch.save(d, filename)
+		if is_best == True:
+			shutil.copyfile(filename, self.save_path + 'model_best.pth.tar')
+
+	def save_results(self):
+		# save results dictionaries as npy files
+		learning_curves = dict()
+		learning_curves['Train_loss_by_epoch'] = self.train_loss_by_epoch
+		learning_curves['Train_acc_by_epoch'] = self.train_acc_by_epoch
+		np.save(self.save_path + 'LearningCurves.npy', learning_curves)
+
+		dataset_evals = dict()
+		dataset_evals['Dataset_eval_epochs_collected'] = self.dataset_eval_epoch
+		dataset_evals['Mean_trainset_loss'] = self.mean_trainset_loss
+		dataset_evals['Mean_trainset_acc'] = self.mean_trainset_acc
+		dataset_evals['Mean_trainset_acc_by_cond'] = self.mean_trainset_acc_by_cond
+		dataset_evals['Mean_trainset_dist_from_goldstandard_S1'] = self.mean_trainset_dist_from_goldstandard_S1
+		dataset_evals['Mean_validationset_loss'] = self.mean_validationset_loss
+		dataset_evals['Mean_validationset_acc'] = self.mean_validationset_acc
+		dataset_evals['Mean_validationset_acc_by_cond'] = self.mean_validationset_acc_by_cond
+		dataset_evals['Mean_validationset_dist_from_goldstandard_S1'] = self.mean_validationset_dist_from_goldstandard_S1
+		np.save(self.save_path + 'DatasetEvaluations.npy', dataset_evals)
+
+		# save checkpoint(s)
+		is_best = False
+		if self.mean_validationset_loss[-1] < self.best_validationset_loss:
+			self.best_validationset_loss = self.mean_validationset_loss[-1]
+			is_best = True
+		self.save_checkpoint(self.dataset_eval_epoch[-1], is_best)
 
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
@@ -522,16 +511,19 @@ class ModelTrainer(object):
 	def train(self):
 		# start_time = time.time()
 		max_norm = 1 # grad norm
+		num_epochs = 1000 # epochs to train
 
 		self.train_loss_by_epoch = [] # learning curve
 		self.train_acc_by_epoch  = []
 		
-		dataset_eval_freq = 5 # every n epochs
+		dataset_eval_freq = 1#5 # every n epochs
+		self.dataset_eval_epoch      = [] # epoch evaluated
 		self.mean_trainset_loss   = [] # mean of dataset
 		self.mean_trainset_acc    = []
+		self.mean_trainset_acc_by_cond = init_cond_dict(self.conditions)
 		self.mean_validationset_loss = []
 		self.mean_validationset_acc  = []
-		self.dataset_eval_epoch      = [] # epoch evaluated
+		self.mean_validationset_acc_by_cond = init_cond_dict(self.conditions)
 
 		# KL-div between S1 distribution on gold-standard lexicon,
 		# and on learned lexicon (MLP output)
@@ -542,7 +534,8 @@ class ModelTrainer(object):
 
 		epoch = 0
 		self.evaluate_datasets(epoch) # establish baseline
-		while True:
+		self.best_validationset_loss = self.mean_validationset_loss[-1]
+		while epoch < num_epochs:
 			start_time = time.time()
 			epoch += 1
 			print '\nEpoch {}'.format(epoch)
@@ -569,13 +562,20 @@ class ModelTrainer(object):
 
 			if epoch % dataset_eval_freq == 0:
 				self.evaluate_datasets(epoch)
+				self.save_results()
+
+		print 'Train time = {}'.format(time.time() - start_time)
+		self.save_results()
 
 def run_example():
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
-	train_data_fname      = data_path + 'datasets_by_num_trials/train_set99_3300train_trials.JSON'
-	validation_data_fname = data_path + 'datasets_by_num_trials/validation_set99_600validation_trials.JSON'
-	example_train_data 		= load_json(train_data_fname) 
-	example_validation_data = load_json(validation_data_fname)
+	train_data_fname      = 'train_set99_3300train_trials.JSON'
+	validation_data_fname = 'validation_set99_600validation_trials.JSON'
+
+	example_train_data 		= load_json(data_path + 'datasets_by_num_trials/' 
+										+ train_data_fname) 
+	example_validation_data = load_json(data_path + 'datasets_by_num_trials/' 
+										+ validation_data_fname)
 	d = load_json(data_path + 'true_lexicon.JSON')
 	num_utts = len(d)
 	num_objs = len(d['0'])
@@ -593,19 +593,22 @@ def run_example():
 	decay = 0.00001
 	lr = 0.0001
 
-	# # Train ERSA model
-	# trainer = ModelTrainer('ersa', [100], 'tanh', example_train_data, 
-	# 			 			example_validation_data, num_utts, num_objs, 
-	# 			 			'onehot', utt_info_dict, obj_info_dict, 
-	# 			 			decay, lr, True, True,
-	# 			 			100, utt_costs, 0.1, true_lexicon)
-	# NNWC model
-	trainer = ModelTrainer('nnwc', [100], 'tanh', example_train_data, 
+	# Train model
+	# model_name = 'ersa'
+	# model_name = 'nnwc'
+	model_name = 'nnwoc'
+
+	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	if os.path.isdir(results_dir) == False:
+		os.mkdir(results_dir)
+
+	trainer = ModelTrainer(model_name, [100], 'tanh', example_train_data, 
 				 			example_validation_data, num_utts, num_objs, 
 				 			'onehot', utt_info_dict, obj_info_dict, 
 				 			decay, lr, True, True,
-				 			100, utt_costs, 0.1, true_lexicon)
-
+				 			100, utt_costs, 0.1, true_lexicon,
+							results_dir)
+	# 
 	trainer.train()
 
 if __name__=='__main__':
