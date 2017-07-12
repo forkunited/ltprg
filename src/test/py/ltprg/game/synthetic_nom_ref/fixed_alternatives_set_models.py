@@ -56,6 +56,7 @@ class ModelTrainer(object):
 		# cost_weight		(optional; utterance cost weight in RSA model)
 		# utt_dict			(optional; dict of utterance inds to names)
 		# obj_dict			(optional; dict of object inds to names)
+		# gold_stardard_lexicon (optional; num utterances x num objects np array)
 
 		assert model_name in ['ersa', 'nnwc', 'nnwoc']
 		assert obj_embedding_type in ['onehot']
@@ -88,6 +89,12 @@ class ModelTrainer(object):
 			# utterance costs
 			self.costs = Variable(torch.FloatTensor(
 				[cost_dict[str(k)] for k in range(0, self.utt_set_sz)]))
+
+			# load gold-standard (ground-truth) lexicon for comparison
+			# with model predictions
+			self.use_gold_standard_lexicon = False
+			self.gold_standard_lexicon = Variable(torch.FloatTensor(
+											kwargs['gold_standard_lexicon']))
 
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz
@@ -136,39 +143,114 @@ class ModelTrainer(object):
 		# TODO: Support other embedding types
 		return inputs
 
+	def compare_S1s_from_learned_versus_goldstandard_lexicons(self, trial, 
+															  prediction):
+		# returns scalar KL-divergence(S1 given gold-standard lexicon,
+		# S1 given learn lexicon)
+   
+		# S1 on gold-standard lexicon
+		self.use_gold_standard_lexicon = True
+		gold_stardard_S1_dist, label = self.predict(trial)
+		self.use_gold_standard_lexicon = False
+
+		print 
+
+		print '\n\n'
+		np.set_printoptions(suppress=True)
+		print 'Pred 	Goldstandard S1 	Label'
+		print np.column_stack((
+			torch.exp(prediction).data.numpy()[0], 
+			torch.exp(gold_stardard_S1_dist).data.numpy()[0],
+			one_hot(label.data.numpy()[0], self.utt_set_sz).numpy()[0]))
+
+		print '\n KL from label:'
+		print nn.KLDivLoss()(prediction, Variable(one_hot(label.data.numpy()[0], self.utt_set_sz))).data.numpy()[0]
+
+		# compute KL-divergence
+		# 	KLDivLoss takes in x, targets, where x is log-probs
+		#	and targets is probs (not log)
+		kl_div = nn.KLDivLoss()(prediction, torch.exp(
+								gold_stardard_S1_dist)).data.numpy()[0]
+		return kl_div
+
+	def kl_baseline(self, prediction):
+		# returns scalar KL-divergence of prediction from uniform dist
+		kl_div = nn.KLDivLoss()(prediction, uniform_prior(self.utt_set_sz)
+								).data.numpy()[0]
+		return kl_div
+
 	def mean_performance_dataset(self, data_set):
 		loss_by_trial = []
 		acc_by_trial  = []
 		acc_by_trial_by_condition = {}
+		S1_dist_goldstandard_learned = []
+		baseline_kl_from_uniform     = []
 		for trial in data_set:
 			prediction, label = self.predict(trial)
 			loss, accuracy = self.evaluate(prediction, label)
+
+			# break down acc by condition
 			if trial['condition'] not in acc_by_trial_by_condition: acc_by_trial_by_condition[trial['condition']] = []
 			acc_by_trial_by_condition[trial['condition']].append(accuracy.data.numpy()[0])
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
+
+			if self.model_name == 'ersa':
+				# look at KL-divergence(S1 from gold-standard lexicon, S1 from 
+				# learned lexicon)
+				S1_dist_goldstandard_learned.append(
+					self.compare_S1s_from_learned_versus_goldstandard_lexicons(
+						trial, prediction))
+				baseline_kl_from_uniform.append(self.kl_baseline(prediction))
+
 		mean_acc_by_cond = {}
 		for cond in acc_by_trial_by_condition:
 			mean_acc_by_cond[cond] = np.mean(acc_by_trial_by_condition[cond])
-		return np.mean(loss_by_trial), np.mean(acc_by_trial), mean_acc_by_cond
+
+		mean_loss = np.mean(loss_by_trial)
+		mean_acc = np.mean(acc_by_trial)
+		mean_dist_from_goldstandard = np.mean(S1_dist_goldstandard_learned)
+		mean_baseline_kl = np.mean(baseline_kl_from_uniform)
+
+		return mean_loss, mean_acc, mean_acc_by_cond, mean_dist_from_goldstandard, mean_baseline_kl
 
 	def evaluate_datasets(self, epoch):
 		# mean NLL, acc for each dataset
-		train_loss, train_acc, train_acc_by_cond = self.mean_performance_dataset(self.train_data)
+		(train_loss, train_acc, train_acc_by_cond, 
+			train_dist_from_goldstandard, 
+			train_baseline_kl) = self.mean_performance_dataset(self.train_data)
 
-		self.display_predictions_opt = True
-		validation_loss, validation_acc, val_acc_by_cond = self.mean_performance_dataset(
+		self.display_predictions_opt = True # turn on for valid set
+		(validation_loss, validation_acc, val_acc_by_cond,
+			validation_dist_from_goldstandard, 
+			validation_baseline_kl) = self.mean_performance_dataset(
 											self.validation_data)
 		self.display_predictions_opt = False
 
+		# collect
 		self.mean_trainset_loss.append(train_loss)
 		self.mean_trainset_acc.append(train_acc)
+
 		self.mean_validationset_loss.append(validation_loss)
 		self.mean_validationset_acc.append(validation_acc)
+		
 		self.mean_trainset_acc_by_cond = train_acc_by_cond
 		self.mean_validationset_acc_by_cond = val_acc_by_cond
+
 		self.dataset_eval_epoch.append(epoch)
-		print '\nMean train set loss = '
+
+		if self.model_name == 'ersa':
+			self.mean_trainset_dist_from_goldstandard_S1.append(
+					train_dist_from_goldstandard)
+			self.mean_trainset_kl_from_uniform.append(
+					train_baseline_kl)
+			self.mean_validationset_dist_from_goldstandard_S1.append(
+					validation_dist_from_goldstandard)
+			self.mean_validationset_kl_from_uniform.append(
+					validation_baseline_kl)
+
+		# display performance info
+		print '\nMean train set loss = {}'
 		print self.mean_trainset_loss
 		print 'Mean validation set loss = '
 		print self.mean_validationset_loss
@@ -179,6 +261,17 @@ class ModelTrainer(object):
 		print 'Mean train / validation set accuracy by trial = '
 		print train_acc_by_cond
 		print val_acc_by_cond
+		if self.model_name == 'ersa':
+			print 'Mean train set KL-div from goldstandard S1 = '
+			print self.mean_trainset_dist_from_goldstandard_S1
+			print '(Baseline) Mean train set KL-div from uniform distribution = '
+			print self.mean_trainset_kl_from_uniform
+			print 'Mean validation set KL-div from goldstandard S1 = '
+			print self.mean_validationset_dist_from_goldstandard_S1
+			print '(Baseline) Mean validation set KL-div from uniform distribution = '
+			print self.mean_validationset_kl_from_uniform
+
+		# plot
 		self.plot_mean_dataset_results(epoch)
 		self.plot_mean_acc_by_cond(epoch)
 
@@ -246,6 +339,20 @@ class ModelTrainer(object):
 						title=self.model_name.upper() + ': Mean Accuracy of Datasets')
 					)
 
+				if self.model_name == 'ersa':
+					self.dataset_eval_dist_from_goldstandard_win = self.vis.line(
+						X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
+						Y=np.array(
+							np.column_stack(
+								([self.mean_trainset_dist_from_goldstandard_S1[-1]],
+								 [self.mean_validationset_dist_from_goldstandard_S1[-1]],
+								 [self.mean_trainset_kl_from_uniform[-1]],
+								 [self.mean_validationset_kl_from_uniform[-1]]))),
+						opts=dict(
+							legend=['Train Set', 'Validation Set', 'Train Baseline (KL Div from Uniform)', 'Validation Baseline'],
+							title=self.model_name.upper() + ': Mean KL-Div from Goldstandard S1 of Datasets')
+						)
+
 			else:
 				self.vis.updateTrace(
 					X=x,
@@ -262,6 +369,17 @@ class ModelTrainer(object):
 							([self.mean_trainset_acc[-1]],
 							[self.mean_validationset_acc[-1]]))),
 					win=self.dataset_eval_acc_win)
+
+				if self.model_name == 'ersa':
+					self.vis.updateTrace(
+						X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
+						Y=np.array(
+							np.column_stack(
+								([self.mean_trainset_dist_from_goldstandard_S1[-1]],
+								 [self.mean_validationset_dist_from_goldstandard_S1[-1]],
+								 [self.mean_trainset_kl_from_uniform[-1]],
+								 [self.mean_validationset_kl_from_uniform[-1]]))),
+						win=self.dataset_eval_dist_from_goldstandard_win)
 
 	def plot_mean_acc_by_cond(self, epoch):
 		if self.visualize_opt == True:
@@ -345,9 +463,17 @@ class ModelTrainer(object):
 		# forward pass
 		outputs = self.model.forward(inputs) # MLP forward
 		if self.model_name == 'ersa':
+			if self.use_gold_standard_lexicon == True:
+				# uses ground-truth lexicon (for comparison w/ 
+				# model predictions); grab objects for this trial
+				inds = Variable(torch.LongTensor([alt1_obj_ind, alt2_obj_ind, target_obj_ind]))
+				lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+			else:
+				# uses learned params
+				lexicon = torch.transpose(outputs, 0, 1)
 			# pass through RSA
 			speaker_table = model_speaker_1(
-								torch.transpose(outputs, 0, 1), 
+								lexicon, 
 								self.world_prior, self.alpha, 
 								self.cost_weight, self.costs)
 			# dist over utterances for target obj
@@ -388,6 +514,14 @@ class ModelTrainer(object):
 		self.mean_validationset_acc  = []
 		self.dataset_eval_epoch      = [] # epoch evaluated
 
+		if self.model_name == 'ersa':
+			# KL-div between S1 distribution on gold-standard lexicon,
+			# and on learned lexicon (MLP output)
+			self.mean_trainset_dist_from_goldstandard_S1      = []
+			self.mean_validationset_dist_from_goldstandard_S1 = []
+			self.mean_trainset_kl_from_uniform      = []
+			self.mean_validationset_kl_from_uniform = []
+
 		epoch = 0
 		self.evaluate_datasets(epoch) # establish baseline
 		while True:
@@ -413,15 +547,15 @@ class ModelTrainer(object):
 			print 'Accuracy = {}'.format(self.train_acc_by_epoch)
 			self.plot_learning_curve(epoch)
 
-			print 'Epoch time = {}'.format(time.time() - start_time)
+			print 'Epoch runtime = {}'.format(time.time() - start_time)
 
 			if epoch % dataset_eval_freq == 0:
 				self.evaluate_datasets(epoch)
 
 def run_example():
-	data_path = 'example_data/' # temp synthetic data w/ 3300 training examples
-	train_data_fname      = data_path + 'train_set99_3300train_trials.JSON'
-	validation_data_fname = data_path + 'validation_set99_600validation_trials.JSON'
+	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
+	train_data_fname      = data_path + 'datasets_by_num_trials/train_set99_3300train_trials.JSON'
+	validation_data_fname = data_path + 'datasets_by_num_trials/validation_set99_600validation_trials.JSON'
 	example_train_data 		= load_json(train_data_fname) 
 	example_validation_data = load_json(validation_data_fname)
 	d = load_json(data_path + 'true_lexicon.JSON')
@@ -431,6 +565,11 @@ def run_example():
 	utt_info_dict = load_json(data_path + 'utt_inds_to_names.JSON')
 	obj_info_dict = load_json(data_path + 'obj_inds_to_names.JSON')
 	utt_costs     = load_json(data_path + 'costs_by_utterance.JSON')
+	
+	# dict whose keys are utterances, vals are truth-vals by obj
+	true_lexicon  = load_json(data_path + 'true_lexicon.JSON')
+	# reformat to utts x objs array, add jitter
+	true_lexicon = np.array([true_lexicon[str(k)] for k in range(num_utts)]) + 10e-06
 
 	# Train ERSA model
 	trainer = ModelTrainer('ersa', [100], 'tanh', example_train_data, 
@@ -438,8 +577,7 @@ def run_example():
 				 			'onehot', True, True,
 				 			utt_dict=utt_info_dict, obj_dict=obj_info_dict,
 				 			alpha=100, cost_dict=utt_costs,
-				 			cost_weight=0.1)
-
+				 			cost_weight=0.1, gold_standard_lexicon=true_lexicon)
 	# # NNWC model
 	# trainer = ModelTrainer('nnwc', [100], 'tanh', example_train_data, 
 	# 			 			example_validation_data, num_utts, num_objs, 
