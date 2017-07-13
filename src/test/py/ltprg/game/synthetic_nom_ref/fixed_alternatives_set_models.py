@@ -301,7 +301,7 @@ class ModelTrainer(object):
 		# plot
 		self.plot_mean_dataset_results(epoch)
 		self.plot_mean_acc_by_cond(epoch)
-		vis_embedding(self.model.get_embedding(), self.vis)
+		# vis_embedding(self.model.get_embedding(), self.vis)
 
 	def prep_visualize(self):
 		if self.visualize_opt == True:
@@ -618,7 +618,7 @@ def run_example():
 
 	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
-		os.mkdir(results_dir)
+		os.makedirs(results_dir)
 
 	train_model(model_name, [200, 200, 200], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
