@@ -90,7 +90,7 @@ class S0(nn.Module):
         start_time = time.time()
         criterion = VariableLengthNLLLoss()
         for i in range(iterations):
-            batch = data.get_random_batch()
+            batch = data.get_random_batch(batch_size)
             world = batch["world"]
             utterance, length, mask = batch["utterance"]
             utt_in = utterance[:utterance.shape[0]-1] # Input remove final token
@@ -127,8 +127,8 @@ partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 
-world_size = D["world"].get_feature_set().get_size()
-utterance_size = D["utterance"].get_matrix(0).get_feature_set().get_token_count()
+world_size = D_train["world"].get_feature_set().get_size()
+utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 model = S0(RNN_TYPE, world_size, EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS,
            utterance_size, dropout=DROP_OUT)

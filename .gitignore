@@ -1,3 +1,5 @@
 *.pyc
 
+src/test/py/ltprg/game/synthetic_nom_ref/run_models.py
+src/test/py/ltprg/game/synthetic_nom_ref/submit_synthetic_experiments.sh
 src/test/py/ltprg/game/synthetic_nom_ref/test/synthetic_data/notes/
