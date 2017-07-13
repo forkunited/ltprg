@@ -214,6 +214,7 @@ class ModelTrainer(object):
 		acc_by_trial  = []
 		acc_by_trial_by_condition = init_cond_dict(self.conditions)
 		S1_dist_goldstandard_learned = []
+		S1_dist_goldstandard_learned_by_condition = init_cond_dict(self.conditions)
 		baseline_kl_from_uniform     = []
 		for trial in data_set:
 			prediction, label = self.predict(trial)
@@ -226,31 +227,40 @@ class ModelTrainer(object):
 
 			# assess KL-divergence(S1 from gold-standard lexicon, S1 from 
 			# learned lexicon)
-			S1_dist_goldstandard_learned.append(
-				self.compare_S1s_from_learned_versus_goldstandard_lexicons(
-					trial, prediction))
+			kl_from_S1 = self.compare_S1s_from_learned_versus_goldstandard_lexicons(
+					trial, prediction)
+			S1_dist_goldstandard_learned.append(kl_from_S1)
+			S1_dist_goldstandard_learned_by_condition[trial['condition']].append(
+					kl_from_S1)
 			baseline_kl_from_uniform.append(self.kl_baseline(prediction))
 
 		mean_acc_by_cond = dict()
-		for k in acc_by_trial_by_condition.keys():
+		mean_dist_from_goldstandard_by_cond = dict()
+		for k in self.conditions:
 			mean_acc_by_cond[k] = np.mean(acc_by_trial_by_condition[k])
+			mean_dist_from_goldstandard_by_cond[k] = np.mean(
+				S1_dist_goldstandard_learned_by_condition[k])
 
 		mean_loss = np.mean(loss_by_trial)
 		mean_acc = np.mean(acc_by_trial)
 		mean_dist_from_goldstandard = np.mean(S1_dist_goldstandard_learned)
 		mean_baseline_kl = np.mean(baseline_kl_from_uniform)
 
-		return mean_loss, mean_acc, mean_acc_by_cond, mean_dist_from_goldstandard, mean_baseline_kl
+		return mean_loss, mean_acc, mean_acc_by_cond, mean_dist_from_goldstandard, mean_dist_from_goldstandard_by_cond, mean_baseline_kl
 
 	def evaluate_datasets(self, epoch):
 		# mean NLL, acc for each dataset
 		(train_loss, train_acc, train_acc_by_cond, 
-			train_dist_from_goldstandard, 
+			train_dist_from_goldstandard,
+			train_dist_from_goldstandard_by_cond, 
 			train_baseline_kl) = self.mean_performance_dataset(self.train_data)
 
 		self.display_predictions_opt = True # turn on for valid set
+		# TODO: Currently printing predictions for gold-standard S1 too, 
+		# 		so turn that off
 		(validation_loss, validation_acc, val_acc_by_cond,
 			validation_dist_from_goldstandard, 
+			validation_dist_from_goldstandard_by_cond,
 			validation_baseline_kl) = self.mean_performance_dataset(
 											self.validation_data)
 		self.display_predictions_opt = False
@@ -265,6 +275,10 @@ class ModelTrainer(object):
 		for k in self.conditions:
 			self.mean_trainset_acc_by_cond[k].append(train_acc_by_cond[k])
 			self.mean_validationset_acc_by_cond[k].append(val_acc_by_cond[k])
+			self.mean_trainset_dist_from_goldstandard_S1_by_cond[k].append(
+				train_dist_from_goldstandard_by_cond[k])
+			self.mean_validationset_dist_from_goldstandard_S1_by_cond[k].append(
+				validation_dist_from_goldstandard_by_cond[k])
 
 		self.dataset_eval_epoch.append(epoch)
 
@@ -300,7 +314,7 @@ class ModelTrainer(object):
 
 		# plot
 		self.plot_mean_dataset_results(epoch)
-		self.plot_mean_acc_by_cond(epoch)
+		self.plot_evaluations_by_cond(epoch)
 		# vis_embedding(self.model.get_embedding(), self.vis)
 
 	def prep_visualize(self):
@@ -373,35 +387,53 @@ class ModelTrainer(object):
 				self.vis.updateTrace(X=np.array(np.column_stack(([epoch], [epoch], [epoch], [epoch]))),
 					Y=y_kl, win=self.dataset_eval_dist_from_goldstandard_win)
 
-	def plot_mean_acc_by_cond(self, epoch):
+	def plot_evaluations_by_cond(self, epoch):
 		if self.visualize_opt == True:
 			x = np.array(
 				np.column_stack(
 					tuple([epoch] * len(self.conditions))))
-			y_train = np.array(
+			y_train_acc = np.array(
 				np.column_stack(
 					tuple([self.mean_trainset_acc_by_cond[k][-1] for k in self.conditions])))
-			y_validation = np.array(
+			y_validation_acc = np.array(
 				np.column_stack(
 					tuple([self.mean_validationset_acc_by_cond[k][-1] for k in self.conditions])))
+			y_train_kl = np.array(
+				np.column_stack(
+					tuple([self.mean_trainset_dist_from_goldstandard_S1_by_cond[k][-1] for k in self.conditions])))
+			y_validation_kl = np.array(
+				np.column_stack(
+					tuple([self.mean_validationset_dist_from_goldstandard_S1_by_cond[k][-1] for k in self.conditions])))
 			if epoch == 0:
 				self.trainset_eval_by_cond_acc_win = self.vis.line(
-					X=x, Y=y_train, opts=dict(
+					X=x, Y=y_train_acc, opts=dict(
 						legend=self.conditions, 
 						title=self.model_name.upper() 
 						+ ' : Mean Train Set Acc by Condition'))
-
 				self.validationset_eval_by_cond_acc_win = self.vis.line(
-					X=x, Y=y_validation, opts=dict(
+					X=x, Y=y_validation_acc, opts=dict(
 						legend=self.conditions, 
 						title=self.model_name.upper() 
 						+ ' : Mean Validation Set Acc by Condition'))
+				self.trainset_eval_by_cond_kl_win = self.vis.line(
+					X=x, Y=y_train_kl, opts=dict(
+						legend=self.conditions, 
+						title=self.model_name.upper() 
+						+ ' : Mean Train Set KL-Div from Goldstandard S1'))
+				self.validationset_eval_by_cond_kl_win = self.vis.line(
+					X=x, Y=y_validation_kl, opts=dict(
+						legend=self.conditions, 
+						title=self.model_name.upper() 
+						+ ' : Mean Validation Set KL-Div from Goldstandard S1'))
 			else:
-				self.vis.updateTrace(X=x, Y=y_train, 
+				self.vis.updateTrace(X=x, Y=y_train_acc, 
 									 win=self.trainset_eval_by_cond_acc_win)
-
-				self.vis.updateTrace(X=x, Y=y_validation, 
+				self.vis.updateTrace(X=x, Y=y_validation_acc, 
 									 win=self.validationset_eval_by_cond_acc_win)
+				self.vis.updateTrace(X=x, Y=y_train_kl, 
+									 win=self.trainset_eval_by_cond_kl_win)
+				self.vis.updateTrace(X=x, Y=y_validation_kl, 
+									 win=self.validationset_eval_by_cond_kl_win)
 
 	def save_checkpoint(self, epoch, is_best):
 		filename = self.save_path + 'checkpoint.pth.tar'
@@ -530,7 +562,11 @@ class ModelTrainer(object):
 		# KL-div between S1 distribution on gold-standard lexicon,
 		# and on learned lexicon (MLP output)
 		self.mean_trainset_dist_from_goldstandard_S1      = []
+		self.mean_trainset_dist_from_goldstandard_S1_by_cond = init_cond_dict(
+			self.conditions)
 		self.mean_validationset_dist_from_goldstandard_S1 = []
+		self.mean_validationset_dist_from_goldstandard_S1_by_cond = init_cond_dict(
+			self.conditions)
 		self.mean_trainset_kl_from_uniform      = []
 		self.mean_validationset_kl_from_uniform = []
 
@@ -612,15 +648,15 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	# model_name = 'ersa'
+	model_name = 'ersa'
 	# model_name = 'nnwc'
-	model_name = 'nnwoc'
+	# model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
-	train_model(model_name, [200, 200, 200], 'tanh', example_train_data, 
+	train_model(model_name, [200], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
 	 			decay, lr, True, True,
