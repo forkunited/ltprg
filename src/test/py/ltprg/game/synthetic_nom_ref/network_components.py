@@ -24,15 +24,42 @@ class MLP(nn.Module):
 		elif final_nonlinearity == 'sigmoid':
 			self.final_nonlinearity = nn.Sigmoid()
 
-		hidden_layers = [nn.Linear(in_sz, h_szs[0])]
-		for i in range(1, len(h_szs)):
-			hidden_layers.append(nn.Linear(h_szs[i-1], h_szs[i]))
-		self.layers = nn.ModuleList(hidden_layers)
-		self.final = nn.Linear(h_szs[-1], out_sz)
+		layer_szs = [in_sz]
+		layer_szs.extend(h_szs)
+		layer_szs.append(out_sz)
+		layers = []
+		for i in range(1,len(layer_szs)):
+			layers.append(nn.Linear(layer_szs[i-1], layer_szs[i]))
+		self.layers = nn.ModuleList(layers)
+
+
+		# hidden_layers = [nn.Linear(in_sz, h_szs[0])]
+		# for i in range(1, len(h_szs)):
+		# 	hidden_layers.append(nn.Linear(h_szs[i-1], h_szs[i]))
+		# self.layers = nn.ModuleList(hidden_layers)
+		# self.final = nn.Linear(h_szs[-1], out_sz)
 
 	def forward(self, x):
-		for l in self.layers:
-			x = self.hiddens_nonlinearity(l(x))
-		x = self.final(x)
+		# for l in self.layers:
+		# 	x = self.hiddens_nonlinearity(l(x))
+		# x = self.final(x)
+		# x = self.final_nonlinearity(x)
+
+		for i, l in enumerate(self.layers):
+			x = l(x)
+			if i<len(self.layers)-1:
+				x = self.hiddens_nonlinearity(x)
 		x = self.final_nonlinearity(x)
+
 		return x
+
+	def get_embedding(self):
+		'''
+		pull out the first layer of weights, which corresponds to 
+		an embedding of input 1-hot vector.
+		'''
+		first_layer = self.layers[0]
+		params = list(first_layer.parameters())
+		weights = params[0].data.numpy().transpose() #transpose or no?
+		#first element in params is multiplicative (FC), second is additive (bias)
+		return weights

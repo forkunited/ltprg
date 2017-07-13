@@ -1,3 +1,6 @@
 *.pyc
 
+src/test/py/ltprg/game/synthetic_nom_ref/prep_and_submit_jobs.py
+src/test/py/ltprg/game/synthetic_nom_ref/submit_sbatch.sh
+src/test/py/ltprg/game/synthetic_nom_ref/parse_and_run.py
 src/test/py/ltprg/game/synthetic_nom_ref/test/synthetic_data/notes/
