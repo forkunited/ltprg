@@ -43,7 +43,7 @@ class FeaturizeSUA(unittest.TestCase):
             token_fn=lambda x : x.lower(),
             indices=True)
 
-
+"""
     def test_listener_clicked(self):
         print "Featurizing listener clicks"
         mung.feature_helpers.featurize_path_scalars(
@@ -111,7 +111,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target",
             ["state.sTarget_0","state.sTarget_1","state.sTarget_2"])
-
+"""
 
 if __name__ == '__main__':
     unittest.main()
