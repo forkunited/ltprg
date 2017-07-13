@@ -567,6 +567,22 @@ class ModelTrainer(object):
 		print 'Train time = {}'.format(time.time() - start_time)
 		self.save_results()
 
+def train_model(model_name, hidden_szs, hiddens_nonlinearity,
+				 train_data, validation_data, utt_set_sz,
+				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+				 weight_decay, learning_rate,
+				 visualize_opt, display_validationset_predictions_opt, 
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path):
+	trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
+				 train_data, validation_data, utt_set_sz,
+				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+				 weight_decay, learning_rate,
+				 visualize_opt, display_validationset_predictions_opt, 
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path)
+	trainer.train()
+
 def run_example():
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
 	train_data_fname      = 'train_set99_3300train_trials.JSON'
@@ -602,14 +618,13 @@ def run_example():
 	if os.path.isdir(results_dir) == False:
 		os.mkdir(results_dir)
 
-	trainer = ModelTrainer(model_name, [100], 'tanh', example_train_data, 
-				 			example_validation_data, num_utts, num_objs, 
-				 			'onehot', utt_info_dict, obj_info_dict, 
-				 			decay, lr, True, True,
-				 			100, utt_costs, 0.1, true_lexicon,
-							results_dir)
-	# 
-	trainer.train()
+	train_model(model_name, [200, 200, 200], 'tanh', example_train_data, 
+	 			example_validation_data, num_utts, num_objs, 
+	 			'onehot', utt_info_dict, obj_info_dict, 
+	 			decay, lr, True, True,
+	 			100, utt_costs, 0.1, true_lexicon,
+				results_dir)
+
 
 if __name__=='__main__':
 	run_example()
