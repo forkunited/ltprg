@@ -53,11 +53,11 @@ class ValidateColorData(unittest.TestCase):
     def _check_utterances(self, D, batch, indices):
         feat = D["utterance_lemma_idx"].get_feature_seq_set().get_feature_seq(0)
         utt_batch, utt_length, utt_mask = batch["utterance_lemma_idx"]
-        utt_batch = utt_batch.transpose(1,0,2)
+        utt_batch = utt_batch.transpose(1,0)
         path_len = len("utterances[*].nlp.lemmas.lemmas_")
         for i in range(len(indices)):
             lemmas = D.get_data().get(indices[i]).get("utterances[*].nlp.lemmas.lemmas", first=False)
-            feat_strs = [feat.get_type(0).get_token(int(idx[0])).get()[path_len:] for idx in utt_batch[i]]
+            feat_strs = [feat.get_type(0).get_token(int(idx)).get()[path_len:] for idx in utt_batch[i]]
             seq_index = 1
             for lemma_utterance in lemmas:
                 for lemma in lemma_utterance:
@@ -66,8 +66,10 @@ class ValidateColorData(unittest.TestCase):
                     seq_index += 1
                 seq_index += 1
 
+
     def _check_scalar_view(self, view, D, batch, indices):
         feats = D[view].get_feature_set()
+        self.assertTrue(feats.get_size() != 0)
         for i in range(len(indices)):
             for j in range(feats.get_size()):
                 feat_name = feats.get_feature_token(j).get()[:-2] # -2 chops off the list index added by path features

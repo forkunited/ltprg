@@ -1,18 +1,20 @@
 import sys
 import torch.nn as nn
 import time
+import numpy as np
+import torch
 from torch.autograd import Variable
 from mung.feature import MultiviewDataSet
 from mung.data import Partition
 
-RNN_TYPE = "LSTM"
+RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=100
 TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
-LOG_INTERVAL = 100
+LOG_INTERVAL = 10
 
 np.random.seed(1)
 
@@ -20,7 +22,7 @@ np.random.seed(1)
 # https://github.com/ruotianluo/neuraltalk2.pytorch/blob/master/misc/utils.py
 class VariableLengthNLLLoss(nn.Module):
     def __init__(self):
-        super(LanguageModelCriterion, self).__init__()
+        super(VariableLengthNLLLoss, self).__init__()
 
     def _to_contiguous(self, tensor):
         if tensor.is_contiguous():
@@ -30,12 +32,13 @@ class VariableLengthNLLLoss(nn.Module):
 
     def forward(self, input, target, mask):
         # truncate to the same size
-        target = target[:, :input.size(1)]
-        mask =  mask[:, :input.size(1)]
+        #target = target[:, :input.size(1)]
+        #mask =  mask[:, :input.size(1)]
         input = self._to_contiguous(input).view(-1, input.size(2))
         target = self._to_contiguous(target).view(-1, 1)
         mask = self._to_contiguous(mask).view(-1, 1)
-        output = - input.gather(1, target) * mask
+        output = - input.gather(1, target) 
+        output = output *  mask
         output = torch.sum(output) / torch.sum(mask)
 
         return output
@@ -43,12 +46,23 @@ class VariableLengthNLLLoss(nn.Module):
 class S0(nn.Module):
     def __init__(self, rnn_type, world_size, embedding_size, rnn_size,
                  rnn_layers, utterance_size, dropout=0.5):
-        super(S0_decoder, self).__init__()
+        super(S0, self).__init__()
+
+        print "Construction S0"
+        print "Type: " + rnn_type
+        print "World size: " + str(world_size)
+        print "Embedding size: " + str(embedding_size)
+        print "RNN size: " + str(rnn_size)
+        print "RNN layers: " + str(rnn_layers)
+        print "Utterance size: " + str(utterance_size)
+        print "Drop out: " + str(dropout)
+
+        self._rnn_layers = rnn_layers
 
         self._encoder = nn.Linear(world_size, rnn_size)
         self._encoder_nl = nn.Tanh()
         self._drop = nn.Dropout(dropout)
-        self._emb = nn.Embedding(world_size, embedding_size)
+        self._emb = nn.Embedding(utterance_size, embedding_size)
 
         if rnn_type in ['LSTM', 'GRU']:
             self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size,
@@ -61,19 +75,25 @@ class S0(nn.Module):
                                  options are ['LSTM', 'GRU', 'RNN_TANH' or 'RNN_RELU']""")
             self_.rnn = nn.RNN(embedding_size, rnn_size, rnn_layers,
                                nonlinearity=nonlinearity, dropout=dropout)
-        self._decoder = nn.Linear(rnn_hidden, utterance_size)
+        self._decoder = nn.Linear(rnn_size, utterance_size)
         self._softmax = nn.LogSoftmax()
 
-    def forward(self, world, utterance_parts, utterance_lengths):
+    def forward(self, world, utterance_part, utterance_length):
         hidden = self._encoder_nl(self._encoder(world))
-        emb_pad = self._drop(self._emb(utterance_parts))
+        emb_pad = self._drop(self._emb(utterance_part))
 
-        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, utterance_lengths, batch_first=False)
+        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, utterance_length, batch_first=False)
+        
         output, hidden = self._rnn(emb, hidden)
-        output = nn.utils.rnn.pas_packed_sequence(output, batch_first=False)
+        
+        output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
+        rnn_out_size = output.size()
 
-        output = self._decoder(output)
-        return self._softmax(output), hidden
+        output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
+        output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
+
+        return output, hidden
 
     def init_weights(self):
         initrange = 0.1
@@ -91,15 +111,20 @@ class S0(nn.Module):
         criterion = VariableLengthNLLLoss()
         for i in range(iterations):
             batch = data.get_random_batch(batch_size)
-            world = batch["world"]
+            world = Variable(torch.from_numpy(batch["world"]).float())
             utterance, length, mask = batch["utterance"]
-            utt_in = utterance[:utterance.shape[0]-1] # Input remove final token
-            target_out = utterance[1:utterance.shape[0]] # Output (remove start token)
+            length = length - 1
+
+            utt_in = Variable(torch.from_numpy(utterance[:utterance.shape[0]-1]).long()) # Input remove final token
+            target_out = Variable(torch.from_numpy(utterance[1:utterance.shape[0]]).long()) # Output (remove start token)
 
             model_out, hidden = self(world, utt_in, length)
-            loss = criterion(model_out, target_out, mask)
+            loss = criterion(model_out, target_out[:model_out.size(0)], Variable(torch.from_numpy(mask[:,1:(model_out.size(0)+1)]).float()))
             loss.backward()
 
+            lr = 0.001
+            for p in self.parameters():
+                p.data.add_(-lr, p.grad.data)
             total_loss += loss.data
 
             if i % LOG_INTERVAL == 0 and i > 0:
@@ -107,7 +132,7 @@ class S0(nn.Module):
                 elapsed = time.time() - start_time
                 print('| {:5d}/{:5d} batches |  ms/batch {:5.2f} | '
                         'loss {:5.2f} | ppl {:8.2f}'.format(
-                    i, iterations, elapsed * 1000 / LOG_INTERNAL, cur_loss, math.exp(cur_loss)))
+                    i, iterations, elapsed * 1000 / LOG_INTERVAL, cur_loss, np.exp(cur_loss)))
                 total_loss = 0
                 start_time = time.time()
 
@@ -133,3 +158,4 @@ utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_
 model = S0(RNN_TYPE, world_size, EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS,
            utterance_size, dropout=DROP_OUT)
 model.learn(D_train, TRAINING_ITERATIONS, TRAINING_BATCH_SIZE)
+

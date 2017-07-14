@@ -16,7 +16,7 @@ del sys.argv[1]
 np.random.seed(1)
 
 class FeaturizeSUA(unittest.TestCase):    
-
+    
     def test_utterance_lemmas(self):
         print "Featurizing utterances"
         mung.feature_helpers.featurize_path_enum_seqs(
@@ -28,7 +28,7 @@ class FeaturizeSUA(unittest.TestCase):
             ["utterances[*].nlp.lemmas.lemmas"],
             15, # Maximum utterance length
             token_fn=lambda x : x.lower())
-
+    
     
     def test_utterance_lemma_indices(self):
         print "Featurizing utterance indices"
@@ -42,8 +42,8 @@ class FeaturizeSUA(unittest.TestCase):
             15, # Maximum utterance length
             token_fn=lambda x : x.lower(),
             indices=True)
+    
 
-"""
     def test_listener_clicked(self):
         print "Featurizing listener clicks"
         mung.feature_helpers.featurize_path_scalars(
@@ -91,6 +91,7 @@ class FeaturizeSUA(unittest.TestCase):
              "state.sH_1","state.sS_1","state.sL_1",
              "state.sH_2","state.sS_2","state.sL_2",
              "state.sTarget_0","state.sTarget_1","state.sTarget_2"])
+    
 
     def test_speaker_target_color(self):
         print "Featurizing speaker target colors"
@@ -100,8 +101,9 @@ class FeaturizeSUA(unittest.TestCase):
             partition_file,
             lambda d : d.get("gameid"),
             "speaker_target_color",
-            ["state.sTarget_H","state.sTarget_S","state.sTarget_L"])
+            ["state.sTargetH","state.sTargetS","state.sTargetL"])
 
+    
     def test_speaker_target(self):
         print "Featurizing speaker targets"
         mung.feature_helpers.featurize_path_scalars(
@@ -111,7 +113,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target",
             ["state.sTarget_0","state.sTarget_1","state.sTarget_2"])
-"""
+    
 
 if __name__ == '__main__':
     unittest.main()
