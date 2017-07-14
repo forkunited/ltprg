@@ -622,14 +622,16 @@ def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 	trainer.train()
 
 def run_example():
+	train_set_type = 'random_distractors' # 'random_distractors' or 'uniform_conditions'
+
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
+	data_by_num_trials_path = data_path + 'datasets_by_num_trials/' + train_set_type + '/'
+
 	train_data_fname      = 'train_set99_3300train_trials.JSON'
 	validation_data_fname = 'validation_set99_600validation_trials.JSON'
 
-	example_train_data 		= load_json(data_path + 'datasets_by_num_trials/' 
-										+ train_data_fname) 
-	example_validation_data = load_json(data_path + 'datasets_by_num_trials/' 
-										+ validation_data_fname)
+	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
+	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
 	d = load_json(data_path + 'true_lexicon.JSON')
 	num_utts = len(d)
 	num_objs = len(d['0'])
@@ -648,15 +650,15 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	model_name = 'ersa'
+	# model_name = 'ersa'
 	# model_name = 'nnwc'
-	# model_name = 'nnwoc'
+	model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
-	train_model(model_name, [200], 'tanh', example_train_data, 
+	train_model(model_name, [], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
 	 			decay, lr, True, True,
