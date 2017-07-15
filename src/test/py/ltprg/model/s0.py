@@ -100,7 +100,7 @@ class S0(nn.Module):
 
         return output, hidden
 
-    def sample(self, world, utterance_part, utterance_length):
+    def sample(self, world, utterance_part, utterance_length=None):
         # Get output and hidden state after running utterance prefixes
         # through the model
         output, hidden = self(world, utterance_part, utterance_length)
@@ -191,6 +191,11 @@ partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
+D_dev_close_batch = D_dev.filter(lambda d : d.get("state.condition") == "close")
+D_dev_split_batch = D_dev.filter(lambda d : d.get("state.condition") == "split")
+D_dev_far_batch = D_dev.filter(lambda d : d.get("state.condition") == "far")
+
+
 
 world_size = D_train["world"].get_feature_set().get_size()
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
@@ -198,6 +203,8 @@ utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_
 model = S0(RNN_TYPE, world_size, EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS,
            utterance_size, dropout=DROP_OUT)
 model.learn(D_train, TRAINING_ITERATIONS, TRAINING_BATCH_SIZE, eval_data=D_dev)
+
+model.sample(self, world, utterance_part):
 
 # FIXME Get start symbol index
 # FIXME Get end symbol index
