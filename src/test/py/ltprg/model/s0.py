@@ -4,7 +4,7 @@ import time
 import numpy as np
 import torch
 from torch.autograd import Variable
-from mung.feature import MultiviewDataSet
+from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 
 RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
@@ -16,6 +16,7 @@ TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
 LOG_INTERVAL = 10
 
+torch.manual_seed(1)
 np.random.seed(1)
 
 # Loss function borrowed from
@@ -77,9 +78,13 @@ class S0(nn.Module):
                                nonlinearity=nonlinearity, dropout=dropout)
         self._decoder = nn.Linear(rnn_size, utterance_size)
         self._softmax = nn.LogSoftmax()
+        self._criterion = VariableLengthNLLLoss()
 
     def forward(self, world, utterance_part, utterance_length):
         hidden = self._encoder_nl(self._encoder(world))
+        return self._forward_from_hidden(hidden, utterance_part, utterance_length)
+
+    def _forward_from_hidden(self, hidden, utterance_part, utterance_length):
         emb_pad = self._drop(self._emb(utterance_part))
 
         hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
@@ -95,6 +100,19 @@ class S0(nn.Module):
 
         return output, hidden
 
+    def sample(self, world, utterance_part, utterance_length):
+        # Get output and hidden state after running utterance prefixes
+        # through the model
+        output, hidden = self(world, utterance_part, utterance_length)
+        print str(output.size()) + " " + str(hidden.size())        
+
+        # Get final output and hidden
+        # Sample next tokens (for batch) from output
+        # Feed token into emb
+        # Feed emb and hidden into rnn
+        # Get next output
+
+
     def init_weights(self):
         initrange = 0.1
         self._emb.weight.data.uniform_(-initrange, initrange)
@@ -103,23 +121,23 @@ class S0(nn.Module):
         self._decoder.bias.data.fill_(0)
         self._decoder.weight.data.uniform_(-initrange, initrange)
 
-    def learn(self, data, iterations, batch_size):
+    def learn(self, data, iterations, batch_size, eval_data=None):
         # 'train' enables dropout
         self.train()
         total_loss = 0
         start_time = time.time()
-        criterion = VariableLengthNLLLoss()
         for i in range(iterations):
             batch = data.get_random_batch(batch_size)
-            world = Variable(torch.from_numpy(batch["world"]).float())
+            world = Variable(batch["world"])
             utterance, length, mask = batch["utterance"]
             length = length - 1
 
-            utt_in = Variable(torch.from_numpy(utterance[:utterance.shape[0]-1]).long()) # Input remove final token
-            target_out = Variable(torch.from_numpy(utterance[1:utterance.shape[0]]).long()) # Output (remove start token)
+            utt_in = Variable(utterance[:utterance.size(0)-1]).long() # Input remove final token
+            target_out = Variable(utterance[1:utterance.size(0)]).long() # Output (remove start token)
 
+            self.zero_grad()
             model_out, hidden = self(world, utt_in, length)
-            loss = criterion(model_out, target_out[:model_out.size(0)], Variable(torch.from_numpy(mask[:,1:(model_out.size(0)+1)]).float()))
+            loss = self._criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
             loss.backward()
 
             lr = 0.001
@@ -130,15 +148,36 @@ class S0(nn.Module):
             if i % LOG_INTERVAL == 0 and i > 0:
                 cur_loss = total_loss[0] / LOG_INTERVAL
                 elapsed = time.time() - start_time
-                print('| {:5d}/{:5d} batches |  ms/batch {:5.2f} | '
-                        'loss {:5.2f} | ppl {:8.2f}'.format(
-                    i, iterations, elapsed * 1000 / LOG_INTERVAL, cur_loss, np.exp(cur_loss)))
+                eval_loss = 0.0
+                if eval_data is not None:
+                    eval_loss = self.evaluate(eval_data)
+                print('| {:5d}/{:d} batches |  ms/batch {:5.2f} | '
+                        'train loss {:5.7f} | eval loss {:5.7f}'.format(
+                    i, iterations, elapsed * 1000 / LOG_INTERVAL, cur_loss, eval_loss))
                 total_loss = 0
                 start_time = time.time()
-
+                
         # 'eval' disables dropout
         self.eval()
 
+    def evaluate(self, data):
+        # Turn on evaluation mode which disables dropout.
+        self.eval()
+
+        batch = data.get_batch(0, data.get_size())
+        world = Variable(batch["world"])
+        utterance, length, mask = batch["utterance"]
+        length = length - 1
+
+        utt_in = Variable(utterance[:utterance.size(0)-1]).long() # Input remove final token
+        target_out = Variable(utterance[1:utterance.size(0)]).long() # Output (remove start token)
+
+        model_out, hidden = self(world, utt_in, length)
+        loss = self._criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
+ 
+        self.train()
+        return loss.data[0]
+        
 
 data_dir = sys.argv[1]
 partition_file = sys.argv[2]
@@ -151,11 +190,25 @@ D = MultiviewDataSet.load(data_dir,
 partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
+D_dev = D_parts["dev"]
 
 world_size = D_train["world"].get_feature_set().get_size()
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 model = S0(RNN_TYPE, world_size, EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS,
            utterance_size, dropout=DROP_OUT)
-model.learn(D_train, TRAINING_ITERATIONS, TRAINING_BATCH_SIZE)
+model.learn(D_train, TRAINING_ITERATIONS, TRAINING_BATCH_SIZE, eval_data=D_dev)
+
+# FIXME Get start symbol index
+# FIXME Get end symbol index
+# FIXME Get sample of worlds
+start_idx = Symbol.index(Symbol.SEQ_START)
+end_idx = Symbol.index(Symbol.SEQ_END)
+D_train["utterance"].get_feature_token(index).get_value()
+D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
+D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
+D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
+
+model.sample()
+
 
