@@ -65,7 +65,7 @@ class ModelTrainer(object):
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,  
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path):
 		# model_name		('ersa', 'nnwc', 'nnwoc':
@@ -91,8 +91,7 @@ class ModelTrainer(object):
 		# weight_decay		(weight decay (l2 penalty))
 		# learning_rate		(initial learning rate in Adam optimization)
 		# visualize_opt		(plot learning curves in Visdom; True/False)
-		# display_validationset_predictions_opt (print model predictions; 
-		#					True/False)
+		#
 		# >> Parameters used for comparison between model prediction and 
 		#	 goldstandard(RSA) S1 distribution (all models); and by ersa model:
 		# alpha				(speaker rationality param)
@@ -110,6 +109,7 @@ class ModelTrainer(object):
 
 		self.visualize_opt = visualize_opt
 		self.prep_visualize()
+		self.display_predictions_opt = False # print only validation set preds
 
 		self.model_name = model_name
 		self.train_data = train_data
@@ -117,6 +117,10 @@ class ModelTrainer(object):
 		self.utt_set_sz = utt_set_sz
 		self.obj_set_sz = obj_set_sz
 		self.obj_embedding_type = obj_embedding_type
+		self.hidden_szs = hidden_szs
+		self.hiddens_nonlinearity = hiddens_nonlinearity
+		self.weight_decay = weight_decay
+		self.learning_rate = learning_rate
 
 		# RSA params (for ersa model, and gold-standard S1 comparison)
 		self.alpha         = alpha
@@ -130,29 +134,30 @@ class ModelTrainer(object):
 
 		self.conditions = list(set([trial['condition'] for trial in self.train_data]))
 		self.save_path = save_path
+		self.save_model_details()
 		
 		# create model
 		if self.model_name == 'ersa':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'sigmoid')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'sigmoid')
 		elif model_name == 'nnwc':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz * 3
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'logSoftmax')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'logSoftmax')
 		elif model_name == 'nnwoc':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'logSoftmax')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'logSoftmax')
 
 		# loss function, optimization
 		self.criterion = nn.NLLLoss() # neg log-like loss, operates on log probs
 		self.optimizer = optim.Adam(self.model.parameters(), 
-									weight_decay=weight_decay, 
-									lr=learning_rate)
+									weight_decay=self.weight_decay, 
+									lr=self.learning_rate)
 
 	def format_inputs(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind, 
 					  format_type):
@@ -323,8 +328,7 @@ class ModelTrainer(object):
 			print 'in another terminal window. Then navigate to http://localhost.com:8097'
 			print 'in your browser\n'
 			raw_input("Press Enter to continue...")
-			self.vis = visdom.Visdom()
-			self.display_predictions_opt = False # print only validation set preds
+			self.vis = visdom.Visdom() 
 
 	def plot_learning_curve(self, epoch):
 		if self.visualize_opt == True:
@@ -434,6 +438,19 @@ class ModelTrainer(object):
 									 win=self.trainset_eval_by_cond_kl_win)
 				self.vis.updateTrace(X=x, Y=y_validation_kl, 
 									 win=self.validationset_eval_by_cond_kl_win)
+
+	def save_model_details(self):
+		d = dict()
+		d['model_name'] = self.model_name
+		d['alpha']      = self.alpha
+		d['obj_embedding_type'] = self.obj_embedding_type
+		d['hiddens_szs'] = self.hidden_szs
+		d['hiddens_nonlinearity'] = self.hiddens_nonlinearity
+		d['weight_decay'] = self.weight_decay
+		d['learning_rate'] = self.learning_rate
+		d['cost_weight'] = self.cost_weight
+		d['costs'] = self.costs
+		np.save(self.save_path + 'model_details.npy', d)
 
 	def save_checkpoint(self, epoch, is_best):
 		filename = self.save_path + 'checkpoint.pth.tar'
@@ -609,14 +626,14 @@ def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path):
 	trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,  
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path)
 	trainer.train()
@@ -627,8 +644,11 @@ def run_example():
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
 	data_by_num_trials_path = data_path + 'datasets_by_num_trials/' + train_set_type + '/'
 
-	train_data_fname      = 'train_set99_3300train_trials.JSON'
-	validation_data_fname = 'validation_set99_600validation_trials.JSON'
+	# train_data_fname      = 'train_set99_3300train_trials.JSON'
+	# validation_data_fname = 'validation_set99_600validation_trials.JSON'
+
+	train_data_fname = 'train_set0_33train_trials.JSON'
+	validation_data_fname = 'validation_set0_6validation_trials.JSON'
 
 	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
 	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
@@ -654,14 +674,14 @@ def run_example():
 	# model_name = 'nnwc'
 	model_name = 'nnwoc'
 
-	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
 	train_model(model_name, [], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
-	 			decay, lr, True, True,
+	 			decay, lr, True, 
 	 			100, utt_costs, 0.1, true_lexicon,
 				results_dir)
 
