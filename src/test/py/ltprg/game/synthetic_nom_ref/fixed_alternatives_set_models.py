@@ -117,6 +117,10 @@ class ModelTrainer(object):
 		self.utt_set_sz = utt_set_sz
 		self.obj_set_sz = obj_set_sz
 		self.obj_embedding_type = obj_embedding_type
+		self.hidden_szs = hidden_szs
+		self.hiddens_nonlinearity = hiddens_nonlinearity
+		self.weight_decay = weight_decay
+		self.learning_rate = learning_rate
 
 		# RSA params (for ersa model, and gold-standard S1 comparison)
 		self.alpha         = alpha
@@ -130,29 +134,30 @@ class ModelTrainer(object):
 
 		self.conditions = list(set([trial['condition'] for trial in self.train_data]))
 		self.save_path = save_path
+		self.save_model_details()
 		
 		# create model
 		if self.model_name == 'ersa':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'sigmoid')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'sigmoid')
 		elif model_name == 'nnwc':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz * 3
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'logSoftmax')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'logSoftmax')
 		elif model_name == 'nnwoc':
 			if self.obj_embedding_type == 'onehot':
 				in_sz = self.obj_set_sz
-			self.model = MLP(in_sz, hidden_szs, self.utt_set_sz, 
-							 hiddens_nonlinearity, 'logSoftmax')
+			self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+							 self.hiddens_nonlinearity, 'logSoftmax')
 
 		# loss function, optimization
 		self.criterion = nn.NLLLoss() # neg log-like loss, operates on log probs
 		self.optimizer = optim.Adam(self.model.parameters(), 
-									weight_decay=weight_decay, 
-									lr=learning_rate)
+									weight_decay=self.weight_decay, 
+									lr=self.learning_rate)
 
 	def format_inputs(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind, 
 					  format_type):
@@ -434,6 +439,19 @@ class ModelTrainer(object):
 				self.vis.updateTrace(X=x, Y=y_validation_kl, 
 									 win=self.validationset_eval_by_cond_kl_win)
 
+	def save_model_details(self):
+		d = dict()
+		d['model_name'] = self.model_name
+		d['alpha']      = self.alpha
+		d['obj_embedding_type'] = self.obj_embedding_type
+		d['hiddens_szs'] = self.hidden_szs
+		d['hiddens_nonlinearity'] = self.hiddens_nonlinearity
+		d['weight_decay'] = self.weight_decay
+		d['learning_rate'] = self.learning_rate
+		d['cost_weight'] = self.cost_weight
+		d['costs'] = self.costs
+		np.save(self.save_path + 'model_details.npy', d)
+
 	def save_checkpoint(self, epoch, is_best):
 		filename = self.save_path + 'checkpoint.pth.tar'
 		d = {'epoch': epoch, 'state_dict': self.model.state_dict(), 
@@ -656,7 +674,7 @@ def run_example():
 	# model_name = 'nnwc'
 	model_name = 'nnwoc'
 
-	results_dir = 'results/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
