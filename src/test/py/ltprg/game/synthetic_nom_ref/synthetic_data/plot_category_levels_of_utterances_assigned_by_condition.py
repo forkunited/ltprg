@@ -44,9 +44,11 @@ def collect_term_type_used_by_condition():
 	obj_names_to_supers = load_json('obj_names_to_supers.JSON')
 
 	# TODO: loop over dir
-	data_dir = 'datasets_by_num_trials/'
-	# dataset_name = 'train_set99_3300train_trials'
-	dataset_name = 'validation_set99_600validation_trials'
+	train_type = 'uniform_conditions' #'random_distractors'
+	print 'Train Type: {}'.format(train_type)
+	data_dir = 'datasets_by_num_trials/' + train_type + '/'
+	dataset_name = 'train_set99_3300train_trials'
+	# dataset_name = 'validation_set99_600validation_trials'
 	
 	dataset = load_json(data_dir + dataset_name + '.JSON')
 
@@ -55,6 +57,7 @@ def collect_term_type_used_by_condition():
 	basic_suff = []
 	super_suff = []
 	other 	   = [] # term doesn't apply to target
+	across_dataset = []
 	for trial in dataset:
 		target_name    = obj_inds_to_names[str(trial['target_ind'])]
 		utterance_name = utt_inds_to_names[str(trial['utterance'])]
@@ -72,6 +75,8 @@ def collect_term_type_used_by_condition():
 		else:
 			category = 'other' 
 
+		across_dataset.append(category)
+
 		# add to that condition
 		if trial['condition'] == 'sub-nec':
 			sub_nec.append(category)
@@ -85,6 +90,8 @@ def collect_term_type_used_by_condition():
 	counts_by_cat_basic_suff, _ = count_occurrences_each_category(basic_suff)
 	counts_by_cat_super_suff, _ = count_occurrences_each_category(super_suff)
 
+	counts_across_dataset, _ = count_occurrences_each_category(across_dataset)
+
 	# plot by condition
 	plot_category_use_by_condition(counts_by_cat_sub_nec, cat_labels,
 									'Sub-Nec (' 
@@ -94,6 +101,9 @@ def collect_term_type_used_by_condition():
 									+ dataset_name + ')')
 	plot_category_use_by_condition(counts_by_cat_super_suff, cat_labels,
 									'Super-Suff (' 
+									+ dataset_name + ')')
+	plot_category_use_by_condition(counts_across_dataset, cat_labels,
+									'Whole Dataset ('
 									+ dataset_name + ')')
 
 if __name__ == '__main__':

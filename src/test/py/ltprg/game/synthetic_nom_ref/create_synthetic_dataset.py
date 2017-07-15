@@ -11,11 +11,18 @@ import torch.nn as nn
 from torch.autograd import Variable
 from rsa import uniform_prior, model_literal_listener
 
-# Creates synthetic dataset that's a list of n batches, where each batch
-# 	is a list of dictionaries. Each dictionary is a trial with 
-#	{"target_ind", "alt1_ind", "alt2_ind"}. Also generates deterministic 
-#	lexicon for this dataset.
+# Creates nested synthetic datasets of increasing size. Each dataset consists of 
+#	a train set, and held-out validation and test sets (trial types are unique across
+#	train/valid/test sets). Each set is saved as its own JSON file, and is a list of
+#	dictionaries, where each dictionary is a trial with 
+#	{"target_ind", "alt1_ind", "alt2_ind", "condition", "utterance", "log-prob of utterance"}. 
+#	Utterances are sampled from an RSA level-1 speaker distribution given the 
+#	ground-truth (binary) lexicon.
 #	
+# Two train set options: train set can contain
+#	(1) uniform distribution of conditions, with each object appearing at least once
+#		per batch as a distractor ('uniform-conditions')
+#	(2) randomly drawn distractors (no constraints enforced; 'random-distractors')
 
 random.seed(3)
 
@@ -87,7 +94,7 @@ def make_x_all_objects(subset_counts, subset_labels, all_obj_names):
 				all_obj_counts[i] += subset_counts[j]
 	return all_obj_names, all_obj_counts
 
-def visualize_batch(batch, title, obj_names):
+def visualize_batch(batch, title, obj_names, utt_names, utt_inds_to_names):
 	# batch is list of lists [[target, alt1, alt2, cond], [], ...]
 	# (so pre-reformat); could also be whole dataset
 
@@ -111,6 +118,12 @@ def visualize_batch(batch, title, obj_names):
 	conditions = [t[3] for t in batch]
 	condition_labels, condition_counts = get_counts(conditions)
 
+	# create hist of utterances assigned
+	utterances = [utt_inds_to_names[t[4]] for t in batch]
+	utterance_labels, utterance_counts = get_counts(utterances)
+	utterance_labels, utterance_counts = make_x_all_objects(utterance_counts, 
+												utterance_labels, utt_names)
+
 	# histogram of how often trials are used
 	trial_type_dict = get_unique_type_counts(batch)
 	trial_type_labels = trial_type_dict.keys()
@@ -119,6 +132,7 @@ def visualize_batch(batch, title, obj_names):
 	targ_plot_title       = title + ': Targets'
 	distractor_plot_title = title + ': Distractors'
 	condition_plot_title  = title + ': Conditions'
+	utterance_plot_title  = title + ': Assigned Utterances'
 	trial_plot_title      = title + ': Trial Types'
 	hist_title 			  = title + ': Histogram of Trial Types'
 
@@ -140,6 +154,12 @@ def visualize_batch(batch, title, obj_names):
 		opts=dict(
 			rownames=condition_labels,
 			title=condition_plot_title)
+		)
+
+	vis.bar(X=utterance_counts,
+		opts=dict(
+			rownames=utterance_labels,
+			title=utterance_plot_title)
 		)
 
 	mean_reps = np.mean(trial_type_counts)
@@ -170,7 +190,11 @@ def make_lexicon_heatmap(lexicon, obj_inds_to_names, utt_inds_to_names):
 
 # Create dataset
 class DatasetMaker(object):
-	def __init__(self):
+	def __init__(self, train_type):
+		# INPUTS:
+		#	train_type ('random_distractors' or 'uniform_conditions')
+		self.train_type = train_type
+
 		# print options
 		self.visualize_train_batches = True
 		self.print_trial_details     = False
@@ -182,7 +206,7 @@ class DatasetMaker(object):
 		print 'alpha = {}, cost weight = {}'.format(self.alpha, self.cost_weight)
 
 		synthetic_dir = 'synthetic_data/'
-		self.dataset_save_path = synthetic_dir + 'datasets_by_num_trials/'
+		self.dataset_save_path = synthetic_dir + 'datasets_by_num_trials/' + self.train_type + '/'
 		self.objects_filename = synthetic_dir + 'objects.csv'
 		self.num_trials_per_cond_per_batch = 11 # 33 trials/batch (11 per cond)
 		self.num_conditions = 3 # sub-nec, basic-suff, super-suff
@@ -217,6 +241,7 @@ class DatasetMaker(object):
 						  + 'obj_names_to_basics.JSON')
 		self.save_as_json(self.obj_names_to_supers, synthetic_dir 
 						  + 'obj_names_to_supers.JSON')
+		self.save_dataset_characteristics()
 		self.generate_dataset()
 		self.reformat_dataset_and_save()
 
@@ -224,6 +249,12 @@ class DatasetMaker(object):
 		with open(savename, 'w') as outfile:
 			json.dump(d, outfile)
 		# print 'json saved'
+
+	def save_dataset_characteristics(self):
+		d = {'train_set_characteristics': self.train_type,
+			 'alpha': self.alpha, 'cost_weight': self.cost_weight,
+			 'num_conditions': self.num_conditions, 'batch_sz': self.batch_sz}
+		self.save_as_json(d, self.dataset_save_path + 'params_used.JSON')
 
 	def load_objects(self):
 		self.obj_inds   = map(int, read_csv_field(self.objects_filename, 
@@ -354,7 +385,9 @@ class DatasetMaker(object):
 		# 						 (1) same or diff super
 		# 	3. super-sufficient: (1) diff super
 		# 						 (1) diff super
-
+		# or, choose distractors randomly (not attempting a particular condition:
+		#	'random-choice')
+		#
 		target_sub   = self.obj_names_to_subs[target_name]
 		target_basic = self.obj_names_to_basics[target_name]
 		target_super = self.obj_names_to_supers[target_name]
@@ -399,6 +432,27 @@ class DatasetMaker(object):
 			d1 = random.sample(options, 1)[0]
 			options = [o for o in options if o != d1]
 			d2 = random.sample(options, 1)[0]
+
+		elif cond == 'random-choice':
+			# draws distractors randomly, but then figures out what condition for the record
+			# distractors can be any obj except another copy of the target
+			options = [o for o in self.obj_names if (self.obj_names_to_subs[o] != target_sub)]
+			ds = random.sample(options, 2)
+			d1 = ds[0]
+			d2 = ds[1]
+			assert d1 != d2
+
+			# figure out what condition was created
+			d1_basic = self.obj_names_to_basics[d1]
+			d1_super = self.obj_names_to_supers[d1]
+			d2_basic = self.obj_names_to_basics[d2]
+			d2_super = self.obj_names_to_supers[d2]
+			if (target_basic == d1_basic) or (target_basic == d2_basic):
+				cond = 'sub-nec' # at least 1 distractor has same basic
+			elif (target_super == d1_super) or (target_super == d2_super):
+				cond = 'basic-suff' # at least 1 distractor has super
+			else:
+				cond = 'super-suff' # both distractors are different super
 
 		distractor_names = [d1, d2]
 		random.shuffle(distractor_names)
@@ -491,7 +545,7 @@ class DatasetMaker(object):
 		curr_sz = len(holdout_set) # num trials already in set (in case of nesting)
 		num_trials_to_add = targ_sz - curr_sz
 		assert (num_trials_to_add % self.num_conditions) == 0
-		
+
 		# top up
 		num_trials_per_condition = int(num_trials_to_add/self.num_conditions)
 		for i in range(num_trials_per_condition):
@@ -509,37 +563,48 @@ class DatasetMaker(object):
 		check = 0
 		attempts = 0
 		while check == 0:
-			# each batch uses each obj as a target at least once,
-			# and each obj as a distractor at least once
+			# each batch uses each obj as a target at least once
 			objs_to_use_as_targets = copy.deepcopy(self.obj_names)
-			objs_to_use_as_distractors = copy.deepcopy(self.obj_names)
 
-			# partition targets
-			# 33 targets per batch (11 per cond)
-			# 1 obj must appear as target 2x
+			# 33 targets per batch (11 per cond, 'uniform_conditions' case), 
+			#	or total (L case)
+			# 1 obj must appear as target 2x for conditions to be balanced
 			objs_to_use_as_targets.append(random.sample(objs_to_use_as_targets, 1)[0])
 			random.shuffle(objs_to_use_as_targets)
 
-			cond1_targs = objs_to_use_as_targets[0 : self.num_trials_per_cond_per_batch]
-			cond2_targs = (objs_to_use_as_targets[self.num_trials_per_cond_per_batch :
-				                                  2*self.num_trials_per_cond_per_batch])
-			cond3_targs = (objs_to_use_as_targets[2*self.num_trials_per_cond_per_batch :
-				                                  3*self.num_trials_per_cond_per_batch])
+			if self.train_type == 'uniform_conditions':
+				# each batch uses each obj as a distractor at least once
+				objs_to_use_as_distractors = copy.deepcopy(self.obj_names)
 
-			# generate trials
-			trials = []
-			for i in range(self.num_trials_per_cond_per_batch):
-				trials.append(self.generate_trial(cond1_targs[i], 'sub-nec'))
-				trials.append(self.generate_trial(cond2_targs[i], 'basic-suff'))
-				trials.append(self.generate_trial(cond3_targs[i], 'super-suff'))
+				# partition targets
+				cond1_targs = objs_to_use_as_targets[0 : self.num_trials_per_cond_per_batch]
+				cond2_targs = (objs_to_use_as_targets[self.num_trials_per_cond_per_batch :
+					                                  2*self.num_trials_per_cond_per_batch])
+				cond3_targs = (objs_to_use_as_targets[2*self.num_trials_per_cond_per_batch :
+					                                  3*self.num_trials_per_cond_per_batch])
 
-			# check that each distractor has been used at least 1x
-			distractors = ([sublst[1] for sublst in trials] 
-							+ [sublst[2] for sublst in trials])
-			not_used_in_trials = ([o for o in objs_to_use_as_distractors 
-				                   if o not in list(set(distractors))])
-			attempts += 1
-			if len(not_used_in_trials) == 0:
+				# generate trials
+				trials = []
+				for i in range(self.num_trials_per_cond_per_batch):
+					trials.append(self.generate_trial(cond1_targs[i], 'sub-nec'))
+					trials.append(self.generate_trial(cond2_targs[i], 'basic-suff'))
+					trials.append(self.generate_trial(cond3_targs[i], 'super-suff'))
+
+				# check that each distractor has been used at least 1x
+				distractors = ([sublst[1] for sublst in trials] 
+								+ [sublst[2] for sublst in trials])
+				not_used_in_trials = ([o for o in objs_to_use_as_distractors 
+					                   if o not in list(set(distractors))])
+				attempts += 1
+				if len(not_used_in_trials) == 0:
+					check = 1
+
+			elif self.train_type == 'random_distractors':
+				# generate trials
+				trials = []
+				for i in range(len(objs_to_use_as_targets)):
+					t = self.generate_trial(objs_to_use_as_targets[i], 'random-choice')
+					trials.append(t)
 				check = 1
 
 		# print '{} attempts'.format(attempts)
@@ -570,6 +635,7 @@ class DatasetMaker(object):
 
 			# create train set
 			train_set += self.create_train_set_batch()
+			print 'Train set made'
 
 			# create validation, test sets
 			make_first = np.random.binomial(1, 0.5)
@@ -597,20 +663,23 @@ class DatasetMaker(object):
 			if i%20 == 0:
 				if self.visualize_train_batches == True:
 					visualize_batch(train_set, 'Set ' + str(i) 
-										 + ' - Train Set (' 
+										 + ' - Train Set (' + self.train_type + '; ' 
 										 + str(int(self.train_set_szs[i])) 
 										 + ' trials)',
-										 self.obj_names)
+										 self.obj_names, self.utterances_as_names,
+										 self.utt_inds_to_utt_names)
 					visualize_batch(validation_set, 'Set ' + str(i) 
 										 + ' - Validation Set (' 
 										 + str(int(self.validation_set_szs[i])) 
 										 + ' trials)', 
-										 self.obj_names)
+										 self.obj_names, self.utterances_as_names,
+										 self.utt_inds_to_utt_names)
 					visualize_batch(test_set, 'Set ' + str(i) 
 										 + ' - Test Set (' 
 										 + str(int(self.test_set_szs[i])) 
 										 + ' trials)', 
-										 self.obj_names)
+										 self.obj_names, self.utterances_as_names,
+										 self.utt_inds_to_utt_names)
 
 			# TODO: Add utterance assignment here! (replacing assignment
 			# 		in webppl)
@@ -668,7 +737,7 @@ class DatasetMaker(object):
 			self.save_as_json({'LL': float(test_set_LL)}, test_name + 'LL.JSON')
 
 def wrapper():
-	object_info = DatasetMaker()
+	object_info = DatasetMaker('random_distractors') #'uniform_conditions')
 
 if __name__ == '__main__':
 	print '\n\nTo view plots of dataset characteristics, enter `python -m visdom.server`' 
