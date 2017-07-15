@@ -65,7 +65,7 @@ class ModelTrainer(object):
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,  
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path):
 		# model_name		('ersa', 'nnwc', 'nnwoc':
@@ -91,8 +91,7 @@ class ModelTrainer(object):
 		# weight_decay		(weight decay (l2 penalty))
 		# learning_rate		(initial learning rate in Adam optimization)
 		# visualize_opt		(plot learning curves in Visdom; True/False)
-		# display_validationset_predictions_opt (print model predictions; 
-		#					True/False)
+		#
 		# >> Parameters used for comparison between model prediction and 
 		#	 goldstandard(RSA) S1 distribution (all models); and by ersa model:
 		# alpha				(speaker rationality param)
@@ -609,14 +608,14 @@ def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path):
 	trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
-				 visualize_opt, display_validationset_predictions_opt, 
+				 visualize_opt,  
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path)
 	trainer.train()
@@ -627,8 +626,11 @@ def run_example():
 	data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
 	data_by_num_trials_path = data_path + 'datasets_by_num_trials/' + train_set_type + '/'
 
-	train_data_fname      = 'train_set99_3300train_trials.JSON'
-	validation_data_fname = 'validation_set99_600validation_trials.JSON'
+	# train_data_fname      = 'train_set99_3300train_trials.JSON'
+	# validation_data_fname = 'validation_set99_600validation_trials.JSON'
+
+	train_data_fname = 'train_set0_33train_trials.JSON'
+	validation_data_fname = 'validation_set0_6validation_trials.JSON'
 
 	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
 	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
@@ -661,7 +663,7 @@ def run_example():
 	train_model(model_name, [], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
-	 			decay, lr, True, True,
+	 			decay, lr, True, 
 	 			100, utt_costs, 0.1, true_lexicon,
 				results_dir)
 
