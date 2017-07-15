@@ -109,6 +109,7 @@ class ModelTrainer(object):
 
 		self.visualize_opt = visualize_opt
 		self.prep_visualize()
+		self.display_predictions_opt = False # print only validation set preds
 
 		self.model_name = model_name
 		self.train_data = train_data
@@ -322,8 +323,7 @@ class ModelTrainer(object):
 			print 'in another terminal window. Then navigate to http://localhost.com:8097'
 			print 'in your browser\n'
 			raw_input("Press Enter to continue...")
-			self.vis = visdom.Visdom()
-			self.display_predictions_opt = False # print only validation set preds
+			self.vis = visdom.Visdom() 
 
 	def plot_learning_curve(self, epoch):
 		if self.visualize_opt == True:
