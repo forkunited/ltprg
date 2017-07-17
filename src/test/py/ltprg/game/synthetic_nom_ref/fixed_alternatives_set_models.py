@@ -213,12 +213,6 @@ class ModelTrainer(object):
 								).data.numpy()[0]
 		return kl_div
 
-	def print_predictions_only_validation_set(self):
-		# prints predictions over dataset
-		self.display_predictions_opt = True
-		for trial in self.validation_data:
-			_, _ = self.predict(trial)
-
 	def mean_performance_dataset(self, data_set, set_name):
 		loss_by_trial = []
 		acc_by_trial  = []
@@ -494,24 +488,58 @@ class ModelTrainer(object):
 			is_best = True
 		self.save_checkpoint(self.dataset_eval_epoch[-1], is_best)
 
+	def retrieve_category_predicted(self, target_name, predicted_utt_name):
+		if predicted_utt_name == self.obj_names_to_subs[target_name]:
+			return 'sub'
+		elif predicted_utt_name == self.obj_names_to_basics[target_name]:
+			return 'basic'
+		elif predicted_utt_name == self.obj_names_to_supers[target_name]:
+			return 'super'
+		else:
+			return 'other'
+
+	def look_at_validation_set_predictions_given_trained_model(self):
+		# prints predictions over dataset
+		categories_predicted_by_condition = init_cond_dict(self.conditions)
+		self.display_predictions_opt = False # TODO: simplify
+		for trial in self.validation_data:
+			prediction, _ = self.predict(trial)
+
+			target_obj_ind = trial['target_ind']
+			alt1_obj_ind   = trial['alt1_ind']
+			alt2_obj_ind   = trial['alt2_ind']
+			utt_ind = trial['utterance']
+			condition = trial['condition']
+
+			self.display_predictions_opt = True
+			target_name, predicted_utt_name, label_utt_name = self.display_prediction(
+				target_obj_ind, alt1_obj_ind, alt2_obj_ind, condition, prediction, utt_ind)
+			categories_predicted_by_condition[condition].append(
+				self.retrieve_category_predicted(target_name, predicted_utt_name))
+			self.display_predictions_opt = False
+		return categories_predicted_by_condition
+
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
 		if self.display_predictions_opt == True:
 			_, predicted_utt_ind = torch.max(prediction_dist, 1)
 			predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
 
+			target_name = self.obj_inds_to_names[str(target_obj_ind)]
+			alt1_name   = self.obj_inds_to_names[str(alt1_obj_ind)]
+			alt2_name   = self.obj_inds_to_names[str(alt2_obj_ind)]
+			predicted_utt_name = self.utt_inds_to_names[str(predicted_utt_ind)]
+			label_utt_name     = self.utt_inds_to_names[str(label_utt_ind)]
+
 			print '\nCondition: {}'.format(condition)
-			print '	Target: {}'.format(self.obj_inds_to_names[str(
-										target_obj_ind)])
-			print '	Alt 1: {}'.format(self.obj_inds_to_names[str(
-										alt1_obj_ind)])
-			print '	Alt 2: {}'.format(self.obj_inds_to_names[str(
-										alt2_obj_ind)])
-			print 'Label: {}'.format(self.utt_inds_to_names[str(
-										label_utt_ind)])
-			print 'Prediction: {}'.format(self.utt_inds_to_names[str(
-										predicted_utt_ind)])
+			print '	Target: {}'.format(target_name)
+			print '	Alt 1: {}'.format(alt1_name)
+			print '	Alt 2: {}'.format(alt2_name)
+			print 'Label: {}'.format(label_utt_name)
+			print 'Prediction: {}'.format(predicted_utt_name)
 			print 'Correct? {}'.format(predicted_utt_ind==label_utt_ind)
+
+			return target_name, predicted_utt_name, label_utt_name
 
 	def predict(self, trial):
 		target_obj_ind = trial['target_ind']
@@ -631,29 +659,6 @@ class ModelTrainer(object):
 		print 'Train time = {}'.format(time.time() - start_time)
 		self.save_results()
 
-# TODO: Integrate better with rest of code; this is just the quick + dirty
-def display_predictions_at_min_loss(model_name, hidden_szs, hiddens_nonlinearity,
-				 train_data, validation_data, utt_set_sz,
-				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-				 weight_decay, learning_rate,
-				 visualize_opt,  
-				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
-				 save_path):
-	trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
-				 train_data, validation_data, utt_set_sz,
-				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-				 weight_decay, learning_rate,
-				 visualize_opt,  
-				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
-				 save_path)
-	print trainer.model
-	print 'Loading checkpoint from epoch with lowest validation-set loss'
-	checkpoint = torch.load(save_path + 'model_best.pth.tar')
-	print 'Epoch = {}'.format(checkpoint['epoch'])
-	trainer.model.load_state_dict(checkpoint['state_dict'])
-	trainer.optimizer.load_state_dict(checkpoint['optimizer'])
-	trainer.print_predictions_only_validation_set()
-
 def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
@@ -702,23 +707,16 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	model_name = 'ersa'
+	# model_name = 'ersa'
 	# model_name = 'nnwc'
-	# model_name = 'nnwoc'
+	model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
-	# train_model(model_name, [], 'tanh', example_train_data, 
-	#  			example_validation_data, num_utts, num_objs, 
-	#  			'onehot', utt_info_dict, obj_info_dict, 
-	#  			decay, lr, True, 
-	#  			100, utt_costs, 0.1, true_lexicon,
-	# 			results_dir)
-
-	display_predictions_at_min_loss(model_name, [], 'tanh', example_train_data, 
+	train_model(model_name, [], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
 	 			decay, lr, True, 
