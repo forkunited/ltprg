@@ -473,10 +473,12 @@ class ModelTrainer(object):
 		dataset_evals['Mean_trainset_acc'] = self.mean_trainset_acc
 		dataset_evals['Mean_trainset_acc_by_cond'] = self.mean_trainset_acc_by_cond
 		dataset_evals['Mean_trainset_dist_from_goldstandard_S1'] = self.mean_trainset_dist_from_goldstandard_S1
+		dataset_evals['Mean_trainset_dist_from_goldstandard_S1_by_cond'] = self.mean_trainset_dist_from_goldstandard_S1_by_cond
 		dataset_evals['Mean_validationset_loss'] = self.mean_validationset_loss
 		dataset_evals['Mean_validationset_acc'] = self.mean_validationset_acc
 		dataset_evals['Mean_validationset_acc_by_cond'] = self.mean_validationset_acc_by_cond
 		dataset_evals['Mean_validationset_dist_from_goldstandard_S1'] = self.mean_validationset_dist_from_goldstandard_S1
+		dataset_evals['Mean_validationset_dist_from_goldstandard_S1_by_cond'] = self.mean_validationset_dist_from_goldstandard_S1_by_cond
 		np.save(self.save_path + 'DatasetEvaluations.npy', dataset_evals)
 
 		# save checkpoint(s)
