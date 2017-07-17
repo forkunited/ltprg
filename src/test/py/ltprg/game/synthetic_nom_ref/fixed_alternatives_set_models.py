@@ -134,7 +134,6 @@ class ModelTrainer(object):
 
 		self.conditions = list(set([trial['condition'] for trial in self.train_data]))
 		self.save_path = save_path
-		self.save_model_details()
 		
 		# create model
 		if self.model_name == 'ersa':
@@ -214,7 +213,13 @@ class ModelTrainer(object):
 								).data.numpy()[0]
 		return kl_div
 
-	def mean_performance_dataset(self, data_set):
+	def print_predictions_only_validation_set(self):
+		# prints predictions over dataset
+		self.display_predictions_opt = True
+		for trial in self.validation_data:
+			_, _ = self.predict(trial)
+
+	def mean_performance_dataset(self, data_set, set_name):
 		loss_by_trial = []
 		acc_by_trial  = []
 		acc_by_trial_by_condition = init_cond_dict(self.conditions)
@@ -222,7 +227,11 @@ class ModelTrainer(object):
 		S1_dist_goldstandard_learned_by_condition = init_cond_dict(self.conditions)
 		baseline_kl_from_uniform     = []
 		for trial in data_set:
+			if set_name == 'validation' or set_name == 'test':
+				self.display_predictions_opt = True
 			prediction, label = self.predict(trial)
+			self.display_predictions_opt = False
+
 			loss, accuracy = self.evaluate(prediction, label)
 
 			loss_by_trial.append(loss.data.numpy()[0])
@@ -258,17 +267,14 @@ class ModelTrainer(object):
 		(train_loss, train_acc, train_acc_by_cond, 
 			train_dist_from_goldstandard,
 			train_dist_from_goldstandard_by_cond, 
-			train_baseline_kl) = self.mean_performance_dataset(self.train_data)
+			train_baseline_kl) = self.mean_performance_dataset(self.train_data,
+											'train')
 
-		self.display_predictions_opt = True # turn on for valid set
-		# TODO: Currently printing predictions for gold-standard S1 too, 
-		# 		so turn that off
 		(validation_loss, validation_acc, val_acc_by_cond,
 			validation_dist_from_goldstandard, 
 			validation_dist_from_goldstandard_by_cond,
 			validation_baseline_kl) = self.mean_performance_dataset(
-											self.validation_data)
-		self.display_predictions_opt = False
+											self.validation_data, 'validation')
 
 		# collect
 		self.mean_trainset_loss.append(train_loss)
@@ -618,11 +624,35 @@ class ModelTrainer(object):
 			print 'Epoch runtime = {}'.format(time.time() - start_time)
 
 			if epoch % dataset_eval_freq == 0:
+				self.save_model_details()
 				self.evaluate_datasets(epoch)
 				self.save_results()
 
 		print 'Train time = {}'.format(time.time() - start_time)
 		self.save_results()
+
+# TODO: Integrate better with rest of code; this is just the quick + dirty
+def display_predictions_at_min_loss(model_name, hidden_szs, hiddens_nonlinearity,
+				 train_data, validation_data, utt_set_sz,
+				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+				 weight_decay, learning_rate,
+				 visualize_opt,  
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path):
+	trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
+				 train_data, validation_data, utt_set_sz,
+				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+				 weight_decay, learning_rate,
+				 visualize_opt,  
+				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
+				 save_path)
+	print trainer.model
+	print 'Loading checkpoint from epoch with lowest validation-set loss'
+	checkpoint = torch.load(save_path + 'model_best.pth.tar')
+	print 'Epoch = {}'.format(checkpoint['epoch'])
+	trainer.model.load_state_dict(checkpoint['state_dict'])
+	trainer.optimizer.load_state_dict(checkpoint['optimizer'])
+	trainer.print_predictions_only_validation_set()
 
 def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 train_data, validation_data, utt_set_sz,
@@ -649,8 +679,8 @@ def run_example():
 	# train_data_fname      = 'train_set99_3300train_trials.JSON'
 	# validation_data_fname = 'validation_set99_600validation_trials.JSON'
 
-	train_data_fname = 'train_set0_33train_trials.JSON'
-	validation_data_fname = 'validation_set0_6validation_trials.JSON'
+	train_data_fname = 'train_set14_495train_trials.JSON'
+	validation_data_fname = 'validation_set14_90validation_trials.JSON'
 
 	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
 	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
@@ -672,21 +702,28 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	# model_name = 'ersa'
+	model_name = 'ersa'
 	# model_name = 'nnwc'
-	model_name = 'nnwoc'
+	# model_name = 'nnwoc'
 
-	results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
-	train_model(model_name, [], 'tanh', example_train_data, 
+	# train_model(model_name, [], 'tanh', example_train_data, 
+	#  			example_validation_data, num_utts, num_objs, 
+	#  			'onehot', utt_info_dict, obj_info_dict, 
+	#  			decay, lr, True, 
+	#  			100, utt_costs, 0.1, true_lexicon,
+	# 			results_dir)
+
+	display_predictions_at_min_loss(model_name, [], 'tanh', example_train_data, 
 	 			example_validation_data, num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
 	 			decay, lr, True, 
 	 			100, utt_costs, 0.1, true_lexicon,
 				results_dir)
-
 
 if __name__=='__main__':
 	run_example()
