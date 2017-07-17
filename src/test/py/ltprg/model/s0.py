@@ -38,7 +38,7 @@ class VariableLengthNLLLoss(nn.Module):
         input = self._to_contiguous(input).view(-1, input.size(2))
         target = self._to_contiguous(target).view(-1, 1)
         mask = self._to_contiguous(mask).view(-1, 1)
-        output = - input.gather(1, target) 
+        output = - input.gather(1, target)
         output = output *  mask
         output = torch.sum(output) / torch.sum(mask)
 
@@ -89,9 +89,9 @@ class S0(nn.Module):
 
         hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, utterance_length, batch_first=False)
-        
+
         output, hidden = self._rnn(emb, hidden)
-        
+
         output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
         rnn_out_size = output.size()
 
@@ -100,18 +100,22 @@ class S0(nn.Module):
 
         return output, hidden
 
-    def sample(self, world, utterance_part, utterance_length=None):
+    def sample(self, world, utterance_part=None, utterance_length=None):
+        if utterance_part is None or utterance_length=None:
+            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).repeat(batch_size)
+            utterance_length = torch.Tensor([1]).repeat(batch_size)
+
         # Get output and hidden state after running utterance prefixes
         # through the model
         output, hidden = self(world, utterance_part, utterance_length)
-        print str(output.size()) + " " + str(hidden.size())        
+        print str(output.size()) + " " + str(hidden.size())
+        end_idx = Symbol.index(Symbol.SEQ_END)
 
         # Get final output and hidden
         # Sample next tokens (for batch) from output
         # Feed token into emb
         # Feed emb and hidden into rnn
         # Get next output
-
 
     def init_weights(self):
         initrange = 0.1
@@ -156,7 +160,7 @@ class S0(nn.Module):
                     i, iterations, elapsed * 1000 / LOG_INTERVAL, cur_loss, eval_loss))
                 total_loss = 0
                 start_time = time.time()
-                
+
         # 'eval' disables dropout
         self.eval()
 
@@ -174,10 +178,34 @@ class S0(nn.Module):
 
         model_out, hidden = self(world, utt_in, length)
         loss = self._criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
- 
+
         self.train()
         return loss.data[0]
-        
+
+# FIXME Note this is color-data specific
+def output_model_samples(model, D, batch_size=20):
+    data = D.get_data()
+    batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
+    sampled_utt_indices = model.sample(batch["world"])
+
+    for index in batch_indices:
+        H = data.get(index).get("state.sTargetH")
+        S = data.get(index).get("state.sTargetS")
+        L = data.get(index).get("state.sTargetL")
+        utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas")
+        observed_utt = [utterance.join(" ") + " # "
+                        for utterance in utterance_lists].join(" # ")
+        sampled_utt =  [D["utterance"].get_feature_token(tok_idx).get_value()
+                        for tok_idx in sampled_utt_indices[index]].join(" ")
+
+        print "Condition: " data.get(index).get("state.condition")
+        print "ID: " + data.get(index).get("id")
+        print "H: " + str(H)
+        print "S: " + str(S)
+        print "L: " + str(L)
+        print "True utterance: " + observed_utt
+        print "Sampled utterance: " + sampled_utt
+
 
 data_dir = sys.argv[1]
 partition_file = sys.argv[2]
@@ -191,11 +219,9 @@ partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
-D_dev_close_batch = D_dev.filter(lambda d : d.get("state.condition") == "close")
-D_dev_split_batch = D_dev.filter(lambda d : d.get("state.condition") == "split")
-D_dev_far_batch = D_dev.filter(lambda d : d.get("state.condition") == "far")
-
-
+D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
+D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
+D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
 
 world_size = D_train["world"].get_feature_set().get_size()
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
@@ -204,18 +230,6 @@ model = S0(RNN_TYPE, world_size, EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS,
            utterance_size, dropout=DROP_OUT)
 model.learn(D_train, TRAINING_ITERATIONS, TRAINING_BATCH_SIZE, eval_data=D_dev)
 
-model.sample(self, world, utterance_part):
-
-# FIXME Get start symbol index
-# FIXME Get end symbol index
-# FIXME Get sample of worlds
-start_idx = Symbol.index(Symbol.SEQ_START)
-end_idx = Symbol.index(Symbol.SEQ_END)
-D_train["utterance"].get_feature_token(index).get_value()
-D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
-D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
-D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
-
-model.sample()
-
-
+output_model_samples(model, D_dev_close)
+output_model_samples(model, D_dev_split)
+output_model_samples(model, D_dev_far)
