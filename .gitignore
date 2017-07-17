@@ -1,5 +1,6 @@
 *.pyc
 
 src/test/py/ltprg/game/synthetic_nom_ref/submit_sbatch.sh
-src/test/py/ltprg/game/synthetic_nom_ref/test/synthetic_data/notes/
+src/test/py/ltprg/game/synthetic_nom_ref/results/*
+src/test/py/ltprg/game/synthetic_nom_ref/synthetic_data/notes/*
 src/test/py/ltprg/game/synthetic_nom_ref/synthetic_data/notes/random_distractors_dataset_characteristics.pdf
