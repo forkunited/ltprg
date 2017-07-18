@@ -134,7 +134,6 @@ class ModelTrainer(object):
 
 		self.conditions = list(set([trial['condition'] for trial in self.train_data]))
 		self.save_path = save_path
-		self.save_model_details()
 		
 		# create model
 		if self.model_name == 'ersa':
@@ -214,7 +213,7 @@ class ModelTrainer(object):
 								).data.numpy()[0]
 		return kl_div
 
-	def mean_performance_dataset(self, data_set):
+	def mean_performance_dataset(self, data_set, set_name):
 		loss_by_trial = []
 		acc_by_trial  = []
 		acc_by_trial_by_condition = init_cond_dict(self.conditions)
@@ -222,7 +221,11 @@ class ModelTrainer(object):
 		S1_dist_goldstandard_learned_by_condition = init_cond_dict(self.conditions)
 		baseline_kl_from_uniform     = []
 		for trial in data_set:
+			if set_name == 'validation' or set_name == 'test':
+				self.display_predictions_opt = True
 			prediction, label = self.predict(trial)
+			self.display_predictions_opt = False
+
 			loss, accuracy = self.evaluate(prediction, label)
 
 			loss_by_trial.append(loss.data.numpy()[0])
@@ -258,17 +261,14 @@ class ModelTrainer(object):
 		(train_loss, train_acc, train_acc_by_cond, 
 			train_dist_from_goldstandard,
 			train_dist_from_goldstandard_by_cond, 
-			train_baseline_kl) = self.mean_performance_dataset(self.train_data)
+			train_baseline_kl) = self.mean_performance_dataset(self.train_data,
+											'train')
 
-		self.display_predictions_opt = True # turn on for valid set
-		# TODO: Currently printing predictions for gold-standard S1 too, 
-		# 		so turn that off
 		(validation_loss, validation_acc, val_acc_by_cond,
 			validation_dist_from_goldstandard, 
 			validation_dist_from_goldstandard_by_cond,
 			validation_baseline_kl) = self.mean_performance_dataset(
-											self.validation_data)
-		self.display_predictions_opt = False
+											self.validation_data, 'validation')
 
 		# collect
 		self.mean_trainset_loss.append(train_loss)
@@ -488,24 +488,58 @@ class ModelTrainer(object):
 			is_best = True
 		self.save_checkpoint(self.dataset_eval_epoch[-1], is_best)
 
+	def retrieve_category_predicted(self, target_name, predicted_utt_name):
+		if predicted_utt_name == self.obj_names_to_subs[target_name]:
+			return 'sub'
+		elif predicted_utt_name == self.obj_names_to_basics[target_name]:
+			return 'basic'
+		elif predicted_utt_name == self.obj_names_to_supers[target_name]:
+			return 'super'
+		else:
+			return 'other'
+
+	def look_at_validation_set_predictions_given_trained_model(self):
+		# prints predictions over dataset
+		categories_predicted_by_condition = init_cond_dict(self.conditions)
+		self.display_predictions_opt = False # TODO: simplify
+		for trial in self.validation_data:
+			prediction, _ = self.predict(trial)
+
+			target_obj_ind = trial['target_ind']
+			alt1_obj_ind   = trial['alt1_ind']
+			alt2_obj_ind   = trial['alt2_ind']
+			utt_ind = trial['utterance']
+			condition = trial['condition']
+
+			self.display_predictions_opt = True
+			target_name, predicted_utt_name, label_utt_name = self.display_prediction(
+				target_obj_ind, alt1_obj_ind, alt2_obj_ind, condition, prediction, utt_ind)
+			categories_predicted_by_condition[condition].append(
+				self.retrieve_category_predicted(target_name, predicted_utt_name))
+			self.display_predictions_opt = False
+		return categories_predicted_by_condition
+
 	def display_prediction(self, target_obj_ind, alt1_obj_ind, alt2_obj_ind,
 						   condition, prediction_dist, label_utt_ind):
 		if self.display_predictions_opt == True:
 			_, predicted_utt_ind = torch.max(prediction_dist, 1)
 			predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
 
+			target_name = self.obj_inds_to_names[str(target_obj_ind)]
+			alt1_name   = self.obj_inds_to_names[str(alt1_obj_ind)]
+			alt2_name   = self.obj_inds_to_names[str(alt2_obj_ind)]
+			predicted_utt_name = self.utt_inds_to_names[str(predicted_utt_ind)]
+			label_utt_name     = self.utt_inds_to_names[str(label_utt_ind)]
+
 			print '\nCondition: {}'.format(condition)
-			print '	Target: {}'.format(self.obj_inds_to_names[str(
-										target_obj_ind)])
-			print '	Alt 1: {}'.format(self.obj_inds_to_names[str(
-										alt1_obj_ind)])
-			print '	Alt 2: {}'.format(self.obj_inds_to_names[str(
-										alt2_obj_ind)])
-			print 'Label: {}'.format(self.utt_inds_to_names[str(
-										label_utt_ind)])
-			print 'Prediction: {}'.format(self.utt_inds_to_names[str(
-										predicted_utt_ind)])
+			print '	Target: {}'.format(target_name)
+			print '	Alt 1: {}'.format(alt1_name)
+			print '	Alt 2: {}'.format(alt2_name)
+			print 'Label: {}'.format(label_utt_name)
+			print 'Prediction: {}'.format(predicted_utt_name)
 			print 'Correct? {}'.format(predicted_utt_ind==label_utt_ind)
+
+			return target_name, predicted_utt_name, label_utt_name
 
 	def predict(self, trial):
 		target_obj_ind = trial['target_ind']
@@ -618,6 +652,7 @@ class ModelTrainer(object):
 			print 'Epoch runtime = {}'.format(time.time() - start_time)
 
 			if epoch % dataset_eval_freq == 0:
+				self.save_model_details()
 				self.evaluate_datasets(epoch)
 				self.save_results()
 
@@ -649,8 +684,8 @@ def run_example():
 	# train_data_fname      = 'train_set99_3300train_trials.JSON'
 	# validation_data_fname = 'validation_set99_600validation_trials.JSON'
 
-	train_data_fname = 'train_set0_33train_trials.JSON'
-	validation_data_fname = 'validation_set0_6validation_trials.JSON'
+	train_data_fname = 'train_set14_495train_trials.JSON'
+	validation_data_fname = 'validation_set14_90validation_trials.JSON'
 
 	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
 	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
@@ -676,7 +711,8 @@ def run_example():
 	# model_name = 'nnwc'
 	model_name = 'nnwoc'
 
-	results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
 
@@ -686,7 +722,6 @@ def run_example():
 	 			decay, lr, True, 
 	 			100, utt_costs, 0.1, true_lexicon,
 				results_dir)
-
 
 if __name__=='__main__':
 	run_example()
