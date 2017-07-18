@@ -3,7 +3,9 @@ import torch.nn as nn
 import time
 import numpy as np
 import torch
+import copy
 from torch.autograd import Variable
+from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 
@@ -11,10 +13,11 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=100
+TRAINING_ITERATIONS=1000
 TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
-LOG_INTERVAL = 10
+LEARNING_RATE = 0.05 #0.001
+LOG_INTERVAL = 100
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -49,7 +52,7 @@ class S0(nn.Module):
                  rnn_layers, utterance_size, dropout=0.5):
         super(S0, self).__init__()
 
-        print "Construction S0"
+        print "Constructing S0"
         print "Type: " + rnn_type
         print "World size: " + str(world_size)
         print "Embedding size: " + str(embedding_size)
@@ -82,12 +85,11 @@ class S0(nn.Module):
 
     def forward(self, world, utterance_part, utterance_length):
         hidden = self._encoder_nl(self._encoder(world))
+        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
         return self._forward_from_hidden(hidden, utterance_part, utterance_length)
 
     def _forward_from_hidden(self, hidden, utterance_part, utterance_length):
         emb_pad = self._drop(self._emb(utterance_part))
-
-        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, utterance_length, batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
@@ -100,22 +102,37 @@ class S0(nn.Module):
 
         return output, hidden
 
-    def sample(self, world, utterance_part=None, utterance_length=None):
-        if utterance_part is None or utterance_length=None:
-            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).repeat(batch_size)
-            utterance_length = torch.Tensor([1]).repeat(batch_size)
+    # NOTE: Assumes utterance_part does not contain end tokens
+    def sample(self, world, utterance_part=None, max_length=15):
+        if utterance_part is None:
+            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
+                .repeat(world.size(0)).long().view(1, world.size(0))
 
-        # Get output and hidden state after running utterance prefixes
-        # through the model
-        output, hidden = self(world, utterance_part, utterance_length)
-        print str(output.size()) + " " + str(hidden.size())
         end_idx = Symbol.index(Symbol.SEQ_END)
+        ended = np.zeros(shape=(world.size(0)))
+        ended_count = 0
+        unit_length = np.ones(shape=(world.size(0)), dtype=np.int8)
+        utterance_length = unit_length*utterance_part.size(0)
+        sample = copy.deepcopy(utterance_part)
+        output, hidden = self(Variable(world), Variable(utterance_part), utterance_length)
+        for i in range(utterance_part.size(0), max_length):
+            output_dist = output[output.size(0)-1].exp()
+            next_token = torch.multinomial(output_dist).data
+            sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
+            output, hidden = self._forward_from_hidden(hidden, 
+                                                       Variable(next_token.view(1, next_token.size(0))), 
+                                                       unit_length)
 
-        # Get final output and hidden
-        # Sample next tokens (for batch) from output
-        # Feed token into emb
-        # Feed emb and hidden into rnn
-        # Get next output
+            for j in range(next_token.size(0)):
+                utterance_length[j] += 1 - ended[j]
+                if next_token[j][0] == end_idx:
+                    ended[j] = 1
+                    ended_count += 1
+
+            if ended_count == world.size(0):
+                break
+
+        return sample, utterance_length
 
     def init_weights(self):
         initrange = 0.1
@@ -130,6 +147,8 @@ class S0(nn.Module):
         self.train()
         total_loss = 0
         start_time = time.time()
+        optimizer = Adam(self.parameters(), lr=LEARNING_RATE)
+        
         for i in range(iterations):
             batch = data.get_random_batch(batch_size)
             world = Variable(batch["world"])
@@ -139,14 +158,16 @@ class S0(nn.Module):
             utt_in = Variable(utterance[:utterance.size(0)-1]).long() # Input remove final token
             target_out = Variable(utterance[1:utterance.size(0)]).long() # Output (remove start token)
 
-            self.zero_grad()
+            #self.zero_grad()
             model_out, hidden = self(world, utt_in, length)
             loss = self._criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
+            
+            optimizer.zero_grad()
             loss.backward()
-
-            lr = 0.001
-            for p in self.parameters():
-                p.data.add_(-lr, p.grad.data)
+            optimizer.step()
+            #lr = 0.05
+            #for p in self.parameters():
+            #    p.data.add_(-lr, p.grad.data)
             total_loss += loss.data
 
             if i % LOG_INTERVAL == 0 and i > 0:
@@ -182,30 +203,30 @@ class S0(nn.Module):
         self.train()
         return loss.data[0]
 
+
 # FIXME Note this is color-data specific
 def output_model_samples(model, D, batch_size=20):
     data = D.get_data()
     batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
-    sampled_utt_indices = model.sample(batch["world"])
+    sampled_utt_indices, sampled_lengths = model.sample(batch["world"])
 
-    for index in batch_indices:
+    for i in range(len(batch_indices)):
+        index = batch_indices[i]
         H = data.get(index).get("state.sTargetH")
         S = data.get(index).get("state.sTargetS")
         L = data.get(index).get("state.sTargetL")
-        utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas")
-        observed_utt = [utterance.join(" ") + " # "
-                        for utterance in utterance_lists].join(" # ")
-        sampled_utt =  [D["utterance"].get_feature_token(tok_idx).get_value()
-                        for tok_idx in sampled_utt_indices[index]].join(" ")
+        utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
+        observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
+        
+        sampled_utt =  " ".join([D["utterance"].get_feature_token(sampled_utt_indices[j][i]).get_value()
+                        for j in range(sampled_lengths[i])])
 
-        print "Condition: " data.get(index).get("state.condition")
+        print "Condition: " + data.get(index).get("state.condition")
         print "ID: " + data.get(index).get("id")
-        print "H: " + str(H)
-        print "S: " + str(S)
-        print "L: " + str(L)
+        print "H: " + str(H) + ", S: " + str(S) + ", L: " + str(L)
         print "True utterance: " + observed_utt
         print "Sampled utterance: " + sampled_utt
-
+        print " "
 
 data_dir = sys.argv[1]
 partition_file = sys.argv[2]
