@@ -119,8 +119,8 @@ class S0(nn.Module):
             output_dist = output[output.size(0)-1].exp()
             next_token = torch.multinomial(output_dist).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
-            output, hidden = self._forward_from_hidden(hidden, 
-                                                       Variable(next_token.view(1, next_token.size(0))), 
+            output, hidden = self._forward_from_hidden(hidden,
+                                                       Variable(next_token.view(1, next_token.size(0))),
                                                        unit_length)
 
             for j in range(next_token.size(0)):
@@ -133,6 +133,61 @@ class S0(nn.Module):
                 break
 
         return sample, utterance_length
+
+    # NOTE: World is a batch of worlds
+    def beam_search(self, world, utterance_part=None, beam_size=5, max_length=15):
+        beams = []
+        for i in world.size(0):
+            beams[i] = self._beam_search_single(world[i], utterance_part[i], beam_size, max_length)
+        return beams
+
+    def _beam_search_single(self, world, utterance_part, beam_size, max_length):
+        if utterance_part is None:
+            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
+                .repeat(beam_size).long().view(1, beam_size)
+        else:
+            utterance_part = utterance_part.repeat(beam_size).view(1,beam_size)
+
+
+        world = world.repeat(beam_size,dim=1)
+
+        end_idx = Symbol.index(Symbol.SEQ_END)
+        ended = np.zeros(shape=(world.size(0)))
+        ended_count = 0
+        unit_length = np.ones(shape=(beam_size), dtype=np.int8)
+        utterance_length = unit_length*utterance_part.size(0)
+
+        output, hidden = self(Variable(world), Variable(utterance_part), utterance_length)
+        beam = copy.deepcopy(utterance_part)
+        scores = torch.zeros(beam_size)
+
+        for i in range(utterance_part.size(0), max_length):
+            output_dist = output[output.size(0)-1]
+            next_scores = scores.repeat(output.size(1), dim=1) + output_dist
+            top_indices = next_scores.view(beam_size*output.size(1), -1).topk(beam_size)[1]
+            top_seqs = top_indices / output.size(1)
+            top_exts = top_indices % output.size(1)
+            next_beam = torch.zeros(beam_size, beam.size(1) + 1)
+            for j in range(beam_size):
+                scores[j] = next_scores[top_seqs[j], top_exts[j]]
+                next_beam[0:i,j] = beam[top_seqs[j]]
+                next_beam[i,j] = top_exts[j]
+
+                utterance_length += 1 - ended[j]
+                if top_exts[j] == end_idx:
+                    ended[j] = 1
+                    ended_count += 1
+
+            beam = next_beam
+
+            if ended_count == world.size(0):
+                break
+
+            output, hidden = self._forward_from_hidden(hidden,
+                                                       Variable(next_tokens.view(1, next_token.size(0))),
+                                                       unit_length)
+
+        return beam, utterance_length, scores
 
     def init_weights(self):
         initrange = 0.1
@@ -148,7 +203,7 @@ class S0(nn.Module):
         total_loss = 0
         start_time = time.time()
         optimizer = Adam(self.parameters(), lr=LEARNING_RATE)
-        
+
         for i in range(iterations):
             batch = data.get_random_batch(batch_size)
             world = Variable(batch["world"])
@@ -161,7 +216,7 @@ class S0(nn.Module):
             #self.zero_grad()
             model_out, hidden = self(world, utt_in, length)
             loss = self._criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
-            
+
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -217,7 +272,7 @@ def output_model_samples(model, D, batch_size=20):
         L = data.get(index).get("state.sTargetL")
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
-        
+
         sampled_utt =  " ".join([D["utterance"].get_feature_token(sampled_utt_indices[j][i]).get_value()
                         for j in range(sampled_lengths[i])])
 
