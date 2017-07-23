@@ -1,6 +1,6 @@
 # ltprg
 
-This repository contains code for *learning to play reference games*.  The
+This repository contains code for learning to play reference games.  The
 repository is organized into an *examples* directory containing data examples,
 a *src/main* directory containing classes and functions for training and
 evaluating models, and a *src/test* directory containing tests, experiments,
@@ -25,25 +25,25 @@ the format shown in the JSON schema shown below, and for which there are
 more examples from the color data set in
 [examples/games/json/color](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color).
 
-    ```json
-    {
-     "gameid" : "*unique game identifier string*",
-     "records": [{ "roundNum": 1,
-                   "events": [
-                       { "type": "*StateSubtype*", "time": 1476996301986, "..." : "..." },
-                       { "type": "Utterance", "time": 1476996265147, "sender": "speaker", "contents": "*Stuff said by speaker*"},
-                       { "type": "Utterance", "time": 1476996265180, "sender": "listener", "contents": "*Stuff said by listener*"},
-                       { "type": "Utterance", "time": 1476996265190, "sender": "speaker", "contents": "*More stuff said by speaker*"},
-                       { "...", "..."},
-                       { "type": "*ActionSubtype*", "time": 1476996267239, "..." : "..." }
-                   ]
-                 },
-                 { "roundNum": 2, "events": [ { "...": "..." } ]},
-                 { "roundNum": 3, "events": [ { "...": "..." } ]},
-                 { "..." : "..."}
+```json
+{
+ "gameid" : "*unique game identifier string*",
+ "records": [{ "roundNum": 1,
+               "events": [
+                   { "type": "*StateSubtype*", "time": 1476996301986, "..." : "..." },
+                   { "type": "Utterance", "time": 1476996265147, "sender": "speaker", "contents": "*Stuff said by speaker*"},
+                   { "type": "Utterance", "time": 1476996265180, "sender": "listener", "contents": "*Stuff said by listener*"},
+                   { "type": "Utterance", "time": 1476996265190, "sender": "speaker", "contents": "*More stuff said by speaker*"},
+                   { "...", "..."},
+                   { "type": "*ActionSubtype*", "time": 1476996267239, "..." : "..." }
                ]
-   }
-    ```
+             },
+             { "roundNum": 2, "events": [ { "...": "..." } ]},
+             { "roundNum": 3, "events": [ { "...": "..." } ]},
+             { "..." : "..."}
+           ]
+}
+```
 
 Note that in the above schema, place-holder values are given between the
 asterisks, and the "..." fields indicate that the object could contain more
