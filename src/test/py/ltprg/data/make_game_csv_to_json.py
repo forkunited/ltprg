@@ -1,5 +1,88 @@
 #!/usr/bin/python
 
+"""
+This script convert reference game data from CSV to JSON format.  In the CSV
+format, there should be several directories containing CSV files.  The CSV files
+of a particular directory should describe reference game events of particular
+type.  For example, one directory could contain CSV files describing
+'utterances', another directory could contain CSV files describing 'states',
+and a third could contain CSV files containing 'actions'.  Each column of one
+of these CSV files represents some dimension of an event, and each row represents
+a particular game event.
+
+In the "examples/games/csv/color" directory, there is an example of the color
+reference game data set in this CSV format.  This data set consists of state,
+action, and utterance events represented by CSV files in the corresponding
+directories (these directories were built from the source "filteredCorpus.csv"
+file containing all the data).  Each CSV file in these directories contains
+events from a single game (but this isn't strictly necessary for running
+this script... a directory could just contain a single csv file with all events
+of a particular type.)
+
+Running this script on the CSV data will produce files containing game JSON
+objects of the form:
+
+{
+"gameid" : "*unique game identifier string*",
+"records": [{ "roundNum": 1,
+           "events": [
+               { "type": "*StateSubtype*", "time": 1476996301986, "..." : "..." },
+               { "type": "Utterance", "time": 1476996265147, "sender": "speaker", "contents": "*Stuff said by speaker*"},
+               { "type": "Utterance", "time": 1476996265180, "sender": "listener", "contents": "*Stuff said by listener*"},
+               { "type": "Utterance", "time": 1476996265190, "sender": "speaker", "contents": "*More stuff said by speaker*"},
+               { "...", "..."},
+               { "type": "*ActionSubtype*", "time": 1476996267239, "..." : "..." }
+           ]
+         },
+         { "roundNum": 2, "events": [ { "...": "..." } ]},
+         { "roundNum": 3, "events": [ { "...": "..." } ]},
+         { "..." : "..."}
+       ]
+}
+
+Note that in the above schema, place-holder values are given between the
+asterisks, and the "..." fields indicate that the object could contain more
+fields.
+
+In this format, each reference game is represented by a single JSON object
+containing a *"gameid"* unique identifier field for the game, and a *"records"*
+field that contains a list of numbered game round objects.  Each round object
+consists of a *"roundNum"* (round number) and a list of events.  Each event
+is either a state, an utterance, or an action.  Each of these events can
+have several game-specific dimensions with arbitrarily complicated substructure
+determined by the dimensions of the events of a particular game.
+
+For example, running this script with the following arguments will
+reproduce the color data set in JSON format as it currently resides in
+examples/games/json/color.
+
+    game_groupby: gameid
+    record_groupby: roundNum
+    input_dirs: examples/games/csv/color/state/,examples/games/csv/color/action/,examples/games/csv/color/utterance/
+    input_file_types: StateColor,ActionColor,Utterance
+    output_dir: examples/games/json/color
+
+The first two arguments specify which CSV columns to use to group the CSV lines
+into game and record (round) JSON objects.   The third argument lists the
+directories containing CSV files representing different event types.  The fourth
+argument specifies the names of the types for the events in these directories.
+The final argument gives path to the output directory in which to output the
+JSON game objects.
+
+Args:
+    game_groupby (:obj:`str`): Name of the column on which to group csv lines
+        into game JSON objects.  This column
+    record_groupby (:obj:`str`): Name of the column on which to group csv lines
+        into round records (In the example given above, this will be
+        "roundNum")
+    input_dirs (:obj:`str`): Comma-separated list of directories containing
+        CSV files describing game events of different types
+    input_file_types (:obj:`str`): Comma-separated list of types of events in
+        the CSV files in the directories given by "input_dirs"
+    output_dir (:obj:`str`): Directory in which to store the output JSON data
+
+"""
+
 import csv
 import sys
 import json
