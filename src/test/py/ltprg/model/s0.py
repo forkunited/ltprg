@@ -137,54 +137,66 @@ class S0(nn.Module):
     # NOTE: World is a batch of worlds
     def beam_search(self, world, utterance_part=None, beam_size=5, max_length=15):
         beams = []
-        for i in world.size(0):
-            beams[i] = self._beam_search_single(world[i], utterance_part[i], beam_size, max_length)
+        if utterance_part is not None:
+            utterance_part = utterance_part.transpose(1,0)
+
+        for i in range(world.size(0)):
+            utterance_part_i = None
+            if utterance_part is not None:
+                utterance_part_i = utterance_part[i].transpose(1,0)
+
+            beams.append(self._beam_search_single(world[i], utterance_part_i, beam_size, max_length))
         return beams
 
     def _beam_search_single(self, world, utterance_part, beam_size, max_length):
         if utterance_part is None:
-            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
-                .repeat(beam_size).long().view(1, beam_size)
+            utterance_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).long().view(1,1)
         else:
-            utterance_part = utterance_part.repeat(beam_size).view(1,beam_size)
+            utterance_part = utterance_part.view(utterance_part.size(0), 1)
 
-
-        world = world.repeat(beam_size,dim=1)
+        world = world.view(1, world.size(0))
 
         end_idx = Symbol.index(Symbol.SEQ_END)
-        ended = np.zeros(shape=(world.size(0)))
-        ended_count = 0
+        ended = np.zeros(shape=(beam_size))
         unit_length = np.ones(shape=(beam_size), dtype=np.int8)
         utterance_length = unit_length*utterance_part.size(0)
 
-        output, hidden = self(Variable(world), Variable(utterance_part), utterance_length)
-        beam = copy.deepcopy(utterance_part)
-        scores = torch.zeros(beam_size)
+        output, hidden = self(Variable(world), Variable(utterance_part), np.ones(1))
+        hidden = hidden.repeat(1,1, beam_size).view(1, beam_size, hidden.size(2))
+
+        beam = utterance_part.repeat(1,beam_size).view(1,beam_size)
+        scores = torch.zeros(1) #beam_size)
 
         for i in range(utterance_part.size(0), max_length):
             output_dist = output[output.size(0)-1]
-            next_scores = scores.repeat(output.size(1), dim=1) + output_dist
-            top_indices = next_scores.view(beam_size*output.size(1), -1).topk(beam_size)[1]
-            top_seqs = top_indices / output.size(1)
-            top_exts = top_indices % output.size(1)
-            next_beam = torch.zeros(beam_size, beam.size(1) + 1)
+            vocab_size = output_dist.size(1)
+            next_scores = scores.repeat(vocab_size).view(output_dist.size()) + output_dist.data
+            top_indices = next_scores.view(next_scores.size(0)*next_scores.size(1)).topk(beam_size)[1]
+            top_seqs = top_indices / vocab_size
+            top_exts = top_indices % vocab_size
+
+            next_beam = torch.zeros(beam.size(0) + 1, beam_size).long()
+            next_utterance_length = unit_length*utterance_part.size(0)
+            next_ended = np.zeros(shape=(beam_size))
+            scores = torch.zeros(beam_size)
             for j in range(beam_size):
                 scores[j] = next_scores[top_seqs[j], top_exts[j]]
-                next_beam[0:i,j] = beam[top_seqs[j]]
+                next_beam[0:i,j] = beam[:,top_seqs[j]]
                 next_beam[i,j] = top_exts[j]
 
-                utterance_length += 1 - ended[j]
-                if top_exts[j] == end_idx:
-                    ended[j] = 1
-                    ended_count += 1
-
+                next_utterance_length[j] = utterance_length[top_seqs[j]] + (1 - ended[top_seqs[j]])
+                next_ended[j] = ended[top_seqs[j]]
+                if top_exts[j] == end_idx and next_ended[j] != 1:
+                    next_ended[j] = 1
             beam = next_beam
+            utterance_length = next_utterance_length
+            ended = next_ended
 
-            if ended_count == world.size(0):
+            if sum(ended) == beam_size:
                 break
 
             output, hidden = self._forward_from_hidden(hidden,
-                                                       Variable(next_tokens.view(1, next_token.size(0))),
+                                                       Variable(beam[i].view(1,beam[i].size(0))),
                                                        unit_length)
 
         return beam, utterance_length, scores
@@ -264,17 +276,22 @@ def output_model_samples(model, D, batch_size=20):
     data = D.get_data()
     batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
     sampled_utt_indices, sampled_lengths = model.sample(batch["world"])
+    beams = model.beam_search(batch["world"])
 
     for i in range(len(batch_indices)):
         index = batch_indices[i]
         H = data.get(index).get("state.sTargetH")
         S = data.get(index).get("state.sTargetS")
         L = data.get(index).get("state.sTargetL")
+        
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
 
         sampled_utt =  " ".join([D["utterance"].get_feature_token(sampled_utt_indices[j][i]).get_value()
                         for j in range(sampled_lengths[i])])
+
+        beam, utterance_length, scores = beams[i]
+        top_utts = [" ".join([D["utterance"].get_feature_token(beam[k][j]).get_value() for k in range(utterance_length[j])]) for j in range(beam.size(1))]
 
         print "Condition: " + data.get(index).get("state.condition")
         print "ID: " + data.get(index).get("id")
@@ -282,6 +299,10 @@ def output_model_samples(model, D, batch_size=20):
         print "True utterance: " + observed_utt
         print "Sampled utterance: " + sampled_utt
         print " "
+        print "Top " + str(beam.size(1)) + " utterances"
+        for j in range(len(top_utts)):
+            print str(scores[j]) + ": " + top_utts[j]
+        print "\n"
 
 data_dir = sys.argv[1]
 partition_file = sys.argv[2]
