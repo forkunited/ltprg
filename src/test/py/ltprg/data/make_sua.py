@@ -1,3 +1,23 @@
+"""
+Constructs a data set of state-utterance-action examples from reference game
+data.  Each example consists of a single game state, an action that occurred
+in that state, and a sequence of utterances that occurred before the action.
+
+Args:
+    utterance_mode (:obj:`str`): Value determing which utterances are included
+        in each state-utterance-action example.  Possible values are:
+            UTTERANCES_ALL : Keep all utterances
+            UTTERANCES_SPEAKER : Include only speaker utterances
+            UTTERANCES_LISTENER : Include only listener utterances
+            UTTERANCES_SPEAKER_LAST : Include the final speaker utterance
+                before an action
+            UTTERANCES_LISTENER_LAST : Include the final listener utterance
+                before an action
+    input_data_dir (:obj:`str`): Input directory containing JSON game data
+    output_data_dir (:obj:`str`): Output directory in which to store
+        state-utterance-action data
+"""
+
 import sys
 import time
 import numpy as np
@@ -22,7 +42,7 @@ for i in range(game_data.get_size()):
     game_id = datum.get("gameid")
     for record in datum.get("records"):
         roundNum = record["roundNum"]
-        sua_index = 0 
+        sua_index = 0
         cur_utts = []
         cur_state = None
         has_speaker = False
@@ -40,12 +60,12 @@ for i in range(game_data.get_size()):
                 cur_action = event
 
                 sua_properties = dict()
-                sua_properties["id"] = game_id + "_" + str(roundNum) + "_" + str(sua_index) 
+                sua_properties["id"] = game_id + "_" + str(roundNum) + "_" + str(sua_index)
                 sua_properties["gameid"] = game_id
                 sua_properties["roundNum"] = roundNum
                 sua_properties["sua"] = sua_index
                 sua_properties["state"] = cur_state
-                
+
                 if utterance_mode == UTTERANCES_ALL:
                     sua_properties["utterances"] = cur_utts
                 elif utterance_mode == UTTERANCES_SPEAKER:
@@ -60,9 +80,9 @@ for i in range(game_data.get_size()):
                     sua_properties["utterances"] = []
 
                 sua_properties["action"] = cur_action
-                
+
                 sua_datums.append(Datum(properties=sua_properties))
-                
+
                 sua_index += 1
                 cur_state = None
                 cur_utts = []
@@ -71,4 +91,3 @@ for i in range(game_data.get_size()):
 
 sua_data = DataSet(data=sua_datums)
 sua_data.save(output_data_dir)
-

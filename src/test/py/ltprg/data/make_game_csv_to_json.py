@@ -25,19 +25,19 @@ objects of the form:
 {
 "gameid" : "*unique game identifier string*",
 "records": [{ "roundNum": 1,
-           "events": [
+              "events": [
                { "type": "*StateSubtype*", "time": 1476996301986, "..." : "..." },
                { "type": "Utterance", "time": 1476996265147, "sender": "speaker", "contents": "*Stuff said by speaker*"},
                { "type": "Utterance", "time": 1476996265180, "sender": "listener", "contents": "*Stuff said by listener*"},
                { "type": "Utterance", "time": 1476996265190, "sender": "speaker", "contents": "*More stuff said by speaker*"},
                { "...", "..."},
                { "type": "*ActionSubtype*", "time": 1476996267239, "..." : "..." }
+              ]
+            },
+            { "roundNum": 2, "events": [ { "...": "..." } ]},
+            { "roundNum": 3, "events": [ { "...": "..." } ]},
+            { "..." : "..."}
            ]
-         },
-         { "roundNum": 2, "events": [ { "...": "..." } ]},
-         { "roundNum": 3, "events": [ { "...": "..." } ]},
-         { "..." : "..."}
-       ]
 }
 
 Note that in the above schema, place-holder values are given between the
