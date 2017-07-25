@@ -8,7 +8,7 @@ and scripts that run the model training and evaluation functions.
 
 The library relies on the [mungpy](https://github.com/forkunited/mungpy)
 repository at for munging the reference game data into a common format that
-can be featurized and used by the models.  Some
+can be featurized for use by the learning models.  Some
 instructions for how to push reference game data through this pipeline are
 given below.  The main steps in this pipeline described below include:
 
@@ -21,8 +21,8 @@ given below.  The main steps in this pipeline described below include:
 
 Pushing the data from all the reference games into a standard format will
 allow for easy re-use of featurization and modeling code.  Currently, we use
-the format shown in the JSON schema shown below, and for which there are
-more examples from the color data set in
+the format shown in the JSON schema below.  There are 
+more examples of this format from the color data set in
 [examples/games/json/color](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color).
 
 ```json
@@ -32,12 +32,15 @@ more examples from the color data set in
                "events": [
                    { "type": "*StateSubtype*", "time": 1476996301986, "..." : "..." },
                    { "type": "Utterance", "time": 1476996265147, "sender": "speaker",
-                     "contents": "*Stuff said by speaker*"},
+                     "contents": "*Stuff said by speaker*"
+                   },
                    { "type": "Utterance", "time": 1476996265180, "sender": "listener",
-                     "contents": "*Stuff said by listener*"},
+                     "contents": "*Stuff said by listener*"
+                   },
                    { "type": "Utterance", "time": 1476996265190, "sender": "speaker",
-                     "contents": "*More stuff said by speaker*"},
-                   { "...", "..."},
+                     "contents": "*More stuff said by speaker*"
+                   },
+                   { "..." : "..." },
                    { "type": "*ActionSubtype*", "time": 1476996267239, "..." : "..." }
                ]
              },
@@ -54,7 +57,7 @@ fields.
 
 In this format, each reference game is represented by a single JSON object
 containing a *"gameid"* unique identifier field for the game, and a *"records"*
-field that contains a list of numbered game round objects.  Each round object
+field that contains a list of numbered game-round objects.  Each round object
 consists of a *"roundNum"* (round number) and a list of events.  Each event
 is either a state, an utterance, or an action.  Each of these events can
 have several game-specific dimensions with arbitrarily complicated substructure
@@ -108,8 +111,8 @@ their game IDs to split a data set.
 Several reference game learning models depend on training from examples
 that consist of a game state, utterances, and an action.  For example, training
 the RSA listener models to play the color reference game depends on having
-one example per game round, consisting of a state with a target and two alternative
-colors, the speaker utterances, and the color that the listener clicked on after
+one example per game round, consisting of a state of three colors, 
+the speaker utterances, and the color that the listener clicked after
 hearing the utterances.  The script at
 [test/py/ltprg/data/make_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_sua.py)
 constructs state-utterance-action examples like this from the game data.
@@ -182,7 +185,7 @@ datums from the color data set.  Each of these datums has the following form:
 Note that in this example,  there are indicators of which color the listener
 clicked in the *"lClicked_i"* fields of the *"action"* sub-object.  Given datums in
 this form stored at *input_data_dir*, the following function will compute a
-feature matrix containing rows of these indicators for each datum:
+feature matrix containing rows of these *"lClicked_i"* indicators for each datum:
 
 ```python
 mung.feature_helpers.featurize_path_scalars(
@@ -191,18 +194,18 @@ mung.feature_helpers.featurize_path_scalars(
     partition_file, # Data partition
     lambda d : d.get("gameid"), # Function that partitions the data
     "listener_clicked", # Name of the feature
-    ["action.lClicked_0", "action.lClicked_1", "action.lClicked_2"],
-    init_data="train") # JSON paths to feature values
+    ["action.lClicked_0", "action.lClicked_1", "action.lClicked_2"], # JSON paths to feature values
+    init_data="train") 
 ```
 
 The first two arguments to the function specify the input and output locations
 on disk.  The third and fourth argument specify the location of a file storing
 a data partition and the "key function" for partitioning the data (see the
 section on [partitions](#data-partitons)), and the final *init_data*
-specifies the part of this partition on which to *initialize* the features.  
-This is necessary when the feature initialization depends on some property of
-the data, but should not depend on the values from the test data.  The
-"listener_clicked" argument just gives a name for the feature.  Finally,
+specifies the part of this partition on which to *initialize* the features
+(this is necessary when the feature initialization depends on some property of
+the data, but should not depend on the values from the test data). 
+The "listener_clicked" argument just gives a name for the feature.  Finally,
 the list of "action.lClicked_0", "action.lClicked_1", and "action.lClicked_2"
 specifies the JSON paths within the data from which to gather the feature
 values.  This will construct a matrix where each row represents a
@@ -222,14 +225,14 @@ mung.feature_helpers.featurize_path_enum_seqs(
     ["utterances[*].nlp.lemmas.lemmas"], # JSON path into data examples
     15, # Maximum utterance length
     token_fn=lambda x : x.lower(), # Function applied to tokens to construct the vocabulary
-    indices=True,
-    init_data="train") # Indicates that indices will be computed instead of one-hot vectors
+    indices=True, # Indicates that indices will be computed instead of one-hot vectors
+    init_data="train") 
 ```
 
 The function first computes a vocabulary of lower-cased lemmas gathered from the
-"utterances[\*].nlp.lemmas.lemmas" path across the data set.  Then, it computes
-a sequence of *15* padded feature matrices representing sequences of these
-lemmas for each datum.
+"utterances[\*].nlp.lemmas.lemmas" JSON path across the data set.  Then, it computes
+a sequence of *15* padded feature matrices representing the lemmas of utterance 
+tokens for each datum.
 
 See
 [test/py/ltprg/game/color/data/feature_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/color/data/featurize_sua.py)
