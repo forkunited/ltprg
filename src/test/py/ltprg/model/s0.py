@@ -283,7 +283,7 @@ def output_model_samples(model, D, batch_size=20):
         H = data.get(index).get("state.sTargetH")
         S = data.get(index).get("state.sTargetS")
         L = data.get(index).get("state.sTargetL")
-        
+
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
 
