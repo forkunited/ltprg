@@ -26,3 +26,41 @@ def model_speaker_1(learned_lexicon, world_prior, alpha, cost_weight, costs):
 	x = (alpha * utilities).sub_(cost_weight * costs.expand_as(utilities))
 	m = nn.LogSoftmax()
 	return m(x)
+
+def model_speaker_1_mod(learned_lexicon, rsa_params):
+	# returns logSoftmax -- not for use in RSA listener model
+	t = torch.transpose(model_literal_listener(
+						learned_lexicon, rsa_params.world_prior), 0, 1)
+	utilities = torch.log(t + 10e-06)
+	x = (rsa_params.alpha * utilities).sub_(
+			rsa_params.cost_weight * rsa_params.costs.expand_as(utilities)
+		)
+	m = nn.LogSoftmax()
+	return m(x)
+
+class RSAParams(object):
+	""" RSA Parameters enapsulation.
+	"""
+
+	def __init__(self, alpha, cost_weight, cost_dict, gold_standard_lexicon,
+				 world_sz=3):
+		"""
+		alpha				(speaker rationality param)
+		cost_dict			(dict of utterance costs)
+		cost_weight		(utterance cost weight in RSA model)
+		gold_stardard_lexicon (num utterances x num objects np array of 
+							 ground-truth lexicon used to generate data)
+		"""
+		self.alpha = alpha
+		self.cost_weight = cost_weight
+		self.world_prior = uniform_prior(world_sz)
+		self.costs = Variable(torch.FloatTensor(
+			[cost_dict[str(k)] for k in range(len(cost_dict)]))
+		self.gold_stardard_lexicon = Variable(torch.FloatTensor(
+			gold_stardard_lexicon))
+
+	def to_dict(self):
+		d = dict()
+		d['alpha'] = self.alpha
+		d['cost_weight'] = self.cost_weight
+		d['costs'] = self.costs
