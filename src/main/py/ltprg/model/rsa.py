@@ -1,5 +1,6 @@
 import torch
-from ltprg.dist import Categorical
+import torch.nn as nn
+from ltprg.model.dist import Categorical
 
 def _normalize_rows(t):
 	row_sums = torch.sum(t, dim=len(t.size())-1)
@@ -30,10 +31,6 @@ def _size_down_tensor(t):
     """
     return torch.squeeze(t, 1)
 
-# FIXME Change documentation for forward function and dist.py
-# Check worlds/utterances passed into speaker to see if they have the right
-# number of dimensions (single utterance should go to many utterances per batch)
-# Get rid of observation_fn... just pass observation down through...
 
 class S(nn.Module):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
@@ -76,7 +73,7 @@ class S(nn.Module):
                 a literal listener or a literal speaker.  Defaults to True.
         """
 
-        super(L, self).__init__()
+        super(S, self).__init__()
         self._level = level
         self._meaning_fn = meaning_fn
         self._world_prior_fn = world_prior_fn
@@ -118,16 +115,27 @@ class S(nn.Module):
         utterance_prior = self._utterance_prior_fn(observation)
         ps = None
         if self._level == 0:
-            meaning = self._meaning_fn(utterance, world).transpose(0,2,1)
-            ps = _normalize_rows(utterance_prior.p().expand_as(meaning) * meaning)
+            meaning = self._meaning_fn(utterance, world).transpose(2,1)
+            ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
         else:
-            l_dist = self._L(utterance_prior.support(), observation, utterance_dist=True).p().transpose(0,2,1)
-            ps = _normalize_rows(utterance_prior.p().expand_as(l_dist)) * l_dist)
+            l_dist = self._L(utterance_prior.support(), observation, utterance_dist=True).p().transpose(2,1)
+            ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(l_dist) * l_dist)
 
         if not world_dist:
-            ps = _size_down_tensor(ps)
+            if self._level > 0:
+                world = _size_down_tensor(world)
+                world_index = self._world_prior_fn.get_index(world, observation)
+                    
+                # world_index contains a list of world indices into worldxutterance
+                # matrices.  So the offsets below will take the ith world index into
+                # the ith matrix.
+                # Note that there is a separate worldxutterance matrix for each observation.
+                world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + world_index
+                ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[world_index_offset]
+            else:
+                ps = _size_down_tensor(ps)
 
-        return Categorical(ps)
+        return Categorical(utterance_prior.support(), ps=ps)
 
 
 class L(nn.Module):
@@ -205,23 +213,31 @@ class L(nn.Module):
             ltprg.dist.Categorical : (Batch size) x (Utterance prior size)
             categorical listener world distributions
         """
-
         if not utterance_dist:
             utterance = _size_up_tensor(utterance)
 
         if observation is None:
             observation = torch.zeros(utterance.size(0))
 
-        world_prior = self._world_prior_fn(observation)
+        world_prior = self._world_prior_fn(observation)    
+
         ps = None
         if self._level == 0:
             meaning = self._meaning_fn(utterance, world_prior.support())
-            ps = _normalize_rows(world_prior.p().expand_as(meaning) * meaning)
+            ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
         else:
-            s_dist = self._S(world_prior.support(), world_dist=True).p().transpose(0,2,1)  # Batch size x world size x utterance size
-            ps = _normalize_rows(world_prior.p().expand_as(s_dist)) * s_dist)
+            s_dist = self._S(world_prior.support(), world_dist=True).p().transpose(2,1)  # Batch size x world size x utterance size
+            ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(s_dist) * s_dist)
 
         if not utterance_dist:
-            ps = size_down_tensor(ps)
+            if self._level > 0:
+                utterance = _size_down_tensor(utterance)
+                utt_index = self._utterance_prior_fn.get_index(utterance, observation)
+                utt_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + utt_index
+                ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[utt_index_offset]
+            else:
+                ps = _size_down_tensor(ps)
 
-        return Categorical(ps)
+        return Categorical(world_prior.support(), ps=ps)
+
+
