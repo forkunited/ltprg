@@ -1,7 +1,12 @@
+from __future__ import division
+
 import abc
-from model_trainer import BasicModel, ModelType, EmbeddingType, one_hot
+from basic_model import BasicModel, ModelType, EmbeddingType, one_hot
 from network_components import MLP
 from RSA import model_speaker_1_mod
+import torch
+import torch.nn as nn
+from torch.autograd import Variable
 
 
 """ Models that leverage a fixed alternative set.
@@ -49,7 +54,8 @@ class FASM_ERSA(FixedAlternativeSetModel):
                     one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
 
 
-    def predict(self, trial, display_prediction=False):
+    def predict(self, trial, display_prediction=False,
+                use_gold_standard_lexicon=False):
         """ Make prediction for specified trial.
         """
         # inputs are 2D tensors
@@ -58,8 +64,18 @@ class FASM_ERSA(FixedAlternativeSetModel):
         # forward pass
         outputs = self.model.forward(inputs) # MLP forward
 
+        # Gold standard comparison
+        if use_gold_standard_lexicon:
+            # uses ground-truth lexicon (for comparison w/ 
+            # model predictions); grab objects for this trial
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+        else:
+            # uses learned params
+            lexicon = torch.transpose(outputs, 0, 1)
+
         # feed MLP output into RSA, using learned params
-        lexicon = torch.transpose(outputs, 0, 1)
         speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj
@@ -86,8 +102,8 @@ class FASM_NNWC(FixedAlternativeSetModel):
         """ Create underlying model.
         """
         in_sz = self.obj_set_sz * 3
-        self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
-                         self.hiddens_nonlinearity, 'logSoftmax')
+        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+                     self.hiddens_nonlinearity, 'logSoftmax')
 
 
     def format_inputs(tiral):
@@ -104,7 +120,8 @@ class FASM_NNWC(FixedAlternativeSetModel):
                     one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
 
 
-    def predict(self, trial, display_prediction=False):
+    def predict(self, trial, display_prediction=False,
+                use_gold_standard_lexicon=False):
         """ Make prediction for specified trial.
         """
         # inputs are 2D tensors
@@ -112,6 +129,20 @@ class FASM_NNWC(FixedAlternativeSetModel):
 
         # forward pass
         outputs = self.model.forward(inputs) # MLP forward
+
+        # Gold standard comparison
+        if use_gold_standard_lexicon:
+            # uses ground-truth lexicon (for comparison w/ 
+            # model predictions); grab objects for this trial
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+
+            # pass through RSA
+            speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
+
+            # pull dist over utterances for target obj
+            outputs = speaker_table[2, :].unsqueeze(0)
 
         # format label
         label = Variable(torch.LongTensor([trial['utterance']]))
@@ -122,6 +153,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
         
         return outputs, label
 
+
 class FASM_NNWOC(FixedAlternativeSetModel):
     """ NEURAL NETWORK WITHOUT CONTEXT MODEL ('nnwoc') produces distribution 
         over utterances given target object emebdding only
@@ -131,8 +163,8 @@ class FASM_NNWOC(FixedAlternativeSetModel):
         """ Create underlying model.
         """
         in_sz = self.obj_set_sz
-        self.model = MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
-                         self.hiddens_nonlinearity, 'logSoftmax')
+        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+                     self.hiddens_nonlinearity, 'logSoftmax')
 
 
     def format_inputs(trial):
@@ -144,7 +176,8 @@ class FASM_NNWOC(FixedAlternativeSetModel):
         return Variable(one_hot(trial['target_ind'], self.obj_set_sz))
 
 
-    def predict(self, trial, display_prediction=False):
+    def predict(self, trial, display_prediction=False,
+                use_gold_standard_lexicon=False):
         """ Make prediction for specified trial.
         """
         # inputs are 2D tensors
@@ -152,6 +185,20 @@ class FASM_NNWOC(FixedAlternativeSetModel):
 
         # forward pass
         outputs = self.model.forward(inputs) # MLP forward
+
+        # Gold standard comparison
+        if use_gold_standard_lexicon:
+            # uses ground-truth lexicon (for comparison w/ 
+            # model predictions); grab objects for this trial
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+
+            # pass through RSA
+            speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
+            
+            # pull dist over utterances for target obj
+            outputs = speaker_table[2, :].unsqueeze(0)
 
         # format label
         label = Variable(torch.LongTensor([trial['utterance']]))
