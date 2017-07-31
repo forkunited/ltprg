@@ -13,7 +13,9 @@ from rsa import uniform_prior, model_literal_listener
 
 # Creates nested synthetic datasets of increasing size. Each dataset consists of 
 #	a train set, and held-out validation and test sets (trial types are unique across
-#	train/valid/test sets). Each set is saved as its own JSON file, and is a list of
+#	train/valid/test sets). 
+#
+# Each set is saved as its own JSON file, and is a list of
 #	dictionaries, where each dictionary is a trial with 
 #	{"target_ind", "alt1_ind", "alt2_ind", "condition", "utterance", "log-prob of utterance"}. 
 #	Utterances are sampled from an RSA level-1 speaker distribution given the 
@@ -23,6 +25,11 @@ from rsa import uniform_prior, model_literal_listener
 #	(1) uniform distribution of conditions, with each object appearing at least once
 #		per batch as a distractor ('uniform-conditions')
 #	(2) randomly drawn distractors (no constraints enforced; 'random-distractors')
+# 
+# If 'random-distractors' option is used, a second held-out validation set is also 
+#	created. This set has the same random distractors as the train set, and is 
+#	used for stopping.
+#
 
 random.seed(3)
 
@@ -499,45 +506,41 @@ class DatasetMaker(object):
 			trials_as_inds.append(d)
 		return trials_as_inds
 
-	def check_unique_across_splits(self, trial, train_set, other_heldout_set):
+	def check_unique_across_splits(self, trial, other_set_trials):
 		# checks if trial type is unique across splits 
 		# curr_set (the set to which we're adding this trial), train_set, 
 		# and other_heldoutset are lists of lists of object inds
-		existing_trial_types = get_unique_type_counts(train_set + other_heldout_set)
+		existing_trial_types = get_unique_type_counts(other_set_trials)
 		if str(trial_to_trialtype(trial)) in existing_trial_types.keys():
 			return False # not unique
 		else:
 			return True
 
-	def make_trial_with_checking(self, condition, train_set, other_heldout_set):
+	def make_trial_with_checking(self, condition, other_set_trials):
 		check = 0
 		while check == 0:
 			candidate = self.generate_trial(random.choice(self.obj_names), 
 				                            condition)
 
 			# check that candidate is not 
-			if self.check_unique_across_splits(candidate, train_set, 
-				  							   other_heldout_set):
-
+			if self.check_unique_across_splits(candidate, other_set_trials):
 				check = 1
 				return candidate
 
-	def create_holdout_set(self, targ_sz, train_set, holdout_set,
-						   other_heldout_set):
+	def create_holdout_set(self, trial_type, targ_sz, holdout_set, other_set_trials):
 		# Creates a validation or test split given a target size, and 
 		# 	checks that trials are not duplicative with trials in the 
 		#	train set and other heldout set 
-		# 	(validation or test)
+		# 	(validation or test). Nests.
 		#
-		# INPUTS: targ_sz 		    (must be a multiple of self.num_conditions,
+		# INPUTS: trial_type 				('uniform_conditions' or 'random_distractors')
+		#		  targ_sz 		    (must be a multiple of self.num_conditions,
 		#							 so that trials are balanced across 
 		#							 conditions)
-		#		  train_set         (lst of trials, where trials are 
-		#							 lst of obj inds)
 		#		  holdout_set       (either empty, or contains some trials 
-		#							 already)
-		#		  other_heldout_set (same format as train_set; may be 
-		#					         empty lst if not yet created)
+		#							 already; trials are lst of obj inds)
+		#		  other_set_trials  (lst of trials seen in other sets; may be 
+		#							 empty if other sets not yet created)
 		# OUTPUTS: holdout_set 		(list of lst of object inds -- not 
 		#							 reformatted yet)
 
@@ -547,14 +550,19 @@ class DatasetMaker(object):
 		assert (num_trials_to_add % self.num_conditions) == 0
 
 		# top up
-		num_trials_per_condition = int(num_trials_to_add/self.num_conditions)
-		for i in range(num_trials_per_condition):
-			holdout_set.append(self.make_trial_with_checking('sub-nec', 
-				                    train_set, other_heldout_set))
-			holdout_set.append(self.make_trial_with_checking('basic-suff', 
-				                    train_set, other_heldout_set))
-			holdout_set.append(self.make_trial_with_checking('super-suff', 
-				                    train_set, other_heldout_set))
+		if trial_type == 'random_distractors':
+			for i in range(num_trials_to_add):
+				holdout_set.append(self.make_trial_with_checking('random-choice',
+									other_set_trials))
+		elif trial_type == 'uniform_conditions':
+			num_trials_per_condition = int(num_trials_to_add/self.num_conditions)
+			for i in range(num_trials_per_condition):
+				holdout_set.append(self.make_trial_with_checking('sub-nec', 
+										other_set_trials))
+				holdout_set.append(self.make_trial_with_checking('basic-suff', 
+					                    other_set_trials))
+				holdout_set.append(self.make_trial_with_checking('super-suff', 
+					                    other_set_trials))
 		return holdout_set
 
 	def create_train_set_batch(self):
@@ -620,6 +628,11 @@ class DatasetMaker(object):
 		self.validation_sets_by_set_sz = []
 		self.test_sets_by_set_sz       = []
 
+		if self.train_type == 'random_distractors':
+			print '\nRandom distractors training set'
+			print 'Creating a second validation set, with random distractors'
+			self.randomdistractor_validation_sets_by_set_sz = []
+
 		for i in range(len(self.train_set_szs)):
 			print '\nMaking set # {}'.format(i)
 
@@ -627,38 +640,47 @@ class DatasetMaker(object):
 			train_set      = []
 			validation_set = []
 			test_set       = []
+			if self.train_type == 'random_distractors':
+				randomdistractor_validation_set = []
 			if i != 0:
 				# nest: build on previous (smaller) datasets
 				train_set      = copy.copy(self.train_sets_by_set_sz[i-1])
 				validation_set = copy.copy(self.validation_sets_by_set_sz[i-1])
 				test_set       = copy.copy(self.test_sets_by_set_sz[i-1])
-
+				if self.train_type == 'random_distractors':
+					randomdistractor_validation_set = copy.copy(
+						self.randomdistractor_validation_sets_by_set_sz[i-1])
 			# create train set
 			train_set += self.create_train_set_batch()
 			print 'Train set made'
 
-			# create validation, test sets
-			make_first = np.random.binomial(1, 0.5)
-			if make_first == 0:
-				test_set = self.create_holdout_set(int(self.test_set_szs[i]), 
-													train_set, test_set, 
-													validation_set)
-				validation_set = self.create_holdout_set(int
-													(self.validation_set_szs[i]),
-													train_set, validation_set,
-													test_set)
-			elif make_first == 1:
-				validation_set = self.create_holdout_set(int
-													(self.validation_set_szs[i]),
-													train_set, validation_set,
-													test_set)
-				test_set = self.create_holdout_set(int(self.test_set_szs[i]), 
-													train_set, test_set, 
-													validation_set)
+			# TODO: Clean up
+			if self.train_type == 'random_distractors':
+				randomdistractor_validation_set = self.create_holdout_set(
+					'random_distractors', int(self.validation_set_szs[i]),
+					randomdistractor_validation_set,
+					train_set + test_set + validation_set)
+
+			# create test, validation
+			non_testset_trials = train_set + validation_set
+			if self.train_type == 'random_distractors':
+				non_testset_trials = non_testset_trials + randomdistractor_validation_set
+			test_set = self.create_holdout_set('uniform_conditions',
+												int(self.test_set_szs[i]),
+												test_set, non_testset_trials)
+
+			non_validset_trials = train_set + test_set
+			if self.train_type == 'random_distractors':
+				non_validset_trials = non_validset_trials + randomdistractor_validation_set
+			validation_set = self.create_holdout_set('uniform_conditions',
+													int(self.validation_set_szs[i]),
+													validation_set, non_validset_trials)
 
 			assert len(train_set) == self.train_set_szs[i] # added correct num trials
 			assert len(validation_set) == self.validation_set_szs[i]
 			assert len(test_set) == self.test_set_szs[i]
+			if self.train_type == 'random_distractors':
+				assert len(randomdistractor_validation_set) == self.validation_set_szs[i]
 
 			if i%20 == 0:
 				if self.visualize_train_batches == True:
@@ -680,13 +702,20 @@ class DatasetMaker(object):
 										 + ' trials)', 
 										 self.obj_names, self.utterances_as_names,
 										 self.utt_inds_to_utt_names)
-
-			# TODO: Add utterance assignment here! (replacing assignment
-			# 		in webppl)
+					if self.train_type == 'random_distractors':
+						visualize_batch(randomdistractor_validation_set, 'Set ' + str(i) 
+										 + ' - Random Distractors Validation Set (' 
+										 + str(int(self.validation_set_szs[i])) 
+										 + ' trials)', 
+										 self.obj_names, self.utterances_as_names,
+										 self.utt_inds_to_utt_names)
 
 			self.train_sets_by_set_sz.append(train_set)
 			self.validation_sets_by_set_sz.append(validation_set)
 			self.test_sets_by_set_sz.append(test_set)
+			if self.train_type == 'random_distractors':
+				self.randomdistractor_validation_sets_by_set_sz.append(
+					randomdistractor_validation_set)
 
 	def reformat_dataset_and_save(self):
 		# could be more efficient given nested reformats
@@ -713,6 +742,20 @@ class DatasetMaker(object):
 			print 'Validation Mean Log-Prob of Utterance = {}'.format(
 				validation_set_LL)
 			print 'Test Mean Log-Prob of Utterance = {}'.format(test_set_LL)
+
+			if self.train_type == 'random_distractors':
+				randomdistractor_validation_set = self.reformat_trials(
+					self.randomdistractor_validation_sets_by_set_sz[i])
+				randomdistractor_validation_set_LL = self.mean_log_prob_utterances_in_set(
+					self.randomdistractor_validation_sets_by_set_sz[i])
+				print 'Random Distractors Valid set sz = {}, (LL = {})'.format(
+					len(randomdistractor_validation_set), randomdistractor_validation_set_LL)
+				rd_validation_name = (self.dataset_save_path + 'randomdistractors_validation_set' 
+							+ str(i) + '_'
+							+ str(int(self.validation_set_szs[i])) 
+							+ 'validation_')
+				self.save_as_json(randomdistractor_validation_set, rd_validation_name + 'trials.JSON')
+				self.save_as_json({'LL': float(randomdistractor_validation_set_LL)}, rd_validation_name + 'LL.JSON')
 
 			# save sets as json
 			train_name = (self.dataset_save_path + 'train_set' 
