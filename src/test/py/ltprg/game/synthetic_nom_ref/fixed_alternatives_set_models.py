@@ -596,7 +596,7 @@ class ModelTrainer(object):
 		self.optimizer.zero_grad() # zero gradient buffers
 
 	def train(self):
-		# start_time = time.time()
+		start_time = time.time()
 		max_norm = 1 # grad norm
 		num_epochs = 1000 # epochs to train
 
@@ -627,7 +627,6 @@ class ModelTrainer(object):
 		self.evaluate_datasets(epoch) # establish baseline
 		self.best_validationset_loss = self.mean_validationset_loss[-1]
 		while epoch < num_epochs:
-			start_time = time.time()
 			epoch += 1
 			print '\nEpoch {}'.format(epoch)
 
@@ -659,9 +658,30 @@ class ModelTrainer(object):
 		print 'Train time = {}'.format(time.time() - start_time)
 		self.save_results()
 
+	def evaluate_test_set_at_peak(self, test_set):
+		# set model to stopping pt
+		print 'Loading checkpoint from epoch with lowest validation-set loss'
+		checkpoint = torch.load(self.save_path + 'model_best.pth.tar')
+		print 'Epoch = {}'.format(checkpoint['epoch'])
+		self.model.load_state_dict(checkpoint['state_dict'])
+
+		# assess performance
+		(loss, acc, acc_by_cond,dist_from_goldstandard, 
+			dist_from_goldstandard_by_cond, _) = self.mean_performance_dataset(test_set, 'test')
+
+
+		dataset_evals = dict()
+		dataset_evals['Mean_testset_loss'] = loss
+		dataset_evals['Mean_testset_acc'] = acc
+		dataset_evals['Mean_testset_acc_by_cond'] = acc_by_cond
+		dataset_evals['Mean_testset_dist_from_goldstandard_S1'] = dist_from_goldstandard
+		dataset_evals['Mean_testset_dist_from_goldstandard_S1_by_cond'] = dist_from_goldstandard_by_cond
+		np.save(self.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
+
 def train_model(model_name, hidden_szs, hiddens_nonlinearity,
-				 train_data, validation_data, utt_set_sz,
-				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+				 train_data, validation_data, test_data,
+				 utt_set_sz, obj_set_sz, 
+				 obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
 				 visualize_opt,
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
@@ -674,6 +694,7 @@ def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 alpha, cost_dict, cost_weight, gold_standard_lexicon,
 				 save_path)
 	trainer.train()
+	trainer.evaluate_test_set_at_peak(test_data)
 
 def run_example():
 	train_set_type = 'random_distractors' # 'random_distractors' or 'uniform_conditions'
@@ -685,10 +706,13 @@ def run_example():
 	# validation_data_fname = 'validation_set99_600validation_trials.JSON'
 
 	train_data_fname = 'train_set14_495train_trials.JSON'
-	validation_data_fname = 'validation_set14_90validation_trials.JSON'
+	validation_data_fname = 'randomdistractors_validation_set14_90validation_trials.JSON'
+	test_data_fname = 'validation_set14_90validation_trials.JSON' # uniform conds
 
 	example_train_data 		= load_json(data_by_num_trials_path + train_data_fname) 
 	example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
+	example_test_data 		= load_json(data_by_num_trials_path + test_data_fname)
+
 	d = load_json(data_path + 'true_lexicon.JSON')
 	num_utts = len(d)
 	num_objs = len(d['0'])
@@ -717,7 +741,8 @@ def run_example():
 		os.makedirs(results_dir)
 
 	train_model(model_name, [], 'tanh', example_train_data, 
-	 			example_validation_data, num_utts, num_objs, 
+	 			example_validation_data, example_test_data,
+	 			num_utts, num_objs, 
 	 			'onehot', utt_info_dict, obj_info_dict, 
 	 			decay, lr, True, 
 	 			100, utt_costs, 0.1, true_lexicon,

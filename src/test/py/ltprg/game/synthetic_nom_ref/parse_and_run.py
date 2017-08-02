@@ -9,6 +9,7 @@ from fixed_alternatives_set_models import train_model, load_json
 #	hiddens_nonlinearity
 #	train_data_fname
 #	validation_data_fname
+#	test_data_fname
 #	weight_decay
 #	learning_rate
 #	alpha
@@ -17,22 +18,24 @@ from fixed_alternatives_set_models import train_model, load_json
 
 def parse_args_and_run():
 	print sys.argv
-	assert len(sys.argv) == 11
+	assert len(sys.argv) == 12
 
 	model_name = sys.argv[1]
 	hidden_szs = ast.literal_eval(sys.argv[2])
 	hiddens_nonlinearity = sys.argv[3]
 	train_data_fname = sys.argv[4]
 	validation_data_fname = sys.argv[5]
-	weight_decay = ast.literal_eval(sys.argv[6])
-	learning_rate = ast.literal_eval(sys.argv[7])
-	alpha = ast.literal_eval(sys.argv[8])
-	cost_weight = ast.literal_eval(sys.argv[9])
-	save_path = sys.argv[10]
+	test_data_fname = sys.argv[6]
+	weight_decay = ast.literal_eval(sys.argv[7])
+	learning_rate = ast.literal_eval(sys.argv[8])
+	alpha = ast.literal_eval(sys.argv[9])
+	cost_weight = ast.literal_eval(sys.argv[10])
+	save_path = sys.argv[11]
 
 	# load stuff
 	train_data = load_json(train_data_fname)
 	validation_data = load_json(validation_data_fname)
+	test_data = load_json(test_data_fname)
 
 	# fixed params
 	data_rt = 'synthetic_data/'
@@ -48,7 +51,8 @@ def parse_args_and_run():
 	visualize_opt = False
 
 	train_model(model_name, hidden_szs, hiddens_nonlinearity,
-				 train_data, validation_data, utt_set_sz,
+				 train_data, validation_data, test_data,
+				 utt_set_sz,
 				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
 				 weight_decay, learning_rate,
 				 visualize_opt,  
