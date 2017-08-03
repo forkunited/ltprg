@@ -14,7 +14,7 @@ def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 				  test_data_fname,
 				  weight_decay, lr, 
 				  alpha, cost_weight, save_path):
-	cmd = """python parse_and_run.py {} {} {} {} {} {} {} {} {} {}""".format(
+	cmd = """python parse_and_run.py {} {} {} {} {} {} {} {} {} {} {}""".format(
 			model_name, hidden_layer_szs, hiddens_nonlinearity,
 		 	train_data_fname, validation_data_fname, 
 		 	test_data_fname,
