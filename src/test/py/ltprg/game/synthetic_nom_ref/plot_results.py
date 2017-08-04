@@ -36,17 +36,25 @@ def pull_min_vals(eval_results_dict):
 	return (min_loss, acc_sub_nec_at_min, acc_basic_suff_at_min, acc_super_suff_at_min,
 			kl_sub_nec_at_min, kl_basic_suff_at_min, kl_super_suff_at_min)
 
-def pull_data_NLL(set_nums, synthetic_datasets_path):
-	NLLs_by_set = []
+def pull_data_NLL(set_nums, synthetic_datasets_path, validation_prefix):
+	train_NLLs_by_set = []
+	validation_NLLs_by_set = []
 	for s in set_nums:
 		set_name = 'set' + str(s)
 		for root, dirs, filenames in os.walk(synthetic_datasets_path):
 			for f in filenames:
 				if f.endswith(".JSON"):
-					if fnmatch.fnmatch(f,'validation_' + set_name + '_*LL*'):
+					if fnmatch.fnmatch(f, 'train_' 
+										+ set_name + '_*LL*'):
+						trainf = = f.split('.')[0]
+					if fnmatch.fnmatch(f, validation_prefix + 'validation_' 
+										+ set_name + '_*LL*'):
 						validationf = f.split('.')[0]
-		NLLs_by_set.append(load_json(synthetic_datasets_path + validationf + '.JSON')['LL'] * -1)
-	return NLLs_by_set
+		train_NLLs_by_set.append(load_json(synthetic_datasets_path 
+								 + trainf + '.JSON')['LL'] * -1)
+		validation_NLLs_by_set.append(load_json(synthetic_datasets_path 
+								 + validationf + '.JSON')['LL'] * -1)
+	return train_NLLs_by_set, validation_NLLs_by_set
 
 
 def plot_performance(model_names, train_set_szs, vals_by_model, x_label, 
@@ -85,8 +93,9 @@ def pull_performance_by_set_sz(set_nums, model_name, results_rt):
 		    sub_kl_by_sz, basic_kl_by_sz, super_kl_by_sz)
 
 def wrapper():
-	params_desc = 'single_hidden_layer_sz_100' #'no_hidden_layer'
+	params_desc = 'no_hidden_layer'
 	train_set_type = 'random_distractors' # 'uniform_conditions'
+	validation_prefix = 'randomdistractors_'
 	results_path = 'results/' + train_set_type + '/' + params_desc + '/'
 	synthetic_datasets_path = 'synthetic_data/datasets_by_num_trials/' + train_set_type + '/'
 	set_nums = range(0, 100)
@@ -94,7 +103,8 @@ def wrapper():
 	model_names = ['ersa', 'nnwc', 'nnwoc']
 
 	# generative NLL
-	validationset_generative_NLL_by_sz = pull_data_NLL(set_nums, synthetic_datasets_path)
+	trainset_generative_NLL_by_sz, validationset_generative_NLL_by_sz = pull_data_NLL(set_nums, 
+													synthetic_datasets_path, validation_prefix)
 
 	set_szs = (np.array(set_nums) + 1) * batch_sz
 	print set_szs
@@ -116,9 +126,9 @@ def wrapper():
 		basic_kl_by_model.append(basic_kl)
 		super_kl_by_model.append(super_kl)
 
-	loss_by_model.append(validationset_generative_NLL_by_sz)
+	loss_by_model.append(trainset_generative_NLL_by_sz, validationset_generative_NLL_by_sz)
 	loss_legend_labels = model_names
-	loss_legend_labels.append('generative')
+	loss_legend_labels.append('train set generative', 'validation set generative')
 	print loss_legend_labels
 	plot_performance(loss_legend_labels, set_szs, loss_by_model,
 		'Train Set Size (# Trials)', 'Min. Loss on Validation Set', 'Negative Log-Likelihood Loss by Train Set Size',

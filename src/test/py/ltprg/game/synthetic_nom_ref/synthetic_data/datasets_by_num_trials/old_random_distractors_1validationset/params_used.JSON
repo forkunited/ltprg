@@ -1,0 +1,1 @@
+{"batch_sz": 33, "train_set_characteristics": "random_distractors", "cost_weight": 0.1, "num_conditions": 3, "alpha": 100}
