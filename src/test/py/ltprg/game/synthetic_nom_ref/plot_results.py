@@ -6,8 +6,6 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 
-# TODO: Add generative NLLoss to plots
-
 def load_json(filename):
 	with open(filename) as json_data:
 	    d = json.load(json_data)
