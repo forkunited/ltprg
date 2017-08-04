@@ -71,11 +71,11 @@ class TestRSA(unittest.TestCase):
                 return Categorical(Variable(vs))
 
             def get_index(self, world, observation):
-                return World.get_index(world)
+                return World.get_index(world), False, None
 
         class UtterancePriorFn(nn.Module):
             def __init__(self):
-              super(UtterancePriorFn, self).__init__() 
+              super(UtterancePriorFn, self).__init__()
 
             def forward(self, observation):
                 """
@@ -86,9 +86,9 @@ class TestRSA(unittest.TestCase):
                 return Categorical(Variable(vs))
 
             def get_index(self, utterance, observation):
-                return Utterance.get_index(utterance)
+                return Utterance.get_index(utterance), False, None
 
-        def meaning_fn(utterance, world):
+        def meaning_fn(utterance, world, observation):
             """
             Computes whether utterances apply to worlds
             Args:
@@ -98,6 +98,8 @@ class TestRSA(unittest.TestCase):
                 world (:obj:`world batch_like`):
                     (Batch size) x (World prior size) x (World) array
                         of worlds
+
+                observation (:obj:`observation batch_like`)
             Returns:
                 (Batch size) x (Utterance prior size) x (World prior size)
                     tensor of meaning values
@@ -124,7 +126,7 @@ class TestRSA(unittest.TestCase):
         L1 = rsa.L(1, meaning_fn, world_prior_fn, utterance_prior_fn)
 
         utterance_batch = Variable(torch.LongTensor([Utterance.BLUE, Utterance.GREEN, Utterance.SQUARE, Utterance.CIRCLE]))
-        
+
         l0_dist = L0(utterance_batch)
         l0_dist_support = l0_dist.support()
         l0_dist_p = l0_dist.p()
@@ -137,11 +139,11 @@ class TestRSA(unittest.TestCase):
                 s += World.get_str(l0_dist_support[b,i].data[0]) + ": " + str(l0_dist_p[b,i].data[0]) + "\t"
             print s
         print "\n"
-         
+
         l1_dist = L1(utterance_batch)
         l1_dist_support = l1_dist.support()
         l1_dist_p = l1_dist.p()
-        
+
         print "L1 Distributions"
         print "----------------"
         for b in range(utterance_batch.size(0)):
@@ -149,14 +151,14 @@ class TestRSA(unittest.TestCase):
             for i in range(l1_dist_p.size(1)):
                 s += World.get_str(l1_dist_support[b,i].data[0]) + ": " + str(l1_dist_p[b,i].data[0]) + "\t"
             print s
-        print "\n"        
+        print "\n"
 
         world_batch = Variable(torch.LongTensor([World.SQUARE_BLUE, World.CIRCLE_BLUE, World.SQUARE_GREEN]))
-        
+
         s1_dist = S1(world_batch)
         s1_dist_support = s1_dist.support()
         s1_dist_p = s1_dist.p()
-        
+
         print "S1 Distributions"
         print "----------------"
         for b in range(world_batch.size(0)):
@@ -164,7 +166,7 @@ class TestRSA(unittest.TestCase):
             for i in range(s1_dist_p.size(1)):
                 s += Utterance.get_str(s1_dist_support[b,i].data[0]) + ": " + str(s1_dist_p[b,i].data[0]) + "\t"
             print s
-        print "\n"        
+        print "\n"
 
 
 if __name__ == '__main__':

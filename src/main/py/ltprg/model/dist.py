@@ -27,7 +27,7 @@ class Categorical(Distribution):
 
             Args:
                 vs (:obj:`batch_like`): (Batch size) x (Support size) array of
-		    supports
+		    		supports
                 ps (:obj:`batch_like`, optional): (Batch size) x
                     (Support size) array of probabilities.  Defaults to a batch of
                     uniform distributions
@@ -37,25 +37,28 @@ class Categorical(Distribution):
         self._vs = vs
         self._ps = ps
         if self._ps is None:
-            self._ps = torch.ones(self._vs.size())
+			vs_for_size = self._vs
+			if isinstance(self._vs, tuple):
+				vs_for_size = self._vs[0]
+            self._ps = torch.ones(vs_for_size.size(0), vs_for_size.size(1))
             self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).repeat(1,self._ps.size(1)))
 
     def __getitem__(self, key):
         if key == 0:
-            return self._vs
-        elif key == 1:
             return self._ps
-
-    #def __getitem__(self, key):
-    #    return Categorical(torch.unsqueeze(self._vs[key], 0), ps=torch.unsqueeze(self._ps[key], 0))
 
     def sample(self, n=1):
         indices = torch.multinomial(self._ps, n, True).data
-        return torch.gather(self._vs, len(self._vs.size())-1, indices)
+		if isinstance(self._vs, tuple):
+			vs_parts = []
+			for i in range(len(self._vs)):
+				vs_parts.append(torch.gather(self._vs[i], len(self._vs[i].size())-1, indices))
+			return tuple(vs_parts)
+		else:
+        	return torch.gather(self._vs, len(self._vs.size())-1, indices)
 
     def support(self):
         return self._vs
 
     def p(self):
         return self._ps
-

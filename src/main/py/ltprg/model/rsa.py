@@ -46,11 +46,12 @@ class S(nn.Module):
         Args:
             level (int): Level of the distribution
 
-            meaning_fn (:obj:`utterance batch_like`, :obj:`world batch_like` -> :obj:`tensor_like`):
+            meaning_fn (:obj:`utterance batch_like`, :obj:`world batch_like`, :obj:`observation batch_like` -> :obj:`tensor_like`):
                 Args:
                     (Batch size) x (Utterance prior size) x (Utterance) array
                         of utterances
                     (Batch size) x (World prior size) x (World) array of worlds
+                    (Batch size) x (Observation) array of observations
                 Returns:
                     (Batch size) x (Utterance prior size) x (World prior size)
                         tensor of meaning values
@@ -113,25 +114,30 @@ class S(nn.Module):
             observation = torch.zeros(world.size(0))
 
         utterance_prior = self._utterance_prior_fn(observation)
+        world_support = None
         ps = None
         if self._level == 0:
-            meaning = self._meaning_fn(utterance, world).transpose(2,1)
+            meaning = self._meaning_fn(utterance, world, observation).transpose(2,1)
             ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
         else:
-            l_dist = self._L(utterance_prior.support(), observation, utterance_dist=True).p().transpose(2,1)
+            l = self._L(utterance_prior.support(), observation, utterance_dist=True)
+            world_support = l.support()
+            l_dist = l.p().transpose(2,1)
             ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(l_dist) * l_dist)
 
         if not world_dist:
             if self._level > 0:
                 world = _size_down_tensor(world)
-                world_index = self._world_prior_fn.get_index(world, observation)
-                    
+                world_index, has_missing, mask  = self._world_prior_fn.get_index(world, observation, world_support)
+
                 # world_index contains a list of world indices into worldxutterance
                 # matrices.  So the offsets below will take the ith world index into
                 # the ith matrix.
                 # Note that there is a separate worldxutterance matrix for each observation.
                 world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + world_index
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[world_index_offset]
+                if has_missing:
+                    ps = ps * mask.expand_as(ps)
             else:
                 ps = _size_down_tensor(ps)
 
@@ -152,11 +158,12 @@ class L(nn.Module):
         Args:
             level (int): Level of the distribution
 
-            meaning_fn (:obj:`utterance batch_like`, :obj:`world batch_like` -> :obj:`tensor_like`):
+            meaning_fn (:obj:`utterance batch_like`, :obj:`world batch_like`, :obj:`observation batch_like` -> :obj:`tensor_like`):
                 Args:
                     (Batch size) x (Utterance prior size) x (Utterance) array
                         of utterances
                     (Batch size) x (World prior size) x (World) array of worlds
+                    (Batch size) x (Observation) array of observations
                 Returns:
                     (Batch size) x (Utterance prior size) x (World prior size)
                         tensor of meaning values
@@ -219,25 +226,27 @@ class L(nn.Module):
         if observation is None:
             observation = torch.zeros(utterance.size(0))
 
-        world_prior = self._world_prior_fn(observation)    
-
+        world_prior = self._world_prior_fn(observation)
+        utterance_support = None
         ps = None
         if self._level == 0:
-            meaning = self._meaning_fn(utterance, world_prior.support())
+            meaning = self._meaning_fn(utterance, world_prior.support(), observation)
             ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
         else:
-            s_dist = self._S(world_prior.support(), world_dist=True).p().transpose(2,1)  # Batch size x world size x utterance size
+            s = self._S(world_prior.support(), world_dist=True)
+            utterance_support = s.support()
+            s_dist = s.p().transpose(2,1)  # Batch size x world size x utterance size
             ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(s_dist) * s_dist)
 
         if not utterance_dist:
             if self._level > 0:
                 utterance = _size_down_tensor(utterance)
-                utt_index = self._utterance_prior_fn.get_index(utterance, observation)
+                utt_index, has_missing, mask = self._utterance_prior_fn.get_index(utterance, observation, utterance_support)
                 utt_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + utt_index
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[utt_index_offset]
+                if has_missing:
+                    ps = ps * mask.expand_as(ps)
             else:
                 ps = _size_down_tensor(ps)
 
         return Categorical(world_prior.support(), ps=ps)
-
-
