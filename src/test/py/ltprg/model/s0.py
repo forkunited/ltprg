@@ -195,6 +195,7 @@ class S0(nn.Module):
             if sum(ended) == beam_size:
                 break
 
+            # FIXME Hidden state needs to be re-ordered to match beam?
             output, hidden = self._forward_from_hidden(hidden,
                                                        Variable(beam[i].view(1,beam[i].size(0))),
                                                        unit_length)
@@ -283,7 +284,7 @@ def output_model_samples(model, D, batch_size=20):
         H = data.get(index).get("state.sTargetH")
         S = data.get(index).get("state.sTargetS")
         L = data.get(index).get("state.sTargetL")
-        
+
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
 
