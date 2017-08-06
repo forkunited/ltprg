@@ -3,7 +3,7 @@ from __future__ import division
 import abc
 from basic_model import BasicModel, ModelType, EmbeddingType, one_hot
 from network_components import MLP
-from RSA import model_speaker_1
+from rsa import model_speaker_1
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -27,12 +27,11 @@ class UnboundedAlternativeSetModel(BasicModel):
             utt_set_sz, obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
             weight_decay, learning_rate, rsa_params,
             save_path)
-        assert self.obj_embedding_type == embbedingType.ONE_HOT
+        assert self.obj_embedding_type == EmbeddingType.ONE_HOT
 
 class UASM_ERSA(UnboundedAlternativeSetModel):
     """ EXPLICIT RSA MODEL ('ersa'): given an object embedding, neural network
-        produces truthiness vals between 0 and 1 for each 
-        utterance in the alternatives set. Each object in a trial 
+        produces truthiness vals between 0 and 1. Each object in a trial 
         is fed through the network, producing a lexicon that is 
         then fed to RSA. RSA returns a level-1 speaker distribution, 
         P(u | target, context, L)
@@ -41,12 +40,12 @@ class UASM_ERSA(UnboundedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz
+        in_sz = self.obj_set_sz * 3 + self.utt_set_sz
         return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
              self.hiddens_nonlinearity, 'sigmoid')
 
 
-    def format_inputs(trial):
+    def format_inputs(self, trial):
         """ Format inputs for model.
             trial (dict) {
                           'alt1_ind': a,
@@ -56,8 +55,9 @@ class UASM_ERSA(UnboundedAlternativeSetModel):
         """
         return Variable(torch.cat(
                     [one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
+                    one_hot(trial['alt2_ind'], self.obj_set_sz),
+                    one_hot(trial['target_ind'], self.obj_set_sz),
+                    one_hot(trial['utterance'], self.utt_set_sz)], 1))
 
 
     def predict(self, trial, display_prediction=False,
@@ -107,8 +107,8 @@ class UASM_NNWC(UnboundedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz * 3
-        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+        in_sz = self.obj_set_sz * 3 + self.utt_set_sz
+        return MLP(in_sz, self.hidden_szs, 1, 
                      self.hiddens_nonlinearity, 'logSoftmax')
 
 
@@ -122,8 +122,9 @@ class UASM_NNWC(UnboundedAlternativeSetModel):
         """
         return Variable(torch.cat(
                     [one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
+                    one_hot(trial['alt2_ind'], self.obj_set_sz),
+                    one_hot(trial['target_ind'] ,self.obj_set_sz),
+                    one_hot(trial['utterance'], self.utt_set_sz)], 1))
 
 
     def predict(self, trial, display_prediction=False,
@@ -168,8 +169,8 @@ class UASM_NNWOC(UnboundedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz
-        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+        in_sz = self.obj_set_sz + self.utt_set_sz
+        return MLP(in_sz, self.hidden_szs, 1, 
                      self.hiddens_nonlinearity, 'logSoftmax')
 
 
@@ -179,7 +180,8 @@ class UASM_NNWOC(UnboundedAlternativeSetModel):
                           'target_ind': c
                           }
         """
-        return Variable(one_hot(trial['target_ind'], self.obj_set_sz))
+        return Variable(one_hot(trial['target_ind']
+                        one_hot(trial['utterance'], self.obj_set_sz)))
 
 
     def predict(self, trial, display_prediction=False,

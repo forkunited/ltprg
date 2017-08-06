@@ -10,6 +10,7 @@ import time
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
+from unbounded_alternatives_set_models import UASM_ERSA, UASM_NNWC, UASM_NNWOC
 import visdom
 from vis_embedding import vis_embedding
 
@@ -484,7 +485,7 @@ def run_example():
 
     # Various Models:
     # ---------------
-    # Model Type #1 -- Fixed Alternative Set Models
+    # Model Type 1 -- Fixed Alternative Set Models
     fasm_ersa = FASM_ERSA(
         model_name='fasm_ersa',
         model_type=ModelType.to_string(ModelType.ERSA),
@@ -533,13 +534,64 @@ def run_example():
         save_path=create_save_path('fasm_nnwoc', train_set_type, train_data_fname)
     )
 
+    # Model Type 2 -- Unbounded Alternative Set Models
+    # ------------------------------------------------
+    uasm_ersa = UASM_ERSA(
+        model_name='uasm_ersa',
+        model_type=ModelType.to_string(ModelType.ERSA),
+        hidden_szs=[],
+        hiddens_nonlinearity='tanh',
+        utt_set_sz=num_utts,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('uasm_ersa', train_set_type, train_data_fname)
+    )
+
+
+    uasm_nnwc = UASM_NNWC(
+        model_name='uasm_nnwc',
+        model_type=ModelType.to_string(ModelType.NNWC),
+        hidden_szs=[50, 100, 200],
+        hiddens_nonlinearity='relu',
+        utt_set_sz=num_utts,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('uasm_nnwc', train_set_type, train_data_fname)
+    )
+
+    uasm_nwwoc = FASM_NNWOC(
+        model_name='uasm_nnwoc',
+        model_type=ModelType.to_string(ModelType.NNWOC),
+        hidden_szs=[],
+        hiddens_nonlinearity='tanh',
+        utt_set_sz=num_utts,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('uasm_nnwoc', train_set_type, train_data_fname)
+    )
+
     # Example
     train_model(
-        model=fasm_nnwc,
+        model=uasm_nnwc,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
-        save_path=fasm_ersa.save_path
+        save_path=uasm_ersa.save_path
     )
   
 
