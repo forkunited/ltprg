@@ -144,7 +144,7 @@ class BasicModel(object):
         """ Print and return informaion pertaining to a prediction.
         """
         _, predicted_utt_ind = torch.max(prediction_dist, 1)
-        predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
+        predicted_utt_ind = predicted_utt_ind.data.numpy()[0] # extract from tensor
 
         target_name = self.obj_inds_to_names[str(trial['target_ind'])]
         alt1_name   = self.obj_inds_to_names[str(trial['alt1_ind'])]
@@ -152,18 +152,18 @@ class BasicModel(object):
         predicted_utt_name = self.utt_inds_to_names[str(predicted_utt_ind)]
         label_utt_name     = self.utt_inds_to_names[str(trial['utterance'])]
 
-        print '\nCondition: {}'.format(condition)
+        print '\nCondition: {}'.format(trial['condition'])
         print ' Target: {}'.format(target_name)
         print ' Alt 1: {}'.format(alt1_name)
         print ' Alt 2: {}'.format(alt2_name)
         print 'Label: {}'.format(label_utt_name)
         print 'Prediction: {}'.format(predicted_utt_name)
-        print 'Correct? {}'.format(predicted_utt_ind==label_utt_ind)
+        print 'Correct? {}'.format(predicted_utt_ind==trial['utterance'])
 
         return target_name, predicted_utt_name, label_utt_name
 
 
-    def save_model_details(self):
+    def save_details(self):
         """ Save model details to disk.
         """
         d = dict()

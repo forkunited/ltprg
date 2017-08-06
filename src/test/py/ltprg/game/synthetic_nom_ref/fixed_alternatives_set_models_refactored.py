@@ -111,7 +111,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
                      self.hiddens_nonlinearity, 'logSoftmax')
 
 
-    def format_inputs(tiral):
+    def format_inputs(self, trial):
         """ Format inputs for model.
             trial (dict) {
                           'alt1_ind': a,
@@ -122,7 +122,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
         return Variable(torch.cat(
                     [one_hot(trial['alt1_ind'], self.obj_set_sz),
                     one_hot(trial['alt2_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
+                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 1))
 
 
     def predict(self, trial, display_prediction=False,

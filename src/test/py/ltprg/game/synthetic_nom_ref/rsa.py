@@ -10,11 +10,7 @@ def uniform_prior(len):
 
 def normalize_tensor_rows(t):
 	# t is 2D tensor
-	print "T_size: {}".format(t.size())
-	row_sums = torch.sum(t, dim=1)
-	print "row_sums: {}".format(row_sums.size())
-	print "expand: {}".format(row_sums.expand_as(t).size())
-
+	row_sums = torch.unsqueeze(torch.sum(t, dim=1), 1)
 	return torch.div(t, row_sums.expand_as(t))
 
 def model_literal_listener(learned_lexicon, world_prior):
@@ -52,7 +48,7 @@ class RSAParams(object):
 		alpha				(speaker rationality param)
 		cost_dict			(dict of utterance costs)
 		cost_weight		(utterance cost weight in RSA model)
-		gold_stardard_lexicon (num utterances x num objects np array of 
+		gold_standard_lexicon (num utterances x num objects np array of 
 							 ground-truth lexicon used to generate data)
 		"""
 		self.alpha = alpha
@@ -60,7 +56,7 @@ class RSAParams(object):
 		self.world_prior = uniform_prior(world_sz)
 		self.costs = Variable(torch.FloatTensor(
 			[cost_dict[str(k)] for k in range(len(cost_dict))]))
-		self.gold_stardard_lexicon = Variable(torch.FloatTensor(
+		self.gold_standard_lexicon = Variable(torch.FloatTensor(
 			gold_standard_lexicon))
 
 	def to_dict(self):
@@ -68,3 +64,4 @@ class RSAParams(object):
 		d['alpha'] = self.alpha
 		d['cost_weight'] = self.cost_weight
 		d['costs'] = self.costs
+		return d

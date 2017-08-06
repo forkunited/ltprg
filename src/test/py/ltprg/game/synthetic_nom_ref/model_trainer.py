@@ -129,7 +129,7 @@ class ModelTrainer(object):
             print 'Epoch runtime = {}'.format(time.time() - start_time)
 
             if epoch % dataset_eval_freq == 0:
-                self.save_model_details()
+                self.model.save_details()
                 self.evaluate_datasets(epoch)
                 self.save_results()
 
@@ -222,11 +222,11 @@ class ModelTrainer(object):
             loss_by_trial.append(loss.data.numpy()[0])
             acc_by_trial.append(accuracy.data.numpy()[0])
             acc_by_trial_by_condition[trial['condition']].append(
-                            accuracy.data.numpy()[0][0])
+                            accuracy.data.numpy()[0])
 
             # assess KL-divergence(S1 from gold-standard lexicon, S1 from 
             # learned lexicon)
-            kl_from_S1 = self.learned_versus_gold_standard_S1(trial, prediction)
+            kl_from_S1 = self.model.learned_versus_gold_standard_S1(trial, prediction)
             S1_dist_goldstandard_learned.append(kl_from_S1)
             S1_dist_goldstandard_learned_by_condition[trial['condition']].append(
                     kl_from_S1)
@@ -517,7 +517,7 @@ def run_example():
         save_path=create_save_path('fasm_nnwc', train_set_type, train_data_fname)
     )
 
-    fasm_nnwc = FASM_NNWOC(
+    fasm_nnwoc = FASM_NNWOC(
         model_name='fasm_nnwoc',
         model_type=ModelType.to_string(ModelType.NNWOC),
         hidden_szs=[],
@@ -535,7 +535,7 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_ersa,
+        model=fasm_nnwc,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
