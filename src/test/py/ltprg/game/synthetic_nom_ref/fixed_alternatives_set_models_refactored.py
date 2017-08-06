@@ -41,8 +41,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz
-        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+        return MLP(self.obj_set_sz, self.hidden_szs, self.utt_set_sz, 
              self.hiddens_nonlinearity, 'sigmoid')
 
 
@@ -56,8 +55,8 @@ class FASM_ERSA(FixedAlternativeSetModel):
         """
         return Variable(torch.cat(
                     [one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
+                    one_hot(trial['alt2_ind'], self.obj_set_sz),
+                    one_hot(trial['target_ind'], self.obj_set_sz)], 0))
 
 
     def predict(self, trial, display_prediction=False,
@@ -122,7 +121,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
         """
         return Variable(torch.cat(
                     [one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['alt1_ind'], self.obj_set_sz),
+                    one_hot(trial['alt2_ind'], self.obj_set_sz),
                     one_hot(trial['target_ind'] ,self.obj_set_sz)], 0))
 
 
@@ -168,8 +167,7 @@ class FASM_NNWOC(FixedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz
-        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
+        return MLP(self.obj_set_sz, self.hidden_szs, self.utt_set_sz, 
                      self.hiddens_nonlinearity, 'logSoftmax')
 
 
