@@ -12,7 +12,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 import torch.optim as optim
 from network_components import MLP
-from rsa import uniform_prior, model_speaker_1
+from rsa import uniform_prior, model_speaker_1_legacy
 from vis_embedding import vis_embedding
 
 # Trains model. Also assesses mean loss, accuracy, and KL-divergence from 
@@ -568,7 +568,7 @@ class ModelTrainer(object):
 				# uses learned params
 				lexicon = torch.transpose(outputs, 0, 1)
 			# pass through RSA
-			speaker_table = model_speaker_1(lexicon, self.world_prior, 
+			speaker_table = model_speaker_1_legacy(lexicon, self.world_prior, 
 											self.alpha, self.cost_weight, 
 											self.costs)
 			# pull dist over utterances for target obj

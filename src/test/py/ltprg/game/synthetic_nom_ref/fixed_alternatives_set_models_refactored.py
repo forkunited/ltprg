@@ -3,7 +3,7 @@ from __future__ import division
 import abc
 from basic_model import BasicModel, ModelType, EmbeddingType, one_hot
 from network_components import MLP
-from RSA import model_speaker_1_mod
+from RSA import model_speaker_1
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -82,7 +82,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
             lexicon = torch.transpose(outputs, 0, 1)
 
         # feed MLP output into RSA, using learned params
-        speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
+        speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj
         outputs = speaker_table[2, :].unsqueeze(0)
@@ -145,7 +145,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
-            speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
+            speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
             # pull dist over utterances for target obj
             outputs = speaker_table[2, :].unsqueeze(0)
@@ -201,7 +201,7 @@ class FASM_NNWOC(FixedAlternativeSetModel):
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
-            speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
+            speaker_table = model_speaker_1(lexicon, self.rsa_params)
             
             # pull dist over utterances for target obj
             outputs = speaker_table[2, :].unsqueeze(0)

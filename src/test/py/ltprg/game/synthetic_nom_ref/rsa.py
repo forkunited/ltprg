@@ -18,7 +18,7 @@ def model_literal_listener(learned_lexicon, world_prior):
 	listener = world_prior.expand_as(learned_lexicon) * learned_lexicon
 	return normalize_tensor_rows(listener)
 
-def model_speaker_1(learned_lexicon, world_prior, alpha, cost_weight, costs):
+def model_speaker_1_legacy(learned_lexicon, world_prior, alpha, cost_weight, costs):
 	# returns logSoftmax -- not for use in RSA listener model
 	t = torch.transpose(model_literal_listener(
 						learned_lexicon, world_prior), 0, 1)
@@ -27,7 +27,7 @@ def model_speaker_1(learned_lexicon, world_prior, alpha, cost_weight, costs):
 	m = nn.LogSoftmax()
 	return m(x)
 
-def model_speaker_1_mod(learned_lexicon, rsa_params):
+def model_speaker_1(learned_lexicon, rsa_params):
 	# returns logSoftmax -- not for use in RSA listener model
 	t = torch.transpose(model_literal_listener(
 						learned_lexicon, rsa_params.world_prior), 0, 1)
