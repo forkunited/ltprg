@@ -731,9 +731,9 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	# model_name = 'ersa'
+	model_name = 'ersa'
 	# model_name = 'nnwc'
-	model_name = 'nnwoc'
+	# model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
