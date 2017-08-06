@@ -1,8 +1,10 @@
 import abc
 import numpy as np 
+import os
 from rsa import uniform_prior
 import torch
 import torch.nn as nn
+from torch import optim
 from torch.autograd import Variable
 
 class BasicModel(object):
@@ -46,14 +48,14 @@ class BasicModel(object):
         self.weight_decay = weight_decay
         self.learning_rate = learning_rate
         self.rsa_params = rsa_params
-        
-        # Construct model, loss formulation, and optimizer
+
+        # Construct model, loss formulation, and optimizer.
         self.model = self.create_model()
         self.criterion = nn.NLLLoss()  # neg log-like loss, operates on log probs
         self.optimizer = optim.Adam(self.model.parameters(), 
                                     weight_decay=self.weight_decay, 
                                     lr=self.learning_rate)
-
+        
         # Creates Save Directory
         self.save_path = save_path
         if not os.path.isdir(self.save_path):
@@ -124,7 +126,7 @@ class BasicModel(object):
         return self.model_type
 
 
-    @abc.abstractmethod:
+    @abc.abstractmethod
     def create_model(self):
         """ Create underlying model.
         """
@@ -195,7 +197,7 @@ class ModelType(object):
             return 'NA - Model Type Does Not Exist'
 
 
-class EmbbedingType(object):
+class EmbeddingType(object):
     """ Enumeration of possible embedding types.
     """
     ONE_HOT = 0  # One Hot Vector 

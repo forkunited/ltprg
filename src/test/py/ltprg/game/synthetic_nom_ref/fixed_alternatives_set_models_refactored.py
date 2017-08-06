@@ -3,7 +3,7 @@ from __future__ import division
 import abc
 from basic_model import BasicModel, ModelType, EmbeddingType, one_hot
 from network_components import MLP
-from RSA import model_speaker_1
+from rsa import model_speaker_1
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
@@ -27,7 +27,7 @@ class FixedAlternativeSetModel(BasicModel):
             utt_set_sz, obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
             weight_decay, learning_rate, rsa_params,
             save_path)
-        assert self.obj_embedding_type == embbedingType.ONE_HOT
+        assert self.obj_embedding_type == EmbeddingType.ONE_HOT
 
 class FASM_ERSA(FixedAlternativeSetModel):
     """ EXPLICIT RSA MODEL ('ersa'): given an object embedding, neural network
@@ -45,7 +45,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
              self.hiddens_nonlinearity, 'sigmoid')
 
 
-    def format_inputs(trial):
+    def format_inputs(self, trial):
         """ Format inputs for model.
             trial (dict) {
                           'alt1_ind': a,
@@ -171,7 +171,7 @@ class FASM_NNWOC(FixedAlternativeSetModel):
                      self.hiddens_nonlinearity, 'logSoftmax')
 
 
-    def format_inputs(trial):
+    def format_inputs(self, trial):
         """ Format inputs for model.
             trial (dict) {
                           'target_ind': c

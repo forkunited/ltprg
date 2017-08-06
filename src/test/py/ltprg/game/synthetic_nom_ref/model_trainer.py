@@ -1,5 +1,5 @@
 from fixed_alternatives_set_models_refactored import FASM_ERSA, FASM_NNWC, FASM_NNWOC
-from basic_model import ModelType, EmbbedingType
+from basic_model import ModelType, EmbeddingType
 import json
 import math
 import numpy as np 
@@ -22,20 +22,20 @@ Framework for training models.
 # ----------------
 
 def load_json(filename):
-with open(filename) as json_data:
-    d = json.load(json_data)
-return d
+    with open(filename) as json_data:
+        d = json.load(json_data)
+    return d
 
 
 def init_cond_dict(conditions):
-d = dict()
-for k in conditions:
-    d[k] = []
-return d
+    d = dict()
+    for k in conditions:
+        d[k] = []
+    return d
 
 
 def establish_seed(seed=3):
-random.seed(seed)
+    random.seed(seed)
 
 
 class ModelTrainer(object):
@@ -55,14 +55,12 @@ class ModelTrainer(object):
         """
         # Initialize model training params
         establish_seed()
+        self.model = model
         self.train_data = train_data
         self.validation_data = validation_data
         self.should_visualize = should_visualize
         self.save_path = save_path
         self.conditions = list(set([trial['condition'] for trial in self.train_data]))
-
-        # Construct the appropriate model
-        self.model = self.create_model()
 
         # Visualization Tools        
         self.should_visualize = should_visualize
@@ -296,7 +294,7 @@ class ModelTrainer(object):
         categories_predicted_by_condition = init_cond_dict(self.conditions)
         for trial in self.validation_data:
             prediction_distr, _ = self.model.predict(trial)
-            target_name, predicted_utt_name, label_utt_name = 
+            target_name, predicted_utt_name, label_utt_name = \
                 self.display_prediction(trial, prediction_distr)
             categories_predicted_by_condition[trial['condition']].append(
                 self.retrieve_category_predicted(target_name, predicted_utt_name))
@@ -493,8 +491,8 @@ def run_example():
         hidden_szs=[],
         hiddens_nonlinearity='tanh',
         utt_set_sz=num_utts,
-        obj_set_size=num_objs,
-        obj_embedding_type=EmbbedingType.ONE_HOT,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
         utt_dict=utt_info_dict,
         obj_dict=obj_info_dict,
         weight_decay=decay,
@@ -509,8 +507,8 @@ def run_example():
         hidden_szs=[],
         hiddens_nonlinearity='tanh',
         utt_set_sz=num_utts,
-        obj_set_size=num_objs,
-        obj_embedding_type=EmbbedingType.ONE_HOT,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
         utt_dict=utt_info_dict,
         obj_dict=obj_info_dict,
         weight_decay=decay,
@@ -525,8 +523,8 @@ def run_example():
         hidden_szs=[],
         hiddens_nonlinearity='tanh',
         utt_set_sz=num_utts,
-        obj_set_size=num_objs,
-        obj_embedding_type=EmbbedingType.ONE_HOT,
+        obj_set_sz=num_objs,
+        obj_embedding_type=EmbeddingType.ONE_HOT,
         utt_dict=utt_info_dict,
         obj_dict=obj_info_dict,
         weight_decay=decay,
