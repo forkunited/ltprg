@@ -1,7 +1,8 @@
+from fixed_alternatives_set_models_refactored import FASM_ERSA, FASM_NNWC, FASM_NNWOC
+from basic_model import ModelType, EmbbedingType
 import json
 import math
 import numpy as np 
-import os
 import random
 from rsa import uniform_prior, RSAParams
 import shutil
@@ -38,16 +39,10 @@ random.seed(seed)
 
 
 class ModelTrainer(object):
-    def __init__(self, model_name, model_type, hidden_szs, hiddens_nonlinearity,
-                 train_data, validation_data, utt_set_sz,
-                 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-                 weight_decay, learning_rate, should_visualize,
-                 rsa_params, save_path):
+    def __init__(self,  model, train_data, validation_data,
+                 should_visualize, save_path):
         """
-        model_type        defines the model type, see ModelType class
-        hidden_szs        (lst of hidden layer szs; specifies both the
-                           number of hidden layers and their sizes)
-        hiddens_nonlinearity ('relu', 'tanh')
+        model             BasicModel object to train & evaluate
         train_data        (lst of dictionaries, e.g.
                            {'target_ind': 1, 'alt1_ind': 5,
                            'alt2_ind': 18, 'utterance': 4,
@@ -55,41 +50,14 @@ class ModelTrainer(object):
         validation_data   (held-out validation set whose trial types
                            are distinct from those in train_data;
                            same format as train_data)
-        utt_set_sz        (num utterances in fixed alternatives set)
-        obj_set_sz        (num objects in dataset)
-        obj_embedding_type defines the embedding type, see EmbeddingType class
-        utt_dict          (dict whose keys are utterance inds (as strings),
-                           and whose vals are utterance names, for
-                           trial printouts)
-        obj_dict          (dict whose keys are object inds, and 
-                           whose vals are object names (as strings), 
-                           for trial printouts)
-        weight_decay      (weight decay (l2 penalty))
-        learning_rate     (initial learning rate in Adam optimization)
         should_visualize     (plot learning curves in Visdom; True/False)
-        
-        rsa_params        see RSAParams Class for details
         save_path         (where to save results)
         """
-        assert model_type in [ModelType.ERSA, ModelType.NNWC, ModelType.NNWOC]
-
         # Initialize model training params
         establish_seed()
-        self.model_name = model_name
-        self.model_type = model_type
-        self.hidden_szs = hidden_szs
-        self.hiddens_nonlinearity = hiddens_nonlinearity
         self.train_data = train_data
         self.validation_data = validation_data
-        self.utt_set_sz = utt_set_sz
-        self.obj_set_sz = obj_set_sz
-        self.obj_embedding_type = obj_embedding_type
-        self.utt_inds_to_names = utt_dict
-        self.obj_inds_to_names = obj_dict
-        self.weight_decay = weight_decay
-        self.learning_rate = learning_rate
         self.should_visualize = should_visualize
-        self.rsa_params = rsa_params
         self.save_path = save_path
         self.conditions = list(set([trial['condition'] for trial in self.train_data]))
 
@@ -463,20 +431,10 @@ class ModelTrainer(object):
                                  win=self.validationset_eval_by_cond_kl_win)
 
 
-def train_model(model_name, hidden_szs, hiddens_nonlinearity,
-                 train_data, validation_data, utt_set_sz,
-                 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-                 weight_decay, learning_rate,
-                 visualize_opt,
-                 alpha, cost_dict, cost_weight, gold_standard_lexicon,
-                 save_path):
-    trainer = ModelTrainer(model_name, hidden_szs, hiddens_nonlinearity,
-                 train_data, validation_data, utt_set_sz,
-                 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-                 weight_decay, learning_rate,
-                 visualize_opt,  
-                 alpha, cost_dict, cost_weight, gold_standard_lexicon,
-                 save_path)
+def train_model(model, train_data, validation_data,
+                 should_visualize, save_path):
+    trainer = ModelTrainer(model, train_data, validation_data,
+                 should_visualize, save_path)
     trainer.train()
 
 
@@ -511,22 +469,81 @@ def run_example():
     decay = 0.00001
     lr = 0.0001
 
-    # Train model
-    # model_name = 'ersa'
-    # model_name = 'nnwc'
-    model_name = 'nnwoc'
+    # RSA params
+    rsa_params = RSAParams(
+        alpha=0.1,
+        cost_weight=100,
+        cost_dict=utt_costs,
+        gold_standard_lexicon=true_lexicon
+    )
 
-    results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
-    # results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
-    if os.path.isdir(results_dir) == False:
-        os.makedirs(results_dir)
+    def create_save_path(model_name, train_set_type, train_data_fname):
+        return 'results/{}/local_runs_for_viewing/no_hidden_layer/{}/{}/'.format(
+            train_set_type,
+            train_data_fname.split('_')[1],
+            model_name
+        )
 
-    train_model(model_name, [], 'tanh', example_train_data, 
-                example_validation_data, num_utts, num_objs, 
-                'onehot', utt_info_dict, obj_info_dict, 
-                decay, lr, True, 
-                100, utt_costs, 0.1, true_lexicon,
-                results_dir)
+    # Various Models:
+    # ---------------
+    # Model Type #1 -- Fixed Alternative Set Models
+    fasm_ersa = FASM_ERSA(
+        model_name='fasm_ersa',
+        model_type=ModelType.to_string(ModelType.ERSA),
+        hidden_szs=[],
+        hiddens_nonlinearity='tanh',
+        utt_set_sz=num_utts,
+        obj_set_size=num_objs,
+        obj_embedding_type=EmbbedingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('fasm_ersa', train_set_type, train_data_fname)
+    )
+
+    fasm_nnwc = FASM_NNWC(
+        model_name='fasm_nnwc',
+        model_type=ModelType.to_string(ModelType.NNWC),
+        hidden_szs=[],
+        hiddens_nonlinearity='tanh',
+        utt_set_sz=num_utts,
+        obj_set_size=num_objs,
+        obj_embedding_type=EmbbedingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('fasm_nnwc', train_set_type, train_data_fname)
+    )
+
+    fasm_nnwc = FASM_NNWOC(
+        model_name='fasm_nnwoc',
+        model_type=ModelType.to_string(ModelType.NNWOC),
+        hidden_szs=[],
+        hiddens_nonlinearity='tanh',
+        utt_set_sz=num_utts,
+        obj_set_size=num_objs,
+        obj_embedding_type=EmbbedingType.ONE_HOT,
+        utt_dict=utt_info_dict,
+        obj_dict=obj_info_dict,
+        weight_decay=decay,
+        learning_rate=lr,
+        rsa_params=rsa_params,
+        save_path=create_save_path('fasm_nnwoc', train_set_type, train_data_fname)
+    )
+
+    # Example
+    train_model(
+        model=fasm_ersa,
+        train_data=example_train_data,
+        validation_data=example_validation_data,
+        should_visualize=True,
+        save_path=fasm_ersa.save_path
+    )
+  
 
 if __name__=='__main__':
     run_example()

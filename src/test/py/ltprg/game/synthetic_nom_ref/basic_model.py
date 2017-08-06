@@ -12,7 +12,8 @@ class BasicModel(object):
 
     def __init__(self, model_name, model_type, hidden_szs, hiddens_nonlinearity,
                  utt_set_sz, obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-                 weight_decay, learning_rate, rsa_params, save_path):
+                 weight_decay, learning_rate, rsa_params,
+                 save_path):
         """
         model_type        defines the model type, see ModelType class
         hidden_szs        (lst of hidden layer szs; specifies both the
@@ -52,6 +53,11 @@ class BasicModel(object):
         self.optimizer = optim.Adam(self.model.parameters(), 
                                     weight_decay=self.weight_decay, 
                                     lr=self.learning_rate)
+
+        # Creates Save Directory
+        self.save_path = save_path
+        if not os.path.isdir(self.save_path):
+            os.makedirs(self.save_path)
 
 
     def evaluate(self, prediction, label):

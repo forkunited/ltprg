@@ -18,10 +18,16 @@ class FixedAlternativeSetModel(BasicModel):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self):
-      super(FixedAlternativeSetModel, self).__init__()
-      assert self.obj_embedding_type == mbbedingType.ONE_HOT
-
+    def __init__(self, model_name, model_type, hidden_szs, hiddens_nonlinearity,
+                 utt_set_sz, obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+                 weight_decay, learning_rate, rsa_params,
+                 save_path):
+        super(FixedAlternativeSetModel, self).__init__(
+            model_name, model_type, hidden_szs, hiddens_nonlinearity,
+            utt_set_sz, obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
+            weight_decay, learning_rate, rsa_params,
+            save_path)
+        assert self.obj_embedding_type == embbedingType.ONE_HOT
 
 class FASM_ERSA(FixedAlternativeSetModel):
     """ EXPLICIT RSA MODEL ('ersa'): given an object embedding, neural network
@@ -70,7 +76,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
         else:
             # uses learned params
             lexicon = torch.transpose(outputs, 0, 1)
@@ -136,7 +142,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
             speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
@@ -192,7 +198,7 @@ class FASM_NNWOC(FixedAlternativeSetModel):
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.gold_standard_lexicon, 1, inds)
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
             speaker_table = model_speaker_1_mod(lexicon, self.rsa_params)
