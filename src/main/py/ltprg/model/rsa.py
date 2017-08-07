@@ -1,6 +1,57 @@
 import torch
 import torch.nn as nn
+import ltprg.model.eval
 from ltprg.model.dist import Categorical
+from ltprg.model.eval import DistributionAccuracy
+
+class DistributionType:
+    L = "L"
+    S = "S"
+
+class DataParameter:
+    UTTERANCE = "utterance"
+    WORLD = "world"
+    OBSERVATION = "observation"
+
+    def __init__(self, utterance, L_world, L_observation, S_world, S_observation, mode=DistributionType.L, utterance_seq=False):
+        self._utterance = utterance
+        self._L_world = L_world
+        self._L_observation = L_observation
+        self._S_world = S_world
+        self._S_observation = S_observation
+        self._mode = mode
+        self._utterance_seq = utterance_seq
+
+    def __getitem__(self, key):
+        if self._mode == DistributionType.L:
+            if key == DataParameter.UTTERANCE:
+                return self.utterance
+            elif key == DataParameter.WORLD:
+                return self._L_world
+            elif key == DataParameter.OBSERVATION:
+                return self._L_observation
+            elif key == ltprg.model.eval.DataParameter.TARGET:
+                return self._L_world
+        else:
+            if key == DataParameter.UTTERANCE:
+                return self.utterance
+            elif key == DataParameter.WORLD:
+                return self._S_world
+            elif key == DataParameter.OBSERVATION:
+                return self._S_observation
+            elif key == ltprg.model.eval.DataParameter.TARGET:
+                return self._utterance
+
+    def is_utterance_seq(self):
+        return self._utterance_seq
+
+    def to_mode(self, mode):
+        return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=self._utterance_seq)
+
+    @staticmethod
+    def make(utterance="utterance", L_world="world", L_observation="observation",
+        S_world="world", S_observation="observation", mode=DistributionType.L):
+        return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=self._utterance_seq)
 
 def _normalize_rows(t):
 	row_sums = torch.sum(t, dim=len(t.size())-1)
@@ -31,8 +82,24 @@ def _size_down_tensor(t):
     """
     return torch.squeeze(t, 1)
 
+class RSA(object, nn.Module):
+    __metaclass__ = abc.ABCMeta
 
-class S(nn.Module):
+    def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+        super(RSA, self).__init__()
+        self._level = level
+        self._meaning_fn = meaning_fn
+        self._world_prior_fn = world_prior_fn
+        self._utterance_prior_fn = utterance_prior_fn
+        self._L_bottom = L_bottom
+
+    def to_level(dist_type, level, L_bottom=True):
+        if dist_type == DistributionType.L:
+            return L(level, self.meaning_fn, self.world_prior_fn, self.utterance_prior_fn, L_bottom=L_bottom)
+        else:
+            return S(level, self.meaning_fn, self.world_prior_fn, self.utterance_prior_fn, L_bottom=L_bottom)
+
+class S(RSA):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
         """
         Constructs an RSA speaker module.  This module assumes world priors and
@@ -74,11 +141,7 @@ class S(nn.Module):
                 a literal listener or a literal speaker.  Defaults to True.
         """
 
-        super(S, self).__init__()
-        self._level = level
-        self._meaning_fn = meaning_fn
-        self._world_prior_fn = world_prior_fn
-        self._utterance_prior_fn = utterance_prior_fn
+        super(S, self).__init__(level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
 
         self._L = None
         if self._level != 0:
@@ -143,8 +206,30 @@ class S(nn.Module):
 
         return Categorical(utterance_prior.support(), ps=ps)
 
+    def forward_batch(self, batch, data_parameters):
+        world = Variable(batch[data_parameters[DataParameter.WORLD]])
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
 
-class L(nn.Module):
+        self._utterance_prior_fn.set_data_batch(batch, data_parameters)
+        self._world_prior_fn.set_data_batch(batch, data_parameters)
+
+        return self(world, observation=observation)
+
+    def loss(self, batch, data_parameters, loss_criterion):
+        utterance = None
+        if data_parameters.is_utterance_seq():
+            seq, length, _ = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+            utterance = (seq.transpose(0,1), length)
+        else:
+            utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+
+        index = self._utterance_prior_fn.get_index(utterance, observation, self._utterance_prior.support(), preset_batch=True)
+        model_ps = self.forward_batch(batch, data_parameters).ps()
+        return loss_criterion(model_ps, index)
+
+class L(RSA):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
         """
         Constructs an RSA listener module.  This module assumes world priors and
@@ -185,12 +270,7 @@ class L(nn.Module):
             L_bottom (bool, optional): Indicates whether the model bottoms out at
                 a literal listener or a literal speaker.  Defaults to True.
         """
-
-        super(L, self).__init__()
-        self._level = level
-        self._meaning_fn = meaning_fn
-        self._world_prior_fn = world_prior_fn
-        self._utterance_prior_fn = utterance_prior_fn
+        super(L, self).__init__(level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
 
         self._S = None
         if self._level != 0:
@@ -250,3 +330,40 @@ class L(nn.Module):
                 ps = _size_down_tensor(ps)
 
         return Categorical(world_prior.support(), ps=ps)
+
+    def forward_batch(self, batch, data_parameters):
+        utterance = None
+        if data_parameters.is_utterance_seq():
+            seq, length, _ = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+            utterance = (seq.transpose(0,1), length)
+        else:
+            utterance = Variable(batch[data_parameters[DataParameter.WORLD]])
+
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+
+        self._utterance_prior_fn.set_data_batch(batch, data_parameters)
+        self._world_prior_fn.set_data_batch(batch, data_parameters)
+
+        return self(utterance, observation=observation)
+
+    def loss(self, batch, data_parameters, loss_criterion):
+        world = Variable(batch[data_parameters[DataParameter.WORLD]])
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+
+        index = self._world_prior_fn.get_index(world, observation, self._world_prior.support(), preset_batch=True)
+        model_ps = self.forward_batch(batch, data_parameters).ps()
+        return loss_criterion(model_ps, index)
+
+
+class RSADistributionAccuracy(DistributionAccuracy):
+    def __init__(self, name, level, distribution_type, data, data_parameters, target_indexed = False, L_bottom = True):
+        super(RSADistributionAccuracy, self).__init__(name, data, data_parameters, model_fn=None, target_indexed = target_indexed)
+
+        def _mfn(batch, model, data_parameters):
+            model = model.to_level(self._distribution_type, self._level, L_bottom=self._L_bottom)
+            return model.forward_batch(batch, data_parameters.to_mode(self._distribution_type))
+        self._model_fn = _mfn
+
+        self._level = level
+        self._distribution_type = distribution_type
+        self._L_bottom = L_bottom

@@ -2,6 +2,9 @@ import torch
 from ltprg.model.dist import Categorical
 from ltprg.model.seq import SamplingMode
 from ltprg.model.seq import SequenceModel
+from ltprg.model.rsa import DistributionType
+from ltprg.model.rsa import DataParameter
+
 
 class UniformIndexPriorFn(nn.Module):
     def __init__(self, size):
@@ -11,11 +14,16 @@ class UniformIndexPriorFn(nn.Module):
         vs = torch.arange(0,size).unsqueeze(0).repeat(observation.size(0),1)
         return Categorical(Variable(vs))
 
-    def get_index(self, vs, observation, support):
+    # NOTE: This assumes that all values in vs are indices that fall within
+    # the range of the support
+    def get_index(self, vs, observation, support, preset_batch=False):
         return vs.data, False, None
 
+    def set_data_batch(self, batch, data_parameters):
+        pass
+
 class SequenceSamplingPriorFn(nn.Module):
-    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15):
+    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, mode=DistributionType.S):
         super(SequenceSamplingPriorFn, self).__init__()
         self._model = model
         self._input_size = input_size
@@ -27,6 +35,7 @@ class SequenceSamplingPriorFn(nn.Module):
         self._fixed_input = None
         self._fixed_seq = None
         self._ignored_input = None
+        self._mode = mode
 
         if not uniform:
             raise ValueError("Non-uniform sequence prior not implemented")
@@ -46,7 +55,7 @@ class SequenceSamplingPriorFn(nn.Module):
             self._fixed_seq = (seq, length)
 
     def set_samples_per_input(self, samples_per_input):
-        self._samples_per_input
+        self._samples_per_input = samples_per_input
 
     def forward(self, observation):
         batch_size = observation.size(0)
@@ -96,23 +105,23 @@ class SequenceSamplingPriorFn(nn.Module):
 
         return Categorical((Variable(seq_supp_batch), length_supp_batch))
 
-    def get_index(self, seq_with_len, observation, support):
-        seq, length = seq_with_len
-        seq_support, length_support = support
+    def get_index(self, seq_with_len, observation, support, preset_batch=False):
+        if preset_batch:
+            return torch.zeros(seq_with_len[0].size(0))
+        else:
+            return Categorical.get_support_index(seq_with_len, support)
 
-        index = torch.zeros(seq.size(0)).long()
-        has_missing = False
-        mask = toch.ones(seq.size(0)).long()
+    def set_data_batch(self, batch, data_parameters):
+        seqType = DataParameter.UTTERANCE
+        inputType = DataParameter.WORLD
+        if self._mode == DistributionType.L:
+            seqType == DataParameter.WORLD
+            inputType = DataParameter.UTTERANCE
 
-        for i in range(seq.size(0)):
-            found = False
-            for s in range(seq_support.size(1)):
-                if length[i] == length_support[i,s] and torch.equal(seq[i], seq_support[i,s]):
-                    index[i] = s
-                    found = True
-                    break
-            if not found:
-                has_missing = True
-                mask[i] = 0
-
-        return index, has_missing, mask
+        if self.training:
+            seq, length, mask = batch[data_parameters[seqType]]
+            self.set_fixed_seq(seq=seq, length=length)
+            self.set_ignored_input(batch[data_parameters[inputType]])
+        else:
+            self.set_fixed_seq(seq=None, length=None)
+            self.set_fixed_input(batch[data_parameters[data_parameters[inputType]]])

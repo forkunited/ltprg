@@ -62,3 +62,49 @@ class Categorical(Distribution):
 
     def p(self):
         return self._ps
+
+	def get_index(self, value):
+		return Categorical.get_support_index(value, self._vs)
+
+	@staticmethod
+	def get_support_index(value, support):
+		index = torch.zeros(seq.size(0)).long()
+		has_missing = False
+		mask = toch.ones(seq.size(0)).long()
+
+		if isinstance(value, Variable):
+			value = value.data
+
+		if isinstance(support, tuple):
+			for b in range(support[0].size(0)): # Over batch
+				found = False
+				index = 0
+				for s in range(support[0].size(1)) # Over samples in support
+					match = True
+					for i in range(len(support)): # Over values in tuple
+						if (len(value[i].size()) > 1 and not torch.equal(support[i][b,s], value[i][b])) \
+							or (len(value[i].size()) == 1 and support[i][b,s] != value[i][b]):
+							match = False
+							break
+					if match:
+						index[b] = s
+						found = True
+						break
+				if not found:
+					has_missing = True
+					mask[b] = 0
+		else:
+			for b in range(support[0].size(0)): # Over batch
+				found = False
+				index = 0
+				for s in range(support[0].size(1)) # Over samples in support
+					if (len(value.size()) > 1 and torch.equal(support[b,s], value[b])) \
+						or (len(value.size()) == 1 and support[b,s] == value[b]):
+						index[b] = s
+						found = True
+						break
+				if not found:
+					has_missing = True
+					mask[b] = 0
+
+		return index, has_missing, mask

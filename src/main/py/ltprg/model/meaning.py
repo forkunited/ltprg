@@ -75,6 +75,6 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         self._decoder_nl = nn.Sigmoid()
 
     def _meaning(self, utterance, input):
-        output, hidden = self._seq_model(seq_part=utterance[0], seq_length=utterance[1], input=input)
+        output, hidden = self._seq_model(seq_part=utterance[0].transpose(0,1), seq_length=utterance[1], input=input)
         decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2))))
         return self._decoder_nl(decoded)

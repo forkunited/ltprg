@@ -4,7 +4,19 @@ import torch.nn as nn
 import numpy as np
 import torch
 import abc
+import ltprg.model.eval
 from torch.optim import Adam
+
+class DataParameter:
+    SEQ = "seq"
+    INPUT  = "input"
+
+    @staticmethod
+    def make(seq="seq", input="input"):
+        data_parameters = dict()
+        data_parameters[DataParameter.SEQ] = seq
+        data_parameters[DataParameter.INPUT] = input
+        return data_parameters
 
 class SamplingMode:
     FORWARD = 0
@@ -43,12 +55,13 @@ class VariableLengthNLLLoss(nn.Module):
 class SequenceModel(object, nn.Module):
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, hidden_size):
+    def __init__(self, name, hidden_size):
         super(SequenceModel, self).__init__()
         self._hidden_size = hidden_size
+        self._name = name
 
     @abc.abstractmethod
-    def _init_hidden(self, input=None):
+    def _init_hidden(self, batch_size, input=None):
         """ Initializes hidden state, possibly given some input """"
 
     @abc.abstractmethod
@@ -57,6 +70,9 @@ class SequenceModel(object, nn.Module):
 
     def get_hidden_size(self):
         return self._hidden_size
+
+    def get_name(self):
+        return self._name
 
     def forward(self, seq_part=None, seq_length=None, input=None):
         if seq_part is None:
@@ -67,70 +83,25 @@ class SequenceModel(object, nn.Module):
                 .repeat(n).long().view(1, n)
             seq_length = torch.ones(1)
 
-        hidden = self._init_hidden(input=input)
+        hidden = self._init_hidden(seq_length.size(0), input=input)
         return self._forward_from_hidden(hidden, seq_part, seq_length, input=input)
 
-    def learn(self, data, data_input, data_seq, iterations, batch_size, eval_data=None, lr=0.001):
-        # 'train' enables dropout
-        self.train()
-        total_loss = 0
-        start_time = time.time()
-        optimizer = Adam(self.parameters(), lr=lr)
-        loss_criterion = VariableLengthNLLLoss()
-
-        for i in range(iterations):
-            batch = data.get_random_batch(batch_size)
-            input = Variable(batch[data_input])
-            seq, length, mask = batch[data_seq]
-            length = length - 1
-
-            seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
-            target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
-
-            model_out, hidden = self(seq_part=seq_in, seq_length=length, input=input)
-            loss = loss_criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
-
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-
-            total_loss += loss.data
-
-            if i % LOG_INTERVAL == 0 and i > 0:
-                cur_loss = total_loss[0] / LOG_INTERVAL
-                elapsed = time.time() - start_time
-                eval_loss = 0.0
-                if eval_data is not None:
-                    eval_loss = self.evaluate(eval_data, data_input, data_seq, loss_criterion)
-                print('| {:5d}/{:d} batches |  ms/batch {:5.2f} | '
-                        'train loss {:5.7f} | eval loss {:5.7f}'.format(
-                    i, iterations, elapsed * 1000 / LOG_INTERVAL, cur_loss, eval_loss))
-                total_loss = 0
-                start_time = time.time()
-
-        # 'eval' disables dropout
-        self.eval()
-
-    def evaluate(self, data, data_input, data_seq, loss_criterion=None):
-        # Turn on evaluation mode which disables dropout.
-        self.eval()
-
-        if loss_criterion is None:
-            loss_criterion = VariableLengthNLLLoss()
-
-        batch = data.get_batch(0, data.get_size())
-        input = Variable(batch[data_input])
-        seq, length, mask = batch[data_seq]
+    def forward_batch(self, batch, data_parameters):
+        input = Variable(batch[data_parameters[DataParameter.INPUT]])
+        seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
         length = length - 1
-
-        seq_in = Variable(utterance[:seq.size(0)-1]).long() # Input remove final token
-        target_out = Variable(utterance[1:seq.size(0)]).long() # Output (remove start token)
+        seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
 
         model_out, hidden = self(seq_part=seq_in, seq_length=length, input=input)
-        loss = loss_criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
+        return model_out, hidden
 
-        self.train()
-        return loss.data[0]
+    def loss(self, batch, data_parameters, loss_criterion):
+        model_out, hidden = self.forward_batch(batch, data_parameters)
+        seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
+        target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
+
+        loss = loss_criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
+        return loss
 
     # NOTE: Assumes seq_part does not contain end tokens
     def sample(self, n_per_input=1, seq_part=None, max_length=15, input=None):
@@ -255,11 +226,47 @@ class SequenceModel(object, nn.Module):
 
         return beam, seq_length, scores
 
+class EvaluationSequential(ltprg.model.eval.Evaluation):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, name, data, data_parameters):
+        super(EvaluationSequential, self).__init__(name)
+
+        # Loading all the stuff on construction will be faster but hog
+        # memory.  If it's a problem, then move this into the run method.
+        batch = data.get_batch(0, data.get_size())
+        seq, length, mask = batch[seq_view_name]
+
+        self._name = name
+        self._data = data
+        self._input_view_name = data_parameters[DataParameter.INPUT]
+        self._seq_view_name = data_parameters[DataParameter.SEQ]
+        self._data_input = Variable(batch[data_parameters[DataParameter.INPUT])
+        self._seq_length = length - 1
+        self._seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
+        self._target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
+        self._mask = mask
+
+    @abc.abstractmethod
+    def run_helper(self, model, model_out, hidden):
+        """ Evaluates the model according to its output """"
+
+    def run(self, model):
+        model.eval()
+        model_out, hidden = self(seq_part=self._seq_in,
+                                 seq_length=self._seq_length,
+                                 input=self._data_input)
+
+        result = self._run_helper(model, model_out, hidden)
+
+        model.train()
+        return result
+
 
 class SequenceModelInputToHidden(SequenceModel):
-    def __init__(self, seq_size, input_size, embedding_size, rnn_size,
+    def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
                  rnn_layers, dropout=0.5):
-        super(SequenceModelInputToHidden, self).__init__(rnn_size)
+        super(SequenceModelInputToHidden, self).__init__(name, rnn_size)
 
         self._rnn_layers = rnn_layers
         self._encoder = nn.Linear(input_size, rnn_size)
@@ -285,14 +292,57 @@ class SequenceModelInputToHidden(SequenceModel):
         #                       nonlinearity=nonlinearity, dropout=dropout)
 
 
-    def _init_hidden(self, input=None):
-        hidden = self._encoder_nl(self._encoder(world))
+    def _init_hidden(self, batch_size, input=None):
+        hidden = self._encoder_nl(self._encoder(input))
         hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
         return hidden
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
-        emb_pad = self._drop(self._emb(utterance_part))
-        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, utterance_length, batch_first=False)
+        emb_pad = self._drop(self._emb(seq_part))
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length, batch_first=False)
+
+        output, hidden = self._rnn(emb, hidden)
+
+        output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
+        rnn_out_size = output.size()
+
+        output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
+        output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
+
+        return output, hidden
+
+    def init_weights(self):
+        initrange = 0.1
+        self._emb.weight.data.uniform_(-initrange, initrange)
+        self._encoder.bias.data.fill_(0)
+        self._encoder.weight.data.uniform_(-initrange, initrange)
+        self._decoder.bias.data.fill_(0)
+        self._decoder.weight.data.uniform_(-initrange, initrange)
+
+class SequenceModelInputEmbedded(SequenceModel):
+    def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
+                 rnn_layers, dropout=0.5):
+        super(SequenceModelInputEmbedded, self).__init__(name, rnn_size)
+
+        self._rnn_layers = rnn_layers
+        self._encoder = nn.Linear(input_size, rnn_size)
+        self._encoder_nl = nn.Tanh()
+        self._drop = nn.Dropout(dropout)
+        self._emb = nn.Embedding(seq_size, embedding_size)
+        self._rnn = getattr(nn, 'GRU')(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
+        self._decoder = nn.Linear(rnn_size, utterance_size)
+        self._softmax = nn.LogSoftmax()
+
+    def _init_hidden(self, batch_size, input=None):
+        weight = next(self.parameters()).data
+        return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+
+    def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
+        emb_pad = self._drop(self._emb(seq_part))
+        if input is not None:
+            emb_pad = torch.cat((emb_pad, input.expand_as(emb_pad)), 2) # FIXME Is this right?
+
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length, batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
 
