@@ -104,5 +104,5 @@ output_model_samples(best_model, D_dev_close)
 output_model_samples(best_model, D_dev_split)
 output_model_samples(best_model, D_dev_far)
 
-logger.dump(FIXME FILE PATH)
-best_model.save_state_dict(FIXME FILE PATH) # FIXME
+logger.dump(output_results_path)
+best_model.save_state_dict(output_model_path)
