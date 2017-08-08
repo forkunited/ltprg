@@ -15,10 +15,6 @@ def normalize_tensor_rows(t):
 
 def model_literal_listener(learned_lexicon, world_prior):
 	# multiply rows by obj_prior
-	print "Learned Lexicon Size: {}".format(learned_lexicon.size())
-	print "World Prior Size: {}".format(world_prior.size())
-	print "Learned Lexicon: {}".format(learned_lexicon)
-	print "World Prior: {}".format(world_prior)
 	listener = world_prior.expand_as(learned_lexicon) * learned_lexicon
 	return normalize_tensor_rows(listener)
 

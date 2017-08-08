@@ -1,4 +1,11 @@
-from fixed_alternatives_set_models_refactored import FASM_ERSA, FASM_NNWC, FASM_NNWOC
+from fixed_alternatives_set_models_refactored import  (
+    FASM_ERSA,
+    FASM_NNWC,
+    FASM_NNWOC,
+    FASM_ERSA_CTS,
+    FASM_NNWC_CTS,
+    FASM_NNWOC_CTS
+)
 from basic_model import ModelType, EmbeddingType
 import json
 import math
@@ -536,11 +543,11 @@ def run_example():
 
     # Model Type 2 -- Unbounded Alternative Set Models
     # ------------------------------------------------
-    uasm_ersa = UASM_ERSA(
-        model_name='uasm_ersa',
+    fasm_ersa_cts = FASM_ERSA_CTS(
+        model_name='fasm_ersa_cts',
         model_type=ModelType.to_string(ModelType.ERSA),
-        hidden_szs=[],
-        hiddens_nonlinearity='tanh',
+        hidden_szs=[50, 100, 200],
+        hiddens_nonlinearity='relu',
         utt_set_sz=num_utts,
         obj_set_sz=num_objs,
         obj_embedding_type=EmbeddingType.ONE_HOT,
@@ -549,12 +556,12 @@ def run_example():
         weight_decay=decay,
         learning_rate=lr,
         rsa_params=rsa_params,
-        save_path=create_save_path('uasm_ersa', train_set_type, train_data_fname)
+        save_path=create_save_path('fasm_ersa_cts', train_set_type, train_data_fname)
     )
 
 
-    uasm_nnwc = UASM_NNWC(
-        model_name='uasm_nnwc',
+    fasm_nnwc_cts = FASM_NNWC_CTS(
+        model_name='fasm_nnwc_cts',
         model_type=ModelType.to_string(ModelType.NNWC),
         hidden_szs=[50, 100, 200],
         hiddens_nonlinearity='relu',
@@ -566,11 +573,11 @@ def run_example():
         weight_decay=decay,
         learning_rate=lr,
         rsa_params=rsa_params,
-        save_path=create_save_path('uasm_nnwc', train_set_type, train_data_fname)
+        save_path=create_save_path('fasm_nnwc_cts', train_set_type, train_data_fname)
     )
 
-    uasm_nwwoc = FASM_NNWOC(
-        model_name='uasm_nnwoc',
+    fasm_nnwoc_cts = FASM_NNWOC_CTS(
+        model_name='fasm_nnwoc_cts',
         model_type=ModelType.to_string(ModelType.NNWOC),
         hidden_szs=[],
         hiddens_nonlinearity='tanh',
@@ -582,16 +589,16 @@ def run_example():
         weight_decay=decay,
         learning_rate=lr,
         rsa_params=rsa_params,
-        save_path=create_save_path('uasm_nnwoc', train_set_type, train_data_fname)
+        save_path=create_save_path('fasm_nnwoc_cts', train_set_type, train_data_fname)
     )
 
     # Example
     train_model(
-        model=uasm_nnwc,
+        model=fasm_ersa_cts,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
-        save_path=uasm_ersa.save_path
+        save_path=fasm_ersa_cts.save_path
     )
   
 
