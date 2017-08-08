@@ -96,7 +96,45 @@ class FASM_ERSA(FixedAlternativeSetModel):
         return outputs, label
 
 
-class FASM_NNWC(FixedAlternativeSetModel):
+class FASM_NN(FixedAlternativeSetModel):
+    """ Neural Network Model. Prediction is the same for 
+        FASM_NNWC and FASM_NNWOC. So this has been factored out here.
+    """
+    def predict(self, trial, display_prediction=False,
+                use_gold_standard_lexicon=False):
+        """ Make prediction for specified trial.
+        """
+        # inputs are 2D tensors
+        inputs = self.format_inputs(trial)
+
+        # forward pass
+        pred = self.model.forward(inputs) # MLP forward
+
+        # Gold standard comparison
+        if use_gold_standard_lexicon:
+            # uses ground-truth lexicon (for comparison w/ 
+            # model predictions); grab objects for this trial
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
+
+            # pass through RSA
+            speaker_table = model_speaker_1(lexicon, self.rsa_params)
+
+            # pull dist over utterances for target obj
+            pred = speaker_table[2, :].unsqueeze(0)
+
+        # format label
+        label = Variable(torch.LongTensor([trial['utterance']]))
+
+        # display, if necessary
+        if display_prediction:
+          self.display_prediction(trial, pred)
+        
+        return pred, label
+
+
+class FASM_NNWC(FASM_NN):
     """ NEURAL NETWORK WITH CONTEXT MODEL ('nnwc'): produces distribution over 
         utterances in the fixed alternatives set given a trial's 
         concatenated object embeddings, with target object in final 
@@ -125,41 +163,7 @@ class FASM_NNWC(FixedAlternativeSetModel):
                     one_hot(trial['target_ind'] ,self.obj_set_sz)], 1))
 
 
-    def predict(self, trial, display_prediction=False,
-                use_gold_standard_lexicon=False):
-        """ Make prediction for specified trial.
-        """
-        # inputs are 2D tensors
-        inputs = self.format_inputs(trial)
-
-        # forward pass
-        outputs = self.model.forward(inputs) # MLP forward
-
-        # Gold standard comparison
-        if use_gold_standard_lexicon:
-            # uses ground-truth lexicon (for comparison w/ 
-            # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
-
-            # pass through RSA
-            speaker_table = model_speaker_1(lexicon, self.rsa_params)
-
-            # pull dist over utterances for target obj
-            outputs = speaker_table[2, :].unsqueeze(0)
-
-        # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
-
-        # display, if necessary
-        if display_prediction:
-          self.display_prediction(trial, outputs)
-        
-        return outputs, label
-
-
-class FASM_NNWOC(FixedAlternativeSetModel):
+class FASM_NNWOC(FASM_NN):
     """ NEURAL NETWORK WITHOUT CONTEXT MODEL ('nnwoc') produces distribution 
         over utterances given target object emebdding only
     """
@@ -179,39 +183,6 @@ class FASM_NNWOC(FixedAlternativeSetModel):
         """
         return Variable(one_hot(trial['target_ind'], self.obj_set_sz))
 
-
-    def predict(self, trial, display_prediction=False,
-                use_gold_standard_lexicon=False):
-        """ Make prediction for specified trial.
-        """
-        # inputs are 2D tensors
-        inputs = self.format_inputs(trial)
-
-        # forward pass
-        outputs = self.model.forward(inputs) # MLP forward
-
-        # Gold standard comparison
-        if use_gold_standard_lexicon:
-            # uses ground-truth lexicon (for comparison w/ 
-            # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
-
-            # pass through RSA
-            speaker_table = model_speaker_1(lexicon, self.rsa_params)
-            
-            # pull dist over utterances for target obj
-            outputs = speaker_table[2, :].unsqueeze(0)
-
-        # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
-
-        # display, if necessary
-        if display_prediction:
-          self.display_prediction(trial, outputs)
-        
-        return outputs, label
 
 class FASM_ERSA_CTS(FixedAlternativeSetModel):
     """ EXPLICIT RSA MODEL ('ersa'): given an object embedding, neural network
@@ -307,39 +278,11 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         return pred, label
 
 
-class FASM_NNWC_CTS(FixedAlternativeSetModel):
-    """ NEURAL NETWORK WITH CONTEXT MODEL ('nnwc'): produces distribution over 
-        utterances in the fixed alternatives set given a trial's 
-        concatenated object embeddings, with target object in final 
-        position. Additionally it utilizes a CTS (concat-to-single)
-        model where this input is further concatenated with a potential
-        utterance embedding.
+class FASM_NN_CTS(FixedAlternativeSetModel):
+    """ Neural network model for FASM_NNWC_CTS and FASM_NNWOC_CTS.
+        Both share the same prediction function so it's been
+        factored out here.
     """
-
-    def create_model(self):
-        """ Create underlying model.
-        """
-        in_sz = self.obj_set_sz * 3 + self.utt_set_sz
-        return MLP(in_sz, self.hidden_szs, 1, 
-                     self.hiddens_nonlinearity, 'sigmoid')
-
-
-    def format_inputs(self, trial):
-        """ Format inputs for model.
-            trial (dict) {
-                          'alt1_ind': a,
-                          'alt2_ind': b,
-                          'target_ind': c
-                          }
-        """
-        return Variable(torch.cat([
-                    one_hot(trial['alt1_ind'], self.obj_set_sz),
-                    one_hot(trial['alt2_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'], self.obj_set_sz),
-                    one_hot(trial['utterance'], self.utt_set_sz)
-                ], 1))
-
-
     def predict(self, trial, display_prediction=False,
                 use_gold_standard_lexicon=False):
         """ Make prediction for specified trial.
@@ -376,7 +319,6 @@ class FASM_NNWC_CTS(FixedAlternativeSetModel):
             m = nn.LogSoftmax()
             pred = m(utt_scores)
 
-
         # format label
         label = Variable(torch.LongTensor([trial['utterance']]))
 
@@ -386,8 +328,40 @@ class FASM_NNWC_CTS(FixedAlternativeSetModel):
 
         return pred, label
 
+class FASM_NNWC_CTS(FASM_NN_CTS):
+    """ NEURAL NETWORK WITH CONTEXT MODEL ('nnwc'): produces distribution over 
+        utterances in the fixed alternatives set given a trial's 
+        concatenated object embeddings, with target object in final 
+        position. Additionally it utilizes a CTS (concat-to-single)
+        model where this input is further concatenated with a potential
+        utterance embedding.
+    """
 
-class FASM_NNWOC_CTS(FixedAlternativeSetModel):
+    def create_model(self):
+        """ Create underlying model.
+        """
+        in_sz = self.obj_set_sz * 3 + self.utt_set_sz
+        return MLP(in_sz, self.hidden_szs, 1, 
+                     self.hiddens_nonlinearity, 'sigmoid')
+
+
+    def format_inputs(self, trial):
+        """ Format inputs for model.
+            trial (dict) {
+                          'alt1_ind': a,
+                          'alt2_ind': b,
+                          'target_ind': c
+                          }
+        """
+        return Variable(torch.cat([
+                    one_hot(trial['alt1_ind'], self.obj_set_sz),
+                    one_hot(trial['alt2_ind'], self.obj_set_sz),
+                    one_hot(trial['target_ind'], self.obj_set_sz),
+                    one_hot(trial['utterance'], self.utt_set_sz)
+                ], 1))
+
+
+class FASM_NNWOC_CTS(FASM_NN_CTS):
     """ NEURAL NETWORK WITHOUT CONTEXT MODEL ('nnwoc') produces 
         a "truthiness" scalar given target object embedding concatenated
         with the desired utterance embedding.
@@ -396,8 +370,9 @@ class FASM_NNWOC_CTS(FixedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        return MLP(self.obj_set_sz, self.hidden_szs, self.utt_set_sz, 
-                     self.hiddens_nonlinearity, 'logSoftmax')
+        in_sz = self.obj_set_sz + self.utt_set_sz
+        return MLP(in_sz, self.hidden_szs, 1, 
+                     self.hiddens_nonlinearity, 'sigmoid')
 
 
     def format_inputs(self, trial):
@@ -406,38 +381,7 @@ class FASM_NNWOC_CTS(FixedAlternativeSetModel):
                           'target_ind': c
                           }
         """
-        return Variable(one_hot(trial['target_ind'], self.obj_set_sz))
-
-
-    def predict(self, trial, display_prediction=False,
-                use_gold_standard_lexicon=False):
-        """ Make prediction for specified trial.
-        """
-        # inputs are 2D tensors
-        inputs = self.format_inputs(trial)
-
-        # forward pass
-        outputs = self.model.forward(inputs) # MLP forward
-
-        # Gold standard comparison
-        if use_gold_standard_lexicon:
-            # uses ground-truth lexicon (for comparison w/ 
-            # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
-
-            # pass through RSA
-            speaker_table = model_speaker_1(lexicon, self.rsa_params)
-            
-            # pull dist over utterances for target obj
-            outputs = speaker_table[2, :].unsqueeze(0)
-
-        # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
-
-        # display, if necessary
-        if display_prediction:
-          self.display_prediction(trial, outputs)
-        
-        return outputs, label
+        return Variable(torch.cat([
+            one_hot(trial['target_ind'], self.obj_set_sz),
+            one_hot(trial['utterance'], self.utt_set_sz)
+            ], 1))
