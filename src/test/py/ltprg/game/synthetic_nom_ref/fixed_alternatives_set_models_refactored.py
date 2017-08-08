@@ -295,16 +295,16 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj
-        outputs = speaker_table[2, :].unsqueeze(0)
+        pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
         label = Variable(torch.LongTensor([trial['utterance']]))
 
         # display, if necessary
         if display_prediction:
-          self.display_prediction(trial, outputs)
-        
-        return outputs, label
+          self.display_prediction(trial, pred)
+
+        return pred, label
 
 
 class FASM_NNWC_CTS(FixedAlternativeSetModel):
@@ -319,9 +319,9 @@ class FASM_NNWC_CTS(FixedAlternativeSetModel):
     def create_model(self):
         """ Create underlying model.
         """
-        in_sz = self.obj_set_sz * 3
-        return MLP(in_sz, self.hidden_szs, self.utt_set_sz, 
-                     self.hiddens_nonlinearity, 'logSoftmax')
+        in_sz = self.obj_set_sz * 3 + self.utt_set_sz
+        return MLP(in_sz, self.hidden_szs, 1, 
+                     self.hiddens_nonlinearity, 'sigmoid')
 
 
     def format_inputs(self, trial):
@@ -332,23 +332,18 @@ class FASM_NNWC_CTS(FixedAlternativeSetModel):
                           'target_ind': c
                           }
         """
-        return Variable(torch.cat(
-                    [one_hot(trial['alt1_ind'], self.obj_set_sz),
+        return Variable(torch.cat([
+                    one_hot(trial['alt1_ind'], self.obj_set_sz),
                     one_hot(trial['alt2_ind'], self.obj_set_sz),
-                    one_hot(trial['target_ind'] ,self.obj_set_sz)], 1))
+                    one_hot(trial['target_ind'], self.obj_set_sz),
+                    one_hot(trial['utterance'], self.utt_set_sz)
+                ], 1))
 
 
     def predict(self, trial, display_prediction=False,
                 use_gold_standard_lexicon=False):
         """ Make prediction for specified trial.
         """
-        # inputs are 2D tensors
-        inputs = self.format_inputs(trial)
-
-        # forward pass
-        outputs = self.model.forward(inputs) # MLP forward
-
-        # Gold standard comparison
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
@@ -360,16 +355,36 @@ class FASM_NNWC_CTS(FixedAlternativeSetModel):
             speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
             # pull dist over utterances for target obj
-            outputs = speaker_table[2, :].unsqueeze(0)
+            pred = speaker_table[2, :].unsqueeze(0)
+        else:
+            # Concat-To-Single (CTS) models provide a single
+            # truthiness value for applying a given utterance
+            # to a given trial. Here we find this 
+            # probability across all possible utterances
+            # apply a final softmax layer and then 
+            # return the resultant label.
+            utt_scores = None
+            for utterance in range(self.utt_set_sz):
+                trial_with_new_utt = trial.copy()
+                trial_with_new_utt['utterance'] = utterance
+                inputs = self.format_inputs(trial_with_new_utt)
+                utt_score = self.model.forward(inputs)
+                if utt_scores is None:
+                    utt_scores = utt_score
+                else:
+                    utt_scores = torch.cat([utt_scores, utt_score], 1)
+            m = nn.LogSoftmax()
+            pred = m(utt_scores)
+
 
         # format label
         label = Variable(torch.LongTensor([trial['utterance']]))
 
         # display, if necessary
         if display_prediction:
-          self.display_prediction(trial, outputs)
-        
-        return outputs, label
+          self.display_prediction(trial, pred)
+
+        return pred, label
 
 
 class FASM_NNWOC_CTS(FixedAlternativeSetModel):

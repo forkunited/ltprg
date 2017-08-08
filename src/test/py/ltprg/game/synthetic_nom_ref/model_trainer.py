@@ -579,8 +579,8 @@ def run_example():
     fasm_nnwoc_cts = FASM_NNWOC_CTS(
         model_name='fasm_nnwoc_cts',
         model_type=ModelType.to_string(ModelType.NNWOC),
-        hidden_szs=[],
-        hiddens_nonlinearity='tanh',
+        hidden_szs=[50, 100, 200],
+        hiddens_nonlinearity='relu',
         utt_set_sz=num_utts,
         obj_set_sz=num_objs,
         obj_embedding_type=EmbeddingType.ONE_HOT,
@@ -594,11 +594,11 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_ersa_cts,
+        model=fasm_nnwc_cts,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
-        save_path=fasm_ersa_cts.save_path
+        save_path=fasm_nnwc_cts.save_path
     )
   
 
