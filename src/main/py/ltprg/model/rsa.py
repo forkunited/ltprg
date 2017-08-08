@@ -82,9 +82,7 @@ def _size_down_tensor(t):
     """
     return torch.squeeze(t, 1)
 
-class RSA(object, nn.Module):
-    __metaclass__ = abc.ABCMeta
-
+class RSA(nn.Module):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
         super(RSA, self).__init__()
         self._level = level

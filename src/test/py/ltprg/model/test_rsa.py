@@ -70,7 +70,7 @@ class TestRSA(unittest.TestCase):
                 vs = torch.LongTensor(World.get_all()).unsqueeze(0).repeat(observation.size(0),1)
                 return Categorical(Variable(vs))
 
-            def get_index(self, world, observation):
+            def get_index(self, world, observation, support):
                 return World.get_index(world), False, None
 
         class UtterancePriorFn(nn.Module):
@@ -85,7 +85,7 @@ class TestRSA(unittest.TestCase):
                 vs = torch.LongTensor(Utterance.get_all()).unsqueeze(0).repeat(observation.size(0),1)
                 return Categorical(Variable(vs))
 
-            def get_index(self, utterance, observation):
+            def get_index(self, utterance, observation, support):
                 return Utterance.get_index(utterance), False, None
 
         def meaning_fn(utterance, world, observation):

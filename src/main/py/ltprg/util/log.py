@@ -1,3 +1,4 @@
+import csv
 from collections import OrderedDict
 from sets import Set
 
@@ -22,17 +23,18 @@ class Logger:
             if key not in record:
                 self._records[key].append(empty_value)
 
-        out_str = ""
         if self._verbose:
+            out_str = ""
             keys_done = Set([])
             for key in self._key_order:
                 if key in self._records:
                     keys_done.add(key)
-                    out_str += key + ": " self._records[key][self._record_count] +"\t"
+                    out_str += key + ": " + str(self._records[key][self._record_count]) +"\t"
             for key in self._records.keys():
                 if key not in keys_done:
-                    out_str += key + ": " self._records[key][self._record_count] +"\t"
+                    out_str += key + ": " + str(self._records[key][self._record_count]) +"\t"
             out_str += "\n"
+            print out_str
 
         self._record_count +=1
 
@@ -40,11 +42,13 @@ class Logger:
         self._records = dict()
         self._record_count = 0
 
-    def save(file_name, record_prefix=None):
+    def save(self, file_path, record_prefix=None):
         all_keys = Set([])
         if record_prefix is not None:
-            all_keys.extend(record_prefix.keys())
-        all_keys.extend(self._records.keys())
+            for key in record_prefix.keys():
+                all_keys.add(key)
+        for key in self._records.keys():
+            all_keys.add(key)
 
         keys_done = Set([])
         full_key_order = []
@@ -76,6 +80,6 @@ class Logger:
         finally:
             f.close()
 
-    def dump(file_name):
-        self.save(file_name)
+    def dump(self, file_path):
+        self.save(file_path)
         self.clear()

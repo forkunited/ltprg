@@ -37,9 +37,9 @@ class Categorical(Distribution):
         self._vs = vs
         self._ps = ps
         if self._ps is None:
-			vs_for_size = self._vs
-			if isinstance(self._vs, tuple):
-				vs_for_size = self._vs[0]
+            vs_for_size = self._vs
+            if isinstance(self._vs, tuple):
+                vs_for_size = self._vs[0]
             self._ps = torch.ones(vs_for_size.size(0), vs_for_size.size(1))
             self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).repeat(1,self._ps.size(1)))
 
@@ -49,13 +49,13 @@ class Categorical(Distribution):
 
     def sample(self, n=1):
         indices = torch.multinomial(self._ps, n, True).data
-		if isinstance(self._vs, tuple):
-			vs_parts = []
-			for i in range(len(self._vs)):
-				vs_parts.append(torch.gather(self._vs[i], len(self._vs[i].size())-1, indices))
-			return tuple(vs_parts)
-		else:
-        	return torch.gather(self._vs, len(self._vs.size())-1, indices)
+        if isinstance(self._vs, tuple):
+            vs_parts = []
+            for i in range(len(self._vs)):
+                vs_parts.append(torch.gather(self._vs[i], len(self._vs[i].size())-1, indices))
+            return tuple(vs_parts)
+        else:
+            return torch.gather(self._vs, len(self._vs.size())-1, indices)
 
     def support(self):
         return self._vs
@@ -63,48 +63,47 @@ class Categorical(Distribution):
     def p(self):
         return self._ps
 
-	def get_index(self, value):
-		return Categorical.get_support_index(value, self._vs)
+    def get_index(self, value):
+        return Categorical.get_support_index(value, self._vs)
 
-	@staticmethod
-	def get_support_index(value, support):
-		index = torch.zeros(seq.size(0)).long()
-		has_missing = False
-		mask = toch.ones(seq.size(0)).long()
+    @staticmethod
+    def get_support_index(value, support):
+        index = torch.zeros(seq.size(0)).long()
+        has_missing = False
+        mask = toch.ones(seq.size(0)).long()
 
-		if isinstance(value, Variable):
-			value = value.data
+        if isinstance(value, Variable):
+            value = value.data
 
-		if isinstance(support, tuple):
-			for b in range(support[0].size(0)): # Over batch
-				found = False
-				index = 0
-				for s in range(support[0].size(1)) # Over samples in support
-					match = True
-					for i in range(len(support)): # Over values in tuple
-						if (len(value[i].size()) > 1 and not torch.equal(support[i][b,s], value[i][b])) \
-							or (len(value[i].size()) == 1 and support[i][b,s] != value[i][b]):
-							match = False
-							break
-					if match:
-						index[b] = s
-						found = True
-						break
-				if not found:
-					has_missing = True
-					mask[b] = 0
-		else:
-			for b in range(support[0].size(0)): # Over batch
-				found = False
-				index = 0
-				for s in range(support[0].size(1)) # Over samples in support
-					if (len(value.size()) > 1 and torch.equal(support[b,s], value[b])) \
-						or (len(value.size()) == 1 and support[b,s] == value[b]):
-						index[b] = s
-						found = True
-						break
-				if not found:
-					has_missing = True
-					mask[b] = 0
-
-		return index, has_missing, mask
+        if isinstance(support, tuple):
+            for b in range(support[0].size(0)): # Over batch
+                found = False
+                index = 0
+                for s in range(support[0].size(1)): # Over samples in support
+                    match = True
+                    for i in range(len(support)): # Over values in tuple
+                        if (len(value[i].size()) > 1 and not torch.equal(support[i][b,s], value[i][b])) \
+                           or (len(value[i].size()) == 1 and support[i][b,s] != value[i][b]):
+                            match = False
+                            break
+                    if match:
+                        index[b] = s
+                        found = True
+                        break
+                if not found:
+                    has_missing = True
+                    mask[b] = 0
+        else:
+            for b in range(support[0].size(0)): # Over batch
+                found = False
+                index = 0
+                for s in range(support[0].size(1)): # Over samples in support
+                    if (len(value.size()) > 1 and torch.equal(support[b,s], value[b])) \
+                       or (len(value.size()) == 1 and support[b,s] == value[b]):
+                        index[b] = s
+                        found = True
+                        break
+                if not found:
+                    has_missing = True
+                    mask[b] = 0
+        return index, has_missing, mask

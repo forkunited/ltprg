@@ -4,8 +4,10 @@ import torch.nn as nn
 import numpy as np
 import torch
 import abc
+import copy
 import ltprg.model.eval
-from torch.optim import Adam
+from torch.autograd import Variable
+from mung.feature import Symbol
 
 class DataParameter:
     SEQ = "seq"
@@ -24,12 +26,12 @@ class SamplingMode:
 
 class VariableLengthNLLLoss(nn.Module):
     def __init__(self):
-    """
+        """
         Constructs NLLLoss for variable length sequences.
 
         Borrowed from
         https://github.com/ruotianluo/neuraltalk2.pytorch/blob/master/misc/utils.py
-    """
+        """
         super(VariableLengthNLLLoss, self).__init__()
 
     def _to_contiguous(self, tensor):
@@ -52,21 +54,21 @@ class VariableLengthNLLLoss(nn.Module):
         return output
 
 
-class SequenceModel(object, nn.Module):
-    __metaclass__ = abc.ABCMeta
-
+class SequenceModel(nn.Module):
     def __init__(self, name, hidden_size):
         super(SequenceModel, self).__init__()
         self._hidden_size = hidden_size
         self._name = name
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def _init_hidden(self, batch_size, input=None):
-        """ Initializes hidden state, possibly given some input """"
+        """ Initializes hidden state, possibly given some input """
+        pass
 
-    @abc.abstractmethod
+    # @abc.abstractmethod
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         """ Runs the model forward from a given hidden state """
+        pass
 
     def get_hidden_size(self):
         return self._hidden_size
@@ -81,7 +83,7 @@ class SequenceModel(object, nn.Module):
                 n = input.size(0)
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
                 .repeat(n).long().view(1, n)
-            seq_length = torch.ones(1)
+            seq_length = torch.ones(n)
 
         hidden = self._init_hidden(seq_length.size(0), input=input)
         return self._forward_from_hidden(hidden, seq_part, seq_length, input=input)
@@ -110,7 +112,7 @@ class SequenceModel(object, nn.Module):
         if input is not None:
             input_count = input.size(0)
             n = input.size(0) * n_per_input
-            input = input.repeat(1, n_per_input).view(n, input.size(0))
+            input = input.repeat(1, n_per_input).view(n, input.size(1))
 
         if seq_part is not None:
             input_count = seq_part.size(1)
@@ -121,7 +123,7 @@ class SequenceModel(object, nn.Module):
                 .repeat(n).long().view(1,n)
 
         end_idx = Symbol.index(Symbol.SEQ_END)
-        ended = np.zeros(shape=(n))
+        ended = torch.zeros(n).long()
         ended_count = 0
         unit_length = torch.ones(n).long()
         seq_length = unit_length*seq_part.size(0)
@@ -149,7 +151,7 @@ class SequenceModel(object, nn.Module):
         ret_samples = []
         for i in range(input_count):
             # FIXME Add score at some point
-            ret_samples.append((sample[i*n_per_input:(i+1)*n_per_input], seq_length[i*n_per_input:(i+1)*n_per_input], 0.0))
+            ret_samples.append((sample[:,(i*n_per_input):((i+1)*n_per_input)], seq_length[(i*n_per_input):((i+1)*n_per_input)], 0.0))
         return ret_samples
 
     # NOTE: Input is a batch of inputs
@@ -162,10 +164,10 @@ class SequenceModel(object, nn.Module):
             seq_part_i = None
             if seq_part is not None:
                 seq_part_i = seq_part[i].transpose(1,0)
-            beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input[i], heuristic=heuristic))
+            beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input[i]))
         return beams
 
-    def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic):
+    def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic=None):
         if seq_part is None:
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).long().view(1,1)
         else:
@@ -175,9 +177,9 @@ class SequenceModel(object, nn.Module):
             input = input.view(1, input.size(0))
 
         end_idx = Symbol.index(Symbol.SEQ_END)
-        ended = np.zeros(shape=(beam_size))
+        ended = torch.zeros(1).long()
         unit_length = torch.ones(beam_size).long()
-        seq_length = unit_length*seq_part.size(0)
+        seq_length = torch.ones(1).long()*seq_part.size(0)
 
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
         hidden = hidden.repeat(1,1, beam_size).view(1, beam_size, hidden.size(2))
@@ -185,10 +187,27 @@ class SequenceModel(object, nn.Module):
         beam = seq_part.repeat(1,beam_size).view(1,beam_size)
         scores = torch.zeros(1) #beam_size)
 
+        # Output is len x batch x vocab
+        vocab_size = output.size(2)
+        
+        # This mask is for ignoring all vocabulary extention scores except the 
+        # first on ended sequences
+        ended_ignore_mask = torch.ones(vocab_size)
+        ended_ignore_mask[0] = 0.0
+
+
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1]
-            vocab_size = output_dist.size(1)
-            next_scores = scores.repeat(vocab_size).view(output_dist.size()) + output_dist.data
+
+            # When a sequence ends, it needs to not be extended with multiple scores
+            # So:
+            # Ignores all extensions of ended sequences except the first by adding -Inf
+            # before taking the top k scores
+            ended_mat = ended.unsqueeze(1).expand_as(output_dist).float()
+            ignore_mask = ended_ignore_mask.unsqueeze(0).expand_as(ended_mat)*ended_mat*float('-inf') 
+            ignore_mask[ignore_mask != ignore_mask] = 0.0 # Send nans to 0 (0*-inf = nan)
+
+            next_scores = scores.unsqueeze(1).expand_as(output_dist) + (1.0-ended_mat)*output_dist.data + ignore_mask
 
             # FIXME: If heuristic is not none, add heuristic function values here
 
@@ -197,16 +216,15 @@ class SequenceModel(object, nn.Module):
             top_exts = top_indices % vocab_size
 
             next_beam = torch.zeros(beam.size(0) + 1, beam_size).long()
-            next_hidden = torch.zeros(1, beam_size, hidden.size(2))
-            next_seq_length = unit_length*seq_part.size(0)
-            next_ended = np.zeros(shape=(beam_size))
+            next_hidden = Variable(torch.zeros(1, beam_size, hidden.size(2)))
+            next_seq_length = torch.ones(beam_size).long()
+            next_ended = torch.zeros(beam_size).long()
             scores = torch.zeros(beam_size)
             for j in range(beam_size):
                 scores[j] = next_scores[top_seqs[j], top_exts[j]]
                 next_beam[0:i,j] = beam[:,top_seqs[j]]
                 next_beam[i,j] = top_exts[j]
                 next_hidden[0,j] = hidden[0,top_seqs[j]]
-
                 next_seq_length[j] = seq_length[top_seqs[j]] + (1 - ended[top_seqs[j]])
                 next_ended[j] = ended[top_seqs[j]]
                 if top_exts[j] == end_idx and next_ended[j] != 1:
@@ -241,7 +259,7 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
         self._data = data
         self._input_view_name = data_parameters[DataParameter.INPUT]
         self._seq_view_name = data_parameters[DataParameter.SEQ]
-        self._data_input = Variable(batch[data_parameters[DataParameter.INPUT])
+        self._data_input = Variable(batch[data_parameters[DataParameter.INPUT]])
         self._seq_length = length - 1
         self._seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
         self._target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
@@ -249,7 +267,7 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 
     @abc.abstractmethod
     def run_helper(self, model, model_out, hidden):
-        """ Evaluates the model according to its output """"
+        """ Evaluates the model according to its output """
 
     def run(self, model):
         model.eval()
@@ -274,7 +292,7 @@ class SequenceModelInputToHidden(SequenceModel):
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, 'GRU')(embedding_size, rnn_size, rnn_layers, dropout=dropout)
-        self._decoder = nn.Linear(rnn_size, utterance_size)
+        self._decoder = nn.Linear(rnn_size, seq_size)
         self._softmax = nn.LogSoftmax()
 
         # Possibly add this back in later.  And add lstm support (need cell
@@ -299,7 +317,8 @@ class SequenceModelInputToHidden(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
-        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length, batch_first=False)
+
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
 
@@ -342,7 +361,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         if input is not None:
             emb_pad = torch.cat((emb_pad, input.expand_as(emb_pad)), 2) # FIXME Is this right?
 
-        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length, batch_first=False)
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
 

@@ -1,3 +1,4 @@
+import abc
 import torch
 from torch.autograd import Variable
 
@@ -19,7 +20,7 @@ class Evaluation(object):
 
     @abc.abstractmethod
     def run(self, model):
-        """ Evaluates the model """"
+        """ Evaluates the model """
 
     def get_name(self):
         return self._name
@@ -28,7 +29,7 @@ class Evaluation(object):
     def run_all(evaluations, model):
         results = dict()
         for evaluation in evaluations:
-            results[evaluation.get_name()] = evaluation.evaluate(model)
+            results[evaluation.get_name()] = evaluation.run(model)
         return results
 
 class Loss(Evaluation):
@@ -39,7 +40,7 @@ class Loss(Evaluation):
         self._loss_criterion = loss_criterion
 
     def run(self, model):
-        batch = data.get_batch(0, data.get_size())
+        batch = self._data.get_batch(0, self._data.get_size())
         loss = model.loss(batch, self._data_parameters, self._loss_criterion)
         return loss.data[0]
 

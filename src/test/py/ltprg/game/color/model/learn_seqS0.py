@@ -18,11 +18,11 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=1000
+TRAINING_ITERATIONS=200#1000 #00
 TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
-LEARNING_RATE = 0.05 #0.001
-LOG_INTERVAL = 100
+LEARNING_RATE = 0.005 #0.05 #0.001
+LOG_INTERVAL = 200
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -30,8 +30,8 @@ np.random.seed(1)
 def output_model_samples(model, D, batch_size=20):
     data = D.get_data()
     batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
-    sampled_utt_indices, sampled_lengths = model.sample(batch["world"])
-    beams = model.beam_search(batch["world"])
+    samples = model.sample(input=batch["world"])
+    beams = model.beam_search(input=batch["world"])
 
     for i in range(len(batch_indices)):
         index = batch_indices[i]
@@ -41,9 +41,8 @@ def output_model_samples(model, D, batch_size=20):
 
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
-
-        sampled_utt =  " ".join([D["utterance"].get_feature_token(sampled_utt_indices[j][i]).get_value()
-                        for j in range(sampled_lengths[i])])
+        sampled_utt =  " ".join([D["utterance"].get_feature_token(samples[i][0][j,0]).get_value()
+                        for j in range(samples[i][1][0])])
 
         beam, utterance_length, scores = beams[i]
         top_utts = [" ".join([D["utterance"].get_feature_token(beam[k][j]).get_value() for k in range(utterance_length[j])]) for j in range(beam.size(1))]
@@ -64,7 +63,7 @@ partition_file = sys.argv[2]
 utterance_dir = sys.argv[3]
 world_dir = sys.argv[4]
 output_results_path = sys.argv[5]
-ourput_model_path = sys.argv[6]
+output_model_path = sys.argv[6]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "world" : world_dir },
@@ -83,7 +82,7 @@ utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_
 logger = Logger()
 data_parameters = DataParameter.make(seq="utterance", input="world")
 loss_criterion = VariableLengthNLLLoss()
-model = SequenceModelInputToHidden(name, utterance_size, world_size, \
+model = SequenceModelInputToHidden("S0", utterance_size, world_size, \
     EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
 
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
@@ -105,4 +104,5 @@ output_model_samples(best_model, D_dev_split)
 output_model_samples(best_model, D_dev_far)
 
 logger.dump(output_results_path)
-best_model.save_state_dict(output_model_path)
+torch.save(best_model.state_dict(), output_model_path)
+
