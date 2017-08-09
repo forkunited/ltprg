@@ -104,5 +104,4 @@ output_model_samples(best_model, D_dev_split)
 output_model_samples(best_model, D_dev_far)
 
 logger.dump(output_results_path)
-torch.save(best_model.state_dict(), output_model_path)
-
+best_model.save(output_model_path)

@@ -189,12 +189,11 @@ class SequenceModel(nn.Module):
 
         # Output is len x batch x vocab
         vocab_size = output.size(2)
-        
-        # This mask is for ignoring all vocabulary extention scores except the 
+
+        # This mask is for ignoring all vocabulary extention scores except the
         # first on ended sequences
         ended_ignore_mask = torch.ones(vocab_size)
         ended_ignore_mask[0] = 0.0
-
 
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1]
@@ -204,7 +203,7 @@ class SequenceModel(nn.Module):
             # Ignores all extensions of ended sequences except the first by adding -Inf
             # before taking the top k scores
             ended_mat = ended.unsqueeze(1).expand_as(output_dist).float()
-            ignore_mask = ended_ignore_mask.unsqueeze(0).expand_as(ended_mat)*ended_mat*float('-inf') 
+            ignore_mask = ended_ignore_mask.unsqueeze(0).expand_as(ended_mat)*ended_mat*float('-inf')
             ignore_mask[ignore_mask != ignore_mask] = 0.0 # Send nans to 0 (0*-inf = nan)
 
             next_scores = scores.unsqueeze(1).expand_as(output_dist) + (1.0-ended_mat)*output_dist.data + ignore_mask
@@ -243,6 +242,30 @@ class SequenceModel(nn.Module):
                                                        input=input)
 
         return beam, seq_length, scores
+
+    def save(self, model_path):
+        init_params = self._get_init_params()
+        model_obj = dict()
+        model_obj["init_params"] = init_params
+        model_obj["state_dict"] = self.state_dict()
+        model_obj["arch_type"] = type(self).__name__
+        torch.save(model_obj, output_model_path)
+
+    def load(self, model_path):
+        model_obj = torch.load(model_path)
+        init_params = model_obj["init_params"]
+        state_dict = model_obj["state_dict"]
+        arch_type = model_obj["arch_type"]
+
+        model = None
+        if arch_type == "SequenceModelInputEmbedded":
+            model = SequenceModelInputEmbedded.make(init_params)
+        elif arch_type == "SequenceModelInputToHidden":
+            model = SequenceModelInputToHidden.make(init_params)
+        model.load_state_dict(state_dict)
+
+        return model
+
 
 class EvaluationSequential(ltprg.model.eval.Evaluation):
     __metaclass__ = abc.ABCMeta
@@ -286,6 +309,15 @@ class SequenceModelInputToHidden(SequenceModel):
                  rnn_layers, dropout=0.5):
         super(SequenceModelInputToHidden, self).__init__(name, rnn_size)
 
+        self._init_params = dict()
+        self._init_params["name"] = name
+        self._init_params["seq_size"] = seq_size
+        self._init_params["input_size"] = input_size
+        self._init_params["embedding_size"] = embedding_size
+        self._init_params["rnn_size"] = rnn_size
+        self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["dropout"] = dropout
+
         self._rnn_layers = rnn_layers
         self._encoder = nn.Linear(input_size, rnn_size)
         self._encoder_nl = nn.Tanh()
@@ -309,6 +341,8 @@ class SequenceModelInputToHidden(SequenceModel):
         #    self_.rnn = nn.RNN(embedding_size, rnn_size, rnn_layers,
         #                       nonlinearity=nonlinearity, dropout=dropout)
 
+    def _get_init_params(self):
+        return self._init_params
 
     def _init_hidden(self, batch_size, input=None):
         hidden = self._encoder_nl(self._encoder(input))
@@ -338,10 +372,31 @@ class SequenceModelInputToHidden(SequenceModel):
         self._decoder.bias.data.fill_(0)
         self._decoder.weight.data.uniform_(-initrange, initrange)
 
+    @staticmethod
+    def make(init_params):
+        name = self._init_params["name"]
+        seq_size = self._init_params["seq_size"]
+        input_size = self._init_params["input_size"]
+        embedding_size = self._init_params["embedding_size"]
+        rnn_size = self._init_params["rnn_size"]
+        rnn_layers = self._init_params["rnn_layers"]
+        dropout = self._init_params["dropout"]
+        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+
+
 class SequenceModelInputEmbedded(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
                  rnn_layers, dropout=0.5):
         super(SequenceModelInputEmbedded, self).__init__(name, rnn_size)
+
+        self._init_params = dict()
+        self._init_params["name"] = name
+        self._init_params["seq_size"] = seq_size
+        self._init_params["input_size"] = input_size
+        self._init_params["embedding_size"] = embedding_size
+        self._init_params["rnn_size"] = rnn_size
+        self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["dropout"] = dropout
 
         self._rnn_layers = rnn_layers
         self._encoder = nn.Linear(input_size, rnn_size)
@@ -351,6 +406,9 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._rnn = getattr(nn, 'GRU')(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
         self._decoder = nn.Linear(rnn_size, utterance_size)
         self._softmax = nn.LogSoftmax()
+
+    def _get_init_params(self):
+        return self._init_params
 
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
@@ -380,3 +438,14 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._encoder.weight.data.uniform_(-initrange, initrange)
         self._decoder.bias.data.fill_(0)
         self._decoder.weight.data.uniform_(-initrange, initrange)
+
+    @staticmethod
+    def make(init_params):
+        name = self._init_params["name"]
+        seq_size = self._init_params["seq_size"]
+        input_size = self._init_params["input_size"]
+        embedding_size = self._init_params["embedding_size"]
+        rnn_size = self._init_params["rnn_size"]
+        rnn_layers = self._init_params["rnn_layers"]
+        dropout = self._init_params["dropout"]
+        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)

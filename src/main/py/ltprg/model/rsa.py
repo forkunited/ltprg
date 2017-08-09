@@ -97,6 +97,13 @@ class RSA(nn.Module):
         else:
             return S(level, self.meaning_fn, self.world_prior_fn, self.utterance_prior_fn, L_bottom=L_bottom)
 
+    @staticmethod
+    def make(dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+        if dist_type == DistributionType.L:
+            return L(level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+        else:
+            return S(level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+
 class S(RSA):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
         """
