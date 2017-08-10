@@ -17,20 +17,22 @@ del sys.argv[1]
 
 np.random.seed(1)
 
-class ValidateColorData(unittest.TestCase):    
+class ValidateColorData(unittest.TestCase):
 
     def test_validate_data(self):
         D = MultiviewDataSet.load(
             sua_data_dir,
-            dfmat_paths={ 
+            dfmat_paths={
                 "listener_clicked" : join(features_dir, "listener_clicked"),
+                "listener_clicked_idx" : join(features_dir, "listener_clicked_idx")
                 "listener_colors" : join(features_dir, "listener_colors"),
                 "speaker_colors" : join(features_dir, "speaker_colors"),
                 "speaker_observed" : join(features_dir, "speaker_observed"),
                 "speaker_target_color" : join(features_dir, "speaker_target_color"),
-                "speaker_target" : join(features_dir, "speaker_target")
+                "speaker_target" : join(features_dir, "speaker_target"),
+                "speaker_target_idx" : join(features_dir, "speaker_target_idx")
             },
-            dfmatseq_paths={ 
+            dfmatseq_paths={
                 "utterance_lemma_idx" : join(features_dir, "utterance_lemma_idx")
             })
         partition = Partition.load(partition_file)
@@ -41,13 +43,15 @@ class ValidateColorData(unittest.TestCase):
 
         self._check_ids(D_train, batch, indices)
         self._check_scalar_view("listener_clicked", D_train, batch, indices)
+        self._check_scalar_view("listener_clicked_idx", D_train, batch, indices)
         self._check_scalar_view("listener_colors", D_train, batch, indices)
         self._check_scalar_view("speaker_colors", D_train, batch, indices)
         self._check_scalar_view("speaker_observed", D_train, batch, indices)
         self._check_scalar_view("speaker_target_color", D_train, batch, indices)
         self._check_scalar_view("speaker_target", D_train, batch, indices)
+        self._check_scalar_view("speaker_target_idx", D_train, batch, indices)
 
-        self._check_utterances(D_train, batch, indices)    
+        self._check_utterances(D_train, batch, indices)
 
 
     def _check_utterances(self, D, batch, indices):
