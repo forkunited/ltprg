@@ -10,7 +10,7 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from torch.nn import NLLLoss
 
-from ltprg.model.seq import SequenceModel
+from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded
 from ltprg.model.eval import Loss
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
@@ -68,7 +68,7 @@ def output_model_samples(model, data_parameters, D, batch_size=20):
 
 
 training_dist = sys.argv[1]
-training_level = sys.argv[2]
+training_level = int(sys.argv[2])
 data_dir = sys.argv[3]
 partition_file = sys.argv[4]
 utterance_dir = sys.argv[5]
@@ -99,8 +99,8 @@ world_input_size = 3
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 logger = Logger()
-data_parameters = DataParameter.make("utterance", "L_world", "L_observation",
-                                     "S_world", "S_observation",
+data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L_observation="L_observation",
+                                     S_world="S_world", S_observation="S_observation",
                                      mode=training_dist, utterance_seq=True)
 loss_criterion = NLLLoss()
 
@@ -114,7 +114,7 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
 seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
     EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model)
-rsa = RSA.make(training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
+rsa_model = RSA.make(training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
 
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
 
@@ -135,7 +135,7 @@ other_evaluations = [dev_l0_acc, dev_l1_acc]
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
-model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
+rsa_model, best_model = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
             batch_size=TRAINING_BATCH_SIZE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 

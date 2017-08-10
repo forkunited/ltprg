@@ -249,9 +249,10 @@ class SequenceModel(nn.Module):
         model_obj["init_params"] = init_params
         model_obj["state_dict"] = self.state_dict()
         model_obj["arch_type"] = type(self).__name__
-        torch.save(model_obj, output_model_path)
+        torch.save(model_obj, model_path)
 
-    def load(self, model_path):
+    @staticmethod
+    def load(model_path):
         model_obj = torch.load(model_path)
         init_params = model_obj["init_params"]
         state_dict = model_obj["state_dict"]
@@ -374,13 +375,13 @@ class SequenceModelInputToHidden(SequenceModel):
 
     @staticmethod
     def make(init_params):
-        name = self._init_params["name"]
-        seq_size = self._init_params["seq_size"]
-        input_size = self._init_params["input_size"]
-        embedding_size = self._init_params["embedding_size"]
-        rnn_size = self._init_params["rnn_size"]
-        rnn_layers = self._init_params["rnn_layers"]
-        dropout = self._init_params["dropout"]
+        name = init_params["name"]
+        seq_size = init_params["seq_size"]
+        input_size = init_params["input_size"]
+        embedding_size = init_params["embedding_size"]
+        rnn_size = init_params["rnn_size"]
+        rnn_layers = init_params["rnn_layers"]
+        dropout = init_params["dropout"]
         return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
 
 
@@ -404,7 +405,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, 'GRU')(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
-        self._decoder = nn.Linear(rnn_size, utterance_size)
+        self._decoder = nn.Linear(rnn_size, seq_size)
         self._softmax = nn.LogSoftmax()
 
     def _get_init_params(self):
@@ -441,11 +442,13 @@ class SequenceModelInputEmbedded(SequenceModel):
 
     @staticmethod
     def make(init_params):
-        name = self._init_params["name"]
-        seq_size = self._init_params["seq_size"]
-        input_size = self._init_params["input_size"]
-        embedding_size = self._init_params["embedding_size"]
-        rnn_size = self._init_params["rnn_size"]
-        rnn_layers = self._init_params["rnn_layers"]
-        dropout = self._init_params["dropout"]
+        name = init_params["name"]
+        seq_size = init_params["seq_size"]
+        input_size = init_params["input_size"]
+        embedding_size = init_params["embedding_size"]
+        rnn_size = init_params["rnn_size"]
+        rnn_layers = init_params["rnn_layers"]
+        dropout = init_params["dropout"]
         return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+
+

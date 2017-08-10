@@ -1,25 +1,23 @@
 import torch.nn as nn
 
-class MeaningModel(object, nn.Module):
-    __metaclass__ = abc.ABCMeta
+class MeaningModel(nn.Module):
 
     def __init__(self):
         super(MeaningModel, self).__init__()
 
-    @abc.abstractmethod
     def forward(self, utterance, world, observation):
         """ Computes batch of meaning matrices """
+        pass
 
-class MeaningModelIndexedWorld(object, MeaningModel):
-    __metaclass__ = abc.ABCMeta
+class MeaningModelIndexedWorld(MeaningModel):
 
     def __init__(self, world_input_size):
         super(MeaningModelIndexedWorld, self).__init__()
         self._world_input_size = world_input_size
 
-    @abc.abstractmethod
     def _meaning(self, utterance, input):
         """ Computes batch of meanings from batches of utterances and inputs """
+        pass
 
     def forward(self, utterance, world, observation):
         inputs_per_observation = observation.size(1)/self._world_input_size
@@ -69,12 +67,13 @@ class MeaningModelIndexedWorld(object, MeaningModel):
 
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
     def __init__(self, world_input_size, seq_model):
-        super(MeaningModelSequentialUtterance, self).__init__(world_input_size)
+        super(MeaningModelIndexedWorldSequentialUtterance, self).__init__(world_input_size)
         self._seq_model = seq_model
         self._decoder = nn.Linear(seq_model.get_hidden_size(), 1)
         self._decoder_nl = nn.Sigmoid()
 
     def _meaning(self, utterance, input):
         output, hidden = self._seq_model(seq_part=utterance[0].transpose(0,1), seq_length=utterance[1], input=input)
-        decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2))))
+        decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
         return self._decoder_nl(decoded)
+

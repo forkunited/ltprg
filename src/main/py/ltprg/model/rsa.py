@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import ltprg.model.eval
+from torch.autograd import Variable
 from ltprg.model.dist import Categorical
 from ltprg.model.eval import DistributionAccuracy
 
@@ -25,7 +26,7 @@ class DataParameter:
     def __getitem__(self, key):
         if self._mode == DistributionType.L:
             if key == DataParameter.UTTERANCE:
-                return self.utterance
+                return self._utterance
             elif key == DataParameter.WORLD:
                 return self._L_world
             elif key == DataParameter.OBSERVATION:
@@ -34,7 +35,7 @@ class DataParameter:
                 return self._L_world
         else:
             if key == DataParameter.UTTERANCE:
-                return self.utterance
+                return self._utterance
             elif key == DataParameter.WORLD:
                 return self._S_world
             elif key == DataParameter.OBSERVATION:
@@ -50,8 +51,8 @@ class DataParameter:
 
     @staticmethod
     def make(utterance="utterance", L_world="world", L_observation="observation",
-        S_world="world", S_observation="observation", mode=DistributionType.L):
-        return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=self._utterance_seq)
+        S_world="world", S_observation="observation", mode=DistributionType.L, utterance_seq=False):
+        return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=utterance_seq)
 
 def _normalize_rows(t):
 	row_sums = torch.sum(t, dim=len(t.size())-1)
@@ -223,16 +224,18 @@ class S(RSA):
     def loss(self, batch, data_parameters, loss_criterion):
         utterance = None
         if data_parameters.is_utterance_seq():
-            seq, length, _ = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+            seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
+            seq = Variable(seq)
+            length = Variable(length)
             utterance = (seq.transpose(0,1), length)
         else:
             utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
 
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
 
-        index = self._utterance_prior_fn.get_index(utterance, observation, self._utterance_prior.support(), preset_batch=True)
-        model_ps = self.forward_batch(batch, data_parameters).ps()
-        return loss_criterion(model_ps, index)
+        model_dist = self.forward_batch(batch, data_parameters)
+        index = self._utterance_prior_fn.get_index(utterance, observation, model_dist.support(), preset_batch=True)
+        return loss_criterion(model_dist.ps(), index)
 
 class L(RSA):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
@@ -339,7 +342,9 @@ class L(RSA):
     def forward_batch(self, batch, data_parameters):
         utterance = None
         if data_parameters.is_utterance_seq():
-            seq, length, _ = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+            seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
+            seq = Variable(seq)
+            length = Variable(length)
             utterance = (seq.transpose(0,1), length)
         else:
             utterance = Variable(batch[data_parameters[DataParameter.WORLD]])

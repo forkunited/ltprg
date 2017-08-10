@@ -1,17 +1,16 @@
 import torch
+import torch.nn as nn
 from ltprg.model.dist import Categorical
-from ltprg.model.seq import SamplingMode
-from ltprg.model.seq import SequenceModel
-from ltprg.model.rsa import DistributionType
-from ltprg.model.rsa import DataParameter
-
+from ltprg.model.seq import SamplingMode, SequenceModel
+from ltprg.model.rsa import DistributionType, DataParameter
 
 class UniformIndexPriorFn(nn.Module):
     def __init__(self, size):
-        super(UnfiormVectorPriorFn, self).__init__()
+        super(UniformIndexPriorFn, self).__init__()
+        self._size = size
 
     def forward(self, observation):
-        vs = torch.arange(0,size).unsqueeze(0).repeat(observation.size(0),1)
+        vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
         return Categorical(Variable(vs))
 
     # NOTE: This assumes that all values in vs are indices that fall within
@@ -23,7 +22,7 @@ class UniformIndexPriorFn(nn.Module):
         pass
 
 class SequenceSamplingPriorFn(nn.Module):
-    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, mode=DistributionType.S):
+    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S):
         super(SequenceSamplingPriorFn, self).__init__()
         self._model = model
         self._input_size = input_size
@@ -35,7 +34,7 @@ class SequenceSamplingPriorFn(nn.Module):
         self._fixed_input = None
         self._fixed_seq = None
         self._ignored_input = None
-        self._mode = mode
+        self._dist_type = dist_type
 
         if not uniform:
             raise ValueError("Non-uniform sequence prior not implemented")
@@ -114,7 +113,7 @@ class SequenceSamplingPriorFn(nn.Module):
     def set_data_batch(self, batch, data_parameters):
         seqType = DataParameter.UTTERANCE
         inputType = DataParameter.WORLD
-        if self._mode == DistributionType.L:
+        if self._dist_type == DistributionType.L:
             seqType == DataParameter.WORLD
             inputType = DataParameter.UTTERANCE
 
