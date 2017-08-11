@@ -132,6 +132,8 @@ class SequenceModel(nn.Module):
         n = 1
         input_count = 1
         if input is not None:
+            if isinstance(input, Variable):
+                input = input.data
             input_count = input.size(0)
             n = input.size(0) * n_per_input
             input = input.repeat(1, n_per_input).view(n, input.size(1))
@@ -140,6 +142,8 @@ class SequenceModel(nn.Module):
             input_count = seq_part.size(1)
             n = seq_part.size(1) * n_per_input
             seq_part = seq_part.repeat(n_per_input, 1).view(seq_part.size(0), n)
+            if isinstance(seq_part, Variable):
+                seq_part = seq_part.data
         else:
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
                 .repeat(n).long().view(1,n)
@@ -193,9 +197,13 @@ class SequenceModel(nn.Module):
         if seq_part is None:
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).long().view(1,1)
         else:
+            if isinstance(seq_part, Variable):
+                seq_part = seq_part.data
             seq_part = seq_part.view(seq_part.size(0), 1)
 
         if input is not None:
+            if isinstance(input, Variable):
+                input = input.data
             input = input.view(1, input.size(0))
 
         end_idx = Symbol.index(Symbol.SEQ_END)
@@ -264,6 +272,7 @@ class SequenceModel(nn.Module):
                                                        input=input)
 
         return beam, seq_length, scores
+
 
     def save(self, model_path):
         init_params = self._get_init_params()
@@ -439,8 +448,11 @@ class SequenceModelInputEmbedded(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
+        print seq_length
         if input is not None:
-            emb_pad = torch.cat((emb_pad, input.expand_as(emb_pad)), 2) # FIXME Is this right?
+            input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
+            print input_seq.size()
+            emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
 
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 

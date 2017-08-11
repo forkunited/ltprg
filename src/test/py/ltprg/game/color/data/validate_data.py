@@ -24,7 +24,7 @@ class ValidateColorData(unittest.TestCase):
             sua_data_dir,
             dfmat_paths={
                 "listener_clicked" : join(features_dir, "listener_clicked"),
-                "listener_clicked_idx" : join(features_dir, "listener_clicked_idx")
+                "listener_clicked_idx" : join(features_dir, "listener_clicked_idx"),
                 "listener_colors" : join(features_dir, "listener_colors"),
                 "speaker_colors" : join(features_dir, "speaker_colors"),
                 "speaker_observed" : join(features_dir, "speaker_observed"),
@@ -61,11 +61,11 @@ class ValidateColorData(unittest.TestCase):
         path_len = len("utterances[*].nlp.lemmas.lemmas_")
         for i in range(len(indices)):
             lemmas = D.get_data().get(indices[i]).get("utterances[*].nlp.lemmas.lemmas", first=False)
-            feat_strs = [feat.get_type(0).get_token(int(idx)).get()[path_len:] for idx in utt_batch[i]]
+            feat_strs = [feat.get_type(0).get_token(int(idx)).get_value() for idx in utt_batch[i]]
             seq_index = 1
             for lemma_utterance in lemmas:
                 for lemma in lemma_utterance:
-                    if feat_strs[seq_index] != 'SYM_UNC':
+                    if feat_strs[seq_index] != '#unc#':
                         self.assertEqual(feat_strs[seq_index], lemma)
                     seq_index += 1
                 seq_index += 1
@@ -76,7 +76,7 @@ class ValidateColorData(unittest.TestCase):
         self.assertTrue(feats.get_size() != 0)
         for i in range(len(indices)):
             for j in range(feats.get_size()):
-                feat_name = feats.get_feature_token(j).get()[:-2] # -2 chops off the list index added by path features
+                feat_name = feats.get_feature_token(j).get_path()
                 self.assertEqual(batch[view][i][j], float(D.get_data().get(indices[i]).get(feat_name)))
 
 
