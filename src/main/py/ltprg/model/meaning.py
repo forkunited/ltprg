@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 class MeaningModel(nn.Module):
@@ -28,7 +29,6 @@ class MeaningModelIndexedWorld(MeaningModel):
     # utt is Batch x utterance prior size x utt length
     # input is Batch x world prior size x input size
     def _construct_meaning(self, utt, input):
-
         utt_batch = None
         utt_prior_size = None
         if not isinstance(utt, tuple):
@@ -59,7 +59,7 @@ class MeaningModelIndexedWorld(MeaningModel):
         input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2))
         if not input_exp.is_contiguous():
             input_exp = input_exp.contiguous()
-        input_batch = input.view(-1,input.size(2))
+        input_batch = input_exp.view(-1,input.size(2))
 
         meaning = self._meaning(utt_batch, input_batch)
 

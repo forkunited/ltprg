@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch.autograd import Variable
 from ltprg.model.dist import Categorical
 from ltprg.model.seq import SamplingMode, SequenceModel
 from ltprg.model.rsa import DistributionType, DataParameter
@@ -51,7 +52,7 @@ class SequenceSamplingPriorFn(nn.Module):
         if seq is None or length is None:
             self._fixed_seq = None
         else:
-            self._fixed_seq = (seq, length)
+            self._fixed_seq = (seq.transpose(0,1), length)
 
     def set_samples_per_input(self, samples_per_input):
         self._samples_per_input = samples_per_input
@@ -59,14 +60,14 @@ class SequenceSamplingPriorFn(nn.Module):
     def forward(self, observation):
         batch_size = observation.size(0)
         inputs_per_observation = observation.size(1)/self._input_size
-        all_input = None
+        all_inputs = None
         if self._fixed_input is not None:
             all_input = observation.view(batch_size*inputs_per_observation, self._input_size)
             fixed_input_offset = torch.arange(0, batch_size).long()*inputs_per_observation + self._fixed_input
             all_input = all_input.view(fixed_input_offset)
             inputs_per_observation = 1
         elif self._ignored_input is not None:
-            all_input = torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size)
+            all_inputs = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size))
             obs_inputs = observation.view(batch_size, inputs_per_observation, self._input_size)
             all_index = 0
             for i in range(batch_size):
@@ -78,31 +79,32 @@ class SequenceSamplingPriorFn(nn.Module):
 
             inputs_per_observation = observation.size(1)/self._input_size - 1
         else:
-            all_input = observation.view(batch_size*inputs_per_observation, self._input_size)
-
+            all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
+        
         samples = None
-        if self._mode == SamplingModel.FORWARD:
-            samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._seq_length, input=all_input)
-        elif self._mode == SamplingModel.BEAM:
-            samples = self._beam_search(beam_size=self._samples_per_input, max_length=self._seq_length, input=all_input)
+        if self._mode == SamplingMode.FORWARD:
+            samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
+        elif self._mode == SamplingMode.BEAM:
+            samples = self._beam_search(beam_size=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
 
         has_fixed = 0
         if self._fixed_seq is not None:
             has_fixed = 1
 
-        seq_supp_batch = torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed, self._seq_length).long()
-        length_supp_batch = torch.zeros(self._samples_per_input * inputs_per_observation + has_fixed).long()
+        seq_supp_batch = Variable(torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed, self._seq_length).long())
+        length_supp_batch = torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed).long()
         for i in range(batch_size):
             if self._fixed_seq is not None:
-                seq_supp_batch[i,0] = self._fixed_seq[0]
-                length_supp_batch[i,0] = self._fixed_seq[1]
+                seq_supp_batch[i,0,:] = self._fixed_seq[0][i]
+                length_supp_batch[i,0] = self._fixed_seq[1][i]
 
             for j in range(inputs_per_observation):
                 seqs, lengths, scores = samples[i*inputs_per_observation+j]
+                seqs = Variable(seqs)
                 seq_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input)] = seqs.transpose(0,1)
                 length_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input)] = lengths
 
-        return Categorical((Variable(seq_supp_batch), length_supp_batch))
+        return Categorical((seq_supp_batch, length_supp_batch))
 
     def get_index(self, seq_with_len, observation, support, preset_batch=False):
         if preset_batch:
@@ -119,8 +121,8 @@ class SequenceSamplingPriorFn(nn.Module):
 
         if self.training:
             seq, length, mask = batch[data_parameters[seqType]]
-            self.set_fixed_seq(seq=seq, length=length)
-            self.set_ignored_input(batch[data_parameters[inputType]])
+            self.set_fixed_seq(seq=Variable(seq), length=length)
+            self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
         else:
             self.set_fixed_seq(seq=None, length=None)
-            self.set_fixed_input(batch[data_parameters[data_parameters[inputType]]])
+            self.set_fixed_input(batch[data_parameters[data_parameters[inputType]]].squeeze())
