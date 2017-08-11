@@ -27,6 +27,7 @@ TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
 LEARNING_RATE = 0.005 #0.05 #0.001
 LOG_INTERVAL = 200
+DEV_SAMPLE_SIZE = 500 # None (none means full)
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -90,7 +91,7 @@ partition = Partition.load(partition_file)
 
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
-D_dev = D_parts["dev"]
+D_dev = D_parts["dev"].get_random_sample(DEV_SAMPLE_SIZE)
 D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
 D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
 D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
