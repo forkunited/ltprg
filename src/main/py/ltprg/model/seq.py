@@ -19,17 +19,9 @@ def sort_seq_tensors(seq, length, inputs=None):
     else:
         return sorted_seq, sorted_length, sorted_indices
 
-def unsort_seq_tensors(sorted_indices, seq, length, inputs=None):
+def unsort_seq_tensors(sorted_indices, tensors):
     _, unsorted_indices = torch.sort(sorted_indices)
-
-    unsorted_seq = seq.transpose(0,1)[unsorted_indices].transpose(0,1)
-    unsorted_length = length[unsorted_indices]
-
-    if inputs is not None:
-        unsorted_inputs = [input[unsorted_indices] for input in inputs]
-        return unsorted_seq, unsorted_length, unsorted_inputs
-    else:
-        return unsorted_seq, unsorted_length
+    return [tensor[unsorted_indices] for tensor in tensors]
 
 class DataParameter:
     SEQ = "seq"

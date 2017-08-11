@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors
 
 class MeaningModel(nn.Module):
 
@@ -73,6 +74,10 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         self._decoder_nl = nn.Sigmoid()
 
     def _meaning(self, utterance, input):
-        output, hidden = self._seq_model(seq_part=utterance[0].transpose(0,1), seq_length=utterance[1], input=input)
+        seq = utterance[0].transpose(0,1)
+        seq_length = utterance[1]
+        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input])
+        output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
         decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
-        return self._decoder_nl(decoded)
+        output = self._decoder_nl(decoded)
+        return unsort_seq_tensors(sorted_indices, [output])[0]
