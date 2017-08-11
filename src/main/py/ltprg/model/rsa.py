@@ -235,7 +235,7 @@ class S(RSA):
 
         model_dist = self.forward_batch(batch, data_parameters)
         index = self._utterance_prior_fn.get_index(utterance, observation, model_dist.support(), preset_batch=True)
-        return loss_criterion(model_dist.ps(), index)
+        return loss_criterion(model_dist.p(), Variable(index))
 
 class L(RSA):
     def __init__(self, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
@@ -361,8 +361,8 @@ class L(RSA):
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
 
         index = self._world_prior_fn.get_index(world, observation, self._world_prior.support(), preset_batch=True)
-        model_ps = self.forward_batch(batch, data_parameters).ps()
-        return loss_criterion(model_ps, index)
+        model_ps = self.forward_batch(batch, data_parameters).p()
+        return loss_criterion(model_ps, Variable(index))
 
 
 class RSADistributionAccuracy(DistributionAccuracy):

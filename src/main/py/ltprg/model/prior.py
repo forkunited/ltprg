@@ -17,7 +17,7 @@ class UniformIndexPriorFn(nn.Module):
     # NOTE: This assumes that all values in vs are indices that fall within
     # the range of the support
     def get_index(self, vs, observation, support, preset_batch=False):
-        return vs.data, False, None
+        return vs.data.long(), False, None
 
     def set_data_batch(self, batch, data_parameters):
         pass
@@ -108,7 +108,7 @@ class SequenceSamplingPriorFn(nn.Module):
 
     def get_index(self, seq_with_len, observation, support, preset_batch=False):
         if preset_batch:
-            return torch.zeros(seq_with_len[0].size(0))
+            return torch.zeros(seq_with_len[0].size(0)).long()
         else:
             return Categorical.get_support_index(seq_with_len, support)
 

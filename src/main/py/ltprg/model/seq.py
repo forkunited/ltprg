@@ -10,7 +10,7 @@ from torch.autograd import Variable
 from mung.feature import Symbol
 
 def sort_seq_tensors(seq, length, inputs=None):
-    sorted_length, sorted_indices = torch.sort(length, descending=True)
+    sorted_length, sorted_indices = torch.sort(length, 0, True)
     sorted_seq = seq.transpose(0,1)[sorted_indices].transpose(0,1)
 
     if inputs is not None:
@@ -20,7 +20,7 @@ def sort_seq_tensors(seq, length, inputs=None):
         return sorted_seq, sorted_length, sorted_indices
 
 def unsort_seq_tensors(sorted_indices, tensors):
-    _, unsorted_indices = torch.sort(sorted_indices)
+    _, unsorted_indices = torch.sort(sorted_indices, 0, False)
     return [tensor[unsorted_indices] for tensor in tensors]
 
 class DataParameter:
@@ -440,10 +440,9 @@ class SequenceModelInputEmbedded(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
-        print seq_length
+
         if input is not None:
             input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
-            print input_seq.size()
             emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
 
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
