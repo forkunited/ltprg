@@ -9,6 +9,28 @@ import ltprg.model.eval
 from torch.autograd import Variable
 from mung.feature import Symbol
 
+def sort_seq_tensors(seq, length, inputs=None):
+    sorted_length, sorted_indices = torch.sort(length, descending=True)
+    sorted_seq = seq.transpose(0,1)[sorted_indices].transpose(0,1)
+
+    if inputs is not None:
+        sorted_inputs = [input[sorted_indices] for input in inputs]
+        return sorted_seq, sorted_length, sorted_inputs, sorted_indices
+    else:
+        return sorted_seq, sorted_length, sorted_indices
+
+def unsort_seq_tensors(sorted_indices, seq, length, inputs=None):
+    _, unsorted_indices = torch.sort(sorted_indices)
+
+    unsorted_seq = seq.transpose(0,1)[unsorted_indices].transpose(0,1)
+    unsorted_length = length[unsorted_indices]
+
+    if inputs is not None:
+        unsorted_inputs = [input[unsorted_indices] for input in inputs]
+        return unsorted_seq, unsorted_length, unsorted_inputs
+    else:
+        return unsorted_seq, unsorted_length
+
 class DataParameter:
     SEQ = "seq"
     INPUT  = "input"
@@ -450,5 +472,3 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
         return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
-
-
