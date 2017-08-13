@@ -40,8 +40,10 @@ class Loss(Evaluation):
         self._loss_criterion = loss_criterion
 
     def run(self, model):
+        model.eval() 
         batch = self._data.get_batch(0, self._data.get_size())
         loss = model.loss(batch, self._data_parameters, self._loss_criterion)
+        model.train()
         return loss.data[0]
 
 class DistributionAccuracy(Evaluation):
@@ -62,22 +64,22 @@ class DistributionAccuracy(Evaluation):
         else:
             dist = self._model_fn(batch, model, self._data_parameters)
 
-        target = batch[self._data_parameters[DataParameter.TARGET]]
+        target = batch[self._data_parameters[DataParameter.TARGET]].squeeze()
 
-        model_ps = dist.ps()
+        model_ps = dist.p().data
         max_ps, max_index = torch.max(model_ps, 1 )
 
         # Indicators of whether maxima are unique
-        max_unique = torch.sum(max_ps.expand_as(model_ps) == model_ps, 1) == 1
+        max_unique = (torch.sum(max_ps.expand_as(model_ps) == model_ps, 1) == 1).long()
 
         total_correct = None
         if self._target_indexed:
-            total_correct = torch.sum(max_unique*(target == max_index))
+            total_correct = torch.sum(max_unique*((target == max_index).long()))
         else:
             target_index, has_missing, mask = dist.get_index(target)
             # Count of where model max is same as target
-            total_correct = torch.sum(mask*max_unique*(target_index == max_index))
+            total_correct = torch.sum(mask*max_unique*((target_index == max_index).long()))
 
         model.train()
 
-        return total_correct / target.size(0)
+        return float(total_correct) / target.size(0)

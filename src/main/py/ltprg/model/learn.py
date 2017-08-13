@@ -14,7 +14,7 @@ class Trainer:
         if other_evaluations is not None:
             self._all_evaluations.extend(other_evaluations)
 
-    def train(self, model, data, iterations, batch_size=100, lr=0.001, log_interval=100):
+    def train(self, model, data, iterations, batch_size=100, lr=0.001, log_interval=100, best_part_fn=None):
         model.train()
         start_time = time.time()
         optimizer = Adam(model.parameters(), lr=lr)
@@ -22,7 +22,12 @@ class Trainer:
 
         self._logger.set_key_order(["Model", "Iteration", "Avg batch ms", "Avg batch loss"])
 
-        best_model = copy.deepcopy(model)
+        best_part = None
+        if best_part_fn is None:
+            best_part = copy.deepcopy(model)
+        else:
+            best_part = copy.deepcopy(best_part_fn(model))
+
         best_result = float("inf")
         best_iteration = 0
         if self._max_evaluation:
@@ -55,7 +60,10 @@ class Trainer:
                 if (self._max_evaluation and main_result > best_result) or \
                     ((not self._max_evaluation) and main_result < best_result):
                     best_result = main_result
-                    best_model = copy.deepcopy(model)
+                    if best_part_fn is None:
+                        best_model = copy.deepcopy(model)
+                    else:
+                        best_model = copy.deepcopy(best_part_fn(model))
                     best_iteration = i
 
                 total_loss = 0.0
@@ -63,4 +71,5 @@ class Trainer:
 
         model.eval()
 
-        return model, best_model
+        return model, best_part
+

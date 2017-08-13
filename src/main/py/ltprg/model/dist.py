@@ -68,17 +68,22 @@ class Categorical(Distribution):
 
     @staticmethod
     def get_support_index(value, support):
-        index = torch.zeros(seq.size(0)).long()
+        index = None
         has_missing = False
-        mask = toch.ones(seq.size(0)).long()
-
-        if isinstance(value, Variable):
-            value = value.data
+        mask = None
 
         if isinstance(support, tuple):
+            index = torch.zeros(value[0].size(0)).long()
+            mask = torch.ones(value[0].size(0)).long()
+
+            if isinstance(value[0], Variable):
+                value = (value[0].data, value[1])
+
+            if isinstance(support[0], Variable):
+                support = (support[0].data, support[1])
+        
             for b in range(support[0].size(0)): # Over batch
                 found = False
-                index = 0
                 for s in range(support[0].size(1)): # Over samples in support
                     match = True
                     for i in range(len(support)): # Over values in tuple
@@ -94,10 +99,18 @@ class Categorical(Distribution):
                     has_missing = True
                     mask[b] = 0
         else:
-            for b in range(support[0].size(0)): # Over batch
+            index = torch.zeros(value.size(0)).long()
+            mask = torch.ones(value.size(0)).long()
+
+            if isinstance(value, Variable):
+                value = value.data
+
+            if isinstance(support, Variable):
+                support = support.data
+
+            for b in range(support.size(0)): # Over batch
                 found = False
-                index = 0
-                for s in range(support[0].size(1)): # Over samples in support
+                for s in range(support.size(1)): # Over samples in support
                     if (len(value.size()) > 1 and torch.equal(support[b,s], value[b])) \
                        or (len(value.size()) == 1 and support[b,s] == value[b]):
                         index[b] = s

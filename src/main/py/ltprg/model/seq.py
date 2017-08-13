@@ -154,7 +154,7 @@ class SequenceModel(nn.Module):
             output, hidden = self._forward_from_hidden(hidden,
                                                        Variable(next_token.view(1, next_token.size(0))),
                                                        unit_length,
-                                                       input=input)
+                                                       input=Variable(input))
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
@@ -261,7 +261,7 @@ class SequenceModel(nn.Module):
             output, hidden = self._forward_from_hidden(hidden,
                                                        Variable(beam[i].view(1,beam[i].size(0))),
                                                        unit_length,
-                                                       input=input)
+                                                       input=Variable(input))
 
         return beam, seq_length, scores
 

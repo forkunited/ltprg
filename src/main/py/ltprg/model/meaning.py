@@ -57,13 +57,19 @@ class MeaningModelIndexedWorld(MeaningModel):
             utt_batch = tuple(utt_parts)
             utt_prior_size = utt[0].size(1)
 
-        input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2))
+        input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2)).transpose(2,3)
         if not input_exp.is_contiguous():
             input_exp = input_exp.contiguous()
         input_batch = input_exp.view(-1,input.size(2))
+        #print input
+        #print input_batch
+        #print utt
+        #print utt_batch
 
         meaning = self._meaning(utt_batch, input_batch)
 
+        #print input_batch.view(input.size(0), utt_prior_size, input.size(1), input.size(2))
+        #return meaning.view(input.size(0), input.size(1), utt_prior_size).transpose(1,2)
         return meaning.view(input.size(0), utt_prior_size, input.size(1))
 
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
@@ -77,7 +83,10 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         seq = utterance[0].transpose(0,1)
         seq_length = utterance[1]
         sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input])
+        
         output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+        
         decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
         output = self._decoder_nl(decoded)
+        
         return unsort_seq_tensors(sorted_indices, [output])[0]

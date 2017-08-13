@@ -63,8 +63,8 @@ class SequenceSamplingPriorFn(nn.Module):
         all_inputs = None
         if self._fixed_input is not None:
             all_input = observation.view(batch_size*inputs_per_observation, self._input_size)
-            fixed_input_offset = torch.arange(0, batch_size).long()*inputs_per_observation + self._fixed_input
-            all_input = all_input.view(fixed_input_offset)
+            fixed_input_offset = torch.arange(0, batch_size).long()*inputs_per_observation + self._fixed_input.long()
+            all_input = all_input[fixed_input_offset]
             inputs_per_observation = 1
         elif self._ignored_input is not None:
             all_inputs = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size))
@@ -85,7 +85,7 @@ class SequenceSamplingPriorFn(nn.Module):
         if self._mode == SamplingMode.FORWARD:
             samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
         elif self._mode == SamplingMode.BEAM:
-            samples = self._beam_search(beam_size=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
+            samples = self._model.beam_search(beam_size=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
 
         has_fixed = 0
         if self._fixed_seq is not None:
@@ -101,14 +101,14 @@ class SequenceSamplingPriorFn(nn.Module):
             for j in range(inputs_per_observation):
                 seqs, lengths, scores = samples[i*inputs_per_observation+j]
                 seqs = Variable(seqs)
-                seq_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input)] = seqs.transpose(0,1)
+                seq_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input), 0:seqs.size(0)] = seqs.transpose(0,1)
                 length_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input)] = lengths
 
         return Categorical((seq_supp_batch, length_supp_batch))
 
     def get_index(self, seq_with_len, observation, support, preset_batch=False):
         if preset_batch:
-            return torch.zeros(seq_with_len[0].size(0)).long()
+            return torch.zeros(seq_with_len[0].size(0)).long(), False, None
         else:
             return Categorical.get_support_index(seq_with_len, support)
 
@@ -119,10 +119,19 @@ class SequenceSamplingPriorFn(nn.Module):
             seqType == DataParameter.WORLD
             inputType = DataParameter.UTTERANCE
 
-        if self.training:
+        # NOTE: If dist type != mode, this means that 
+        # for example, the L model is running with an utterance prior
+        # that should include the observed utterance
+        #
+        # Shouldn't ignore the target input in this case, because the 
+        # listener doesn't have access to this.
+        if self.training or self._dist_type != data_parameters.get_mode():
             seq, length, mask = batch[data_parameters[seqType]]
             self.set_fixed_seq(seq=Variable(seq), length=length)
-            self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
+            if self._dist_type == data_parameters.get_mode():
+                self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
         else:
             self.set_fixed_seq(seq=None, length=None)
-            self.set_fixed_input(batch[data_parameters[data_parameters[inputType]]].squeeze())
+            self.set_ignored_input(None)
+            # This is broken in several ways...
+            #self.set_fixed_input(batch[data_parameters[inputType]].squeeze())
