@@ -57,18 +57,13 @@ class MeaningModelIndexedWorld(MeaningModel):
             utt_batch = tuple(utt_parts)
             utt_prior_size = utt[0].size(1)
 
-        input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2)).transpose(2,3)
+        input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2))
         if not input_exp.is_contiguous():
             input_exp = input_exp.contiguous()
         input_batch = input_exp.view(-1,input.size(2))
-        #print input
-        #print input_batch
-        #print utt
-        #print utt_batch
 
         meaning = self._meaning(utt_batch, input_batch)
 
-        #print input_batch.view(input.size(0), utt_prior_size, input.size(1), input.size(2))
         #return meaning.view(input.size(0), input.size(1), utt_prior_size).transpose(1,2)
         return meaning.view(input.size(0), utt_prior_size, input.size(1))
 

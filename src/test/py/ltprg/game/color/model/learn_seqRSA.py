@@ -22,12 +22,12 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=10#1000 #00
-TRAINING_BATCH_SIZE=10 #100
+TRAINING_ITERATIONS=1000#1000 #00
+TRAINING_BATCH_SIZE=100 #100 #10
 DROP_OUT = 0.5
-LEARNING_RATE = 0.004 #0.05 #0.001
-LOG_INTERVAL = 10
-DEV_SAMPLE_SIZE = 500 # None (none means full)
+LEARNING_RATE = 0.001 #0.05 #0.001
+LOG_INTERVAL = 50
+DEV_SAMPLE_SIZE = 1000 # None (none means full)
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -109,7 +109,7 @@ seq_prior_model = SequenceModel.load(seq_model_path)
 world_prior_fn = UniformIndexPriorFn(3) # 3 colors per observation
 utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
                                              mode=SamplingMode.BEAM, #FORWARD, # BEAM
-                                             samples_per_input=4,
+                                             samples_per_input=3,
                                              uniform=True,
                                              seq_length=15) # 3 is color dimension
 seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
@@ -130,9 +130,9 @@ dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, Distribut
 dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
 
 evaluation = dev_loss
-other_evaluations = [dev_l0_acc]#, dev_l1_acc, \
-                      #dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
-                      #dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+other_evaluations = [dev_l0_acc, dev_l1_acc, \
+                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
+                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
