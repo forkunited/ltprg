@@ -80,7 +80,7 @@ class SequenceSamplingPriorFn(nn.Module):
             inputs_per_observation = observation.size(1)/self._input_size - 1
         else:
             all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
-        
+
         samples = None
         if self._mode == SamplingMode.FORWARD:
             samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._seq_length, input=all_inputs)
@@ -119,11 +119,11 @@ class SequenceSamplingPriorFn(nn.Module):
             seqType == DataParameter.WORLD
             inputType = DataParameter.UTTERANCE
 
-        # NOTE: If dist type != mode, this means that 
+        # NOTE: If dist type != mode, this means that
         # for example, the L model is running with an utterance prior
         # that should include the observed utterance
         #
-        # Shouldn't ignore the target input in this case, because the 
+        # Shouldn't ignore the target input in this case, because the
         # listener doesn't have access to this.
         if self.training or self._dist_type != data_parameters.get_mode():
             seq, length, mask = batch[data_parameters[seqType]]
