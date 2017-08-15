@@ -163,7 +163,7 @@ class ModelTrainer(object):
 		# returns 2D tensor input to MLP
 		# TODO: Support other embedding types
 		if self.obj_embedding_type == 'onehot':
-			if format_type == 'ersa':
+			if format_type == 'ersa' or format_type == 'nnwoc_w_rsa_on_top':
 				return Variable(torch.cat(
 							[one_hot(alt1_obj_ind, self.obj_set_sz),
 							one_hot(alt2_obj_ind, self.obj_set_sz),
@@ -556,7 +556,7 @@ class ModelTrainer(object):
 		outputs = self.model.forward(inputs) # MLP forward
 
 		# if ersa model (or goldstandard S1), feed MLP output into RSA
-		if self.model_name == 'ersa' or self.use_gold_standard_lexicon == True:
+		if self.model_name == 'ersa' or self.model_name == 'nnwoc_w_rsa_on_top' or self.use_gold_standard_lexicon == True:
 			if self.use_gold_standard_lexicon == True:
 				# uses ground-truth lexicon (for comparison w/ 
 				# model predictions); grab objects for this trial
@@ -669,13 +669,17 @@ class ModelTrainer(object):
 		(loss, acc, acc_by_cond,dist_from_goldstandard, 
 			dist_from_goldstandard_by_cond, _) = self.mean_performance_dataset(test_set, 'test')
 
-
 		dataset_evals = dict()
 		dataset_evals['Mean_testset_loss'] = loss
 		dataset_evals['Mean_testset_acc'] = acc
 		dataset_evals['Mean_testset_acc_by_cond'] = acc_by_cond
 		dataset_evals['Mean_testset_dist_from_goldstandard_S1'] = dist_from_goldstandard
 		dataset_evals['Mean_testset_dist_from_goldstandard_S1_by_cond'] = dist_from_goldstandard_by_cond
+		
+		if self.model_name == 'nnwoc_w_rsa_on_top':
+			self.save_path = self.save_path + 'rsa_added_for_test_set/'
+			if os.path.isdir(self.save_path) == False:
+				os.makedirs(self.save_path)
 		np.save(self.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
 
 def train_model(model_name, hidden_szs, hiddens_nonlinearity,
@@ -695,6 +699,11 @@ def train_model(model_name, hidden_szs, hiddens_nonlinearity,
 				 save_path)
 	trainer.train()
 	trainer.evaluate_test_set_at_peak(test_data)
+	# How well does model do if trained acontextually, but RSA added on top?
+	if trainer.model_name == 'nnwoc':
+		trainer.model_name = 'nnwoc_w_rsa_on_top'
+		print trainer.model_name
+		trainer.evaluate_test_set_at_peak(test_data)
 
 def run_example():
 	train_set_type = 'random_distractors' # 'random_distractors' or 'uniform_conditions'
@@ -735,7 +744,7 @@ def run_example():
 	# model_name = 'nnwc'
 	model_name = 'nnwoc'
 
-	results_dir = 'results/' + train_set_type + '/local_runs_for_viewing/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
+	results_dir = 'results/' + train_set_type + '/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	if os.path.isdir(results_dir) == False:
 		os.makedirs(results_dir)
