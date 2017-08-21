@@ -1,25 +1,25 @@
+import torch
 import torch.nn as nn
+from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors
 
-class MeaningModel(object, nn.Module):
-    __metaclass__ = abc.ABCMeta
+class MeaningModel(nn.Module):
 
     def __init__(self):
         super(MeaningModel, self).__init__()
 
-    @abc.abstractmethod
     def forward(self, utterance, world, observation):
         """ Computes batch of meaning matrices """
+        pass
 
-class MeaningModelIndexedWorld(object, MeaningModel):
-    __metaclass__ = abc.ABCMeta
+class MeaningModelIndexedWorld(MeaningModel):
 
     def __init__(self, world_input_size):
         super(MeaningModelIndexedWorld, self).__init__()
         self._world_input_size = world_input_size
 
-    @abc.abstractmethod
     def _meaning(self, utterance, input):
         """ Computes batch of meanings from batches of utterances and inputs """
+        pass
 
     def forward(self, utterance, world, observation):
         inputs_per_observation = observation.size(1)/self._world_input_size
@@ -30,7 +30,6 @@ class MeaningModelIndexedWorld(object, MeaningModel):
     # utt is Batch x utterance prior size x utt length
     # input is Batch x world prior size x input size
     def _construct_meaning(self, utt, input):
-
         utt_batch = None
         utt_prior_size = None
         if not isinstance(utt, tuple):
@@ -61,20 +60,28 @@ class MeaningModelIndexedWorld(object, MeaningModel):
         input_exp = input.unsqueeze(1).expand(input.size(0),utt_prior_size,input.size(1),input.size(2))
         if not input_exp.is_contiguous():
             input_exp = input_exp.contiguous()
-        input_batch = input.view(-1,input.size(2))
+        input_batch = input_exp.view(-1,input.size(2))
 
         meaning = self._meaning(utt_batch, input_batch)
 
+        #return meaning.view(input.size(0), input.size(1), utt_prior_size).transpose(1,2)
         return meaning.view(input.size(0), utt_prior_size, input.size(1))
 
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
     def __init__(self, world_input_size, seq_model):
-        super(MeaningModelSequentialUtterance, self).__init__(world_input_size)
+        super(MeaningModelIndexedWorldSequentialUtterance, self).__init__(world_input_size)
         self._seq_model = seq_model
         self._decoder = nn.Linear(seq_model.get_hidden_size(), 1)
         self._decoder_nl = nn.Sigmoid()
 
     def _meaning(self, utterance, input):
-        output, hidden = self._seq_model(seq_part=utterance[0], seq_length=utterance[1], input=input)
-        decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2))))
-        return self._decoder_nl(decoded)
+        seq = utterance[0].transpose(0,1)
+        seq_length = utterance[1]
+        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input])
+        
+        output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+        
+        decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+        output = self._decoder_nl(decoded)
+        
+        return unsort_seq_tensors(sorted_indices, [output])[0]

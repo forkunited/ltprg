@@ -36,7 +36,7 @@ def run_models():
 	hidden_layer_szs = []
 
 	# params
-	model_names = ['ersa', 'nnwc', 'nnwoc']
+	model_names = ['nnwoc'] #['ersa', 'nnwc', 'nnwoc']
 	# decays = [0., 0.00001] # Adam params
 	# learning_rates = [0.001, 0.0001, 0.00001]
 	# hidden_layer_szs = [[100], [100, 100], [100, 100, 100], [200], [200, 200], [200, 200, 200]]

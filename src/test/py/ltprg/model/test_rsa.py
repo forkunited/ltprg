@@ -58,6 +58,7 @@ class TestRSA(unittest.TestCase):
                 elif utterance == Utterance.CIRCLE:
                     return "circle"
 
+
         class WorldPriorFn(nn.Module):
             def __init__(self):
                 super(WorldPriorFn, self).__init__()
@@ -70,7 +71,7 @@ class TestRSA(unittest.TestCase):
                 vs = torch.LongTensor(World.get_all()).unsqueeze(0).repeat(observation.size(0),1)
                 return Categorical(Variable(vs))
 
-            def get_index(self, world, observation):
+            def get_index(self, world, observation, support):
                 return World.get_index(world), False, None
 
         class UtterancePriorFn(nn.Module):
@@ -85,7 +86,7 @@ class TestRSA(unittest.TestCase):
                 vs = torch.LongTensor(Utterance.get_all()).unsqueeze(0).repeat(observation.size(0),1)
                 return Categorical(Variable(vs))
 
-            def get_index(self, utterance, observation):
+            def get_index(self, utterance, observation, support):
                 return Utterance.get_index(utterance), False, None
 
         def meaning_fn(utterance, world, observation):
@@ -121,9 +122,9 @@ class TestRSA(unittest.TestCase):
         world_prior_fn = WorldPriorFn()
         utterance_prior_fn = UtterancePriorFn()
 
-        L0 = rsa.L(0, meaning_fn, world_prior_fn, utterance_prior_fn)
-        S1 = rsa.S(1, meaning_fn, world_prior_fn, utterance_prior_fn)
-        L1 = rsa.L(1, meaning_fn, world_prior_fn, utterance_prior_fn)
+        L0 = rsa.L("L_0", 0, meaning_fn, world_prior_fn, utterance_prior_fn)
+        S1 = rsa.S("S_1", 1, meaning_fn, world_prior_fn, utterance_prior_fn)
+        L1 = rsa.L("L_1", 1, meaning_fn, world_prior_fn, utterance_prior_fn)
 
         utterance_batch = Variable(torch.LongTensor([Utterance.BLUE, Utterance.GREEN, Utterance.SQUARE, Utterance.CIRCLE]))
 

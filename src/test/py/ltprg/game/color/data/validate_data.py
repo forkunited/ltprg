@@ -17,20 +17,22 @@ del sys.argv[1]
 
 np.random.seed(1)
 
-class ValidateColorData(unittest.TestCase):    
+class ValidateColorData(unittest.TestCase):
 
     def test_validate_data(self):
         D = MultiviewDataSet.load(
             sua_data_dir,
-            dfmat_paths={ 
+            dfmat_paths={
                 "listener_clicked" : join(features_dir, "listener_clicked"),
+                "listener_clicked_idx" : join(features_dir, "listener_clicked_idx"),
                 "listener_colors" : join(features_dir, "listener_colors"),
                 "speaker_colors" : join(features_dir, "speaker_colors"),
                 "speaker_observed" : join(features_dir, "speaker_observed"),
                 "speaker_target_color" : join(features_dir, "speaker_target_color"),
-                "speaker_target" : join(features_dir, "speaker_target")
+                "speaker_target" : join(features_dir, "speaker_target"),
+                "speaker_target_idx" : join(features_dir, "speaker_target_idx")
             },
-            dfmatseq_paths={ 
+            dfmatseq_paths={
                 "utterance_lemma_idx" : join(features_dir, "utterance_lemma_idx")
             })
         partition = Partition.load(partition_file)
@@ -41,13 +43,15 @@ class ValidateColorData(unittest.TestCase):
 
         self._check_ids(D_train, batch, indices)
         self._check_scalar_view("listener_clicked", D_train, batch, indices)
+        self._check_scalar_view("listener_clicked_idx", D_train, batch, indices)
         self._check_scalar_view("listener_colors", D_train, batch, indices)
         self._check_scalar_view("speaker_colors", D_train, batch, indices)
         self._check_scalar_view("speaker_observed", D_train, batch, indices)
         self._check_scalar_view("speaker_target_color", D_train, batch, indices)
         self._check_scalar_view("speaker_target", D_train, batch, indices)
+        self._check_scalar_view("speaker_target_idx", D_train, batch, indices)
 
-        self._check_utterances(D_train, batch, indices)    
+        self._check_utterances(D_train, batch, indices)
 
 
     def _check_utterances(self, D, batch, indices):
@@ -57,11 +61,11 @@ class ValidateColorData(unittest.TestCase):
         path_len = len("utterances[*].nlp.lemmas.lemmas_")
         for i in range(len(indices)):
             lemmas = D.get_data().get(indices[i]).get("utterances[*].nlp.lemmas.lemmas", first=False)
-            feat_strs = [feat.get_type(0).get_token(int(idx)).get()[path_len:] for idx in utt_batch[i]]
+            feat_strs = [feat.get_type(0).get_token(int(idx)).get_value() for idx in utt_batch[i]]
             seq_index = 1
             for lemma_utterance in lemmas:
                 for lemma in lemma_utterance:
-                    if feat_strs[seq_index] != 'SYM_UNC':
+                    if feat_strs[seq_index] != '#unc#':
                         self.assertEqual(feat_strs[seq_index], lemma)
                     seq_index += 1
                 seq_index += 1
@@ -72,7 +76,7 @@ class ValidateColorData(unittest.TestCase):
         self.assertTrue(feats.get_size() != 0)
         for i in range(len(indices)):
             for j in range(feats.get_size()):
-                feat_name = feats.get_feature_token(j).get()[:-2] # -2 chops off the list index added by path features
+                feat_name = feats.get_feature_token(j).get_path()
                 self.assertEqual(batch[view][i][j], float(D.get_data().get(indices[i]).get(feat_name)))
 
 
