@@ -29,6 +29,9 @@ class Trainer:
             best_part = copy.deepcopy(best_part_fn(model))
 
         best_result = float("inf")
+        if self._max_evaluation:
+            best_result = float("-inf")
+
         best_iteration = 0
         if self._max_evaluation:
             best_result = - best_result
@@ -61,9 +64,9 @@ class Trainer:
                     ((not self._max_evaluation) and main_result < best_result):
                     best_result = main_result
                     if best_part_fn is None:
-                        best_model = copy.deepcopy(model)
+                        best_part = copy.deepcopy(model)
                     else:
-                        best_model = copy.deepcopy(best_part_fn(model))
+                        best_part = copy.deepcopy(best_part_fn(model))
                     best_iteration = i
 
                 total_loss = 0.0

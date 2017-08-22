@@ -74,31 +74,40 @@ class DataPlotter(object):
 				len(self.set_nums))
 
 	def load_results_by_model_set(self, model_name, set_num):
+		print model_name
 		set_name = 'set' + str(set_num)
 		print set_name
-		train_validation_results_dict = np.load(self.results_path 
-											+ set_name + '/' + model_name + '/'
-											+ 'DatasetEvaluations' 
-											+ '.npy').item()
-		test_results_dict = np.load(self.results_path 
-											+ set_name + '/' + model_name + '/' 
-											+ 'DatasetEvaluations' 
-								   			+ '_AtPeak_TestSet.npy').item()
 
-		# pt of min loss on validation set
-		stopping_pt = int(min_validation_loss_epoch('validation',
-									train_validation_results_dict))
-
-		self.pull_vals_at_stopping_pt(model_name, 'train', set_num, 
-									  train_validation_results_dict, 
-									  stopping_pt)
-		self.pull_vals_at_stopping_pt(model_name, 'validation', set_num, 
-									  train_validation_results_dict, 
-									  stopping_pt)
+		test_fname_prefix = self.results_path + set_name + '/' 			
+		if model_name == 'nnwoc_w_rsa_on_top':
+			test_fname_prefix = test_fname_prefix + 'nnwoc/rsa_added_for_test_set/'
+		else:
+			test_fname_prefix = test_fname_prefix + model_name + '/'
+		test_results_dict = np.load(test_fname_prefix
+									+ 'DatasetEvaluations' 
+						   			+ '_AtPeak_TestSet.npy').item()
 		self.pull_vals_at_stopping_pt(model_name, 'test', set_num, 
-									  test_results_dict, 
-									  stopping_pt)
+								  test_results_dict, 
+								  'NaN')
+			
+		if model_name != 'nnwoc_w_rsa_on_top':
+			train_validation_results_dict = np.load(self.results_path 
+												+ set_name + '/' + model_name + '/'
+												+ 'DatasetEvaluations' 
+												+ '.npy').item()
+			
+			# pt of min loss on validation set
+			stopping_pt = int(min_validation_loss_epoch('validation',
+										train_validation_results_dict))
 
+			self.pull_vals_at_stopping_pt(model_name, 'train', set_num, 
+										  train_validation_results_dict, 
+										  stopping_pt)
+			self.pull_vals_at_stopping_pt(model_name, 'validation', set_num, 
+										  train_validation_results_dict, 
+										  stopping_pt)
+
+		
 	def pull_vals_at_stopping_pt(self, model_name, split_name, set_num, 
 								results_dict, stop_pt):
 		loss = results_dict['Mean_' + split_name + 'set_loss']
@@ -135,10 +144,13 @@ class DataPlotter(object):
 		plt.figure()
 		lw = 2
 		x = np.array(self.set_nums)
+
+		legend_items = []
 		for model_name in self.model_names:
-			y = self.results_by_model_by_split_by_set[model_name][split_name][result_key]
-			plt.plot(x, y, '-o', lw=lw)
-		legend_items = copy.copy(self.model_names)
+			if (split_name != 'test' and model_name != 'nnwoc_w_rsa_on_top') or split_name == 'test':
+				y = self.results_by_model_by_split_by_set[model_name][split_name][result_key]
+				plt.plot(x, y, '-o', lw=lw)
+				legend_items.append(model_name)
 
 		if result_key == 'loss':
 			print split_name
@@ -202,7 +214,7 @@ def wrapper():
 	results_path = 'results/' + train_set_type + '/' + model_desc + '/'
 	synthetic_data_path = 'synthetic_data/datasets_by_num_trials/' + train_set_type + '/'
 
-	model_names = ['ersa', 'nnwc', 'nnwoc']
+	model_names = ['ersa', 'nnwc', 'nnwoc'] #, 'nnwoc_w_rsa_on_top']
 	sets = range(0, 100)
 
 	# collect generative losses by split
