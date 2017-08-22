@@ -81,6 +81,7 @@ class SequenceSamplingPriorFn(nn.Module):
         else:
             all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
 
+
         samples = None
         if self._mode == SamplingMode.FORWARD:
             samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._seq_length, input=all_inputs)

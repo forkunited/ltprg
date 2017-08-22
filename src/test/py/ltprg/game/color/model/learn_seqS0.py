@@ -19,11 +19,12 @@ INPUT_TYPE = "NOT_EMBEDDED" #"EMBEDDED"
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=2000#1000 #00
+TRAINING_ITERATIONS=4000 #1000 #00
 TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
 LEARNING_RATE = 0.005 #0.05 #0.001
-LOG_INTERVAL = 200
+LOG_INTERVAL = 500
+DEV_SAMPLE_SIZE = None # None is full
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -72,7 +73,7 @@ D = MultiviewDataSet.load(data_dir,
 partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
-D_dev = D_parts["dev"]
+D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
 D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
 D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")

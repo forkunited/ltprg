@@ -22,13 +22,14 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=4000 #1000 #00
+TRAINING_ITERATIONS=6000 #1000 #00
 TRAINING_BATCH_SIZE=50 #100 #10
 DROP_OUT = 0.5
 LEARNING_RATE = 0.001 #0.05 #0.001
 LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = 1000 # None (none means full)
-SAMPLES_PER_INPUT=4 
+SAMPLES_PER_INPUT= 4 # 4 
+SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
 torch.manual_seed(1)
 np.random.seed(1)
@@ -109,10 +110,10 @@ loss_criterion = NLLLoss()
 seq_prior_model = SequenceModel.load(seq_model_path)
 world_prior_fn = UniformIndexPriorFn(3) # 3 colors per observation
 utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
-                                             mode=SamplingMode.BEAM, #FORWARD, # BEAM
+                                             mode=SAMPLING_MODE, 
                                              samples_per_input=SAMPLES_PER_INPUT,
                                              uniform=True,
-                                             seq_length=15) # 3 is color dimension
+                                             seq_length=D["utterance"].get_feature_seq_set().get_size())
 seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
     EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model)
