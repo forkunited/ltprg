@@ -78,6 +78,16 @@ class FeaturizeSUA(unittest.TestCase):
              "state.lH_1","state.lS_1","state.lL_1",
              "state.lH_2","state.lS_2","state.lL_2"])
 
+    def test_listener_colors_ft(self):
+        print "Featurizing listener colors (ft)"
+        mung.feature_helpers.featurize_path_scalars(
+            input_data_dir,
+            join(output_feature_dir, "listener_colors_ft"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            "listener_colors_ft",
+            ["state.lFT_0", "state.lFT_1", "state.lFT_2"])
+
     # Constructs vectors of the colors that the speaker observed
     def test_speaker_colors(self):
         print "Featurizing speaker colors"
@@ -90,6 +100,16 @@ class FeaturizeSUA(unittest.TestCase):
             ["state.sH_0","state.sS_0","state.sL_0",
              "state.sH_1","state.sS_1","state.sL_1",
              "state.sH_2","state.sS_2","state.sL_2"])
+
+    def test_speaker_colors_ft(self):
+        print "Featurizing speaker colors (ft)"
+        mung.feature_helpers.featurize_path_scalars(
+            input_data_dir,
+            join(output_feature_dir, "speaker_colors_ft"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            "speaker_colors_ft",
+            ["state.sFT_0", "state.sFT_1", "state.sFT_2"])
 
     # Constructs vectors of colors, and an indicator of the target that the
     # speaker observed
@@ -106,6 +126,17 @@ class FeaturizeSUA(unittest.TestCase):
              "state.sH_2","state.sS_2","state.sL_2",
              "state.sTarget_0","state.sTarget_1","state.sTarget_2"])
 
+    def test_speaker_observed_ft(self):
+        print "Featurizing speaker observations (ft)"
+        mung.feature_helpers.featurize_path_scalars(
+            input_data_dir,
+            join(output_feature_dir, "speaker_observed_ft"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            "speaker_observed_ft",
+            ["state.sFT_0", "state.sFT_1", "state.sFT_2",
+             "state.sTarget_0","state.sTarget_1","state.sTarget_2"])
+
     # Constructs the target color that the speaker observed
     def test_speaker_target_color(self):
         print "Featurizing speaker target colors"
@@ -116,6 +147,16 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target_color",
             ["state.sTargetH","state.sTargetS","state.sTargetL"])
+
+    def test_speaker_target_color_ft(self):
+        print "Featurizing speaker target colors (ft)"
+        mung.feature_helpers.featurize_path_scalars(
+            input_data_dir,
+            join(output_feature_dir, "speaker_target_color_ft"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            "speaker_target_color_ft",
+            ["state.sTargetFT"])
 
     # Constructs an indicator of the target color index (0, 1, or 2) that
     # the speaker observed
