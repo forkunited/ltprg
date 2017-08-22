@@ -49,7 +49,9 @@ def collect_term_type_used_by_condition():
 	data_dir = 'datasets_by_num_trials/' + train_type + '/'
 	# dataset_name = 'train_set99_3300train_trials'
 	# dataset_name = 'validation_set99_600validation_trials'
-	dataset_name = 'validation_set14_90validation_trials'
+	# dataset_name = 'validation_set14_90validation_trials'
+	# dataset_name = 'train_set6_231train_trials'
+	dataset_name = 'randomdistractors_validation_set6_42validation_trials'
 	
 	dataset = load_json(data_dir + dataset_name + '.JSON')
 
