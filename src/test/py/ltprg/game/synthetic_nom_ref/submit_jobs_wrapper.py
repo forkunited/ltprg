@@ -7,7 +7,7 @@ from subprocess import call
 import fnmatch
 import numpy as np
 import json
-from fixed_alternatives_set_models import train_model, load_json
+from model_trainer import train_model, load_json
 
 def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 				  train_data_fname, validation_data_fname, 
@@ -36,9 +36,10 @@ def run_models():
 	hidden_layer_szs = []
 
 	# params
-	model_names = ['nnwoc'] #['ersa', 'nnwc', 'nnwoc']
-	# decays = [0., 0.00001] # Adam params
-	# learning_rates = [0.001, 0.0001, 0.00001]
+	model_names = ['fasm_ersa_cts'] #['fasm_ersa_cts', 'fasm_nnwc_cts', 'fasm_nnwoc_cts']
+	decays = [0.00001] # Adam params
+	learning_rates = [0.0001]
+	hidden_layer_szs = [[200, 200], [100]]
 	# hidden_layer_szs = [[100], [100, 100], [100, 100, 100], [200], [200, 200], [200, 200, 200]]
 
 	set_lst = range(0, 100)
@@ -66,7 +67,6 @@ def run_models():
 		print test_data_fname
 
 		for m in model_names:
-
 			# create results dir
 			results_dir = results_rt + set_name + '/' + m + '/'
 			if os.path.isdir(results_dir) == False:

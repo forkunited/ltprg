@@ -1,7 +1,14 @@
 import sys
 import ast
 import numpy as np
-from fixed_alternatives_set_models import train_model, load_json
+from fixed_alternatives_set_models_refactored import  (
+	train_model,
+	load_json,
+    FASM_ERSA_CTS,
+    FASM_NNWC_CTS,
+    FASM_NNWOC_CTS
+)
+from basic_model import ModelType, EmbeddingType
 
 # args should be in order:
 # 	model_name
@@ -47,17 +54,43 @@ def parse_args_and_run():
 	cost_dict = load_json(data_rt + 'costs_by_utterance.JSON')
 	true_lexicon  = load_json(data_rt + 'true_lexicon.JSON')
 	true_lexicon = np.array([true_lexicon[str(k)] for k in range(utt_set_sz)]) + 10e-06
-	obj_embedding_type = 'onehot'
+	obj_embedding_type = EmbeddingType.ONE_HOT
 	visualize_opt = False
 
-	train_model(model_name, hidden_szs, hiddens_nonlinearity,
-				 train_data, validation_data, test_data,
-				 utt_set_sz,
-				 obj_set_sz, obj_embedding_type, utt_dict, obj_dict,
-				 weight_decay, learning_rate,
-				 visualize_opt,  
-				 alpha, cost_dict, cost_weight, true_lexicon,
-				 save_path)
+    rsa_params = RSAParams(
+        alpha=alpha,
+        cost_weight=cost_weight,
+        cost_dict=cost_dict,
+        gold_standard_lexicon=true_lexicon
+    )
+
+    save_path_full = '{}/{}'.format(save_path, '/'.join(hidden_szs))
+
+	if m == 'fasm_ersa_cts':
+	    model = FASM_ERSA_CTS(
+	        model_name='fasm_ersa_cts',
+	        model_type=ModelType.to_string(ModelType.ERSA),
+	        hidden_szs=hidden_szs,
+	        hiddens_nonlinearity='relu',
+	        utt_set_sz=utt_set_sz,
+	        obj_set_sz=obj_set_sz,
+	        obj_embedding_type=obj_embedding_type,
+	        utt_dict=utt_dict,
+	        obj_dict=obj_dict,
+	        weight_decay=weight_decay,
+	        learning_rate=learning_rate,
+	        rsa_params=rsa_params,
+	        save_path=save_path_full
+	    )
+
+    # Example
+    train_model(
+        model=model,
+        train_data=train_data,
+        validation_data=validation_data,
+        should_visualize=True,
+        save_path=save_path_full
+    )
 
 if __name__=='__main__':
 	parse_args_and_run()
