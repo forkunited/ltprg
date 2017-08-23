@@ -593,11 +593,11 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_nnwoc_cts,
+        model=fasm_ersa_cts,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
-        save_path=fasm_nnwoc_cts.save_path
+        save_path=fasm_ersa_cts.save_path
     )
   
 
