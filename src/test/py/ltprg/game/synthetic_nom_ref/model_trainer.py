@@ -17,7 +17,6 @@ import time
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-from unbounded_alternatives_set_models import UASM_ERSA, UASM_NNWC, UASM_NNWOC
 import visdom
 from vis_embedding import vis_embedding
 
