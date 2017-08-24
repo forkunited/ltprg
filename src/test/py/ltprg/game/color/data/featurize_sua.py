@@ -77,7 +77,7 @@ class FeaturizeSUA(unittest.TestCase):
             ["state.lH_0","state.lS_0","state.lL_0",
              "state.lH_1","state.lS_1","state.lL_1",
              "state.lH_2","state.lS_2","state.lL_2"])
-
+    
     def test_listener_colors_ft(self):
         print "Featurizing listener colors (ft)"
         mung.feature_helpers.featurize_path_scalars(
@@ -87,7 +87,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "listener_colors_ft",
             ["state.lFT_0", "state.lFT_1", "state.lFT_2"])
-
+    
     # Constructs vectors of the colors that the speaker observed
     def test_speaker_colors(self):
         print "Featurizing speaker colors"
@@ -181,7 +181,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target_idx",
             ["state.sTargetIndex"])
-
 
 if __name__ == '__main__':
     unittest.main()

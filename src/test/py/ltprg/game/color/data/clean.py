@@ -28,9 +28,9 @@ def read_messy_file(file_path):
 
 def fourier_transform(h, s, l):
     # Convert to hsv using https://gist.github.com/xpansive/1337890
-    h = h / 360.0
-    s = s / 100.0
-    l = l / 100.0
+    h = float(h) / 360.0
+    s = float(s) / 100.0
+    l = float(l) / 100.0
 
     if l < .5:
         s = s * l
