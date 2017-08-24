@@ -63,7 +63,7 @@ class BasicModel(object):
             os.makedirs(self.save_path)
 
         # dtype
-        if cuda.is_availiable():
+        if cuda.is_available():
             self.dtype = torch.cuda.LongTensor
         else
             self.dtype = torch.LongTensor
@@ -212,7 +212,7 @@ class EmbeddingType(object):
 
 def one_hot(ind, sz):
     # 2D tensor one-hot
-    if cuda.is_availiable():
+    if cuda.is_available():
         dtype = torch.cuda.FloatTensor
     else
         dtype = torch.FloatTensor

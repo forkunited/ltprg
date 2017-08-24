@@ -53,7 +53,7 @@ class RSAParams(object):
 							 ground-truth lexicon used to generate data)
 		"""
         # dtype
-        if cuda.is_availiable():
+        if cuda.is_available():
             self.dtype = torch.cuda.FloatTensor
         else
             self.dtype = torch.FloatTensor
