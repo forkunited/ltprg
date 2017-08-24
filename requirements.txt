@@ -1,4 +1,4 @@
 visdom == 0.1.05
-http://download.pytorch.org/whl/cu75/torch-0.2.0.post1-cp27-cp27mu-manylinux1_x86_64.whl
+http://download.pytorch.org/whl/cu80/torch-0.2.0.post1-cp27-cp27mu-manylinux1_x86_64.whl
 numpy == 1.13.1
 scipy == 0.19.1

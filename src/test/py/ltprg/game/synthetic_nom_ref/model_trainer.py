@@ -75,7 +75,7 @@ class ModelTrainer(object):
             print '\n\nTo view live performance plots, enter `python -m visdom.server`' 
             print 'in another terminal window. Then navigate to http://localhost.com:8097'
             print 'in your browser\n'
-            raw_input("Press Enter to continue...")
+            # raw_input("Press Enter to continue...")
             self.vis = visdom.Visdom() 
 
 

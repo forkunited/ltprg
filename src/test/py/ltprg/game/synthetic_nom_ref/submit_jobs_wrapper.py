@@ -39,10 +39,10 @@ def run_models():
 	model_names = ['fasm_ersa_cts'] #['fasm_ersa_cts', 'fasm_nnwc_cts', 'fasm_nnwoc_cts']
 	decays = [0.00001] # Adam params
 	learning_rates = [0.0001]
-	hidden_layer_szs = [[200, 200], [100]]
+	hidden_layer_szs = [[200, 200]]
 	# hidden_layer_szs = [[100], [100, 100], [100, 100, 100], [200], [200, 200], [200, 200, 200]]
 
-	set_lst = range(0, 100)
+	set_lst = range(0, 1)
 	for set_num in set_lst:
 		set_name = 'set' + str(set_num)
 		print '\n' + set_name + '\n'
