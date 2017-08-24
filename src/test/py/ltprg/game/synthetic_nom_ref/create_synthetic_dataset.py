@@ -256,7 +256,7 @@ class DatasetMaker(object):
         # dtype
         if cuda.is_available():
             self.dtype = torch.cuda.FloatTensor
-        else
+        else:
             self.dtype = torch.FloatTensor
 
 	def save_as_json(self, d, savename):

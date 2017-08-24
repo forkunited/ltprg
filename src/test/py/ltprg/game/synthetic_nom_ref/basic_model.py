@@ -65,7 +65,7 @@ class BasicModel(object):
         # dtype
         if cuda.is_available():
             self.dtype = torch.cuda.LongTensor
-        else
+        else:
             self.dtype = torch.LongTensor
 
 
@@ -214,7 +214,7 @@ def one_hot(ind, sz):
     # 2D tensor one-hot
     if cuda.is_available():
         dtype = torch.cuda.FloatTensor
-    else
+    else:
         dtype = torch.FloatTensor
     out = torch.FloatTensor(1, sz).zero_().type(dtype)
     out[0, ind] = 1

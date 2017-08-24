@@ -55,7 +55,7 @@ class RSAParams(object):
         # dtype
         if cuda.is_available():
             self.dtype = torch.cuda.FloatTensor
-        else
+        else:
             self.dtype = torch.FloatTensor
 
 		self.alpha = alpha
