@@ -4,6 +4,7 @@ import os
 from rsa import uniform_prior
 import torch
 import torch.nn as nn
+import torch.cuda as cuda
 from torch import optim
 from torch.autograd import Variable
 
@@ -60,6 +61,12 @@ class BasicModel(object):
         self.save_path = save_path
         if not os.path.isdir(self.save_path):
             os.makedirs(self.save_path)
+
+        # dtype
+        if cuda.is_availiable():
+            self.dtype = torch.cuda.LongTensor
+        else
+            self.dtype = torch.LongTensor
 
 
     def evaluate(self, prediction, label):
@@ -205,6 +212,10 @@ class EmbeddingType(object):
 
 def one_hot(ind, sz):
     # 2D tensor one-hot
-    out = torch.FloatTensor(1, sz).zero_()
+    if cuda.is_availiable():
+        dtype = torch.cuda.FloatTensor
+    else
+        dtype = torch.FloatTensor
+    out = torch.FloatTensor(1, sz).zero_().type(dtype)
     out[0, ind] = 1
     return out

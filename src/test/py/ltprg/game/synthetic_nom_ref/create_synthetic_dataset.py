@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import visdom
 import torch
 import torch.nn as nn
+import torch.cuda as cuda
 from torch.autograd import Variable
 from rsa import uniform_prior, model_literal_listener
 
@@ -252,6 +253,12 @@ class DatasetMaker(object):
 		self.generate_dataset()
 		self.reformat_dataset_and_save()
 
+        # dtype
+        if cuda.is_availiable():
+            self.dtype = torch.cuda.FloatTensor
+        else
+            self.dtype = torch.FloatTensor
+
 	def save_as_json(self, d, savename):
 		with open(savename, 'w') as outfile:
 			json.dump(d, outfile)
@@ -312,7 +319,7 @@ class DatasetMaker(object):
 		# also reformat for later use in utterance assignmen
 		self.costs = Variable(torch.FloatTensor(
 				[d[k] for k in range(0, 
-				self.num_utterances)]))
+				self.num_utterances)]).type(self.dtype))
 
 	def create_lexicon(self):
 		# u x o
@@ -366,7 +373,7 @@ class DatasetMaker(object):
 		# get RSA speaker (level 1) distribution,
 		# reformatting as appropraite for torch-based RSA code
 		t = torch.transpose(model_literal_listener(
-					Variable(torch.FloatTensor(sub_lex)), 
+					Variable(torch.FloatTensor(sub_lex).type(self.dtype)), 
 					uniform_prior(3)), 0, 1)
 		utilities = torch.log(t + 10e-06)
 		x = (self.alpha * utilities).sub_(self.cost_weight * self.costs.expand_as(

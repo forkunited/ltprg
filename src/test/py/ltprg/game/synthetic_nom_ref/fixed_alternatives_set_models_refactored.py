@@ -74,7 +74,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
         else:
             # uses learned params
@@ -87,7 +87,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
         outputs = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
+        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -115,7 +115,7 @@ class FASM_NN(FixedAlternativeSetModel):
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
@@ -125,7 +125,7 @@ class FASM_NN(FixedAlternativeSetModel):
             pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
+        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -240,7 +240,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
         else:
             # For CTS models, the output is a single probability for
@@ -269,7 +269,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
+        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -291,7 +291,7 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]))
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
             # pass through RSA
@@ -320,7 +320,7 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
             pred = m(utt_scores)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]))
+        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:

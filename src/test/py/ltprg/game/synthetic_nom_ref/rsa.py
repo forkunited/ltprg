@@ -1,6 +1,7 @@
 from __future__ import division
 import torch
 import torch.nn as nn
+import torch.cuda as cuda
 from torch.autograd import Variable
 
 def uniform_prior(len):
@@ -51,13 +52,19 @@ class RSAParams(object):
 		gold_standard_lexicon (num utterances x num objects np array of 
 							 ground-truth lexicon used to generate data)
 		"""
+        # dtype
+        if cuda.is_availiable():
+            self.dtype = torch.cuda.FloatTensor
+        else
+            self.dtype = torch.FloatTensor
+
 		self.alpha = alpha
 		self.cost_weight = cost_weight
 		self.world_prior = uniform_prior(world_sz)
 		self.costs = Variable(torch.FloatTensor(
-			[cost_dict[str(k)] for k in range(len(cost_dict))]))
+			[cost_dict[str(k)] for k in range(len(cost_dict))]).type(self.dtype))
 		self.gold_standard_lexicon = Variable(torch.FloatTensor(
-			gold_standard_lexicon))
+			gold_standard_lexicon).type(self.dtype))
 
 	def to_dict(self):
 		d = dict()
