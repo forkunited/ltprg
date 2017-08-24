@@ -98,7 +98,7 @@ D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
 D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
 D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
 
-world_input_size = 3
+world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 3
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 logger = Logger()
