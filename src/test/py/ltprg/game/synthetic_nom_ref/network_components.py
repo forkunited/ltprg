@@ -16,7 +16,10 @@ class MLP(nn.Module):
 		assert final_nonlinearity in ['logSoftmax', 'sigmoid']
 
                 if cuda.is_available():
+		    self.is_cuda = True
                     self.cuda()
+                else:
+                    self.is_cuda = False
 
 		if hiddens_nonlinearity == 'relu':
 			self.hiddens_nonlinearity = nn.ReLU()
@@ -33,7 +36,10 @@ class MLP(nn.Module):
 		layer_szs.append(out_sz)
 		layers = []
 		for i in range(1,len(layer_szs)):
-			layers.append(nn.Linear(layer_szs[i-1], layer_szs[i]))
+			l = nn.Linear(layer_szs[i-1], layer_szs[i])
+			if self.is_cuda:
+                            l.cuda()
+			layers.append(l)
 		self.layers = nn.ModuleList(layers)
 
 
