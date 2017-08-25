@@ -47,7 +47,7 @@ def establish_seed(seed=3):
 
 class ModelTrainer(object):
     def __init__(self,  model, train_data, validation_data,
-                 should_visualize, save_path):
+                 should_visualize, save_path, headless=True):
         """
         model             BasicModel object to train & evaluate
         train_data        (lst of dictionaries, e.g.
@@ -59,6 +59,7 @@ class ModelTrainer(object):
                            same format as train_data)
         should_visualize     (plot learning curves in Visdom; True/False)
         save_path         (where to save results)
+	headless	whether model is being trained on a server
         """
         # Initialize model training params
         establish_seed()
@@ -75,7 +76,8 @@ class ModelTrainer(object):
             print '\n\nTo view live performance plots, enter `python -m visdom.server`' 
             print 'in another terminal window. Then navigate to http://localhost.com:8097'
             print 'in your browser\n'
-            # raw_input("Press Enter to continue...")
+            if not headless:
+                 raw_input("Press Enter to continue...")
             self.vis = visdom.Visdom() 
 
 

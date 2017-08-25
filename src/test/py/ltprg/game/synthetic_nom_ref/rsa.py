@@ -52,11 +52,11 @@ class RSAParams(object):
 		gold_standard_lexicon (num utterances x num objects np array of 
 							 ground-truth lexicon used to generate data)
 		"""
-        # dtype
-        if cuda.is_available():
-            self.dtype = torch.cuda.FloatTensor
-        else:
-            self.dtype = torch.FloatTensor
+		# dtype
+		if cuda.is_available():
+		    self.dtype = torch.cuda.FloatTensor
+		else:
+		    self.dtype = torch.FloatTensor
 
 		self.alpha = alpha
 		self.cost_weight = cost_weight

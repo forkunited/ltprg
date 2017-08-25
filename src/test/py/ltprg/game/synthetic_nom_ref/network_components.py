@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.cuda as cuda
 
 class MLP(nn.Module):
 	def __init__(self, in_sz, h_szs, out_sz, 
@@ -13,6 +14,9 @@ class MLP(nn.Module):
 
 		assert hiddens_nonlinearity in ['relu', 'tanh']
 		assert final_nonlinearity in ['logSoftmax', 'sigmoid']
+
+                if cuda.is_available():
+                    self.cuda()
 
 		if hiddens_nonlinearity == 'relu':
 			self.hiddens_nonlinearity = nn.ReLU()
@@ -31,6 +35,7 @@ class MLP(nn.Module):
 		for i in range(1,len(layer_szs)):
 			layers.append(nn.Linear(layer_szs[i-1], layer_szs[i]))
 		self.layers = nn.ModuleList(layers)
+
 
 
 		# hidden_layers = [nn.Linear(in_sz, h_szs[0])]

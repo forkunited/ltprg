@@ -241,7 +241,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
             # model predictions); grab objects for this trial
             inds = Variable(torch.LongTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
         else:
             # For CTS models, the output is a single probability for
             # the object-utterance pairing. We need to compute these 
@@ -252,7 +252,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
                 trial_with_new_utt['utterance'] = utterance
                 inputs = self.format_inputs(trial_with_new_utt)
                 truthiness_values = torch.transpose(
-                    self.model.forward(inputs),
+                    self.model.forward(inputs.type(self.dtype)),
                     0,
                     1
                 )
