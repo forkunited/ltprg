@@ -10,7 +10,7 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from torch.nn import NLLLoss
 
-from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden
+from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput, SequentialUtteranceInputType
 from ltprg.model.eval import Loss
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
@@ -115,8 +115,14 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              samples_per_input=SAMPLES_PER_INPUT,
                                              uniform=True,
                                              seq_length=D["utterance"].get_feature_seq_set().get_size())
-seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
-    EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+
+seq_meaning_model = None
+if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
+    seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+else:
+    seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
 
