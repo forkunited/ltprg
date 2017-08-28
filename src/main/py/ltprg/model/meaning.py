@@ -67,21 +67,41 @@ class MeaningModelIndexedWorld(MeaningModel):
         #return meaning.view(input.size(0), input.size(1), utt_prior_size).transpose(1,2)
         return meaning.view(input.size(0), utt_prior_size, input.size(1))
 
+class SequentialUtteranceInputType:
+    IN_SEQ = "IN_SEQ"
+    OUT_SEQ = "OUT_SEQ"
+
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
-    def __init__(self, world_input_size, seq_model):
+    def __init__(self, world_input_size, seq_model, input_type=SequentialUtteranceInputType.IN_SEQ):
         super(MeaningModelIndexedWorldSequentialUtterance, self).__init__(world_input_size)
         self._seq_model = seq_model
-        self._decoder = nn.Linear(seq_model.get_hidden_size(), 1)
+
+        if input_type == SequentialUtteranceInputType.IN_SEQ:
+            self._decoder = nn.Linear(seq_model.get_hidden_size(), 1)
+        else:
+            self._decoder_mu = nn.Linear(seq_model.get_hidden_size(), self._world_input_size)
+            self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size(), self._world_input_size * self._world_input_size)
+
         self._decoder_nl = nn.Sigmoid()
+        self._input_type = input_type
 
     def _meaning(self, utterance, input):
         seq = utterance[0].transpose(0,1)
         seq_length = utterance[1]
         sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input])
-        
-        output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
-        
-        decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
-        output = self._decoder_nl(decoded)
-        
+
+        output = None
+        if self._input_type == SequentialUtteranceInputType.IN_SEQ:
+            output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+            decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            output = self._decoder_nl(decoded)
+        else:
+            output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
+            mu = self._decoder_mu(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            Sigma_flat = self._decoder_Sigma(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            Delta = sorted_inputs - mu
+            Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
+            score = - Delta * Sigma * Delta
+            output = self._decoder_nl(score)
+
         return unsort_seq_tensors(sorted_indices, [output])[0]

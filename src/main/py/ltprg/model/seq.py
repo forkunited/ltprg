@@ -182,7 +182,10 @@ class SequenceModel(nn.Module):
             seq_part_i = None
             if seq_part is not None:
                 seq_part_i = seq_part[i].transpose(1,0)
-            beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input[i]))
+            input_i = None
+            if input is None:
+                input_i = input
+            beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i))
         return beams
 
     def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic=None):
@@ -423,8 +426,6 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._init_params["dropout"] = dropout
 
         self._rnn_layers = rnn_layers
-        self._encoder = nn.Linear(input_size, rnn_size)
-        self._encoder_nl = nn.Tanh()
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, 'GRU')(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
@@ -441,9 +442,8 @@ class SequenceModelInputEmbedded(SequenceModel):
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
 
-        if input is not None:
-            input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
-            emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
+        input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
+        emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
 
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
@@ -475,3 +475,63 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
         return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+
+
+class SequenceModelNoInput(SequenceModel):
+    def __init__(self, name, seq_size, embedding_size, rnn_size,
+                 rnn_layers, dropout=0.5):
+        super(SequenceModelNoInput, self).__init__(name, rnn_size)
+
+        self._init_params = dict()
+        self._init_params["name"] = name
+        self._init_params["seq_size"] = seq_size
+        self._init_params["embedding_size"] = embedding_size
+        self._init_params["rnn_size"] = rnn_size
+        self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["dropout"] = dropout
+
+        self._rnn_layers = rnn_layers
+        self._drop = nn.Dropout(dropout)
+        self._emb = nn.Embedding(seq_size, embedding_size)
+        self._rnn = getattr(nn, 'GRU')(embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        self._decoder = nn.Linear(rnn_size, seq_size)
+        self._softmax = nn.LogSoftmax()
+
+    def _get_init_params(self):
+        return self._init_params
+
+    def _init_hidden(self, batch_size, input=None):
+        weight = next(self.parameters()).data
+        return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+
+    def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
+        emb_pad = self._drop(self._emb(seq_part))
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
+
+        output, hidden = self._rnn(emb, hidden)
+
+        output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
+        rnn_out_size = output.size()
+
+        output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
+        output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
+
+        return output, hidden
+
+    def init_weights(self):
+        initrange = 0.1
+        self._emb.weight.data.uniform_(-initrange, initrange)
+        self._encoder.bias.data.fill_(0)
+        self._encoder.weight.data.uniform_(-initrange, initrange)
+        self._decoder.bias.data.fill_(0)
+        self._decoder.weight.data.uniform_(-initrange, initrange)
+
+    @staticmethod
+    def make(init_params):
+        name = init_params["name"]
+        seq_size = init_params["seq_size"]
+        embedding_size = init_params["embedding_size"]
+        rnn_size = init_params["rnn_size"]
+        rnn_layers = init_params["rnn_layers"]
+        dropout = init_params["dropout"]
+        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)

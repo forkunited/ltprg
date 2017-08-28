@@ -28,7 +28,7 @@ DROP_OUT = 0.5
 LEARNING_RATE = 0.0005 #0.05 #0.001
 LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = 1000 # None (none means full)
-SAMPLES_PER_INPUT= 4 # 4 
+SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
 torch.manual_seed(1)
@@ -81,6 +81,7 @@ S_world_dir = sys.argv[8]
 S_observation_dir = sys.argv[9]
 seq_model_path = sys.argv[10]
 output_results_path = sys.argv[11]
+meaning_fn_input_type = sys.argv[12]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
@@ -110,13 +111,13 @@ loss_criterion = NLLLoss()
 seq_prior_model = SequenceModel.load(seq_model_path)
 world_prior_fn = UniformIndexPriorFn(3) # 3 colors per observation
 utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
-                                             mode=SAMPLING_MODE, 
+                                             mode=SAMPLING_MODE,
                                              samples_per_input=SAMPLES_PER_INPUT,
                                              uniform=True,
                                              seq_length=D["utterance"].get_feature_seq_set().get_size())
 seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
     EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model)
+meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
 
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
