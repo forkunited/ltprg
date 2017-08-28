@@ -183,8 +183,8 @@ class SequenceModel(nn.Module):
             if seq_part is not None:
                 seq_part_i = seq_part[i].transpose(1,0)
             input_i = None
-            if input is None:
-                input_i = input
+            if input is not None:
+                input_i = input[i]
             beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i))
         return beams
 

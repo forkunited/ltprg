@@ -62,9 +62,9 @@ class SequenceSamplingPriorFn(nn.Module):
         inputs_per_observation = observation.size(1)/self._input_size
         all_inputs = None
         if self._fixed_input is not None:
-            all_input = observation.view(batch_size*inputs_per_observation, self._input_size)
+            all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
             fixed_input_offset = torch.arange(0, batch_size).long()*inputs_per_observation + self._fixed_input.long()
-            all_input = all_input[fixed_input_offset]
+            all_inputs = all_input[fixed_input_offset]
             inputs_per_observation = 1
         elif self._ignored_input is not None:
             all_inputs = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size))
@@ -80,7 +80,6 @@ class SequenceSamplingPriorFn(nn.Module):
             inputs_per_observation = observation.size(1)/self._input_size - 1
         else:
             all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
-
 
         samples = None
         if self._mode == SamplingMode.FORWARD:

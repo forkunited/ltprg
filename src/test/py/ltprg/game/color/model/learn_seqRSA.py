@@ -10,9 +10,9 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from torch.nn import NLLLoss
 
-from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput, SequentialUtteranceInputType
+from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
 from ltprg.model.eval import Loss
-from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance
+from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
 from ltprg.model.learn import Trainer
@@ -22,10 +22,10 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=8000 #1000 #00
+TRAINING_ITERATIONS=10000 #1000 #00
 TRAINING_BATCH_SIZE=50 #100 #10
 DROP_OUT = 0.5
-LEARNING_RATE = 0.0005 #0.05 #0.001
+LEARNING_RATE = 0.001 # 0.0005 #0.05 #0.001
 LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = 1000 # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
