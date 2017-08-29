@@ -117,14 +117,18 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              seq_length=D["utterance"].get_feature_seq_set().get_size())
 
 seq_meaning_model = None
+soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
     seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+    soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+    soft_bottom = True
+
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
-rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
+rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
 
@@ -149,7 +153,7 @@ rsa_model, best_meaning = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS,
             batch_size=TRAINING_BATCH_SIZE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
-best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True)
+best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
 output_model_samples(best_model, data_parameters, D_dev_close)
 output_model_samples(best_model, data_parameters, D_dev_split)

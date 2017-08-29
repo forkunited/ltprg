@@ -57,9 +57,13 @@ class DataParameter:
         S_world="world", S_observation="observation", mode=DistributionType.L, utterance_seq=False):
         return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=utterance_seq)
 
-def _normalize_rows(t):
-	row_sums = torch.sum(t, dim=len(t.size())-1)
-	return torch.div(t, row_sums.expand_as(t))
+def _normalize_rows(t, softmax=False):
+    if not softmax:
+        row_sums = torch.sum(t, dim=len(t.size())-1)
+        return torch.div(t, row_sums.expand_as(t))
+    else:
+        s = nn.Softmax()
+        return s(t.view(-1, t.size(len(t.size())-1))).view(t.size())
 
 
 def _size_up_tensor(t):
@@ -87,7 +91,7 @@ def _size_down_tensor(t):
     return torch.squeeze(t, 1)
 
 class RSA(nn.Module):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False):
         super(RSA, self).__init__()
         self._name = name
         self._level = level
@@ -95,6 +99,7 @@ class RSA(nn.Module):
         self._world_prior_fn = world_prior_fn
         self._utterance_prior_fn = utterance_prior_fn
         self._L_bottom = L_bottom
+        self._soft_bottom = soft_bottom
 
     def get_name(self):
         return self._name
@@ -108,21 +113,21 @@ class RSA(nn.Module):
     def get_utterance_prior_fn(self):
         return self._utterance_prior_fn
 
-    def to_level(self, dist_type, level, L_bottom=True):
+    def to_level(self, dist_type, level, L_bottom=True, soft_bottom=False):
         if dist_type == DistributionType.L:
-            return L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom)
+            return L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
         else:
-            return S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom)
+            return S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
     @staticmethod
-    def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+    def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False):
         if dist_type == DistributionType.L:
-            return L(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+            return L(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
         else:
-            return S(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+            return S(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
 class S(RSA):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False):
         """
         Constructs an RSA speaker module.  This module assumes world priors and
         utterance priors have finite discrete support.
@@ -163,14 +168,14 @@ class S(RSA):
                 a literal listener or a literal speaker.  Defaults to True.
         """
 
-        super(S, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+        super(S, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
         self._L = None
         if self._level != 0:
             next_level = self._level
             if L_bottom:
                 next_level = self._level - 1
-            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
     def forward(self, world, observation=None, world_dist=False):
         """
@@ -203,7 +208,7 @@ class S(RSA):
         ps = None
         if self._level == 0:
             meaning = self._meaning_fn(utterance, world, observation).transpose(2,1)
-            ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
+            ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(meaning) * meaning, softmax=self._soft_bottom)
         else:
             l = self._L(utterance_prior.support(), observation, utterance_dist=True)
             world_support = l.support()
@@ -254,7 +259,7 @@ class S(RSA):
         return loss_criterion(torch.log(model_dist.p()), Variable(index))
 
 class L(RSA):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False):
         """
         Constructs an RSA listener module.  This module assumes world priors and
         utterance priors have finite discrete support.
@@ -294,14 +299,14 @@ class L(RSA):
             L_bottom (bool, optional): Indicates whether the model bottoms out at
                 a literal listener or a literal speaker.  Defaults to True.
         """
-        super(L, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+        super(L, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
         self._S = None
         if self._level != 0:
             next_level = self._level
             if not L_bottom:
                 next_level = self._level - 1
-            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom)
+            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
 
     def forward(self, utterance, observation=None, utterance_dist=False):
         """
@@ -341,7 +346,7 @@ class L(RSA):
         ps = None
         if self._level == 0:
             meaning = self._meaning_fn(utterance, world_prior.support(), observation)
-            ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning)
+            ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning, softmax=self._soft_bottom)
         else:
             s = self._S(world_prior.support(), observation=observation, world_dist=True)
             utterance_support = s.support()
@@ -394,7 +399,7 @@ class RSADistributionAccuracy(DistributionAccuracy):
         super(RSADistributionAccuracy, self).__init__(name, data, data_parameters, model_fn=None, target_indexed = target_indexed)
 
         def _mfn(batch, model, data_parameters):
-            model = model.to_level(self._distribution_type, self._level, L_bottom=L_bottom)
+            model = model.to_level(self._distribution_type, self._level, L_bottom=L_bottom, soft_bottom=model._soft_bottom)
             return model.forward_batch(batch, data_parameters.to_mode(self._distribution_type))
         self._model_fn = _mfn
 

@@ -103,8 +103,10 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             score = Variable(torch.zeros(mu.size(0)))
             for i in range(mu.size(0)):
                 score[i] = -self._mse(mu[i], sorted_inputs[0][i])
+            output = score
+
             #score = - self._mse(mu, sorted_inputs[0])
-            output = self._decoder_nl(score)
+            #output = self._decoder_nl(score)
             #Sigma_flat = self._decoder_Sigma(hidden.view(-1, hidden.size(0)*hidden.size(2)))
             #Delta = sorted_inputs[0] - mu
             #Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
