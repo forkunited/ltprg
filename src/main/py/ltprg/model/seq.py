@@ -103,7 +103,9 @@ class SequenceModel(nn.Module):
         return self._forward_from_hidden(hidden, seq_part, seq_length, input=input)
 
     def forward_batch(self, batch, data_parameters):
-        input = Variable(batch[data_parameters[DataParameter.INPUT]])
+        input = None
+        if DataParameter.INPUT in data_parameters and data_parameters[DataParameter.INPUT] in batch:
+            input = Variable(batch[data_parameters[DataParameter.INPUT]])
         seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
         length = length - 1
         seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
@@ -178,14 +180,16 @@ class SequenceModel(nn.Module):
         if seq_part is not None:
             seq_part = seq_part.transpose(1,0)
 
-        for i in range(input.size(0)):
-            seq_part_i = None
-            if seq_part is not None:
-                seq_part_i = seq_part[i].transpose(1,0)
-            input_i = None
-            if input is not None:
+        if input is not None:
+            for i in range(input.size(0)):
+                seq_part_i = None
+                if seq_part is not None:
+                    seq_part_i = seq_part[i].transpose(1,0)
                 input_i = input[i]
-            beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i))
+                beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i))
+        else:
+            beams.append(self._beam_search_single(beam_size, max_length))
+
         return beams
 
     def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic=None):

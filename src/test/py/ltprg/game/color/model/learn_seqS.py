@@ -10,7 +10,7 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 
 from ltprg.model.eval import Loss
-from ltprg.model.seq import SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
+from ltprg.model.seq import SequenceModelNoInput, SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
 from ltprg.model.learn import Trainer
 from ltprg.util.log import Logger
 
@@ -18,7 +18,7 @@ RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=4000 #1000 #00
+TRAINING_ITERATIONS=4000 #4000 #1000 #00
 TRAINING_BATCH_SIZE=100
 DROP_OUT = 0.5
 LEARNING_RATE = 0.005 #0.05 #0.001
@@ -35,7 +35,7 @@ def output_model_samples(model, D):
     for i in range(len(samples)):
         sampled_utt =  " ".join([D["utterance"].get_feature_token(samples[i][0][j,0]).get_value()
                         for j in range(samples[i][1][0])])
-        print "Sampled " + str(i)": " + sampled_utt
+        print "Sampled " + str(i) + ": " + sampled_utt
 
     beam, utterance_length, scores = beams[0]
     top_utts = [" ".join([D["utterance"].get_feature_token(beam[k][j]).get_value() for k in range(utterance_length[j])]) for j in range(beam.size(1))]
@@ -86,8 +86,6 @@ model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
             log_interval=LOG_INTERVAL)
 
 output_model_samples(best_model, D_dev_close)
-output_model_samples(best_model, D_dev_split)
-output_model_samples(best_model, D_dev_far)
 
 logger.dump(output_results_path)
 best_model.save(output_model_path)
