@@ -263,19 +263,19 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
                     lexicon = torch.cat([lexicon, truthiness_values])
 
         # feed MLP output into RSA, using learned params
-        speaker_table = model_speaker_1(lexicon, self.rsa_params)
+        speaker_table = model_speaker_1(lexicon.type(self.dtype), self.rsa_params)
 
         # pull dist over utterances for target obj
         pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.LongTensor([trial['utterance']]))
 
         # display, if necessary
         if display_prediction:
-          self.display_prediction(trial, pred)
+            self.display_prediction(trial, pred)
 
-        return pred, label
+        return pred.type(self.dtype), label.type(self.dtype)
 
 
 class FASM_NN_CTS(FixedAlternativeSetModel):

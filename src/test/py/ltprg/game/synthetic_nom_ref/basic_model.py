@@ -64,15 +64,15 @@ class BasicModel(object):
 
         # dtype
         if cuda.is_available():
-            self.dtype = torch.cuda.LongTensor
+            self.dtype = torch.cuda.FloatTensor
         else:
-            self.dtype = torch.LongTensor
+            self.dtype = torch.FloatTensor
 
 
     def evaluate(self, prediction, label):
         """ Apply crtierion function eval model's prediction.
         """
-        loss = self.criterion(prediction, label)
+        loss = self.criterion(prediction.type(self.dtype), label.type(self.dtype))
         _, ind = torch.max(prediction, 1)
         accuracy = ind==label   
         return loss, accuracy

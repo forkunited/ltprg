@@ -60,7 +60,7 @@ class RSAParams(object):
 
 		self.alpha = alpha
 		self.cost_weight = cost_weight
-		self.world_prior = uniform_prior(world_sz)
+		self.world_prior = uniform_prior(world_sz).type(self.dtype)
 		self.costs = Variable(torch.FloatTensor(
 			[cost_dict[str(k)] for k in range(len(cost_dict))]).type(self.dtype))
 		self.gold_standard_lexicon = Variable(torch.FloatTensor(
