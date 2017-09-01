@@ -175,7 +175,7 @@ class SequenceModel(nn.Module):
         return ret_samples
 
     # NOTE: Input is a batch of inputs
-    def beam_search(self, beam_size=5, max_length=15, seq_part=None, input=None):
+    def beam_search(self, beam_size=5, max_length=15, seq_part=None, input=None, heuristic=None):
         beams = []
         if seq_part is not None:
             seq_part = seq_part.transpose(1,0)
@@ -186,9 +186,9 @@ class SequenceModel(nn.Module):
                 if seq_part is not None:
                     seq_part_i = seq_part[i].transpose(1,0)
                 input_i = input[i]
-                beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i))
+                beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i, heuristic=heuristic))
         else:
-            beams.append(self._beam_search_single(beam_size, max_length))
+            beams.append(self._beam_search_single(beam_size, max_length, heuristic=heuristic))
 
         return beams
 
@@ -224,6 +224,15 @@ class SequenceModel(nn.Module):
         ended_ignore_mask = torch.ones(vocab_size)
         ended_ignore_mask[0] = 0.0
 
+        vocab = None
+        heuristic_state = None
+        heuristic_lengths = None
+        if heuristic is not None:
+            vocab_rep = torch.arange(0, vocab_size).repeat(beam_size).unsqueeze(0)
+            heuristic_lengths = torch.zeros(vocab_size*beam_size)
+
+        input = input.repeat(beam_size, 1)
+
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1]
 
@@ -237,7 +246,22 @@ class SequenceModel(nn.Module):
 
             next_scores = scores.unsqueeze(1).expand_as(output_dist) + (1.0-ended_mat)*output_dist.data + ignore_mask
 
-            # FIXME: If heuristic is not none, add heuristic function values here
+            if heuristic is not None:
+                beam.repeat()
+                seq_len = beam.size(0)
+                # Sequence length x (vocab_size * beam_size tensor)
+                # Beam sequences repeated in congtiguous blocks of vocab size...
+                # to be extended with each element of vocab
+                expanded_beam = beam.unsqueeze(0).expand((vocab_size,seq_len,beam_size)) \
+                    .transpose(0,2).contiguous() \
+                    .view(seq_len,vocab_size*beam_size)
+                expanded_beam = torch.cat((expanded_beam, vocab_rep), dim=0)
+
+                heuristic_lengths[:] = seq_len
+                heuristic_output, heuristic_state = heuristic((expanded_beam, heuristic_lengths), input, heuristic_state)
+                # Output is vector of scores (beam_0.v_0, beam_0.v_1,..., beam_1.v_1...)
+                heuristic_output = heuristic_output.view(output_dist.size())
+                next_scores += heuristic_output
 
             top_indices = next_scores.view(next_scores.size(0)*next_scores.size(1)).topk(beam_size)[1]
             top_seqs = top_indices / vocab_size

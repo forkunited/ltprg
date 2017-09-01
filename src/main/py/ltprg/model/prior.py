@@ -5,6 +5,10 @@ from ltprg.model.dist import Categorical
 from ltprg.model.seq import SamplingMode, SequenceModel
 from ltprg.model.rsa import DistributionType, DataParameter
 
+class PriorInputMode:
+    IGNORE_TRUE_WORLD = "IGNORE_TRUE_WORLD"
+    ONLY_TRUE_WORLD = "ONLY_TRUE_WORLD"
+
 class UniformIndexPriorFn(nn.Module):
     def __init__(self, size):
         super(UniformIndexPriorFn, self).__init__()
@@ -23,7 +27,7 @@ class UniformIndexPriorFn(nn.Module):
         pass
 
 class SequenceSamplingPriorFn(nn.Module):
-    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S):
+    def __init__(self, model, input_size, mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S, heuristic=None, training_input_mode=None):
         super(SequenceSamplingPriorFn, self).__init__()
         self._model = model
         self._input_size = input_size
@@ -36,6 +40,8 @@ class SequenceSamplingPriorFn(nn.Module):
         self._fixed_seq = None
         self._ignored_input = None
         self._dist_type = dist_type
+        self._heuristic = heuristic
+        self._training_input_mode = training_input_mode
 
         if not uniform:
             raise ValueError("Non-uniform sequence prior not implemented")
@@ -119,17 +125,21 @@ class SequenceSamplingPriorFn(nn.Module):
             seqType == DataParameter.WORLD
             inputType = DataParameter.UTTERANCE
 
+        if self._heuristic is not None:
+            self._heuristic.set_data_batch(batch, data_parameters)
+
+        if self.training:
+            if self._training_input_mode = PriorInputMode.IGNORE_TRUE_WORLD:
+                self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
+            else if self._training_input_mode == PriorInputMode.ONLY_TRUE_WORLD:
+                self.set_fixed_input(batch[data_parameters[inputType]].squeeze())
+
         # NOTE: If dist type != mode, this means that
         # for example, the L model is running with an utterance prior
         # that should include the observed utterance
-        #
-        # Shouldn't ignore the target input in this case, because the
-        # listener doesn't have access to this.
         if self.training or self._dist_type != data_parameters.get_mode():
             seq, length, mask = batch[data_parameters[seqType]]
             self.set_fixed_seq(seq=Variable(seq), length=length)
-            if self._dist_type == data_parameters.get_mode():
-                self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
         else:
             self.set_fixed_seq(seq=None, length=None)
             self.set_ignored_input(None)
