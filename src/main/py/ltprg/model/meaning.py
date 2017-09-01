@@ -100,18 +100,19 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         else:
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
             mu = self._decoder_mu(hidden.view(-1, hidden.size(0)*hidden.size(2)))
-            score = Variable(torch.zeros(mu.size(0)))
-            for i in range(mu.size(0)):
-                score[i] = -self._mse(mu[i], sorted_inputs[0][i])
-            output = score
+            
+            #score = Variable(torch.zeros(mu.size(0)))
+            #for i in range(mu.size(0)):
+            #    score[i] = -self._mse(mu[i], sorted_inputs[0][i])
+            #output = score
 
             #score = - self._mse(mu, sorted_inputs[0])
             #output = self._decoder_nl(score)
-            #Sigma_flat = self._decoder_Sigma(hidden.view(-1, hidden.size(0)*hidden.size(2)))
-            #Delta = sorted_inputs[0] - mu
-            #Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
-            #score = - Delta * Sigma * Delta
-            #score = - Delta.unsqueeze(1).bmm(Sigma).bmm(Delta.unsqueeze(1).transpose(1,2)).squeeze()
-            #output = self._decoder_nl(score)
+            
+            Sigma_flat = self._decoder_Sigma(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            Delta = sorted_inputs[0] - mu
+            Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
+            score = - Delta.unsqueeze(1).bmm(Sigma).bmm(Delta.unsqueeze(1).transpose(1,2)).squeeze()
+            output = score
 
         return unsort_seq_tensors(sorted_indices, [output])[0]
