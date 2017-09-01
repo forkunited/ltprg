@@ -23,6 +23,10 @@ def unsort_seq_tensors(sorted_indices, tensors):
     _, unsorted_indices = torch.sort(sorted_indices, 0, False)
     return [tensor[unsorted_indices] for tensor in tensors]
 
+class RNNType:
+    LSTM = "LSTM"
+    GRU = "GRU"
+
 class DataParameter:
     SEQ = "seq"
     INPUT  = "input"
@@ -321,12 +325,12 @@ class SequenceModel(nn.Module):
 
         return model
 
-
+""" FIXME Put his back later maybe
 class EvaluationSequential(ltprg.model.eval.Evaluation):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, name, data, data_parameters):
-        super(EvaluationSequential, self).__init__(name)
+        super(EvaluationSequential, self).__init__(name, data, data_parameters)
 
         # Loading all the stuff on construction will be faster but hog
         # memory.  If it's a problem, then move this into the run method.
@@ -334,7 +338,6 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
         seq, length, mask = batch[seq_view_name]
 
         self._name = name
-        self._data = data
         self._input_view_name = data_parameters[DataParameter.INPUT]
         self._seq_view_name = data_parameters[DataParameter.SEQ]
         self._data_input = Variable(batch[data_parameters[DataParameter.INPUT]])
@@ -345,7 +348,7 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 
     @abc.abstractmethod
     def run_helper(self, model, model_out, hidden):
-        """ Evaluates the model according to its output """
+        # Evaluates the model according to its output
 
     def run(self, model):
         model.eval()
@@ -357,11 +360,11 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 
         model.train()
         return result
-
+"""
 
 class SequenceModelInputToHidden(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, dropout=0.5):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
         super(SequenceModelInputToHidden, self).__init__(name, rnn_size)
 
         self._init_params = dict()
@@ -371,38 +374,29 @@ class SequenceModelInputToHidden(SequenceModel):
         self._init_params["embedding_size"] = embedding_size
         self._init_params["rnn_size"] = rnn_size
         self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
 
         self._rnn_layers = rnn_layers
+        self._rnn_type = rnn_type
         self._encoder = nn.Linear(input_size, rnn_size)
         self._encoder_nl = nn.Tanh()
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, 'GRU')(embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout)
         self._decoder = nn.Linear(rnn_size, seq_size)
         self._softmax = nn.LogSoftmax()
-
-        # Possibly add this back in later.  And add lstm support (need cell
-        # state )
-        #if rnn_type in ['LSTM', 'GRU']:
-        #    self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size,
-        #                                      rnn_layers, dropout=dropout)
-        #else:
-        #    try:
-        #        nonlinearity = {'RNN_TANH': 'tanh', 'RNN_RELU': 'relu'}[rnn_type]
-        #    except KeyError:
-        #        raise ValueError( """An invalid option for `--model` was supplied,
-        #                         options are ['LSTM', 'GRU', 'RNN_TANH' or 'RNN_RELU']""")
-        #    self_.rnn = nn.RNN(embedding_size, rnn_size, rnn_layers,
-        #                       nonlinearity=nonlinearity, dropout=dropout)
 
     def _get_init_params(self):
         return self._init_params
 
     def _init_hidden(self, batch_size, input=None):
-        hidden = self._encoder_nl(self._encoder(input))
-        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
-        return hidden
+        weight = next(self.parameters()).data
+        if self._rnn_type == RNNType.GRU:
+            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+        else:
+            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
+                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -417,7 +411,10 @@ class SequenceModelInputToHidden(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        return output, hidden
+        if self._rnn_type == RNNType.GRU:
+            return output, hidden
+        else:
+            return output, hidden[0]
 
     def init_weights(self):
         initrange = 0.1
@@ -435,13 +432,14 @@ class SequenceModelInputToHidden(SequenceModel):
         embedding_size = init_params["embedding_size"]
         rnn_size = init_params["rnn_size"]
         rnn_layers = init_params["rnn_layers"]
+        rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
-        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)
 
 
 class SequenceModelInputEmbedded(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, dropout=0.5):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
         super(SequenceModelInputEmbedded, self).__init__(name, rnn_size)
 
         self._init_params = dict()
@@ -451,12 +449,14 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._init_params["embedding_size"] = embedding_size
         self._init_params["rnn_size"] = rnn_size
         self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
 
         self._rnn_layers = rnn_layers
+        self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, 'GRU')(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
+        self._rnn = getattr(nn, rnn_type)(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
         self._decoder = nn.Linear(rnn_size, seq_size)
         self._softmax = nn.LogSoftmax()
 
@@ -465,7 +465,11 @@ class SequenceModelInputEmbedded(SequenceModel):
 
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
-        return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+        if self._rnn_type == RNNType.GRU:
+            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+        else:
+            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
+                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -483,7 +487,10 @@ class SequenceModelInputEmbedded(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        return output, hidden
+        if self._rnn_type == RNNType.GRU:
+            return output, hidden
+        else:
+            return output, hidden[0]
 
     def init_weights(self):
         initrange = 0.1
@@ -501,13 +508,14 @@ class SequenceModelInputEmbedded(SequenceModel):
         embedding_size = init_params["embedding_size"]
         rnn_size = init_params["rnn_size"]
         rnn_layers = init_params["rnn_layers"]
+        rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
-        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)
 
 
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
-                 rnn_layers, dropout=0.5):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
         super(SequenceModelNoInput, self).__init__(name, rnn_size)
 
         self._init_params = dict()
@@ -516,12 +524,14 @@ class SequenceModelNoInput(SequenceModel):
         self._init_params["embedding_size"] = embedding_size
         self._init_params["rnn_size"] = rnn_size
         self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
 
         self._rnn_layers = rnn_layers
+        self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, 'GRU')(embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout)
         self._decoder = nn.Linear(rnn_size, seq_size)
         self._softmax = nn.LogSoftmax()
 
@@ -530,7 +540,11 @@ class SequenceModelNoInput(SequenceModel):
 
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
-        return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+        if self._rnn_type == RNNType.GRU:
+            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+        else:
+            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
+                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -544,7 +558,10 @@ class SequenceModelNoInput(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        return output, hidden
+        if self._rnn_type == RNNType.GRU:
+            return output, hidden
+        else:
+            return output, hidden[0]
 
     def init_weights(self):
         initrange = 0.1
@@ -562,4 +579,5 @@ class SequenceModelNoInput(SequenceModel):
         rnn_size = init_params["rnn_size"]
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
-        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, dropout=dropout)
+        rnn_type = init_params["rnn_type"]
+        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type dropout=dropout)

@@ -10,25 +10,26 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from torch.nn import NLLLoss
 
-from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
+from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
 from ltprg.model.seq_heuristic import HeuristicL0
 from ltprg.model.eval import Loss
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
-from ltprg.model.learn import Trainer
+from ltprg.model.learn import OptimizerType, Trainer
 from ltprg.util.log import Logger
 
-RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
+RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=30000 #1000 #00
-TRAINING_BATCH_SIZE=100 # 50 #100 #10
+TRAINING_ITERATIONS= 4000 #30000 #1000 #00
+TRAINING_BATCH_SIZE=128 # 50 #100 #10
 DROP_OUT = 0.0
-LEARNING_RATE = 0.004 # 0.0005 #0.05 #BEST 0.001
+OPTIMIZER_TYPE = OptimizerType.ADADELTA
+LEARNING_RATE = 0.2 # 0.0005 #0.05 #BEST 0.001
 LOG_INTERVAL = 500
-DEV_SAMPLE_SIZE = 1000 # None (none means full)
+DEV_SAMPLE_SIZE = 3000 # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
@@ -118,11 +119,11 @@ seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
     seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
     soft_bottom = True
 
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
@@ -141,7 +142,8 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
 
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
-dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
+loss_criterion_unnorm = NLLLoss(size_average=False)
+dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
 dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
@@ -161,7 +163,7 @@ other_evaluations = [dev_l0_acc, dev_l1_acc, \
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
 rsa_model, best_meaning = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
-            batch_size=TRAINING_BATCH_SIZE, lr=LEARNING_RATE, \
+            batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)

@@ -1,7 +1,11 @@
 import time
 import copy
-from torch.optim import Adam
+from torch.optim import Adam, Adadelta
 from ltprg.model.eval import Evaluation
+
+class OptimizerType:
+    ADAM = "ADAM"
+    ADADELTA = "ADADELTA"
 
 class Trainer:
     def __init__(self, data_parameters, loss_criterion, logger, evaluation, other_evaluations=None, max_evaluation=False):
@@ -14,10 +18,16 @@ class Trainer:
         if other_evaluations is not None:
             self._all_evaluations.extend(other_evaluations)
 
-    def train(self, model, data, iterations, batch_size=100, lr=0.001, log_interval=100, best_part_fn=None):
+    def train(self, model, data, iterations, batch_size=100, optimizer_type=OptimizerType.ADAM, lr=0.001, log_interval=100, best_part_fn=None):
         model.train()
         start_time = time.time()
-        optimizer = Adam(model.parameters(), lr=lr)
+
+        optimizer = None
+        if optimizer_type == OptimizerType.ADAM:
+            optimizer = Adam(model.parameters(), lr=lr)
+        else:
+            optimizer = Adadelta(model.parameters(), lr=lr)
+
         total_loss = 0.0
 
         self._logger.set_key_order(["Model", "Iteration", "Avg batch ms", "Avg batch loss"])
@@ -48,7 +58,7 @@ class Trainer:
 
             if i % log_interval == 0:
                 avg_loss = total_loss[0] / log_interval
-                
+
                 avg_batch_ms = (time.time() - start_time)/log_interval
                 eval_start_time = time.time()
                 results = Evaluation.run_all(self._all_evaluations, model)
@@ -75,4 +85,3 @@ class Trainer:
         model.eval()
 
         return model, best_part
-

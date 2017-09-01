@@ -10,19 +10,20 @@ from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 
 from ltprg.model.eval import Loss
-from ltprg.model.seq import SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
-from ltprg.model.learn import Trainer
+from ltprg.model.seq import RNNType, SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
+from ltprg.model.learn import Trainer, OptimizerType
 from ltprg.util.log import Logger
 
-RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
+RNN_TYPE = RNNType.LSTM
 INPUT_TYPE = "NOT_EMBEDDED" #"EMBEDDED"
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=4000 #1000 #00
-TRAINING_BATCH_SIZE=100
+TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
-LEARNING_RATE = 0.005 #0.05 #0.001
+OPTIMIZER_TYPE = OptimizerType.ADAM
+LEARNING_RATE = 0.004 #0.05 #0.001
 LOG_INTERVAL = 500
 DEV_SAMPLE_SIZE = None # None is full
 
@@ -87,10 +88,10 @@ loss_criterion = VariableLengthNLLLoss()
 model=None
 if INPUT_TYPE == "EMBEDDED":
     model = SequenceModelInputEmbedded("S0", utterance_size, world_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 else:
     model = SequenceModelInputToHidden("S0", utterance_size, world_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
 dev_close_loss = Loss("Dev Close Loss", D_dev_close, data_parameters, loss_criterion)
@@ -103,7 +104,7 @@ other_evaluations = [dev_close_loss, dev_split_loss, dev_far_loss]
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
 model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
-            batch_size=TRAINING_BATCH_SIZE, lr=LEARNING_RATE, \
+            batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 
 output_model_samples(best_model, D_dev_close)
