@@ -37,6 +37,8 @@ np.random.seed(1) # Ensures data loaded in same order each time
 
 game_data = DataSet.load(input_data_dir, id_key="gameid")
 sua_datums = []
+hanging_speaker_utts = 0
+hanging_listener_utts = 0
 for i in range(game_data.get_size()):
     datum = game_data.get(i)
     game_id = datum.get("gameid")
@@ -88,6 +90,11 @@ for i in range(game_data.get_size()):
                 cur_utts = []
                 has_speaker = False
                 has_listener = False
+        if len(cur_utts) > 0:
+            hanging_speaker_utts += len([cur_utt for cur_utt in cur_utts if cur_utt["sender"] == "speaker"])
+            hanging_listener_utts += len([cur_utt for cur_utt in cur_utts if cur_utt["sender"] == "listener"])
+
+print "NOTE: " + str(hanging_listener_utts) + " hanging listener utterances and " + str(hanging_speaker_utts) + " hanging speaker utterances"
 
 sua_data = DataSet(data=sua_datums)
 sua_data.save(output_data_dir)
