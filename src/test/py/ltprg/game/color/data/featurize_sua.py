@@ -43,6 +43,20 @@ class FeaturizeSUA(unittest.TestCase):
             token_fn=lambda x : x.lower(), # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
 
+    # Constructs sequences of integer indices representing cleaned utterances
+    def test_utterance_clean_indices(self):
+        print "Featurizing utterance indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir, # Source data set
+            join(output_feature_dir, "utterance_clean_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_clean_idx", # Name of the feature
+            ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
+            None, # Maximum utterance length
+            token_fn=None, # Function applied to tokens to construct the vocabulary
+            indices=True) # Indicates that indices will be computed instead of one-hot vectors
+
     # Constructs indicators of which color (0, 1, or 2) that the listener clicked
     def test_listener_clicked(self):
         print "Featurizing listener clicks"
@@ -77,7 +91,7 @@ class FeaturizeSUA(unittest.TestCase):
             ["state.lH_0","state.lS_0","state.lL_0",
              "state.lH_1","state.lS_1","state.lL_1",
              "state.lH_2","state.lS_2","state.lL_2"])
-    
+
     def test_listener_colors_ft(self):
         print "Featurizing listener colors (ft)"
         mung.feature_helpers.featurize_path_scalars(
@@ -87,7 +101,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "listener_colors_ft",
             ["state.lFT_0", "state.lFT_1", "state.lFT_2"])
-    
+
     # Constructs vectors of the colors that the speaker observed
     def test_speaker_colors(self):
         print "Featurizing speaker colors"
