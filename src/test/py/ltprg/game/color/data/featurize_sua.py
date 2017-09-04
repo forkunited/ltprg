@@ -45,7 +45,7 @@ class FeaturizeSUA(unittest.TestCase):
 
     # Constructs sequences of integer indices representing cleaned utterances
     def test_utterance_clean_indices(self):
-        print "Featurizing utterance indices"
+        print "Featurizing utterance clean indices"
         mung.feature_helpers.featurize_path_enum_seqs(
             input_data_dir, # Source data set
             join(output_feature_dir, "utterance_clean_idx"), # Output directory
@@ -53,10 +53,10 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"), # Function that partitions the data
             "utterance_clean_idx", # Name of the feature
             ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
-            None, # Maximum utterance length
-            token_fn=None, # Function applied to tokens to construct the vocabulary
+            30, # Maximum utterance length
+            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
-
+    
     # Constructs indicators of which color (0, 1, or 2) that the listener clicked
     def test_listener_clicked(self):
         print "Featurizing listener clicks"

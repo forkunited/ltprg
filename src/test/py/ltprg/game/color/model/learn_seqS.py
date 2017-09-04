@@ -18,20 +18,20 @@ RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=10000 #4000 #1000 #00
+TRAINING_ITERATIONS=100 # 10000 #4000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
 LEARNING_RATE = 0.004 #0.05 #0.001
-LOG_INTERVAL = 500
+LOG_INTERVAL = 100 #500
 DEV_SAMPLE_SIZE = None # None is full
 
 torch.manual_seed(1)
 np.random.seed(1)
 
-def output_model_samples(model, D):
-    samples = model.sample(n_per_input=20) # FIXME Do something about lack of input...
-    beams = model.beam_search(beam_size=20)
+def output_model_samples(model, D, utterance_length):
+    samples = model.sample(n_per_input=20, max_length=utterance_length)
+    beams = model.beam_search(beam_size=20, max_length=utterance_length)
 
     for i in range(len(samples)):
         sampled_utt =  " ".join([D["utterance"].get_feature_token(samples[i][0][j,0]).get_value()
@@ -65,6 +65,7 @@ D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
 D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
 
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
+utterance_length = D_train["utterance"].get_feature_seq_set().get_size()
 
 logger = Logger()
 data_parameters = DataParameter.make(seq="utterance", input="world")
@@ -87,7 +88,7 @@ model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
             batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 
-output_model_samples(best_model, D_dev_close)
+output_model_samples(best_model, D_dev_close, utterance_length)
 
 logger.dump(output_results_path)
 best_model.save(output_model_path)
