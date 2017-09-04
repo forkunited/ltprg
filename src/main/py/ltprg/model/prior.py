@@ -10,13 +10,19 @@ class PriorInputMode:
     ONLY_TRUE_WORLD = "ONLY_TRUE_WORLD"
 
 class UniformIndexPriorFn(nn.Module):
-    def __init__(self, size):
+    def __init__(self, size, on_gpu=False):
         super(UniformIndexPriorFn, self).__init__()
         self._size = size
+        self._on_gpu = on_gpu
+
+    def on_gpu(self):
+        return self._on_gpu
 
     def forward(self, observation):
         vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
-        return Categorical(Variable(vs))
+        if self.on_gpu():
+            vs = vs.cuda()
+        return Categorical(Variable(vs), on_gpu=self.on_gpu())
 
     # NOTE: This assumes that all values in vs are indices that fall within
     # the range of the support
@@ -45,6 +51,9 @@ class SequenceSamplingPriorFn(nn.Module):
 
         if not uniform:
             raise ValueError("Non-uniform sequence prior not implemented")
+
+    def on_gpu(self):
+        return next(self.parameters()).is_cuda
 
     def set_ignored_input(self, ignored_input):
         self._fixed_input = None
@@ -99,6 +108,10 @@ class SequenceSamplingPriorFn(nn.Module):
 
         seq_supp_batch = Variable(torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed, self._seq_length).long())
         length_supp_batch = torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed).long()
+
+        if self.on_gpu():
+            seq_supp_batch = seq_supp_batch.cuda()
+
         for i in range(batch_size):
             if self._fixed_seq is not None:
                 seq_supp_batch[i,0,:] = self._fixed_seq[0][i]
@@ -110,7 +123,7 @@ class SequenceSamplingPriorFn(nn.Module):
                 seq_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input), 0:seqs.size(0)] = seqs.transpose(0,1)
                 length_supp_batch[i, (has_fixed+j*self._samples_per_input):(has_fixed+(j+1)*self._samples_per_input)] = lengths
 
-        return Categorical((seq_supp_batch, length_supp_batch))
+        return Categorical((seq_supp_batch, length_supp_batch), on_gpu=self.on_gpu())
 
     def get_index(self, seq_with_len, observation, support, preset_batch=False):
         if preset_batch:
@@ -129,9 +142,9 @@ class SequenceSamplingPriorFn(nn.Module):
             self._heuristic.set_data_batch(batch, data_parameters)
 
         if self.training:
-            if self._training_input_mode = PriorInputMode.IGNORE_TRUE_WORLD:
+            if self._training_input_mode == PriorInputMode.IGNORE_TRUE_WORLD:
                 self.set_ignored_input(batch[data_parameters[inputType]].squeeze())
-            else if self._training_input_mode == PriorInputMode.ONLY_TRUE_WORLD:
+            elif self._training_input_mode == PriorInputMode.ONLY_TRUE_WORLD:
                 self.set_fixed_input(batch[data_parameters[inputType]].squeeze())
 
         # NOTE: If dist type != mode, this means that
@@ -139,6 +152,8 @@ class SequenceSamplingPriorFn(nn.Module):
         # that should include the observed utterance
         if self.training or self._dist_type != data_parameters.get_mode():
             seq, length, mask = batch[data_parameters[seqType]]
+            if self.on_gpu():
+                seq = seq.cuda()
             self.set_fixed_seq(seq=Variable(seq), length=length)
         else:
             self.set_fixed_seq(seq=None, length=None)

@@ -23,13 +23,13 @@ RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS= 4000 #30000 #1000 #00
+TRAINING_ITERATIONS= 10000 #30000 #1000 #00
 TRAINING_BATCH_SIZE=128 # 50 #100 #10
 DROP_OUT = 0.0
 OPTIMIZER_TYPE = OptimizerType.ADADELTA
-LEARNING_RATE = 0.2 # 0.0005 #0.05 #BEST 0.001
-LOG_INTERVAL = 500
-DEV_SAMPLE_SIZE = 3000 # None (none means full)
+LEARNING_RATE = 0.5 # 0.0005 #0.05 #BEST 0.001
+LOG_INTERVAL = 5000
+DEV_SAMPLE_SIZE = 400 # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
@@ -71,21 +71,21 @@ def output_model_samples(model, data_parameters, D, batch_size=20):
             print str(ps_i.data[j]) + ": " + support_utts_i[j]
         print "\n"
 
-
-training_dist = sys.argv[1]
-training_level = int(sys.argv[2])
-data_dir = sys.argv[3]
-partition_file = sys.argv[4]
-utterance_dir = sys.argv[5]
-L_world_dir = sys.argv[6]
-L_observation_dir = sys.argv[7]
-S_world_dir = sys.argv[8]
-S_observation_dir = sys.argv[9]
-seq_model_path = sys.argv[10]
-output_results_path = sys.argv[11]
-meaning_fn_input_type = sys.argv[12]
-training_input_mode = sys.argv[13]
-prior_beam_heuristic = sys.argv[14]
+gpu = bool(sys.argv[1])
+training_dist = sys.argv[2]
+training_level = int(sys.argv[3])
+data_dir = sys.argv[4]
+partition_file = sys.argv[5]
+utterance_dir = sys.argv[6]
+L_world_dir = sys.argv[7]
+L_observation_dir = sys.argv[8]
+S_world_dir = sys.argv[9]
+S_observation_dir = sys.argv[10]
+seq_model_path = sys.argv[11]
+output_results_path = sys.argv[12]
+meaning_fn_input_type = sys.argv[13]
+training_input_mode = sys.argv[14]
+prior_beam_heuristic = sys.argv[15]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
@@ -111,9 +111,11 @@ data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L
                                      S_world="S_world", S_observation="S_observation",
                                      mode=training_dist, utterance_seq=True)
 loss_criterion = NLLLoss()
+if gpu:
+    loss_criterion = loss_criterion.cuda()
 
 seq_prior_model = SequenceModel.load(seq_model_path)
-world_prior_fn = UniformIndexPriorFn(3) # 3 colors per observation
+world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu) # 3 colors per observation
 
 seq_meaning_model = None
 soft_bottom = None
@@ -130,7 +132,7 @@ meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_m
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":
-    return HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=soft_bottom)
+    beam_heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=soft_bottom)
 
 utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
                                              mode=SAMPLING_MODE,
@@ -141,8 +143,13 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              training_input_mode=training_input_mode)
 
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
+if gpu:
+    rsa_model = rsa_model.cuda()
 
 loss_criterion_unnorm = NLLLoss(size_average=False)
+if gpu:
+    loss_criterion_unnorm = loss_criterion_unnorm.cuda()
+
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)

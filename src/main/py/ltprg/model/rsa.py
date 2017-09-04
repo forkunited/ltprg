@@ -116,10 +116,17 @@ class RSA(nn.Module):
         return self._utterance_prior_fn
 
     def to_level(self, dist_type, level, L_bottom=True, soft_bottom=False):
+        model = None
         if dist_type == DistributionType.L:
-            return L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
+            model = L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
         else:
-            return S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
+            model = S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom)
+        if self.on_gpu():
+            model = model.cuda()
+        return model
+
+    def on_gpu(self):
+        return next(self.parameters()).is_cuda
 
     @staticmethod
     def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False):
@@ -227,6 +234,8 @@ class S(RSA):
                 # the ith matrix.
                 # Note that there is a separate worldxutterance matrix for each observation.
                 world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + world_index
+                if self.on_gpu():
+                    world_index_offset = world_index_offset.cuda()
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[world_index_offset]
                 if has_missing:
                     raise ValueError("Prior missing input world") #ps = ps * mask.expand_as(ps) # FIXME Broken
@@ -239,6 +248,10 @@ class S(RSA):
         world = Variable(batch[data_parameters[DataParameter.WORLD]])
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
 
+        if self.on_gpu():
+            world = world.cuda()
+            observation = observation.cuda()
+
         self._utterance_prior_fn.set_data_batch(batch, data_parameters)
         self._world_prior_fn.set_data_batch(batch, data_parameters)
 
@@ -250,9 +263,16 @@ class S(RSA):
             seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
             seq = Variable(seq)
             length = Variable(length)
+
+            if self.on_gpu():
+               seq = seq.cuda()
+
             utterance = (seq.transpose(0,1), length)
         else:
             utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+
+            if self.on_gpu():
+                utterance = utterance.cuda()
 
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
 
@@ -363,6 +383,8 @@ class L(RSA):
                     utterance = _size_down_tensor(utterance)
                 utt_index, has_missing, mask = self._utterance_prior_fn.get_index(utterance, observation, utterance_support)
                 utt_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + utt_index
+                if self.on_gpu():
+                    utt_index_offset = utt_index_offset.cuda()
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[utt_index_offset]
                 if has_missing:
                     raise ValueError("Utterance prior missing input utterance") #ps = ps * mask.expand_as(ps) # FIXME Broken
@@ -376,11 +398,17 @@ class L(RSA):
         if data_parameters.is_utterance_seq():
             seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
             seq = Variable(seq.long())
+            if self.on_gpu():
+                seq = seq.cuda()
             utterance = (seq.transpose(0,1), length)
         else:
             utterance = Variable(batch[data_parameters[DataParameter.WORLD]])
+            if self.on_gpu():
+                utterance = utterance.cuda()
 
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+        if self.on_gpu():
+            observation = observation.cuda()
 
         self._utterance_prior_fn.set_data_batch(batch, data_parameters)
         self._world_prior_fn.set_data_batch(batch, data_parameters)
@@ -390,6 +418,10 @@ class L(RSA):
     def loss(self, batch, data_parameters, loss_criterion):
         world = Variable(batch[data_parameters[DataParameter.WORLD]]).squeeze()
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+
+        if self.on_gpu():
+            world = world.cuda()
+            observation = observation.cuda()
 
         model_dist = self.forward_batch(batch, data_parameters)
         index, _, _ = self._world_prior_fn.get_index(world, observation, model_dist.support(), preset_batch=True)

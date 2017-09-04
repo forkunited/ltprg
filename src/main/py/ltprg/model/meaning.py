@@ -12,6 +12,9 @@ class MeaningModel(nn.Module):
         """ Computes batch of meaning matrices """
         pass
 
+    def on_gpu(self):
+        return next(self.parameters()).is_cuda
+
 class MeaningModelIndexedWorld(MeaningModel):
 
     def __init__(self, world_input_size):
@@ -25,7 +28,10 @@ class MeaningModelIndexedWorld(MeaningModel):
     def forward(self, utterance, world, observation):
         inputs_per_observation = observation.size(1)/self._world_input_size
         observation = observation.view(observation.size(0), inputs_per_observation, self._world_input_size)
-        input = torch.gather(observation, 1, world.long().unsqueeze(2).repeat(1,1,observation.size(2)))
+        world_indices = world.long().unsqueeze(2).repeat(1,1,observation.size(2))
+        if self.on_gpu():
+            world_indices = world_indices.cuda()
+        input = torch.gather(observation, 1, world_indices)
         return self._construct_meaning(utterance, input)
 
     # utt is Batch x utterance prior size x utt length
@@ -90,15 +96,19 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
     def _meaning(self, utterance, input):
         seq = utterance[0].transpose(0,1)
         seq_length = utterance[1]
-        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input])
+        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input], on_gpu=self.on_gpu())
 
         output = None
         if self._input_type == SequentialUtteranceInputType.IN_SEQ:
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+            if isinstance(hidden, tuple): # Handle LSTM
+                hidden = hidden[0]
             decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
             output = self._decoder_nl(decoded)
         else:
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
+            if isinstance(hidden, tuple): # Handle LSTM
+                hidden = hidden[0]
             mu = self._decoder_mu(hidden.view(-1, hidden.size(0)*hidden.size(2)))
             
             #score = Variable(torch.zeros(mu.size(0)))

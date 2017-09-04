@@ -9,8 +9,10 @@ import ltprg.model.eval
 from torch.autograd import Variable
 from mung.feature import Symbol
 
-def sort_seq_tensors(seq, length, inputs=None):
+def sort_seq_tensors(seq, length, inputs=None, on_gpu=False):
     sorted_length, sorted_indices = torch.sort(length, 0, True)
+    if on_gpu:
+        sorted_indices = sorted_indices.cuda()
     sorted_seq = seq.transpose(0,1)[sorted_indices].transpose(0,1)
 
     if inputs is not None:
@@ -43,7 +45,7 @@ class SamplingMode:
     BEAM = 1
 
 class VariableLengthNLLLoss(nn.Module):
-    def __init__(self):
+    def __init__(self, norm_dim=False):
         """
         Constructs NLLLoss for variable length sequences.
 
@@ -51,6 +53,7 @@ class VariableLengthNLLLoss(nn.Module):
         https://github.com/ruotianluo/neuraltalk2.pytorch/blob/master/misc/utils.py
         """
         super(VariableLengthNLLLoss, self).__init__()
+        self._norm_dim = norm_dim
 
     def _to_contiguous(self, tensor):
         if tensor.is_contiguous():
@@ -67,9 +70,11 @@ class VariableLengthNLLLoss(nn.Module):
         mask = self._to_contiguous(mask).view(-1, 1)
         output = - input.gather(1, target)
         output = output *  mask
-        output = torch.sum(output) / torch.sum(mask)
 
-        return output
+        if not self._norm_dim:
+            return torch.sum(output) / torch.sum(mask)
+        else:
+            return (torch.sum(output), torch.sum(mask))
 
 
 class SequenceModel(nn.Module):
@@ -94,6 +99,9 @@ class SequenceModel(nn.Module):
     def get_name(self):
         return self._name
 
+    def on_gpu(self):
+        return next(self.parameters()).is_cuda
+
     def forward(self, seq_part=None, seq_length=None, input=None):
         if seq_part is None:
             n = 1
@@ -110,9 +118,14 @@ class SequenceModel(nn.Module):
         input = None
         if DataParameter.INPUT in data_parameters and data_parameters[DataParameter.INPUT] in batch:
             input = Variable(batch[data_parameters[DataParameter.INPUT]])
+
         seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
         length = length - 1
         seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
+
+        if self.on_gpu():
+            seq_in = seq_in.cuda()
+            input = input.cuda()
 
         model_out, hidden = self(seq_part=seq_in, seq_length=length, input=input)
         return model_out, hidden
@@ -121,6 +134,10 @@ class SequenceModel(nn.Module):
         model_out, hidden = self.forward_batch(batch, data_parameters)
         seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
         target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
+
+        if self.on_gpu():
+            target_out = target_out.cuda()
+            mask = mask.cuda()
 
         loss = loss_criterion(model_out, target_out[:model_out.size(0)], Variable(mask[:,1:(model_out.size(0)+1)]))
         return loss
@@ -135,6 +152,8 @@ class SequenceModel(nn.Module):
             input_count = input.size(0)
             n = input.size(0) * n_per_input
             input = input.repeat(1, n_per_input).view(n, input.size(1))
+            if self.on_gpu():
+                input = input.cuda()
 
         if seq_part is not None:
             input_count = seq_part.size(1)
@@ -145,6 +164,9 @@ class SequenceModel(nn.Module):
         else:
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
                 .repeat(n).long().view(1,n)
+
+        if self.on_gpu():
+            seq_part = seq_part.cuda()
 
         end_idx = Symbol.index(Symbol.SEQ_END)
         ended = torch.zeros(n).long()
@@ -185,6 +207,9 @@ class SequenceModel(nn.Module):
             seq_part = seq_part.transpose(1,0)
 
         if input is not None:
+            if self.on_gpu():
+                input = input.cuda()
+
             for i in range(input.size(0)):
                 seq_part_i = None
                 if seq_part is not None:
@@ -214,8 +239,15 @@ class SequenceModel(nn.Module):
         unit_length = torch.ones(beam_size).long()
         seq_length = torch.ones(1).long()*seq_part.size(0)
 
+        if self.on_gpu():
+            seq_part = seq_part.cuda()
+            ended = ended.cuda()
+
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
-        hidden = hidden.repeat(1,1, beam_size).view(1, beam_size, hidden.size(2))
+        if isinstance(hidden, tuple):
+            hidden = tuple([h.repeat(1,1,beam_size).view(1,beam_size, h.size(2)) for h in hidden])
+        else:
+            hidden = hidden.repeat(1,1, beam_size).view(1, beam_size, hidden.size(2))
 
         beam = seq_part.repeat(1,beam_size).view(1,beam_size)
         scores = torch.zeros(1) #beam_size)
@@ -235,7 +267,14 @@ class SequenceModel(nn.Module):
             vocab_rep = torch.arange(0, vocab_size).repeat(beam_size).unsqueeze(0)
             heuristic_lengths = torch.zeros(vocab_size*beam_size)
 
-        input = input.repeat(beam_size, 1)
+        if input is not None:
+            input = input.repeat(beam_size, 1)
+
+        if self.on_gpu():
+            beam = beam.cuda()
+            scores = scores.cuda()
+            ended = ended.cuda()
+            ended_ignore_mask = ended_ignore_mask.cuda()
 
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1]
@@ -272,15 +311,33 @@ class SequenceModel(nn.Module):
             top_exts = top_indices % vocab_size
 
             next_beam = torch.zeros(beam.size(0) + 1, beam_size).long()
-            next_hidden = Variable(torch.zeros(1, beam_size, hidden.size(2)))
+            next_hidden = None
+            if isinstance(hidden, tuple):
+                next_hidden = tuple([Variable(torch.zeros(1, beam_size, h.size(2))) for h in hidden])
+            else:
+                next_hidden = Variable(torch.zeros(1, beam_size, hidden.size(2)))
             next_seq_length = torch.ones(beam_size).long()
             next_ended = torch.zeros(beam_size).long()
             scores = torch.zeros(beam_size)
+
+            if self.on_gpu():
+                next_beam = next_beam.cuda()
+                if isinstance(hidden, tuple):
+                    next_hidden = tuple([h.cuda() for h in next_hidden])
+                else:
+                    next_hidden = next_hidden.cuda()
+                next_ended = next_ended.cuda()
+                scores = scores.cuda()
+
             for j in range(beam_size):
                 scores[j] = next_scores[top_seqs[j], top_exts[j]]
                 next_beam[0:i,j] = beam[:,top_seqs[j]]
                 next_beam[i,j] = top_exts[j]
-                next_hidden[0,j] = hidden[0,top_seqs[j]]
+                if isinstance(hidden, tuple):
+                    for k in range(len(hidden)):
+                        next_hidden[k][0,j] = hidden[k][0,top_seqs[j]]
+                else:
+                    next_hidden[0,j] = hidden[0,top_seqs[j]]
                 next_seq_length[j] = seq_length[top_seqs[j]] + (1 - ended[top_seqs[j]])
                 next_ended[j] = ended[top_seqs[j]]
                 if top_exts[j] == end_idx and next_ended[j] != 1:
@@ -390,12 +447,16 @@ class SequenceModelInputToHidden(SequenceModel):
     def _get_init_params(self):
         return self._init_params
 
+    # FIXME
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
+        hidden = self._encoder_nl(self._encoder(input))
+        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
+
         if self._rnn_type == RNNType.GRU:
-            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+            return hidden
         else:
-            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
+            return (hidden, \
                     Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
@@ -411,10 +472,7 @@ class SequenceModelInputToHidden(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        if self._rnn_type == RNNType.GRU:
-            return output, hidden
-        else:
-            return output, hidden[0]
+        return output, hidden
 
     def init_weights(self):
         initrange = 0.1
@@ -487,10 +545,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        if self._rnn_type == RNNType.GRU:
-            return output, hidden
-        else:
-            return output, hidden[0]
+        return output, hidden
 
     def init_weights(self):
         initrange = 0.1
@@ -558,10 +613,7 @@ class SequenceModelNoInput(SequenceModel):
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        if self._rnn_type == RNNType.GRU:
-            return output, hidden
-        else:
-            return output, hidden[0]
+        return output, hidden
 
     def init_weights(self):
         initrange = 0.1
@@ -580,4 +632,4 @@ class SequenceModelNoInput(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
         rnn_type = init_params["rnn_type"]
-        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type dropout=dropout)
+        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)

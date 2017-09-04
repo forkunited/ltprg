@@ -19,7 +19,7 @@ INPUT_TYPE = "NOT_EMBEDDED" #"EMBEDDED"
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=4000 #1000 #00
+TRAINING_ITERATIONS=4000 #10000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
@@ -93,10 +93,11 @@ else:
     model = SequenceModelInputToHidden("S0", utterance_size, world_size, \
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 
-dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
-dev_close_loss = Loss("Dev Close Loss", D_dev_close, data_parameters, loss_criterion)
-dev_split_loss = Loss("Dev Split Loss", D_dev_split, data_parameters, loss_criterion)
-dev_far_loss = Loss("Dev Far Loss", D_dev_far, data_parameters, loss_criterion)
+loss_criterion_unnorm = VariableLengthNLLLoss(norm_dim=True)
+dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm, norm_dim=True)
+dev_close_loss = Loss("Dev Close Loss", D_dev_close, data_parameters, loss_criterion_unnorm, norm_dim=True)
+dev_split_loss = Loss("Dev Split Loss", D_dev_split, data_parameters, loss_criterion_unnorm, norm_dim=True)
+dev_far_loss = Loss("Dev Far Loss", D_dev_far, data_parameters, loss_criterion_unnorm, norm_dim=True)
 
 evaluation = dev_loss
 other_evaluations = [dev_close_loss, dev_split_loss, dev_far_loss]

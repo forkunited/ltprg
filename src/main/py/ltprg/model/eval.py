@@ -32,11 +32,11 @@ class Evaluation(object):
         result = self._initialize_result()
 
         for i in range(self._data.get_num_batches(batch_size)):
-            result = self._aggregate_batch(result, self._run_batch(self._data.get_batch(i, batch_size)))
+            result = self._aggregate_batch(result, self._run_batch(model, self._data.get_batch(i, batch_size)))
 
         final_batch = self._data.get_final_batch(batch_size)
         if final_batch is not None:
-            result = self._aggregate_batch(result, self._run_batch(final_batch))
+            result = self._aggregate_batch(result, self._run_batch(model, final_batch))
 
         model.train()
 
@@ -69,25 +69,38 @@ class Evaluation(object):
         return results
 
 class Loss(Evaluation):
-    def __init__(self, name, data, data_parameters, loss_criterion):
+    def __init__(self, name, data, data_parameters, loss_criterion, norm_dim=False):
         super(Loss, self).__init__(name, data, data_parameters)
         self._loss_criterion = loss_criterion
+        self._norm_dim = norm_dim
 
     def _run_batch(self, model, batch):
         loss = model.loss(batch, self._data_parameters, self._loss_criterion)
+        if self._norm_dim:
+            return (loss[0].data[0], loss[1].data[0])
+        else:
+            return loss.data[0]
 
     def _aggregate_batch(self, agg, batch_result):
-        return agg + batch_result
+        if self._norm_dim:
+            return (agg[0] + batch_result[0], agg[1] + batch_result[1])
+        else:
+            return agg + batch_result
 
     def _initialize_result(self):
-        return 0.0
+        if self._norm_dim:
+            return (0.0, 0.0)
+        else:
+            return 0.0
 
     def _finalize_result(self, result):
-        return result / self._data.get_size()
-
+        if self._norm_dim:
+            return result[0] / result[1]
+        else:
+            return result / self._data.get_size()
 
 class DistributionAccuracy(Evaluation):
-    def __init__(self, name, model_fn=None, target_indexed = False):
+    def __init__(self, name, data, data_parameters, model_fn=None, target_indexed = False):
         super(DistributionAccuracy, self).__init__(name, data, data_parameters)
         self._model_fn = model_fn
         self._target_indexed = target_indexed
@@ -101,7 +114,7 @@ class DistributionAccuracy(Evaluation):
 
         target = batch[self._data_parameters[DataParameter.TARGET]].squeeze()
 
-        model_ps = dist.p().data
+        model_ps = dist.p().data.cpu()
         max_ps, max_index = torch.max(model_ps, 1 )
 
         # Indicators of whether maxima are unique
