@@ -1,6 +1,7 @@
 import sys
 import time
 import torch.nn as nn
+import torch.nn.init as init
 import numpy as np
 import torch
 import abc
@@ -78,10 +79,15 @@ class VariableLengthNLLLoss(nn.Module):
 
 
 class SequenceModel(nn.Module):
-    def __init__(self, name, hidden_size):
+    def __init__(self, name, hidden_size, bidir):
         super(SequenceModel, self).__init__()
         self._hidden_size = hidden_size
         self._name = name
+
+        self._bidir = bidir
+        self._directions = 1
+        if self._bidir:
+            self._directions = 2
 
     # @abc.abstractmethod
     def _init_hidden(self, batch_size, input=None):
@@ -95,6 +101,9 @@ class SequenceModel(nn.Module):
 
     def get_hidden_size(self):
         return self._hidden_size
+
+    def get_directions(self):
+        return self._directions
 
     def get_name(self):
         return self._name
@@ -421,8 +430,8 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 
 class SequenceModelInputToHidden(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
-        super(SequenceModelInputToHidden, self).__init__(name, rnn_size)
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+        super(SequenceModelInputToHidden, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
         self._init_params["name"] = name
@@ -440,14 +449,16 @@ class SequenceModelInputToHidden(SequenceModel):
         self._encoder_nl = nn.Tanh()
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout)
-        self._decoder = nn.Linear(rnn_size, seq_size)
+        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
+        
+        self._init_weights()
 
     def _get_init_params(self):
         return self._init_params
 
-    # FIXME
+
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
         hidden = self._encoder_nl(self._encoder(input))
@@ -474,13 +485,19 @@ class SequenceModelInputToHidden(SequenceModel):
 
         return output, hidden
 
-    def init_weights(self):
-        initrange = 0.1
-        self._emb.weight.data.uniform_(-initrange, initrange)
-        self._encoder.bias.data.fill_(0)
-        self._encoder.weight.data.uniform_(-initrange, initrange)
-        self._decoder.bias.data.fill_(0)
-        self._decoder.weight.data.uniform_(-initrange, initrange)
+    def _init_weights(self):
+        init_range = 0.01
+        
+        #self._emb.weight.data.uniform_(-initrange, initrange)
+        init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+
+        #self._encoder.bias.data.fill_(0)
+        #self._encoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._encoder.weight.data, mean=0.0, std=init_range)
+
+        #self._decoder.bias.data.fill_(0)
+        #self._decoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._decoder.weight.data, mean=0.0, std=init_range)
 
     @staticmethod
     def make(init_params):
@@ -497,8 +514,8 @@ class SequenceModelInputToHidden(SequenceModel):
 
 class SequenceModelInputEmbedded(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
-        super(SequenceModelInputEmbedded, self).__init__(name, rnn_size)
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+        super(SequenceModelInputEmbedded, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
         self._init_params["name"] = name
@@ -514,9 +531,11 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, rnn_type)(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout)
-        self._decoder = nn.Linear(rnn_size, seq_size)
+        self._rnn = getattr(nn, rnn_type)(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
+
+        self._init_weights()
 
     def _get_init_params(self):
         return self._init_params
@@ -547,13 +566,19 @@ class SequenceModelInputEmbedded(SequenceModel):
 
         return output, hidden
 
-    def init_weights(self):
-        initrange = 0.1
-        self._emb.weight.data.uniform_(-initrange, initrange)
-        self._encoder.bias.data.fill_(0)
-        self._encoder.weight.data.uniform_(-initrange, initrange)
-        self._decoder.bias.data.fill_(0)
-        self._decoder.weight.data.uniform_(-initrange, initrange)
+    def _init_weights(self):
+        init_range = 0.01
+
+        #self._emb.weight.data.uniform_(-initrange, initrange)
+        init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+
+        #self._encoder.bias.data.fill_(0)
+        #self._encoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._encoder.weight.data, mean=0.0, std=init_range)
+
+        #self._decoder.bias.data.fill_(0)
+        #self._decoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._decoder.weight.data, mean=0.0, std=init_range)
 
     @staticmethod
     def make(init_params):
@@ -570,8 +595,8 @@ class SequenceModelInputEmbedded(SequenceModel):
 
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5):
-        super(SequenceModelNoInput, self).__init__(name, rnn_size)
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+        super(SequenceModelNoInput, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
         self._init_params["name"] = name
@@ -586,9 +611,11 @@ class SequenceModelNoInput(SequenceModel):
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout)
-        self._decoder = nn.Linear(rnn_size, seq_size)
+        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
+
+        self._init_weights
 
     def _get_init_params(self):
         return self._init_params
@@ -596,10 +623,10 @@ class SequenceModelNoInput(SequenceModel):
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
         if self._rnn_type == RNNType.GRU:
-            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+            return Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_())
         else:
-            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
-                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
+            return (Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()), \
+                    Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -609,19 +636,24 @@ class SequenceModelNoInput(SequenceModel):
 
         output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
         rnn_out_size = output.size()
-
         output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
         return output, hidden
 
-    def init_weights(self):
-        initrange = 0.1
-        self._emb.weight.data.uniform_(-initrange, initrange)
-        self._encoder.bias.data.fill_(0)
-        self._encoder.weight.data.uniform_(-initrange, initrange)
-        self._decoder.bias.data.fill_(0)
-        self._decoder.weight.data.uniform_(-initrange, initrange)
+    def _init_weights(self):
+        init_range = 0.01
+
+        #self._emb.weight.data.uniform_(-initrange, initrange)
+        init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+
+        #self._encoder.bias.data.fill_(0)
+        #self._encoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._encoder.weight.data, mean=0.0, std=init_range)
+
+        #self._decoder.bias.data.fill_(0)
+        #self._decoder.weight.data.uniform_(-initrange, initrange)
+        #init.normal(self._decoder.weight.data, mean=0.0, std=init_range)
 
     @staticmethod
     def make(init_params):

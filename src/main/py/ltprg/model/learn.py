@@ -18,7 +18,7 @@ class Trainer:
         if other_evaluations is not None:
             self._all_evaluations.extend(other_evaluations)
 
-    def train(self, model, data, iterations, batch_size=100, optimizer_type=OptimizerType.ADAM, lr=0.001, log_interval=100, best_part_fn=None):
+    def train(self, model, data, iterations, batch_size=100, optimizer_type=OptimizerType.ADAM, lr=0.001, grad_clip=None, log_interval=100, best_part_fn=None):
         model.train()
         start_time = time.time()
 
@@ -52,6 +52,10 @@ class Trainer:
 
             optimizer.zero_grad()
             loss.backward()
+
+            if grad_clip is not None:
+                torch.nn.utils.clip_grad_norm(model.parameters(), grad_clip)
+            
             optimizer.step()
 
             total_loss += loss.data

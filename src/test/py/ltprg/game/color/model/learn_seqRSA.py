@@ -20,16 +20,17 @@ from ltprg.model.learn import OptimizerType, Trainer
 from ltprg.util.log import Logger
 
 RNN_TYPE = RNNType.LSTM
+BIDIRECTIONAL=True
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS= 10000 #30000 #1000 #00
-TRAINING_BATCH_SIZE=128 # 50 #100 #10
-DROP_OUT = 0.0
-OPTIMIZER_TYPE = OptimizerType.ADADELTA
-LEARNING_RATE = 0.5 # 0.0005 #0.05 #BEST 0.001
-LOG_INTERVAL = 5000
-DEV_SAMPLE_SIZE = 400 # None (none means full)
+TRAINING_ITERATIONS= 30000 #30000 #1000 #00
+TRAINING_BATCH_SIZE=128 #128 # 50 #100 #10
+DROP_OUT = 0.5 # BEST 0.5
+OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
+LEARNING_RATE = 0.005 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
+LOG_INTERVAL = 200
+DEV_SAMPLE_SIZE = None # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
@@ -120,12 +121,12 @@ world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu) # 3 colors per observation
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
+    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
     soft_bottom = True
 
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
@@ -162,10 +163,11 @@ dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, Distribut
 dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
 dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
 
-evaluation = dev_loss
-other_evaluations = [dev_l0_acc, dev_l1_acc, \
-                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
-                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+#evaluation = dev_loss
+evaluation = dev_l0_acc
+other_evaluations = [] #[dev_l0_acc, dev_l1_acc] #, \
+#                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
+#                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)

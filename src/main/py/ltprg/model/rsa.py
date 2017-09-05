@@ -233,9 +233,12 @@ class S(RSA):
                 # matrices.  So the offsets below will take the ith world index into
                 # the ith matrix.
                 # Note that there is a separate worldxutterance matrix for each observation.
-                world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1) + world_index
+                world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1)
                 if self.on_gpu():
-                    world_index_offset = world_index_offset.cuda()
+                    world_index_offset = world_index_offset.cuda() + world_index
+                else:
+                    world_index_offset += world_index
+
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[world_index_offset]
                 if has_missing:
                     raise ValueError("Prior missing input world") #ps = ps * mask.expand_as(ps) # FIXME Broken

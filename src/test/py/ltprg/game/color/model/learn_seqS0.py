@@ -23,18 +23,18 @@ TRAINING_ITERATIONS=4000 #10000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
-LEARNING_RATE = 0.004 #0.05 #0.001
+LEARNING_RATE = 0.001 #0.05 #0.001
 LOG_INTERVAL = 500
 DEV_SAMPLE_SIZE = None # None is full
 
 torch.manual_seed(1)
 np.random.seed(1)
 
-def output_model_samples(model, D, batch_size=20):
+def output_model_samples(model, D, max_length, batch_size=20):
     data = D.get_data()
     batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
-    samples = model.sample(input=batch["world"])
-    beams = model.beam_search(input=batch["world"])
+    samples = model.sample(input=batch["world"], max_length=max_length)
+    beams = model.beam_search(input=batch["world"], max_length=max_length)
 
     for i in range(len(batch_indices)):
         index = batch_indices[i]
@@ -81,6 +81,7 @@ D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
 
 world_size = D_train["world"].get_feature_set().get_size()
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
+utterance_length = D_train["utterance"].get_feature_seq_set().get_size()
 
 logger = Logger()
 data_parameters = DataParameter.make(seq="utterance", input="world")
@@ -108,9 +109,9 @@ model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
             batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 
-output_model_samples(best_model, D_dev_close)
-output_model_samples(best_model, D_dev_split)
-output_model_samples(best_model, D_dev_far)
+output_model_samples(best_model, D_dev_close, utterance_length)
+output_model_samples(best_model, D_dev_split, utterance_length)
+output_model_samples(best_model, D_dev_far, utterance_length)
 
 logger.dump(output_results_path)
 best_model.save(output_model_path)

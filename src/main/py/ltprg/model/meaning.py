@@ -84,10 +84,10 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         self._seq_model = seq_model
 
         if input_type == SequentialUtteranceInputType.IN_SEQ:
-            self._decoder = nn.Linear(seq_model.get_hidden_size(), 1)
+            self._decoder = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), 1)
         else:
-            self._decoder_mu = nn.Linear(seq_model.get_hidden_size(), self._world_input_size)
-            self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size(), self._world_input_size * self._world_input_size)
+            self._decoder_mu = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size)
+            self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size * self._world_input_size)
             self._mse = nn.MSELoss()
 
         self._decoder_nl = nn.Sigmoid()
@@ -109,7 +109,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
             if isinstance(hidden, tuple): # Handle LSTM
                 hidden = hidden[0]
-            mu = self._decoder_mu(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            mu = self._decoder_mu(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
             
             #score = Variable(torch.zeros(mu.size(0)))
             #for i in range(mu.size(0)):
@@ -119,7 +119,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             #score = - self._mse(mu, sorted_inputs[0])
             #output = self._decoder_nl(score)
             
-            Sigma_flat = self._decoder_Sigma(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            Sigma_flat = self._decoder_Sigma(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
             Delta = sorted_inputs[0] - mu
             Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
             score = - Delta.unsqueeze(1).bmm(Sigma).bmm(Delta.unsqueeze(1).transpose(1,2)).squeeze()
