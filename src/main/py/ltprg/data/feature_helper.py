@@ -1,0 +1,53 @@
+import unittest
+import sys
+import numpy as np
+from os.path import join
+from mung.data import DataSet, Datum, Partition
+from mung.feature import FeatureSet, DataFeatureMatrix
+import feature
+
+input_data_dir = sys.argv[1]
+output_feature_dir = sys.argv[2]
+partition_file = sys.argv[3]
+
+# Necessary to allow unittest.main() to work
+del sys.argv[3]
+del sys.argv[2]
+del sys.argv[1]
+
+np.random.seed(1)
+
+def featurize_embeddings(input_data_dir, output_feature_dir, partition_file,
+                         partition_fn, feature_name, paths, init_data="train"):
+	partition = Partition.load(partition_file)
+    data_full = DataSet.load(input_data_dir)
+    data_parts = data_full.partition(partition, partition_fn)
+    feat = VisualEmbedding(feature_name, paths)
+    feat_set = FeatureSet(feature_types=[feat])
+    feat_set.init(data_parts[init_data])
+
+    mat = DataFeatureMatrix(data_full, feat_set, init_features=False)
+    mat.save(output_feature_dir)
+
+class StimEmbeddings(unittest.TestCase):
+	def target_representation(self):
+		# constructs target stimulus AlexNet fc-6 embedding
+		featurize_embeddings(
+			input_data_dir, 
+			join(output_feature_dir, ""),
+			partition_file,
+			lambda d : d.get("gameid"),
+			"target_fc_embedding",
+			[["state.sTargetH", "state.sTargetS", "state.sTargetL"]])
+	
+	def context_representation(self):
+		# constructs concatenated AlexNet fc-6 embeddings for the 3 stimuli in a context
+		featurize_embeddings(
+			input_data_dir, 
+			join(output_feature_dir, ""),
+			partition_file,
+			lambda d : d.get("gameid"),
+			"context_fc_embedding",
+			[["state.sH_0", "state.sS_0", "state.sL_0"], 
+			 ["state.sH_1", "state.sS_1", "state.sL_1"], 
+			 ["state.sH_2", "state.sS_2", "state.sL_2"]])
