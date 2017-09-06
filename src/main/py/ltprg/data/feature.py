@@ -1,4 +1,4 @@
-from mung.feature import FeatureType
+from mung.feature import FeatureType, register_feature_type
 # import sys
 # sys.path.append('../../../../test/py/ltprg/game/color/properties/')
 import numpy as np
@@ -53,6 +53,8 @@ class VisualEmbedding(FeatureType):
 
 	def save(self, file_path):
 		obj = dict()
-		obj["type"] = "VisualEmbedding"
+		obj["type"] = self.get_type()
 		obj["name"] = self._name
 		return obj
+
+register_feature_type(VisualEmbedding)

@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import copy
 import torch.cuda
+import ltprg.data.feature
 from torch.autograd import Variable
 from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
