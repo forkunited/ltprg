@@ -15,14 +15,14 @@ def plot_embedding(embedding, rgbs, name, save_path):
 					c=rgbs, s=500)
 	plt.axis('tight')
 	plt.title(name)
-	# plt.show()
-	plt.savefig(save_path + name + '.png')
+	plt.show()
+	# plt.savefig(save_path + name + '.png')
 
 def apply_tsne(X, name, rgbs, save_path):
 	# X is a num_stims x n np array, where n is the dimensionality
 	# of the high-d embedding for each stim
 	# applies TSNE to get 2-dim embedding
-	tsne_embedding = TSNE(n_components=2, init='pca', 
+	tsne_embedding = TSNE(n_components=3, init='pca', 
 						  random_state=0).fit_transform(X)
 	plot_embedding(tsne_embedding, rgbs, 'tSNE: ' + name.upper(),
 				   save_path)

@@ -53,9 +53,9 @@ class StimEmbeddings(object):
 			partition_file,
 			lambda d : d.get("gameid"),
 			"context_fc_embedding",
-			[["state.sH_0", "state.sS_0", "state.sL_0"], 
-			 ["state.sH_1", "state.sS_1", "state.sL_1"], 
-			 ["state.sH_2", "state.sS_2", "state.sL_2"]])
+			[["state.lH_0", "state.lS_0", "state.lL_0"], 
+			 ["state.lH_1", "state.lS_1", "state.lL_1"], 
+			 ["state.lH_2", "state.lS_2", "state.lL_2"]])
 
 if __name__=='__main__':
 	em = StimEmbeddings()
