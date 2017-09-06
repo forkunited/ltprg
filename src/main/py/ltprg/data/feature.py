@@ -1,10 +1,10 @@
 from mung.feature import FeatureType
-import sys
-sys.path.append('../../../../test/py/ltprg/game/color/properties/')
+# import sys
+# sys.path.append('../../../../test/py/ltprg/game/color/properties/')
 import numpy as np
 import time
-from alexnet import PartialAlexnet, rgb_to_alexnet_input
-from colorspace_conversions import hsls_to_rgbs
+from ltprg.game.color.properties.alexnet import PartialAlexnet, rgb_to_alexnet_input
+from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs
 
 class VisualEmbedding(FeatureType):
 	def __init__(self, name, paths):
