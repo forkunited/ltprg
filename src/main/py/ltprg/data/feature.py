@@ -25,8 +25,7 @@ class FeatureVisualEmbeddingType(FeatureType):
         vec[start_index : len(vec)] = output[start_index : len(output)]
 
     def get_size(self):
-        return len(self.cnn.forward(rgb_to_alexnet_input([0, 0).data.numpy()[0]) * len(self._paths) \ # e.g. 4096 * 3
-                  ).data.numpy()[0]) * len(self._paths) # e.g. 4096 * 3
+        return len(self.cnn.forward(rgb_to_alexnet_input([0, 0, 0])).data.numpy()[0]) * len(self._paths) # e.g. 4096 * 3
 
     def get_token(self, index):
         return None
