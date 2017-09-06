@@ -430,7 +430,7 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 
 class SequenceModelInputToHidden(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False, input_layers=1):
         super(SequenceModelInputToHidden, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -442,11 +442,22 @@ class SequenceModelInputToHidden(SequenceModel):
         self._init_params["rnn_layers"] = rnn_layers
         self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
+        self._init_params["bidir"] = bidir
+        self._init_params["input_layers"] = input_layers
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
-        self._encoder = nn.Linear(input_size, rnn_size)
+
+        self._input_layers = input_layers
+
+        self._encoder = nn.Linear(input_size, rnn_size*rnn_layers*self._directions)
         self._encoder_nl = nn.Tanh()
+        if self._input_layers == 2:
+            self._encoder_0 = nn.Linear(rnn_size*rnn_layers*self._directions, rnn_size*rnn_layers*self._directions)
+            self._encoder_0_nl = nn.Tanh()
+        elif self._input_layers != 1:
+            raise ValueError("Can only have 1 or 2 input layers")
+
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
@@ -458,17 +469,20 @@ class SequenceModelInputToHidden(SequenceModel):
     def _get_init_params(self):
         return self._init_params
 
-
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
+ 
         hidden = self._encoder_nl(self._encoder(input))
-        hidden = hidden.view(self._rnn_layers, hidden.size()[0], hidden.size()[1])
+        if self._input_layers > 1:
+            hidden = self._encoder_0_nl(self._encoder_0(hidden))
+
+        hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
 
         if self._rnn_type == RNNType.GRU:
             return hidden
         else:
             return (hidden, \
-                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
+                    Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -509,7 +523,16 @@ class SequenceModelInputToHidden(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
-        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)
+
+        bidir = False
+        if "bidir" in init_params:
+            bidir = init_params["bidir"]
+
+        input_layers = 1
+        if "input_layers" in init_params:
+            input_layers = init_params["input_layers"]
+
+        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, input_layers=input_layers)
 
 
 class SequenceModelInputEmbedded(SequenceModel):
@@ -526,6 +549,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._init_params["rnn_layers"] = rnn_layers
         self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
+        self._init_params["bidir"] = bidir
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -543,10 +567,10 @@ class SequenceModelInputEmbedded(SequenceModel):
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
         if self._rnn_type == RNNType.GRU:
-            return Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_())
+            return Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_())
         else:
-            return (Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()), \
-                    Variable(weight.new(self._rnn_layers, batch_size, self._hidden_size).zero_()))
+            return (Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()), \
+                    Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = self._drop(self._emb(seq_part))
@@ -590,7 +614,8 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
-        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)
+        bidir = init_params["bidir"]
+        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir)
 
 
 class SequenceModelNoInput(SequenceModel):
@@ -606,6 +631,7 @@ class SequenceModelNoInput(SequenceModel):
         self._init_params["rnn_layers"] = rnn_layers
         self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
+        self._init_params["bidir"] = bidir
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -664,4 +690,8 @@ class SequenceModelNoInput(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
         rnn_type = init_params["rnn_type"]
-        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout)
+
+        bidir = False
+        if "bidir" in init_params:
+            bidir = init_params["bidir"]
+        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir)

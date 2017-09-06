@@ -4,6 +4,7 @@ import time
 import numpy as np
 import torch
 import copy
+import torch.cuda
 from torch.autograd import Variable
 from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
@@ -20,7 +21,8 @@ from ltprg.model.learn import OptimizerType, Trainer
 from ltprg.util.log import Logger
 
 RNN_TYPE = RNNType.LSTM
-BIDIRECTIONAL=True
+BIDIRECTIONAL=False
+INPUT_LAYERS = 1
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
@@ -28,12 +30,13 @@ TRAINING_ITERATIONS= 30000 #30000 #1000 #00
 TRAINING_BATCH_SIZE=128 #128 # 50 #100 #10
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
-LEARNING_RATE = 0.005 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
-LOG_INTERVAL = 200
+LEARNING_RATE = 0.004 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
+LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = None # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
+torch.cuda.manual_seed(1)
 torch.manual_seed(1)
 np.random.seed(1)
 
@@ -116,13 +119,12 @@ if gpu:
     loss_criterion = loss_criterion.cuda()
 
 seq_prior_model = SequenceModel.load(seq_model_path)
-world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu) # 3 colors per observation
 
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
     seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
@@ -130,6 +132,8 @@ else:
     soft_bottom = True
 
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
+
+world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 colors per observation
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":

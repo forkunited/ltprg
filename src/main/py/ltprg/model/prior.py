@@ -10,10 +10,11 @@ class PriorInputMode:
     ONLY_TRUE_WORLD = "ONLY_TRUE_WORLD"
 
 class UniformIndexPriorFn(nn.Module):
-    def __init__(self, size, on_gpu=False):
+    def __init__(self, size, on_gpu=False, unnorm=False):
         super(UniformIndexPriorFn, self).__init__()
         self._size = size
         self._on_gpu = on_gpu
+        self._unnorm = unnorm
 
     def on_gpu(self):
         return self._on_gpu
@@ -22,7 +23,7 @@ class UniformIndexPriorFn(nn.Module):
         vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
         if self.on_gpu():
             vs = vs.cuda()
-        return Categorical(Variable(vs), on_gpu=self.on_gpu())
+        return Categorical(Variable(vs), on_gpu=self.on_gpu(), unnorm=self._unnorm)
 
     # NOTE: This assumes that all values in vs are indices that fall within
     # the range of the support

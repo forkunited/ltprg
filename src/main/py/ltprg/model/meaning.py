@@ -88,6 +88,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         else:
             self._decoder_mu = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size)
             self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size * self._world_input_size)
+            self._decoder_Sigma.bias = nn.Parameter(torch.eye(self._world_input_size).view(self._world_input_size * self._world_input_size))
             self._mse = nn.MSELoss()
 
         self._decoder_nl = nn.Sigmoid()
@@ -103,7 +104,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
             if isinstance(hidden, tuple): # Handle LSTM
                 hidden = hidden[0]
-            decoded = self._decoder(hidden.view(-1, hidden.size(0)*hidden.size(2)))
+            decoded = self._decoder(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
             output = self._decoder_nl(decoded)
         else:
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
