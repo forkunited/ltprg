@@ -38,7 +38,7 @@ class StimEmbeddings(object):
 		'\nConstructing target stim representations\n'
 		featurize_embeddings(
 			input_data_dir, 
-			join(output_feature_dir, ""),
+			output_feature_dir,
 			partition_file,
 			lambda d : d.get("gameid"),
 			"target_fc_embedding",
@@ -49,7 +49,7 @@ class StimEmbeddings(object):
 		'\nConstructing concatentated stim representations\n'
 		featurize_embeddings(
 			input_data_dir, 
-			join(output_feature_dir, ""),
+			output_feature_dir,
 			partition_file,
 			lambda d : d.get("gameid"),
 			"context_fc_embedding",

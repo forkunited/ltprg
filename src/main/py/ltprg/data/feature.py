@@ -1,6 +1,5 @@
 from mung.feature import FeatureType, register_feature_type
-# import sys
-# sys.path.append('../../../../test/py/ltprg/game/color/properties/')
+import dill as pickle
 import numpy as np
 import time
 from ltprg.game.color.properties.alexnet import PartialAlexnet, rgb_to_alexnet_input
