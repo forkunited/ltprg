@@ -28,6 +28,7 @@ LOG_INTERVAL = 500 #500
 DEV_SAMPLE_SIZE = None # None is full
 
 torch.manual_seed(1)
+torch.cuda.manual_seed(1)
 np.random.seed(1)
 
 def output_model_samples(model, D, utterance_length):
@@ -48,11 +49,12 @@ def output_model_samples(model, D, utterance_length):
         print str(scores[j]) + ": " + top_utts[j]
     print "\n"
 
-data_dir = sys.argv[1]
-partition_file = sys.argv[2]
-utterance_dir = sys.argv[3]
-output_results_path = sys.argv[4]
-output_model_path = sys.argv[5]
+gpu = bool(sys.argv[1])
+data_dir = sys.argv[2]
+partition_file = sys.argv[3]
+utterance_dir = sys.argv[4]
+output_results_path = sys.argv[5]
+output_model_path = sys.argv[6]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ },
@@ -75,6 +77,12 @@ model = SequenceModelNoInput("S", utterance_size, \
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 
 loss_criterion_unnorm = VariableLengthNLLLoss(norm_dim=True)
+
+if gpu:
+    model = model.cuda()
+    loss_criterion = loss_criterion.cuda()
+    loss_criterion_unnorm = loss_criterion_unnorm.cuda()
+
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm, norm_dim=True)
 dev_close_loss = Loss("Dev Close Loss", D_dev_close, data_parameters, loss_criterion_unnorm, norm_dim=True)
 dev_split_loss = Loss("Dev Split Loss", D_dev_split, data_parameters, loss_criterion_unnorm, norm_dim=True)

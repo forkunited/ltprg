@@ -5,10 +5,12 @@ import mung.feature_helpers
 from os.path import join
 
 input_data_dir = sys.argv[1]
-output_feature_dir = sys.argv[2]
-partition_file = sys.argv[3]
+input_last_data_dir = sys.argv[2]
+output_feature_dir = sys.argv[3]
+partition_file = sys.argv[4]
 
 # Necessary to allow unittest.main() to work
+del sys.argv[4]
 del sys.argv[3]
 del sys.argv[2]
 del sys.argv[1]
@@ -16,6 +18,7 @@ del sys.argv[1]
 np.random.seed(1)
 
 class FeaturizeSUA(unittest.TestCase):
+    """
     # Constructs sequences of one-hot vectors representing lemmatized utterances
     def test_utterance_lemmas(self):
         print "Featurizing utterances"
@@ -56,7 +59,35 @@ class FeaturizeSUA(unittest.TestCase):
             30, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
+    """
+    # Constructs sequences of integer indices representing short cleaned utterances
+    def test_utterance_clean_short_indices(self):
+        print "Featurizing utterance clean short indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir, # Source data set
+            join(output_feature_dir, "utterance_clean_short_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_clean_short_idx", # Name of the feature
+            ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
+            15, # Maximum utterance length
+            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
+            indices=True) # Indicates that indices will be computed instead of one-hot vectors
     
+    # Constructs sequences of integer indices representing last cleaned utterances
+    def test_utterance_clean_last_indices(self):
+        print "Featurizing utterance clean last indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_last_data_dir, # Source data set
+            join(output_feature_dir, "utterance_clean_last_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_clean_last_idx", # Name of the feature
+            ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
+            24, # Maximum utterance length
+            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
+            indices=True) # Indicates that indices will be computed instead of one-hot vectors
+    """
     # Constructs indicators of which color (0, 1, or 2) that the listener clicked
     def test_listener_clicked(self):
         print "Featurizing listener clicks"
@@ -195,6 +226,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target_idx",
             ["state.sTargetIndex"])
-
+    """
 if __name__ == '__main__':
     unittest.main()

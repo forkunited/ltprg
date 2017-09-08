@@ -31,15 +31,12 @@ TRAINING_ITERATIONS= 30000 #30000 #1000 #00
 TRAINING_BATCH_SIZE=128 #128 # 50 #100 #10
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
-LEARNING_RATE = 0.004 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
+LEARNING_RATE = 0.005 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
 LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = None # None (none means full)
 SAMPLES_PER_INPUT= 4 # 4
 SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
 
-torch.cuda.manual_seed(1)
-torch.manual_seed(1)
-np.random.seed(1)
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -76,7 +73,7 @@ def output_model_samples(model, data_parameters, D, batch_size=20):
             print str(ps_i.data[j]) + ": " + support_utts_i[j]
         print "\n"
 
-gpu = bool(sys.argv[1])
+gpu = bool(int(sys.argv[1]))
 training_dist = sys.argv[2]
 training_level = int(sys.argv[3])
 data_dir = sys.argv[4]
@@ -91,6 +88,11 @@ output_results_path = sys.argv[12]
 meaning_fn_input_type = sys.argv[13]
 training_input_mode = sys.argv[14]
 prior_beam_heuristic = sys.argv[15]
+
+if gpu:
+    torch.cuda.manual_seed(1)
+torch.manual_seed(1)
+np.random.seed(1)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
@@ -170,7 +172,7 @@ dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionT
 
 #evaluation = dev_loss
 evaluation = dev_l0_acc
-other_evaluations = [] #[dev_l0_acc, dev_l1_acc] #, \
+other_evaluations = []#[dev_l1_acc] #[dev_l0_acc, dev_l1_acc] #, \
 #                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
 #                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
 

@@ -134,7 +134,8 @@ class SequenceModel(nn.Module):
 
         if self.on_gpu():
             seq_in = seq_in.cuda()
-            input = input.cuda()
+            if input is not None:
+                input = input.cuda()
 
         model_out, hidden = self(seq_part=seq_in, seq_length=length, input=input)
         return model_out, hidden

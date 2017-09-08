@@ -18,7 +18,7 @@ from ltprg.util.log import Logger
 RNN_TYPE = RNNType.LSTM
 INPUT_TYPE = "NOT_EMBEDDED" #"EMBEDDED"
 EMBEDDING_SIZE = 100
-RNN_SIZE = 100
+RNN_SIZE = 500
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=4000 #10000 #1000 #00
 TRAINING_BATCH_SIZE=128
@@ -29,6 +29,7 @@ LOG_INTERVAL = 500
 DEV_SAMPLE_SIZE = None # None is full
 
 torch.manual_seed(1)
+torch.cuda.manual_seed(1)
 np.random.seed(1)
 
 def output_model_samples(model, D, max_length, batch_size=20):
@@ -62,12 +63,13 @@ def output_model_samples(model, D, max_length, batch_size=20):
             print str(scores[j]) + ": " + top_utts[j]
         print "\n"
 
-data_dir = sys.argv[1]
-partition_file = sys.argv[2]
-utterance_dir = sys.argv[3]
-world_dir = sys.argv[4]
-output_results_path = sys.argv[5]
-output_model_path = sys.argv[6]
+gpu = bool(sys.argv[1])
+data_dir = sys.argv[2]
+partition_file = sys.argv[3]
+utterance_dir = sys.argv[4]
+world_dir = sys.argv[5]
+output_results_path = sys.argv[6]
+output_model_path = sys.argv[7]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "world" : world_dir },
@@ -96,6 +98,12 @@ else:
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 
 loss_criterion_unnorm = VariableLengthNLLLoss(norm_dim=True)
+
+if gpu:
+    loss_criterion = loss_criterion.cuda()
+    model = model.cuda()
+    loss_criterion_unnorm = loss_criterion_unnorm.cuda()
+
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm, norm_dim=True)
 dev_close_loss = Loss("Dev Close Loss", D_dev_close, data_parameters, loss_criterion_unnorm, norm_dim=True)
 dev_split_loss = Loss("Dev Split Loss", D_dev_split, data_parameters, loss_criterion_unnorm, norm_dim=True)

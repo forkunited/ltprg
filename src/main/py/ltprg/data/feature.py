@@ -12,6 +12,7 @@ class FeatureVisualEmbeddingType(FeatureType):
         # paths is a list of lists of HSLs, e.g. [[H1, S1, L1], [H2, S2, L2]]
         self._name = name
         self._paths = paths # e.g. [["state.sH_0", "state.sS_0", "state.sL_0"]]
+        self.cnn = PartialAlexnet('fc6')
 
     def get_name(self):
         return self._name
@@ -38,7 +39,8 @@ class FeatureVisualEmbeddingType(FeatureType):
         return True
 
     def init_start(self):
-        self.cnn = PartialAlexnet('fc6')
+        #self.cnn = PartialAlexnet('fc6')
+        pass
 
     def init_datum(self, datum):
         pass
