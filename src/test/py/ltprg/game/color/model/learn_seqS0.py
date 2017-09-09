@@ -28,10 +28,6 @@ LEARNING_RATE = 0.001 #0.05 #0.001
 LOG_INTERVAL = 500
 DEV_SAMPLE_SIZE = None # None is full
 
-torch.manual_seed(1)
-torch.cuda.manual_seed(1)
-np.random.seed(1)
-
 def output_model_samples(model, D, max_length, batch_size=20):
     data = D.get_data()
     batch, batch_indices = D.get_random_batch(batch_size, return_indices=True)
@@ -63,13 +59,18 @@ def output_model_samples(model, D, max_length, batch_size=20):
             print str(scores[j]) + ": " + top_utts[j]
         print "\n"
 
-gpu = bool(sys.argv[1])
+gpu = bool(int(sys.argv[1]))
 data_dir = sys.argv[2]
 partition_file = sys.argv[3]
 utterance_dir = sys.argv[4]
 world_dir = sys.argv[5]
 output_results_path = sys.argv[6]
 output_model_path = sys.argv[7]
+
+torch.manual_seed(1)
+if gpu:
+    torch.cuda.manual_seed(1)
+np.random.seed(1)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "world" : world_dir },
