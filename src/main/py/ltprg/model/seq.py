@@ -211,7 +211,7 @@ class SequenceModel(nn.Module):
         return ret_samples
 
     # NOTE: Input is a batch of inputs
-    def beam_search(self, beam_size=5, max_length=15, seq_part=None, input=None, heuristic=None):
+    def beam_search(self, beam_size=5, max_length=15, seq_part=None, input=None, heuristic=None, context=None):
         beams = []
         if seq_part is not None:
             seq_part = seq_part.transpose(1,0)
@@ -225,13 +225,20 @@ class SequenceModel(nn.Module):
                 if seq_part is not None:
                     seq_part_i = seq_part[i].transpose(1,0)
                 input_i = input[i]
-                beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i, heuristic=heuristic))
+                
+                context_i = None
+                if context is not None:
+                    context_i = context[0][i]
+                    input_index_i = context[1][i]*torch.ones(1).long()
+                    if self.on_gpu():
+                        input_index_i = input_index_i.cuda()
+                beams.append(self._beam_search_single(beam_size, max_length, seq_part=seq_part_i, input=input_i, heuristic=heuristic, context=(context_i, input_index_i)))
         else:
             beams.append(self._beam_search_single(beam_size, max_length, heuristic=heuristic))
 
         return beams
 
-    def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic=None):
+    def _beam_search_single(self, beam_size, max_length, seq_part=None, input=None, heuristic=None, context=None):
         if seq_part is None:
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]).long().view(1,1)
         else:
@@ -243,6 +250,8 @@ class SequenceModel(nn.Module):
             if isinstance(input, Variable):
                 input = input.data
             input = input.view(1, input.size(0))
+            if context is not None:
+                context = (context[0].view(1, context[0].size(0)), context[1].view(1, context[1].size(0)))
 
         end_idx = Symbol.index(Symbol.SEQ_END)
         ended = torch.zeros(1).long()
@@ -269,16 +278,30 @@ class SequenceModel(nn.Module):
         # first on ended sequences
         ended_ignore_mask = torch.ones(vocab_size)
         ended_ignore_mask[0] = 0.0
-
+        
         vocab = None
+        vocab_rep = None
         heuristic_state = None
         heuristic_lengths = None
+        beam_heuristic_lengths = None
         if heuristic is not None:
-            vocab_rep = torch.arange(0, vocab_size).repeat(beam_size).unsqueeze(0)
-            heuristic_lengths = torch.zeros(vocab_size*beam_size)
+            vocab = torch.arange(0, vocab_size).long()
+            vocab_rep = vocab.repeat(beam_size).unsqueeze(0)
+            vocab = vocab.unsqueeze(0)
+            heuristic_lengths = torch.zeros(vocab_size).long()
+            beam_heuristic_lengths = torch.zeros(vocab_size*beam_size).long()
+            if self.on_gpu():
+                vocab = vocab.cuda()
+                vocab_rep = vocab_rep.cuda()
 
+        input_single = None
         if input is not None:
+            input_single = input
             input = input.repeat(beam_size, 1)
+
+        context_single = None
+        if context is not None:
+            context_single = context
 
         if self.on_gpu():
             beam = beam.cuda()
@@ -300,18 +323,38 @@ class SequenceModel(nn.Module):
             next_scores = scores.unsqueeze(1).expand_as(output_dist) + (1.0-ended_mat)*output_dist.data + ignore_mask
 
             if heuristic is not None:
-                beam.repeat()
                 seq_len = beam.size(0)
                 # Sequence length x (vocab_size * beam_size tensor)
                 # Beam sequences repeated in congtiguous blocks of vocab size...
                 # to be extended with each element of vocab
-                expanded_beam = beam.unsqueeze(0).expand((vocab_size,seq_len,beam_size)) \
-                    .transpose(0,2).contiguous() \
-                    .view(seq_len,vocab_size*beam_size)
-                expanded_beam = torch.cat((expanded_beam, vocab_rep), dim=0)
+                #expanded_beam = beam.unsqueeze(0).expand((vocab_size,seq_len,beam_size)) \
+                #    .transpose(0,2).contiguous() \
+                #    .view(seq_len,vocab_size*beam_size)
+                expanded_beam = None
+                lens = None
+                if output_dist.size(0) > 1:
+                    expanded_beam = beam.unsqueeze(0).expand((vocab_size,seq_len,beam_size)) \
+                        .transpose(0,2).contiguous() \
+                        .view(seq_len,vocab_size*beam_size)
+                    expanded_beam = torch.cat((expanded_beam, vocab_rep), dim=0)
+                    beam_heuristic_lengths[:] = seq_len + 1
+                    lens = beam_heuristic_lengths
+                else:
+                    expanded_beam = seq_part.view(1,1).unsqueeze(0).expand((vocab_size,seq_len,1)) \
+                        .transpose(0,2).contiguous() \
+                        .view(seq_len, vocab_size)
+                    expanded_beam = torch.cat((expanded_beam, vocab), dim=0)
+                    heuristic_lengths[:] = seq_len + 1
+                    lens = heuristic_lengths
 
-                heuristic_lengths[:] = seq_len
-                heuristic_output, heuristic_state = heuristic((expanded_beam, heuristic_lengths), input, heuristic_state)
+                expanded_input = None
+                if input is not None:
+                    expanded_input = input_single.expand(expanded_beam.size(1), input_single.size(1))
+                
+                expanded_context = None
+                if context is not None:
+                    expanded_context = (context_single[0].expand(expanded_beam.size(1), context_single[0].size(1)).contiguous(), context_single[1].expand(expanded_beam.size(1), context_single[1].size(1)).contiguous())
+                heuristic_output, heuristic_state = heuristic((expanded_beam, lens), expanded_input, heuristic_state, context=expanded_context)
                 # Output is vector of scores (beam_0.v_0, beam_0.v_1,..., beam_1.v_1...)
                 heuristic_output = heuristic_output.view(output_dist.size())
                 next_scores += heuristic_output
@@ -388,6 +431,8 @@ class SequenceModel(nn.Module):
             model = SequenceModelInputEmbedded.make(init_params)
         elif arch_type == "SequenceModelInputToHidden":
             model = SequenceModelInputToHidden.make(init_params)
+        elif arch_type == "SequenceModelNoInput":
+            model = SequenceModelNoInput.make(init_params)
         model.load_state_dict(state_dict)
 
         return model
@@ -448,13 +493,14 @@ class SequenceModelInputToHidden(SequenceModel):
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
+        self._seq_size = seq_size
 
         self._input_layers = input_layers
 
-        self._encoder = nn.Linear(input_size, rnn_size*rnn_layers*self._directions)
+        self._encoder = nn.Linear(input_size, rnn_size*rnn_layers*self._directions/(4**(input_layers-1)))
         self._encoder_nl = nn.Tanh()
         if self._input_layers == 2:
-            self._encoder_0 = nn.Linear(rnn_size*rnn_layers*self._directions, rnn_size*rnn_layers*self._directions)
+            self._encoder_0 = nn.Linear(rnn_size*rnn_layers*self._directions/(4**(input_layers-1)), rnn_size*rnn_layers*self._directions)
             self._encoder_0_nl = nn.Tanh()
         elif self._input_layers != 1:
             raise ValueError("Can only have 1 or 2 input layers")

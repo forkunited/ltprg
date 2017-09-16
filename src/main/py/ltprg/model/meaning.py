@@ -79,17 +79,27 @@ class SequentialUtteranceInputType:
     OUT_SEQ = "OUT_SEQ"
 
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
-    def __init__(self, world_input_size, seq_model, input_type=SequentialUtteranceInputType.IN_SEQ):
+    def __init__(self, world_input_size, seq_model, input_type=SequentialUtteranceInputType.IN_SEQ, encode_input=False, enc_size=0):
         super(MeaningModelIndexedWorldSequentialUtterance, self).__init__(world_input_size)
         self._seq_model = seq_model
 
         if input_type == SequentialUtteranceInputType.IN_SEQ:
             self._decoder = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), 1)
         else:
-            self._decoder_mu = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size)
-            self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._world_input_size * self._world_input_size)
-            self._decoder_Sigma.bias = nn.Parameter(torch.eye(self._world_input_size).view(self._world_input_size * self._world_input_size))
+            self._encode_input = encode_input
+            
+            if encode_input:
+                self._input_enc = nn.Linear(self._world_input_size, enc_size)
+                self._input_nl = nn.Tanh()
+                self._enc_size = enc_size
+            else: 
+                self._enc_size = self._world_input_size    
+
+            self._decoder_mu = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._enc_size)
+            self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._enc_size * self._enc_size)
+            self._decoder_Sigma.bias = nn.Parameter(torch.eye(self._enc_size).view(self._enc_size * self._enc_size))
             self._mse = nn.MSELoss()
+            
 
         self._decoder_nl = nn.Sigmoid()
         self._input_type = input_type
@@ -119,11 +129,16 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
 
             #score = - self._mse(mu, sorted_inputs[0])
             #output = self._decoder_nl(score)
-            
+            inp = sorted_inputs[0]
+            if self._encode_input:
+                #inp = self._input_enc(sorted_inputs[0])
+                inp = self._input_nl(self._input_enc(sorted_inputs[0]))
+
             Sigma_flat = self._decoder_Sigma(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
-            Delta = sorted_inputs[0] - mu
-            Sigma = Sigma_flat.view(-1, self._world_input_size, self._world_input_size)
+            Delta = inp - mu
+            Sigma = Sigma_flat.view(-1, self._enc_size, self._enc_size)
             score = - Delta.unsqueeze(1).bmm(Sigma).bmm(Delta.unsqueeze(1).transpose(1,2)).squeeze()
             output = score
 
         return unsort_seq_tensors(sorted_indices, [output])[0]
+

@@ -8,12 +8,8 @@ class HeuristicL0(nn.Module):
         self._world_prior_fn = world_prior_fn
         self._meaning_fn = meaning_fn
         self._L_0 = RSA.make("L_0_heuristic", DistributionType.L, 0, meaning_fn, world_prior_fn, None, L_bottom=True, soft_bottom=soft_bottom)
-        self._observation = None
 
-    def set_data_batch(self, batch, data_parameters):
-        self._observation = batch(data_parameters[DataParameter.OBSERVATION])
-
-    def forward(self, seq, input, heuristic_state):
-        L_dist = self._L_0(utterance, self._observation)
-        input_index, has_missing, mask = L_dist.get_index(input)
-        return torch.log(torch.gather(L_dist.p(), 1, input_index.unsqueeze(1)).squeeze())
+    def forward(self, seq, input, heuristic_state, context=None):
+        L_dist = self._L_0((seq[0].transpose(0,1), seq[1]), context[0])
+        #input_index, has_missing, mask = L_dist.get_index(context[1])
+        return torch.log(torch.gather(L_dist.p().data, 1, context[1]).squeeze()), heuristic_state # Switched from input_index.unsqueeze(1) to context[1]

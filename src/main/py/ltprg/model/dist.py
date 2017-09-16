@@ -112,7 +112,7 @@ class Categorical(Distribution):
 
             if isinstance(support, Variable):
                 support = support.data
-
+            
             for b in range(support.size(0)): # Over batch
                 found = False
                 for s in range(support.size(1)): # Over samples in support

@@ -61,7 +61,7 @@ class DataParameter:
 
 def _normalize_rows(t, softmax=False):
     if not softmax:
-        row_sums = torch.sum(t, dim=len(t.size())-1)
+        row_sums = torch.sum(t, len(t.size())-1, keepdim=True)
         return torch.div(t, row_sums.expand_as(t))
     else:
         s = nn.Softmax()
@@ -238,7 +238,6 @@ class S(RSA):
                     world_index_offset = world_index_offset.cuda() + world_index
                 else:
                     world_index_offset += world_index
-
                 ps = ps.view(ps.size(0)*ps.size(1), ps.size(2))[world_index_offset]
                 if has_missing:
                     raise ValueError("Prior missing input world") #ps = ps * mask.expand_as(ps) # FIXME Broken
@@ -250,7 +249,6 @@ class S(RSA):
     def forward_batch(self, batch, data_parameters):
         world = Variable(batch[data_parameters[DataParameter.WORLD]])
         observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
-
         if self.on_gpu():
             world = world.cuda()
             observation = observation.cuda()

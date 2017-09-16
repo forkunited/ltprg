@@ -2,7 +2,7 @@ import abc
 import torch
 from torch.autograd import Variable
 
-EVALUATION_BATCH_SIZE = 500
+EVALUATION_BATCH_SIZE = 200
 
 class DataParameter:
     TARGET = "target"
@@ -115,18 +115,18 @@ class DistributionAccuracy(Evaluation):
         target = batch[self._data_parameters[DataParameter.TARGET]].squeeze()
 
         model_ps = dist.p().data.cpu()
-        max_ps, max_index = torch.max(model_ps, 1 )
+        max_ps, max_index = torch.max(model_ps, 1, keepdim=True)
 
         # Indicators of whether maxima are unique
-        max_unique = (torch.sum(max_ps.expand_as(model_ps) == model_ps, 1) == 1).long()
+        max_unique = (torch.sum(max_ps.expand_as(model_ps) == model_ps, 1, keepdim=True) == 1).long()
 
         total_correct = None
         if self._target_indexed:
-            total_correct = torch.sum(max_unique*((target == max_index).long()))
+            total_correct = torch.sum(max_unique.squeeze()*((target == max_index.squeeze()).long()))
         else:
             target_index, has_missing, mask = dist.get_index(target)
             # Count of where model max is same as target
-            total_correct = torch.sum(mask*max_unique*((target_index == max_index).long()))
+            total_correct = torch.sum(mask*max_unique.squeeze()*((target_index == max_index.squeeze()).long()))
 
         return float(total_correct)
 

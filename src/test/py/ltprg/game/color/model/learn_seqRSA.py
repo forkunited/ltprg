@@ -22,21 +22,22 @@ from ltprg.model.learn import OptimizerType, Trainer
 from ltprg.util.log import Logger
 
 RNN_TYPE = RNNType.LSTM
-BIDIRECTIONAL=False
+BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS= 30000 #30000 #1000 #00
+TRAINING_ITERATIONS= 4000 #30000 #1000 #00
 TRAINING_BATCH_SIZE=128 #128 # 50 #100 #10
-DROP_OUT = 0.5 # BEST 0.5
+DROP_OUT = 0.0 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADADELTA #ADADELTA # BEST ADAM
-LEARNING_RATE = 5.0 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
+LEARNING_RATE = 0.2 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
 LOG_INTERVAL = 100
-DEV_SAMPLE_SIZE = None # None (none means full)
-SAMPLES_PER_INPUT= 4 # 4
-SAMPLING_MODE = SamplingMode.BEAM # BEAM FORWARD
-
+DEV_SAMPLE_SIZE = 1000 #None # None (none means full)
+SAMPLES_PER_INPUT= 10 # 4
+SAMPLING_MODE = SamplingMode.FORWARD # BEAM FORWARD
+SAMPLE_LENGTH = 7
+GRADIENT_CLIPPING = 5.0
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -134,7 +135,7 @@ else:
         EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
     soft_bottom = True
 
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
+meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
 
 world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 colors per observation
 
@@ -148,7 +149,8 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              uniform=True,
                                              seq_length=D["utterance"].get_feature_seq_set().get_size(),
                                              heuristic=beam_heuristic,
-                                             training_input_mode=training_input_mode)
+                                             training_input_mode=training_input_mode,
+                                             sample_length=SAMPLE_LENGTH)
 
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 if gpu:
@@ -172,15 +174,16 @@ dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionT
 
 #evaluation = dev_loss
 evaluation = dev_l0_acc
-other_evaluations = []#[dev_l1_acc] #[dev_l0_acc, dev_l1_acc] #, \
+other_evaluations = []#[dev_l1_acc]#[dev_l1_acc] #[dev_l0_acc, dev_l1_acc] #, \
 #                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
 #                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
 rsa_model, best_meaning = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
             batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
-            log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
+            grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
