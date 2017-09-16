@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+import colorsys
 import numpy as np
 import csv
 import sys
@@ -27,24 +27,21 @@ def read_messy_file(file_path):
     return D
 
 def fourier_transform(h, s, l):
-    # Convert to hsv using https://gist.github.com/xpansive/1337890
     h = float(h) / 360.0
     s = float(s) / 100.0
     l = float(l) / 100.0
 
-    if l < .5:
-        s = s * l
-    else:
-        s = s * (1.0 - l)
+    h,s,v = colorsys.rgb_to_hsv(*colorsys.hls_to_rgb(h,l,s))
 
-    s = 2.0*s/(l+s)
-    v = l + s
+    # Divide by 2.0 based on https://arxiv.org/pdf/1606.03821.pdf
+    s = s / 2.0
+    v = v / 2.0
 
     vec = []
     for i in range(3):
         for j in range(3):
             for k in range(3):
-                c = j*h + k*s + l*v
+                c = i*h + j*s + k*v
                 re = np.cos(-2.0*np.pi*c)
                 im = np.sin(-2.0*np.pi*c)
                 vec.append(re)
