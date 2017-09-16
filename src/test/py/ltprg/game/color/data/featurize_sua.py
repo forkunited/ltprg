@@ -18,7 +18,7 @@ del sys.argv[1]
 np.random.seed(1)
 
 class FeaturizeSUA(unittest.TestCase):
-    """
+
     # Constructs sequences of one-hot vectors representing lemmatized utterances
     def test_utterance_lemmas(self):
         print "Featurizing utterances"
@@ -59,7 +59,35 @@ class FeaturizeSUA(unittest.TestCase):
             30, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
-    """
+
+    # Constructs sequences of integer indices representing short cleaned utterances
+    def test_utterance_clean_full_indices(self):
+        print "Featurizing utterance clean full indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir, # Source data set
+            join(output_feature_dir, "utterance_clean_full_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_clean_full_idx", # Name of the feature
+            ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
+            72, # Maximum utterance length
+            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
+            indices=True) # Indicates that indices will be computed instead of one-hot vectors
+
+    # Constructs sequences of integer indices representing short cleaned utterances
+    def test_utterance_clean_long_indices(self):
+        print "Featurizing utterance clean long indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir, # Source data set
+            join(output_feature_dir, "utterance_clean_long_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_clean_long_idx", # Name of the feature
+            ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
+            50, # Maximum utterance length
+            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
+            indices=True) # Indicates that indices will be computed instead of one-hot vectors
+
     # Constructs sequences of integer indices representing short cleaned utterances
     def test_utterance_clean_short_indices(self):
         print "Featurizing utterance clean short indices"
@@ -87,7 +115,7 @@ class FeaturizeSUA(unittest.TestCase):
             24, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
-    """
+
     # Constructs indicators of which color (0, 1, or 2) that the listener clicked
     def test_listener_clicked(self):
         print "Featurizing listener clicks"
@@ -226,6 +254,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target_idx",
             ["state.sTargetIndex"])
-    """
+
 if __name__ == '__main__':
     unittest.main()
