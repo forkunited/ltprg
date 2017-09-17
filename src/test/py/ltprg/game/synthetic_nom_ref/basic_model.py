@@ -64,9 +64,9 @@ class BasicModel(object):
 
         # dtype
         if cuda.is_available():
-            self.dtype = torch.cuda.LongTensor
+            self.dtype = torch.cuda.FloatTensor
         else:
-            self.dtype = torch.LongTensor
+            self.dtype = torch.FloatTensor
 
 
     def evaluate(self, prediction, label):

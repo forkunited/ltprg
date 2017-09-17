@@ -73,7 +73,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
+            inds = Variable(torch.FloatTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
         else:
@@ -87,7 +87,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
         outputs = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -114,7 +114,7 @@ class FASM_NN(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
+            inds = Variable(torch.FloatTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
@@ -125,7 +125,7 @@ class FASM_NN(FixedAlternativeSetModel):
             pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -239,7 +239,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
+            inds = Variable(torch.FloatTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
         else:
@@ -269,7 +269,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         pred = speaker_table[2, :].unsqueeze(0)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
@@ -290,7 +290,7 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.LongTensor(
+            inds = Variable(torch.FloatTensor(
                 [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
 
@@ -320,7 +320,7 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
             pred = m(utt_scores)
 
         # format label
-        label = Variable(torch.LongTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
 
         # display, if necessary
         if display_prediction:
