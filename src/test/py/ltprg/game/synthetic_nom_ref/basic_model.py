@@ -65,16 +65,18 @@ class BasicModel(object):
         # dtype
         if cuda.is_available():
             self.dtype = torch.cuda.FloatTensor
+            self.label_dtype = torch.cuda.LongTensor
         else:
             self.dtype = torch.FloatTensor
+            self.label_dtype = torch.LongTensor
 
 
     def evaluate(self, prediction, label):
         """ Apply crtierion function eval model's prediction.
         """
-        loss = self.criterion(prediction.type(self.dtype), label.type(self.dtype))
+        loss = self.criterion(prediction.type(self.dtype), label.type(self.label_dtype))
         _, ind = torch.max(prediction, 1)
-        accuracy = ind==label   
+        accuracy = ind.type(self.label_dtype)==label.type(self.label_dtype)
         return loss, accuracy
 
 
@@ -91,15 +93,15 @@ class BasicModel(object):
         #   KLDivLoss takes in x, targets, where x is log-probs
         #   and targets is probs (not log)
         kl_div = nn.KLDivLoss()(prediction, torch.exp(
-                                gold_stardard_S1_dist)).data.numpy()[0]
+                                gold_stardard_S1_dist)).data[0]
         return kl_div
 
 
     def kl_baseline(self, prediction):
         """ Compute scalar KL-divergence of prediction from uniform dist.
         """
-        kl_div = nn.KLDivLoss()(prediction, uniform_prior(self.utt_set_sz)
-                                ).data.numpy()[0]
+        kl_div = nn.KLDivLoss()(prediction, uniform_prior(self.utt_set_sz, self.dtype)
+                                ).data[0]
         return kl_div
 
 
@@ -151,7 +153,7 @@ class BasicModel(object):
         """ Print and return informaion pertaining to a prediction.
         """
         _, predicted_utt_ind = torch.max(prediction_dist, 1)
-        predicted_utt_ind = predicted_utt_ind.data.numpy()[0] # extract from tensor
+        predicted_utt_ind = predicted_utt_ind.data[0] # extract from tensor
 
         target_name = self.obj_inds_to_names[str(trial['target_ind'])]
         alt1_name   = self.obj_inds_to_names[str(trial['alt1_ind'])]
