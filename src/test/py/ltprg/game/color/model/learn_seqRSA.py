@@ -28,16 +28,18 @@ EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
 TRAINING_ITERATIONS= 10000 #30000 #1000 #00
-TRAINING_BATCH_SIZE=128 #128 # 50 #100 #10
+TRAINING_BATCH_SIZE=50 #128 # 50 #100 #10
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LEARNING_RATE = 0.005 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
-LOG_INTERVAL = 200
+LOG_INTERVAL = 100
 DEV_SAMPLE_SIZE = None #None # None (none means full)
 SAMPLES_PER_INPUT= 10 # 4
 SAMPLING_MODE = SamplingMode.FORWARD # BEAM FORWARD
+N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 7
 GRADIENT_CLIPPING = 5.0
+
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -150,7 +152,8 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              seq_length=D["utterance"].get_feature_seq_set().get_size(),
                                              heuristic=beam_heuristic,
                                              training_input_mode=training_input_mode,
-                                             sample_length=SAMPLE_LENGTH)
+                                             sample_length=SAMPLE_LENGTH,
+                                             n_before_heuristic=N_BEFORE_HEURISTIC)
 
 rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 if gpu:

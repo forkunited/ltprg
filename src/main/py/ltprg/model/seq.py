@@ -153,27 +153,39 @@ class SequenceModel(nn.Module):
         return loss
 
     # NOTE: Assumes seq_part does not contain end tokens
-    def sample(self, n_per_input=1, seq_part=None, max_length=15, input=None):
+    def sample(self, n_per_input=1, seq_part=None, max_length=15, input=None, heuristic=None, context=None, n_before_heuristic=100):
         n = 1
         input_count = 1
+        samples_per_input = 1
+        if heuristic is None:
+            samples_per_input = n_per_input
+        else:
+            samples_per_input = n_before_heuristic
+
         if input is not None:
             if isinstance(input, Variable):
                 input = input.data
             input_count = input.size(0)
-            n = input.size(0) * n_per_input
-            input = input.repeat(1, n_per_input).view(n, input.size(1))
+            n = input.size(0) * samples_per_input
+            input = input.repeat(1, samples_per_input).view(n, input.size(1))
             if self.on_gpu():
                 input = input.cuda()
 
         if seq_part is not None:
             input_count = seq_part.size(1)
-            n = seq_part.size(1) * n_per_input
-            seq_part = seq_part.repeat(n_per_input, 1).view(seq_part.size(0), n)
+            n = seq_part.size(1) * samples_per_input
+            seq_part = seq_part.repeat(samples_per_input, 1).view(seq_part.size(0), n)
             if isinstance(seq_part, Variable):
                 seq_part = seq_part.data
         else:
+            if input is None:
+                n = samples_per_input
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
                 .repeat(n).long().view(1,n)
+
+        if heuristic is not None:
+            context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).contiguous().view(n, context[0].size(1)),
+                       context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).contiguous().view(n, 1))
 
         if self.on_gpu():
             seq_part = seq_part.cuda()
@@ -184,6 +196,7 @@ class SequenceModel(nn.Module):
         unit_length = torch.ones(n).long()
         seq_length = unit_length*seq_part.size(0)
         sample = copy.deepcopy(seq_part)
+
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1].exp()
@@ -206,8 +219,19 @@ class SequenceModel(nn.Module):
         # Return a list... like beam search...
         ret_samples = []
         for i in range(input_count):
+            input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
+            sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
+            seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
+            context_in = (context[0][(i*samples_per_input):((i+1)*samples_per_input)], context[1][(i*samples_per_input):((i+1)*samples_per_input)])
+
+            if heuristic is not None:
+                heuristic_output, _ = heuristic((sample_in, seq_length_in), Variable(input_in), None, context=context_in)
+                top_indices = heuristic_output.topk(n_per_input)[1]
+                sample_in = sample_in.transpose(0,1)[top_indices].transpose(0,1)
+                seq_length_in = seq_length_in[top_indices.cpu()]
+
             # FIXME Add score at some point
-            ret_samples.append((sample[:,(i*n_per_input):((i+1)*n_per_input)], seq_length[(i*n_per_input):((i+1)*n_per_input)], 0.0))
+            ret_samples.append((sample_in, seq_length_in, 0.0))
         return ret_samples
 
     # NOTE: Input is a batch of inputs
