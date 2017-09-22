@@ -4,34 +4,42 @@ import time
 import numpy as np
 import torch
 import copy
+import torch.cuda
+import ltprg.data.feature
 from torch.autograd import Variable
 from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from torch.nn import NLLLoss
 
-from ltprg.model.seq import SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden
+from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
+from ltprg.model.seq_heuristic import HeuristicL0
 from ltprg.model.eval import Loss
-from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance
+from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
-from ltprg.model.learn import Trainer
+from ltprg.model.learn import OptimizerType, Trainer
 from ltprg.util.log import Logger
 
-RNN_TYPE = "GRU" # LSTM currently broken... need to make cell state
+RNN_TYPE = RNNType.LSTM
+BIDIRECTIONAL=True
+INPUT_LAYERS = 1
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=4000 #1000 #00
-TRAINING_BATCH_SIZE=50 #100 #10
-DROP_OUT = 0.5
-LEARNING_RATE = 0.001 #0.05 #0.001
+TRAINING_ITERATIONS= 10000 #30000 #1000 #00
+TRAINING_BATCH_SIZE=50 #128 # 50 #100 #10
+DROP_OUT = 0.5 # BEST 0.5
+OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
+LEARNING_RATE = 0.005 # BEST 0.005  # .001 # 0.0005 #0.05 #BEST 0.001
 LOG_INTERVAL = 100
-DEV_SAMPLE_SIZE = 1000 # None (none means full)
-SAMPLES_PER_INPUT=4 
+DEV_SAMPLE_SIZE = None #None # None (none means full)
+SAMPLES_PER_INPUT= 10 # 4
+SAMPLING_MODE = SamplingMode.FORWARD # BEAM FORWARD
+N_BEFORE_HEURISTIC=100
+SAMPLE_LENGTH = 7
+GRADIENT_CLIPPING = 5.0
 
-torch.manual_seed(1)
-np.random.seed(1)
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -68,18 +76,26 @@ def output_model_samples(model, data_parameters, D, batch_size=20):
             print str(ps_i.data[j]) + ": " + support_utts_i[j]
         print "\n"
 
+gpu = bool(int(sys.argv[1]))
+training_dist = sys.argv[2]
+training_level = int(sys.argv[3])
+data_dir = sys.argv[4]
+partition_file = sys.argv[5]
+utterance_dir = sys.argv[6]
+L_world_dir = sys.argv[7]
+L_observation_dir = sys.argv[8]
+S_world_dir = sys.argv[9]
+S_observation_dir = sys.argv[10]
+seq_model_path = sys.argv[11]
+output_results_path = sys.argv[12]
+meaning_fn_input_type = sys.argv[13]
+training_input_mode = sys.argv[14]
+prior_beam_heuristic = sys.argv[15]
 
-training_dist = sys.argv[1]
-training_level = int(sys.argv[2])
-data_dir = sys.argv[3]
-partition_file = sys.argv[4]
-utterance_dir = sys.argv[5]
-L_world_dir = sys.argv[6]
-L_observation_dir = sys.argv[7]
-S_world_dir = sys.argv[8]
-S_observation_dir = sys.argv[9]
-seq_model_path = sys.argv[10]
-output_results_path = sys.argv[11]
+if gpu:
+    torch.cuda.manual_seed(1)
+torch.manual_seed(1)
+np.random.seed(1)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
@@ -97,7 +113,7 @@ D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
 D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
 D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
 
-world_input_size = 3
+world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 3
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 logger = Logger()
@@ -105,20 +121,49 @@ data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L
                                      S_world="S_world", S_observation="S_observation",
                                      mode=training_dist, utterance_seq=True)
 loss_criterion = NLLLoss()
+if gpu:
+    loss_criterion = loss_criterion.cuda()
 
 seq_prior_model = SequenceModel.load(seq_model_path)
-world_prior_fn = UniformIndexPriorFn(3) # 3 colors per observation
+
+seq_meaning_model = None
+soft_bottom = None
+if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
+    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
+    soft_bottom = False
+else:
+    seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
+    soft_bottom = True
+
+meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
+
+world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 colors per observation
+
+beam_heuristic = None
+if prior_beam_heuristic == "L0":
+    beam_heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=soft_bottom)
+
 utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
-                                             mode=SamplingMode.BEAM, #FORWARD, # BEAM
+                                             mode=SAMPLING_MODE,
                                              samples_per_input=SAMPLES_PER_INPUT,
                                              uniform=True,
-                                             seq_length=15) # 3 is color dimension
-seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
-    EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT)
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model)
-rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True)
+                                             seq_length=D["utterance"].get_feature_seq_set().get_size(),
+                                             heuristic=beam_heuristic,
+                                             training_input_mode=training_input_mode,
+                                             sample_length=SAMPLE_LENGTH,
+                                             n_before_heuristic=N_BEFORE_HEURISTIC)
 
-dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion)
+rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
+if gpu:
+    rsa_model = rsa_model.cuda()
+
+loss_criterion_unnorm = NLLLoss(size_average=False)
+if gpu:
+    loss_criterion_unnorm = loss_criterion_unnorm.cuda()
+
+dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
 dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
@@ -130,18 +175,20 @@ dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, Distribut
 dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
 dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
 
-evaluation = dev_loss
-other_evaluations = [dev_l0_acc, dev_l1_acc, \
-                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
-                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+#evaluation = dev_loss
+evaluation = dev_l0_acc
+other_evaluations = []#[dev_l1_acc]#[dev_l1_acc] #[dev_l0_acc, dev_l1_acc] #, \
+#                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
+#                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
 rsa_model, best_meaning = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
-            batch_size=TRAINING_BATCH_SIZE, lr=LEARNING_RATE, \
-            log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
+            batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
+            grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
-best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True)
+best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
 output_model_samples(best_model, data_parameters, D_dev_close)
 output_model_samples(best_model, data_parameters, D_dev_split)

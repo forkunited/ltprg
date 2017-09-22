@@ -1,7 +1,9 @@
 *.pyc
-
+rc/test/py/ltprg/game/color/properties/figures/*
 src/test/py/ltprg/game/synthetic_nom_ref/submit_sbatch.sh
 src/test/py/ltprg/game/synthetic_nom_ref/results/*
 src/test/py/ltprg/game/synthetic_nom_ref/synthetic_data/notes/*.pdf
 src/test/py/ltprg/game/synthetic_nom_ref/synthetic_data/notes/*.png
 src/test/py/ltprg/game/synthetic_nom_ref/synthetic_data/notes/random_distractors_dataset_characteristics.pdf
+
+src/test/py/ltprg/game/color/properties/figures/fc-6.mov

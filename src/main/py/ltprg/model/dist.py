@@ -21,7 +21,7 @@ class Distribution(object):
         """ Returns pmf or pdf """
 
 class Categorical(Distribution):
-    def __init__(self, vs, ps=None):
+    def __init__(self, vs, ps=None, on_gpu=False, unnorm=False):
         """
             Constructs a vectorized set of categorical distributions
 
@@ -41,7 +41,12 @@ class Categorical(Distribution):
             if isinstance(self._vs, tuple):
                 vs_for_size = self._vs[0]
             self._ps = torch.ones(vs_for_size.size(0), vs_for_size.size(1))
-            self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).repeat(1,self._ps.size(1)))
+            if unnorm:
+                self._ps = Variable(self._ps)
+            else:
+                self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).repeat(1,self._ps.size(1)))
+        if on_gpu:
+            self._ps = self._ps.cuda()
 
     def __getitem__(self, key):
         if key == 0:
@@ -107,7 +112,7 @@ class Categorical(Distribution):
 
             if isinstance(support, Variable):
                 support = support.data
-
+            
             for b in range(support.size(0)): # Over batch
                 found = False
                 for s in range(support.size(1)): # Over samples in support

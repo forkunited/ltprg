@@ -1,5 +1,6 @@
 #!/usr/bin/python
-
+import colorsys
+import numpy as np
 import csv
 import sys
 import os
@@ -25,6 +26,30 @@ def read_messy_file(file_path):
         f.close()
     return D
 
+def fourier_transform(h, s, l):
+    h = float(h) / 360.0
+    s = float(s) / 100.0
+    l = float(l) / 100.0
+
+    h,s,v = colorsys.rgb_to_hsv(*colorsys.hls_to_rgb(h,l,s))
+
+    # Divide by 2.0 based on https://arxiv.org/pdf/1606.03821.pdf
+    s = s / 2.0
+    v = v / 2.0
+
+    vec = []
+    for i in range(3):
+        for j in range(3):
+            for k in range(3):
+                c = i*h + j*s + k*v
+                re = np.cos(-2.0*np.pi*c)
+                im = np.sin(-2.0*np.pi*c)
+                vec.append(re)
+                vec.append(im)
+    return vec
+
+
+
 def make_state_record(record):
     listenerObjs = [dict(), dict(), dict()]
     speakerObjs = [dict(), dict(), dict()]
@@ -44,11 +69,13 @@ def make_state_record(record):
     listenerObjs[clickedLisIndex]["H"] = record["clickColH"]
     listenerObjs[clickedLisIndex]["S"] = record["clickColS"]
     listenerObjs[clickedLisIndex]["L"] = record["clickColL"]
+    listenerObjs[clickedLisIndex]["FT"] = fourier_transform(record["clickColH"], record["clickColS"], record["clickColL"])
     speakerObjs[clickedSpIndex]["Target"] = target
     speakerObjs[clickedSpIndex]["Status"] = record["clickStatus"]
     speakerObjs[clickedSpIndex]["H"] = record["clickColH"]
     speakerObjs[clickedSpIndex]["S"] = record["clickColS"]
     speakerObjs[clickedSpIndex]["L"] = record["clickColL"]
+    speakerObjs[clickedSpIndex]["FT"] = fourier_transform(record["clickColH"], record["clickColS"], record["clickColL"])
 
     target = 0
     if record["alt1Status"] == "target":
@@ -58,11 +85,13 @@ def make_state_record(record):
     listenerObjs[alt1LisIndex]["H"] = record["alt1ColH"]
     listenerObjs[alt1LisIndex]["S"] = record["alt1ColS"]
     listenerObjs[alt1LisIndex]["L"] = record["alt1ColL"]
+    listenerObjs[alt1LisIndex]["FT"] = fourier_transform(record["alt1ColH"], record["alt1ColS"], record["alt1ColL"])
     speakerObjs[alt1SpIndex]["Target"] = target
     speakerObjs[alt1SpIndex]["Status"] = record["alt1Status"]
     speakerObjs[alt1SpIndex]["H"] = record["alt1ColH"]
     speakerObjs[alt1SpIndex]["S"] = record["alt1ColS"]
     speakerObjs[alt1SpIndex]["L"] = record["alt1ColL"]
+    speakerObjs[alt1SpIndex]["FT"] = fourier_transform(record["alt1ColH"], record["alt1ColS"], record["alt1ColL"])
 
     target = 0
     if record["alt2Status"] == "target":
@@ -72,11 +101,13 @@ def make_state_record(record):
     listenerObjs[alt2LisIndex]["H"] = record["alt2ColH"]
     listenerObjs[alt2LisIndex]["S"] = record["alt2ColS"]
     listenerObjs[alt2LisIndex]["L"] = record["alt2ColL"]
+    listenerObjs[alt2LisIndex]["FT"] = fourier_transform(record["alt2ColH"], record["alt2ColS"], record["alt2ColL"])
     speakerObjs[alt2SpIndex]["Target"] = target
     speakerObjs[alt2SpIndex]["Status"] = record["alt2Status"]
     speakerObjs[alt2SpIndex]["H"] = record["alt2ColH"]
     speakerObjs[alt2SpIndex]["S"] = record["alt2ColS"]
     speakerObjs[alt2SpIndex]["L"] = record["alt2ColL"]
+    speakerObjs[alt2SpIndex]["FT"] = fourier_transform(record["alt2ColH"], record["alt2ColS"], record["alt2ColL"])
 
     state = dict()
     state["gameid"] = record["gameid"]
@@ -140,7 +171,7 @@ def make_action_record(record):
         for key in listenerObjs[i]:
             action["l" + key + "_" + str(i)] = listenerObjs[i][key]
             action["s" + key + "_" + str(i)] = speakerObjs[i][key]
-        
+
     return action
 
 
