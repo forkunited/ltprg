@@ -161,6 +161,7 @@ class BasicModel(object):
         predicted_utt_name = self.utt_inds_to_names[str(predicted_utt_ind)]
         label_utt_name     = self.utt_inds_to_names[str(trial['utterance'])]
 
+	'''
         print '\nCondition: {}'.format(trial['condition'])
         print ' Target: {}'.format(target_name)
         print ' Alt 1: {}'.format(alt1_name)
@@ -168,6 +169,7 @@ class BasicModel(object):
         print 'Label: {}'.format(label_utt_name)
         print 'Prediction: {}'.format(predicted_utt_name)
         print 'Correct? {}'.format(predicted_utt_ind==trial['utterance'])
+	'''
 
         return target_name, predicted_utt_name, label_utt_name
 
