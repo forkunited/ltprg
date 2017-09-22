@@ -20,7 +20,7 @@ INPUT_TYPE = "NOT_EMBEDDED" #"EMBEDDED"
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=4000 #10000 #1000 #00
+TRAINING_ITERATIONS=10000 #10000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
@@ -123,5 +123,5 @@ output_model_samples(best_model, D_dev_close, utterance_length)
 output_model_samples(best_model, D_dev_split, utterance_length)
 output_model_samples(best_model, D_dev_far, utterance_length)
 
-logger.dump(output_results_path)
+logger.dump(file_path=output_results_path)
 best_model.save(output_model_path)

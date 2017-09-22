@@ -99,5 +99,5 @@ model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
 
 output_model_samples(best_model, D_dev_close, utterance_length)
 
-logger.dump(output_results_path)
+logger.dump(file_path=output_results_path)
 best_model.save(output_model_path)
