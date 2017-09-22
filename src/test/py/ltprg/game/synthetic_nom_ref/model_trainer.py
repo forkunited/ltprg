@@ -451,11 +451,11 @@ def run_example():
     data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
     data_by_num_trials_path = data_path + 'datasets_by_num_trials/' + train_set_type + '/'
 
-    # train_data_fname      = 'train_set99_3300train_trials.JSON'
-    # validation_data_fname = 'validation_set99_600validation_trials.JSON'
+    train_data_fname      = 'train_set99_3300train_trials.JSON'
+    validation_data_fname = 'validation_set99_600validation_trials.JSON'
 
-    train_data_fname = 'train_set14_495train_trials.JSON'
-    validation_data_fname = 'validation_set14_90validation_trials.JSON'
+    #train_data_fname = 'train_set14_495train_trials.JSON'
+    #validation_data_fname = 'validation_set14_90validation_trials.JSON'
 
     example_train_data      = load_json(data_by_num_trials_path + train_data_fname) 
     example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
@@ -474,7 +474,7 @@ def run_example():
 
     # Adam params
     decay = 0.00001
-    lr = 0.0001
+    lr = 0.001
 
     # RSA params
     rsa_params = RSAParams(
@@ -547,7 +547,7 @@ def run_example():
     fasm_ersa_cts = FASM_ERSA_CTS(
         model_name='fasm_ersa_cts',
         model_type=ModelType.to_string(ModelType.ERSA),
-        hidden_szs=[50, 100, 200],
+        hidden_szs=[50, 100],
         hiddens_nonlinearity='relu',
         utt_set_sz=num_utts,
         obj_set_sz=num_objs,
@@ -564,7 +564,7 @@ def run_example():
     fasm_nnwc_cts = FASM_NNWC_CTS(
         model_name='fasm_nnwc_cts',
         model_type=ModelType.to_string(ModelType.NNWC),
-        hidden_szs=[50, 100, 200],
+        hidden_szs=[50, 100],
         hiddens_nonlinearity='relu',
         utt_set_sz=num_utts,
         obj_set_sz=num_objs,
@@ -580,7 +580,7 @@ def run_example():
     fasm_nnwoc_cts = FASM_NNWOC_CTS(
         model_name='fasm_nnwoc_cts',
         model_type=ModelType.to_string(ModelType.NNWOC),
-        hidden_szs=[50, 100, 200],
+        hidden_szs=[50, 100],
         hiddens_nonlinearity='relu',
         utt_set_sz=num_utts,
         obj_set_sz=num_objs,
