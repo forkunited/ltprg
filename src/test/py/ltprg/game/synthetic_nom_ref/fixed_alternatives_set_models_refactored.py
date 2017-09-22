@@ -239,8 +239,8 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.FloatTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.label_dtype))
             lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
         else:
             # For CTS models, the output is a single probability for
@@ -266,14 +266,14 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
         speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj
-        pred = speaker_table[2, :].unsqueeze(0)
+        pred = speaker_table[2, :].unsqueeze(0).type(self.dtype)
 
         # format label
-        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.LongTensor([trial['utterance']])).type(self.label_dtype)
 
         # display, if necessary
         if display_prediction:
-          self.display_prediction(trial, pred)
+            self.display_prediction(trial, pred)
 
         return pred, label
 
@@ -290,9 +290,9 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.FloatTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.label_dtype))
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
 
             # pass through RSA
             speaker_table = model_speaker_1(lexicon, self.rsa_params)

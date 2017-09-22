@@ -4,10 +4,10 @@ import torch.nn as nn
 import torch.cuda as cuda
 from torch.autograd import Variable
 
-def uniform_prior(len):
+def uniform_prior(len, type):
 	# returns 1D tensor
 	t = torch.ones(len)
-	return Variable(t/torch.sum(t))
+	return Variable(t/torch.sum(t)).type(type)
 
 def normalize_tensor_rows(t):
 	# t is 2D tensor
@@ -60,7 +60,7 @@ class RSAParams(object):
 
 		self.alpha = alpha
 		self.cost_weight = cost_weight
-		self.world_prior = uniform_prior(world_sz)
+		self.world_prior = uniform_prior(world_sz, self.dtype)
 		self.costs = Variable(torch.FloatTensor(
 			[cost_dict[str(k)] for k in range(len(cost_dict))]).type(self.dtype))
 		self.gold_standard_lexicon = Variable(torch.FloatTensor(

@@ -16,4 +16,3 @@ def vis_embedding(weights,vis):
 	#TODO color points usefully -- maybe by true basic level label
 	vis.scatter(reduced)
 
-

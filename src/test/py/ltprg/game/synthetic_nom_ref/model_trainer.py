@@ -125,8 +125,8 @@ class ModelTrainer(object):
                 loss, accuracy = self.model.evaluate(prediction, label)
                 self.model.update(loss, max_norm)
 
-                train_loss_this_epoch.append(loss.data.numpy()[0])
-                train_acc_this_epoch.append(accuracy.data.numpy()[0])
+                train_loss_this_epoch.append(loss.data[0])
+                train_acc_this_epoch.append(accuracy.data[0])
 
             self.train_loss_by_epoch.append(np.mean(train_loss_this_epoch))
             self.train_acc_by_epoch.append(np.mean(train_acc_this_epoch))
@@ -228,10 +228,10 @@ class ModelTrainer(object):
             prediction, label = self.model.predict(trial, show_pred)
             loss, accuracy = self.model.evaluate(prediction, label)
 
-            loss_by_trial.append(loss.data.numpy()[0])
-            acc_by_trial.append(accuracy.data.numpy()[0])
+            loss_by_trial.append(loss.data[0])
+            acc_by_trial.append(accuracy.data[0])
             acc_by_trial_by_condition[trial['condition']].append(
-                            accuracy.data.numpy()[0])
+                            accuracy.data[0])
 
             # assess KL-divergence(S1 from gold-standard lexicon, S1 from 
             # learned lexicon)
