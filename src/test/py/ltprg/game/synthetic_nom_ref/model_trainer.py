@@ -1,4 +1,4 @@
-from fixed_alternatives_set_models_refactored import  (
+from fixed_alternatives_set_models import  (
     FASM_ERSA,
     FASM_NNWC,
     FASM_NNWOC,
@@ -84,11 +84,11 @@ class ModelTrainer(object):
     def train(self):
         # start_time = time.time()
         max_norm = 1 # grad norm
-        num_epochs = 1000 # epochs to train
+        num_epochs = 50 # epochs to train
      
         self.train_loss_by_epoch = [] # learning curve
         self.train_acc_by_epoch  = []   
-        dataset_eval_freq = 1#5 # every n epochs
+        dataset_eval_freq = 1   #5 # every n epochs
         self.dataset_eval_epoch      = [] # epoch evaluated
         self.mean_trainset_loss   = [] # mean of dataset
         self.mean_trainset_acc    = []
@@ -439,11 +439,15 @@ class ModelTrainer(object):
 
 
 def train_model(model, train_data, validation_data,
-                 should_visualize, save_path):
+                 should_visualize, save_path, rsa_on_top=False):
     trainer = ModelTrainer(model, train_data, validation_data,
                  should_visualize, save_path)
     trainer.train()
-
+    trainer.evaluate_test_set_at_peak(test_data)
+    if rsa_on_top:
+        # TODO: Modify code to run RSA on top of any given model.
+        # This is included for comparision between nnwoc models
+        # and nnwoc models with rsa on top.
 
 def run_example():
     train_set_type = 'random_distractors' # 'random_distractors' or 'uniform_conditions'

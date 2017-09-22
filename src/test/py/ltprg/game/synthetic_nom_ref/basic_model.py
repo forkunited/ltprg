@@ -143,7 +143,7 @@ class BasicModel(object):
 
 
     @abc.abstractmethod
-    def format_inputs(trial):
+    def format_inputs(trial, rsa_on_top=False):
         """ Format inputs for model.
         """
         return
@@ -185,6 +185,31 @@ class BasicModel(object):
         d['learning_rate'] = self.learning_rate
         d.update(self.rsa_params.to_dict())
         np.save(self.save_path + 'model_details.npy', d)
+
+
+    def evaluate_test_set_at_peak(self, test_set, rsa_on_top=False):
+        # set model to stopping pt
+        print 'Loading checkpoint from epoch with lowest validation-set loss'
+        checkpoint = torch.load(self.save_path + 'model_best.pth.tar')
+        print 'Epoch = {}'.format(checkpoint['epoch'])
+        self.model.load_state_dict(checkpoint['state_dict'])
+
+        # assess performance
+        (loss, acc, acc_by_cond,dist_from_goldstandard, 
+            dist_from_goldstandard_by_cond, _) = self.mean_performance_dataset(test_set, 'test')
+
+        dataset_evals = dict()
+        dataset_evals['Mean_testset_loss'] = loss
+        dataset_evals['Mean_testset_acc'] = acc
+        dataset_evals['Mean_testset_acc_by_cond'] = acc_by_cond
+        dataset_evals['Mean_testset_dist_from_goldstandard_S1'] = dist_from_goldstandard
+        dataset_evals['Mean_testset_dist_from_goldstandard_S1_by_cond'] = dist_from_goldstandard_by_cond
+        
+        if rsa_on_top:
+            self.save_path = self.save_path + 'rsa_added_for_test_set/'
+            if os.path.isdir(self.save_path) == False:
+                os.makedirs(self.save_path)
+        np.save(self.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
 
 
 class ModelType(object):

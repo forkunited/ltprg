@@ -1,7 +1,7 @@
 import sys
 import ast
 import numpy as np
-from fixed_alternatives_set_models_refactored import  (
+from fixed_alternatives_set_models import  (
 	train_model,
 	load_json,
     FASM_ERSA_CTS,
