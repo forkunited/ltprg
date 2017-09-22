@@ -73,21 +73,21 @@ class FASM_ERSA(FixedAlternativeSetModel):
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
-            inds = Variable(torch.FloatTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
+            inds = Variable(torch.LongTensor(
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.label_dtype))
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
         else:
             # uses learned params
-            lexicon = torch.transpose(outputs, 0, 1)
+            lexicon = torch.transpose(outputs, 0, 1).type(self.dtype)
 
         # feed MLP output into RSA, using learned params
         speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj
-        outputs = speaker_table[2, :].unsqueeze(0)
+        outputs = speaker_table[2, :].unsqueeze(0).type(self.dtype)
 
         # format label
-        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.label_dtype))
 
         # display, if necessary
         if display_prediction:
@@ -107,30 +107,30 @@ class FASM_NN(FixedAlternativeSetModel):
         # inputs are 2D tensors
         inputs = self.format_inputs(trial)
 
-        # forward pass
-        pred = self.model.forward(inputs) # MLP forward
-
         # Gold standard comparison
         if use_gold_standard_lexicon:
             # uses ground-truth lexicon (for comparison w/ 
             # model predictions); grab objects for this trial
             inds = Variable(torch.FloatTensor(
-                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.dtype))
-            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds)
+                [trial['alt1_ind'], trial['alt2_ind'], trial['target_ind']]).type(self.label_dtype))
+            lexicon = torch.index_select(self.rsa_params.gold_standard_lexicon, 1, inds).type(self.dtype)
         
         elif rsa_on_top:
             # uses learned params
-            lexicon = torch.transpose(outputs, 0, 1)
+            lexicon = torch.transpose(outputs, 0, 1).type(self.dtype)
 
         if use_gold_standard_lexicon or rsa_on_top:
             # pass through RSA
-            speaker_table = model_speaker_1(lexicon, self.rsa_params)
+            speaker_table = model_speaker_1(lexicon, self.rsa_params).type(self.dtype)
 
             # pull dist over utterances for target obj
-            pred = speaker_table[2, :].unsqueeze(0)
+            pred = speaker_table[2, :].unsqueeze(0).type(self.dtype)
+        else:
+	        # forward pass
+	        pred = self.model.forward(inputs).type(self.dtype).type(self.dtype) # MLP forward
 
         # format label
-        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.label_dtype))
 
         # display, if necessary
         if display_prediction:
@@ -279,6 +279,7 @@ class FASM_ERSA_CTS(FixedAlternativeSetModel):
                     lexicon = torch.cat([lexicon, truthiness_values])
 
         # feed MLP output into RSA, using learned params
+        lexicon = lexicon.type(self.dtype)
         speaker_table = model_speaker_1(lexicon, self.rsa_params)
 
         # pull dist over utterances for target obj

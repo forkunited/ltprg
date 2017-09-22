@@ -443,11 +443,12 @@ def train_model(model, train_data, validation_data,
     trainer = ModelTrainer(model, train_data, validation_data,
                  should_visualize, save_path)
     trainer.train()
-    trainer.evaluate_test_set_at_peak(test_data)
+    trainer.evaluate_test_set_at_peak(test_data, rsa_on_top=False)
     if rsa_on_top:
         # TODO: Modify code to run RSA on top of any given model.
         # This is included for comparision between nnwoc models
         # and nnwoc models with rsa on top.
+        trainer.evaluate_test_set_at_peak(test_data, rsa_on_top=True)
 
 def run_example():
     train_set_type = 'random_distractors' # 'random_distractors' or 'uniform_conditions'
@@ -599,7 +600,7 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_ersa_cts,
+        model=fasm_ersa,
         train_data=example_train_data,
         validation_data=example_validation_data,
         should_visualize=True,
