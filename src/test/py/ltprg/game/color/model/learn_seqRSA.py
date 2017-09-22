@@ -24,7 +24,6 @@ from ltprg.util.log import Logger
 RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
-RNN_SIZE = 100
 RNN_LAYERS = 1
 TRAINING_ITERATIONS= 10000 #30000 #1000 #00
 DROP_OUT = 0.5 # BEST 0.5
@@ -92,6 +91,13 @@ input_rep_name = sys.argv[18]
 utterance_prior_name= sys.argv[19]
 samples_per_input = int(sys.argv[20])
 embedding_size = int(sys.argv[21])
+rnn_size = int(sys.argv[22])
+training_data_size = sys.argv[23]
+
+if training_data_size == "None":
+    training_data_size = None
+else:
+    training_data_size = int(training_data_size)
 
 if gpu:
     torch.cuda.manual_seed(1)
@@ -109,6 +115,10 @@ partition = Partition.load(partition_file)
 
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
+
+if training_data_size is not None:
+    D_train = D_train.get_subset(0, training_data_size)
+
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
 D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
@@ -131,11 +141,11 @@ seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
     seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        embedding_size, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
-        embedding_size, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
     soft_bottom = True
 
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
@@ -189,6 +199,9 @@ record_prefix["bsz"] = batch_size
 record_prefix["input_rep"] = input_rep_name
 record_prefix["utt_prior"] = utterance_prior_name
 record_prefix["samples_per_input"] = samples_per_input
+record_prefix["rnn_size"] = rnn_size
+record_prefix["embedding_size"] = embedding_size
+record_prefix["training_size"] = training_data_size
 logger.set_record_prefix(record_prefix)
 logger.set_file_path(output_results_path)
 
