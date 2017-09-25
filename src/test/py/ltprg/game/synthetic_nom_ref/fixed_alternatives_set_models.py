@@ -231,7 +231,7 @@ class ModelTrainer(object):
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
 			acc_by_trial_by_condition[trial['condition']].append(
-							accuracy.data.numpy()[0][0])
+							accuracy.data.numpy()[0])
 
 			# assess KL-divergence(S1 from gold-standard lexicon, S1 from 
 			# learned lexicon)
@@ -523,7 +523,7 @@ class ModelTrainer(object):
 						   condition, prediction_dist, label_utt_ind):
 		if self.display_predictions_opt == True:
 			_, predicted_utt_ind = torch.max(prediction_dist, 1)
-			predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
+			predicted_utt_ind = predicted_utt_ind.data.numpy()[0] # extract from tensor
 
 			target_name = self.obj_inds_to_names[str(target_obj_ind)]
 			alt1_name   = self.obj_inds_to_names[str(alt1_obj_ind)]
@@ -731,7 +731,7 @@ def run_example():
 	utt_costs     = load_json(data_path + 'costs_by_utterance.JSON')
 	
 	# dict whose keys are utterances, vals are truth-vals by obj
-	true_lexicon  = load_json(data_path + 'true_lexicon.JSON')
+	true_lexicon  = load_json(data_path + 'true_lexicon.json')
 	# reformat to utts x objs array, add jitter
 	true_lexicon = np.array([true_lexicon[str(k)] for k in range(num_utts)]) + 10e-06
 
@@ -740,9 +740,9 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	# model_name = 'ersa'
+	model_name = 'ersa'
 	# model_name = 'nnwc'
-	model_name = 'nnwoc'
+	# model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_set_type + '/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
