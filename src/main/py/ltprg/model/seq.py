@@ -219,12 +219,14 @@ class SequenceModel(nn.Module):
         # Return a list... like beam search...
         ret_samples = []
         for i in range(input_count):
-            input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
+            input_in = None
+            if input is not None:
+                input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
             sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
             seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
-            context_in = (context[0][(i*samples_per_input):((i+1)*samples_per_input)], context[1][(i*samples_per_input):((i+1)*samples_per_input)])
-
+            
             if heuristic is not None:
+                context_in = (context[0][(i*samples_per_input):((i+1)*samples_per_input)], context[1][(i*samples_per_input):((i+1)*samples_per_input)])
                 heuristic_output, _ = heuristic((sample_in, seq_length_in), Variable(input_in), None, context=context_in)
                 top_indices = heuristic_output.topk(n_per_input)[1]
                 sample_in = sample_in.transpose(0,1)[top_indices].transpose(0,1)
@@ -251,6 +253,7 @@ class SequenceModel(nn.Module):
                 input_i = input[i]
                 
                 context_i = None
+                input_index_i = None
                 if context is not None:
                     context_i = context[0][i]
                     input_index_i = context[1][i]*torch.ones(1).long()
@@ -274,7 +277,7 @@ class SequenceModel(nn.Module):
             if isinstance(input, Variable):
                 input = input.data
             input = input.view(1, input.size(0))
-            if context is not None:
+            if context is not None and context[0] is not None:
                 context = (context[0].view(1, context[0].size(0)), context[1].view(1, context[1].size(0)))
 
         end_idx = Symbol.index(Symbol.SEQ_END)
@@ -376,7 +379,7 @@ class SequenceModel(nn.Module):
                     expanded_input = input_single.expand(expanded_beam.size(1), input_single.size(1))
                 
                 expanded_context = None
-                if context is not None:
+                if context is not None and context[0] is not None:
                     expanded_context = (context_single[0].expand(expanded_beam.size(1), context_single[0].size(1)).contiguous(), context_single[1].expand(expanded_beam.size(1), context_single[1].size(1)).contiguous())
                 heuristic_output, heuristic_state = heuristic((expanded_beam, lens), expanded_input, heuristic_state, context=expanded_context)
                 # Output is vector of scores (beam_0.v_0, beam_0.v_1,..., beam_1.v_1...)
