@@ -255,6 +255,29 @@ class ModelTrainer(object):
 
         return mean_loss, mean_acc, mean_acc_by_cond, mean_dist_from_goldstandard, mean_dist_from_goldstandard_by_cond, mean_baseline_kl
 
+    def evaluate_test_set_at_peak(self, test_set, rsa_on_top=False):
+        # set model to stopping pt
+        print 'Loading checkpoint from epoch with lowest validation-set loss'
+        checkpoint = torch.load(self.save_path + 'model_best.pth.tar')
+        print 'Epoch = {}'.format(checkpoint['epoch'])
+        self.model.model.load_state_dict(checkpoint['state_dict'])
+
+        # assess performance
+        (loss, acc, acc_by_cond,dist_from_goldstandard, 
+            dist_from_goldstandard_by_cond, _) = self.mean_performance_dataset(test_set, 'test')
+
+        dataset_evals = dict()
+        dataset_evals['Mean_testset_loss'] = loss
+        dataset_evals['Mean_testset_acc'] = acc
+        dataset_evals['Mean_testset_acc_by_cond'] = acc_by_cond
+        dataset_evals['Mean_testset_dist_from_goldstandard_S1'] = dist_from_goldstandard
+        dataset_evals['Mean_testset_dist_from_goldstandard_S1_by_cond'] = dist_from_goldstandard_by_cond
+        
+        if rsa_on_top:
+            model.save_path = model.save_path + 'rsa_added_for_test_set/'
+            if os.path.isdir(model.save_path) == False:
+                os.makedirs(model.save_path)
+        np.save(model.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
 
     def save_results(self):
         """ Save results dictionaries as npy files.
@@ -439,7 +462,7 @@ class ModelTrainer(object):
 
 
 def train_model(model, train_data, validation_data,
-                 should_visualize, save_path, rsa_on_top=False):
+                 should_visualize, save_path, test_data, rsa_on_top=False):
     trainer = ModelTrainer(model, train_data, validation_data,
                  should_visualize, save_path)
     trainer.train()
@@ -456,14 +479,16 @@ def run_example():
     data_path = 'synthetic_data/' # temp synthetic data w/ 3300 training examples
     data_by_num_trials_path = data_path + 'datasets_by_num_trials/' + train_set_type + '/'
 
-    train_data_fname      = 'train_set99_3300train_trials.JSON'
-    validation_data_fname = 'validation_set99_600validation_trials.JSON'
+    train_data_fname = 'train_set14_495train_trials.JSON'
+    validation_data_fname = 'randomdistractors_validation_set14_90validation_trials.JSON'
+    test_data_fname = 'validation_set14_90validation_trials.JSON' # uniform conds
 
     #train_data_fname = 'train_set14_495train_trials.JSON'
     #validation_data_fname = 'validation_set14_90validation_trials.JSON'
 
     example_train_data      = load_json(data_by_num_trials_path + train_data_fname) 
     example_validation_data = load_json(data_by_num_trials_path + validation_data_fname)
+    example_test_data = load_json(data_by_num_trials_path + test_data_fname)
     d = load_json(data_path + 'true_lexicon.JSON')
     num_utts = len(d)
     num_objs = len(d['0'])
@@ -600,9 +625,10 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_ersa,
+        model=fasm_nnwc,
         train_data=example_train_data,
         validation_data=example_validation_data,
+        test_data=example_test_data,
         should_visualize=True,
         save_path=fasm_ersa_cts.save_path
     )
