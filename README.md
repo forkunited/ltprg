@@ -285,3 +285,11 @@ for more examples of how to access the data.  The code for the
 [S0](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/model/s0.py)
 model also shows some more examples of how to use the methods provided by the
 library.
+
+## Notes for Running on Stanford Sherlock Servers
+1) Load python module: `module load python/2.7.13`
+2) Install necessary packages: `pip2.7 install --user requirements.txt`
+3) If some requirement fails to import when running the code, update the dependency appropriately.
+ Sometimes you have to uninstall and reinstall the package for it to import correctly.
+4) To monitor batch runs with visdom run `ssh -N -f -L localhost:8097:localhost:8097 <sudnetid>@login.sherlock.stanford.edu` on your local machine to enable port forwarding.
+
