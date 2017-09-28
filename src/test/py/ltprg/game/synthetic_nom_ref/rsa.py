@@ -30,6 +30,7 @@ def model_speaker_1(learned_lexicon, rsa_params):
 	m = nn.LogSoftmax()
 	return m(x)
 
+
 class RSAParams(object):
 	""" RSA Parameters enapsulation.
 	"""
@@ -63,3 +64,4 @@ class RSAParams(object):
 		d['cost_weight'] = self.cost_weight
 		d['costs'] = self.costs
 		return d
+

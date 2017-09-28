@@ -8,7 +8,6 @@ import torch
 import torch.nn as nn
 from torch.autograd import Variable
 
-
 """ Models that leverage a fixed alternative set.
 """
 

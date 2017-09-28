@@ -46,11 +46,11 @@ def output_tsv(file_path, rows):
     finally:
         f.close()
 
-def aggregate_directory(file_dir, file_type):
+def aggregate_directory(file_dir):
     files = [f for f in listdir(file_dir) if isfile(join(file_dir, f))]
     rows = []
     for file in files:
         rows.extend(process_tsv_file(join(file_dir, file)))
     return rows
 
-output_tsv(output_file_path, aggregate_directory(input_file_dir, input_file_type))
+output_tsv(output_file_path, aggregate_directory(input_file_dir))
