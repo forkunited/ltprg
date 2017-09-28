@@ -120,11 +120,10 @@ class ModelTrainer(object):
             train_acc_this_epoch  = []
 
             random.shuffle(self.train_data)
-            for trial in self.train_data:
+            for i, trial in enumerate(self.train_data):
                 prediction, label = self.model.predict(trial)
                 loss, accuracy = self.model.evaluate(prediction, label)
                 self.model.update(loss, max_norm)
-
                 train_loss_this_epoch.append(loss.data[0])
                 train_acc_this_epoch.append(accuracy.data[0])
 
@@ -223,7 +222,7 @@ class ModelTrainer(object):
         S1_dist_goldstandard_learned = []
         S1_dist_goldstandard_learned_by_condition = init_cond_dict(self.conditions)
         baseline_kl_from_uniform     = []
-        for trial in data_set:
+        for i, trial in enumerate(data_set):
             show_pred = (set_name == 'validation' or set_name == 'test')
             prediction, label = self.model.predict(trial, show_pred)
             loss, accuracy = self.model.evaluate(prediction, label)
@@ -507,8 +506,8 @@ def run_example():
 
     # RSA params
     rsa_params = RSAParams(
-        alpha=0.1,
-        cost_weight=100,
+        alpha=100,
+        cost_weight=0.1,
         cost_dict=utt_costs,
         gold_standard_lexicon=true_lexicon
     )

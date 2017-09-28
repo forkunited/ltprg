@@ -75,8 +75,8 @@ class BasicModel(object):
         """ Apply crtierion function eval model's prediction.
         """
         loss = self.criterion(prediction.type(self.dtype), label.type(self.label_dtype))
-        _, ind = torch.max(prediction, 1).type(self.label_dtype)
-        accuracy = ind ==label
+        _, ind = torch.max(prediction, 1)
+        accuracy = ind.type(self.label_dtype) ==label
         return loss, accuracy
 
 
