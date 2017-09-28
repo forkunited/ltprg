@@ -228,6 +228,18 @@ class ModelTrainer(object):
 
 			loss, accuracy = self.evaluate(prediction, label)
 
+		    	print "Prediction:"
+		    	print prediction
+		    	print "Label:"
+		    	print label
+		    	print "Loss:"
+		    	print loss
+		    	print "Accuracy:"
+		    	print accuracy
+		    	print "Condition:"
+		    	print trial["condition"]
+
+
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
 			acc_by_trial_by_condition[trial['condition']].append(
