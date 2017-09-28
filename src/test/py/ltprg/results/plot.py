@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Usage: plot.py [input_file] [output_file] [xlabel] [ylabel] [x] [y] [where] [where_values] [groupby]
+# Usage: plot.py [input_file] [xlabel] [ylabel] [x] [y] [where] [where_values] [groupby]
 #
 # input_file: Input tsv file where the first row contains column names
 # xlabel: Label for plot horizontal axis
@@ -86,7 +86,7 @@ def compute_statistics_helper(agg, agg_depth, keys, statistics, overall_statisti
     if agg_depth == 0:
         cur_stats = statistics
         for key in keys:
-            if key not in statistics:
+            if key not in cur_stats:
                 cur_stats[key] = dict()
             cur_stats = cur_stats[key]
         cur_stats["mu"] = np.mean(agg)
@@ -130,11 +130,11 @@ def make_latex_plot_helper(statistics, groupby, depth, keys, s):
 	plot_str = plot_str.strip()
         plot_str = plot_str + "}};\n\n"
 
-        return plot_str
+        return s + plot_str
     else:
         for key in statistics:
             keys.append(key)
-            s = s + make_latex_plot_helper(statistics[key], groupby, depth - 1, keys, s)
+            s = make_latex_plot_helper(statistics[key], groupby, depth - 1, keys, s)
             keys.pop()
     return s
 

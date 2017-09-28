@@ -32,7 +32,7 @@ class Trainer:
 
         total_loss = 0.0
 
-        self._logger.set_key_order(["Model", "Iteration", "Avg batch ms", "Avg batch loss"])
+        self._logger.set_key_order(["Model", "Iteration", "Avg batch time", "Evaluation time", "Avg batch loss"])
 
         best_part = None
         if best_part_fn is None:
@@ -86,6 +86,7 @@ class Trainer:
                 results["Evaluation time"] = time.time()-eval_start_time
                 results["Avg batch loss"] = avg_loss
                 self._logger.log(results)
+                self._logger.save()
 
                 main_result = results[self._all_evaluations[0].get_name()]
                 if (self._max_evaluation and main_result > best_result) or \

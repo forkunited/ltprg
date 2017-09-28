@@ -2,7 +2,7 @@ import abc
 import torch
 from torch.autograd import Variable
 
-EVALUATION_BATCH_SIZE = 200
+EVALUATION_BATCH_SIZE = 100
 
 class DataParameter:
     TARGET = "target"
