@@ -87,7 +87,7 @@ class FASM_ERSA(FixedAlternativeSetModel):
         outputs = speaker_table[2, :].unsqueeze(0).type(self.dtype)
 
         # format label
-        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.label_dtype))
+        label = Variable(torch.LongTensor([trial['utterance']]).type(self.label_dtype))
 
         # display, if necessary
         if display_prediction:

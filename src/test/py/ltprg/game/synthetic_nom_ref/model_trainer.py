@@ -227,7 +227,6 @@ class ModelTrainer(object):
             show_pred = (set_name == 'validation' or set_name == 'test')
             prediction, label = self.model.predict(trial, show_pred)
             loss, accuracy = self.model.evaluate(prediction, label)
-
             loss_by_trial.append(loss.data[0])
             acc_by_trial.append(accuracy.data[0])
             acc_by_trial_by_condition[trial['condition']].append(
@@ -625,7 +624,7 @@ def run_example():
 
     # Example
     train_model(
-        model=fasm_nnwc,
+        model=fasm_ersa,
         train_data=example_train_data,
         validation_data=example_validation_data,
         test_data=example_test_data,

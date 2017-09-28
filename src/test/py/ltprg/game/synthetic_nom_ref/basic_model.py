@@ -75,8 +75,8 @@ class BasicModel(object):
         """ Apply crtierion function eval model's prediction.
         """
         loss = self.criterion(prediction.type(self.dtype), label.type(self.label_dtype))
-        _, ind = torch.max(prediction, 1)
-        accuracy = ind.type(self.label_dtype)==label.type(self.label_dtype)
+        _, ind = torch.max(prediction, 1).type(self.label_dtype)
+        accuracy = ind ==label
         return loss, accuracy
 
 
@@ -86,15 +86,14 @@ class BasicModel(object):
         """
    
         # S1 on gold-standard lexicon
-        gold_stardard_S1_dist, label = self.predict(trial,
+        gold_stardard_S1_dist, _ = self.predict(trial,
             use_gold_standard_lexicon=True)
 
         # compute KL-divergence
         #   KLDivLoss takes in x, targets, where x is log-probs
         #   and targets is probs (not log)
-        kl_div = nn.KLDivLoss()(prediction, torch.exp(
+        return nn.KLDivLoss()(prediction, torch.exp(
                                 gold_stardard_S1_dist)).data[0]
-        return kl_div
 
 
     def kl_baseline(self, prediction):
