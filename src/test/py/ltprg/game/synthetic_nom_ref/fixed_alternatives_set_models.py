@@ -228,10 +228,22 @@ class ModelTrainer(object):
 
 			loss, accuracy = self.evaluate(prediction, label)
 
+		    	print "Prediction:"
+		    	print prediction
+		    	print "Label:"
+		    	print label
+		    	print "Loss:"
+		    	print loss
+		    	print "Accuracy:"
+		    	print accuracy
+		    	print "Condition:"
+		    	print trial["condition"]
+
+
 			loss_by_trial.append(loss.data.numpy()[0])
 			acc_by_trial.append(accuracy.data.numpy()[0])
 			acc_by_trial_by_condition[trial['condition']].append(
-							accuracy.data.numpy()[0][0])
+							accuracy.data.numpy()[0])
 
 			# assess KL-divergence(S1 from gold-standard lexicon, S1 from 
 			# learned lexicon)
@@ -523,7 +535,7 @@ class ModelTrainer(object):
 						   condition, prediction_dist, label_utt_ind):
 		if self.display_predictions_opt == True:
 			_, predicted_utt_ind = torch.max(prediction_dist, 1)
-			predicted_utt_ind = predicted_utt_ind.data.numpy()[0][0] # extract from tensor
+			predicted_utt_ind = predicted_utt_ind.data.numpy()[0] # extract from tensor
 
 			target_name = self.obj_inds_to_names[str(target_obj_ind)]
 			alt1_name   = self.obj_inds_to_names[str(alt1_obj_ind)]
@@ -740,9 +752,9 @@ def run_example():
 	lr = 0.0001
 
 	# Train model
-	# model_name = 'ersa'
+	model_name = 'ersa'
 	# model_name = 'nnwc'
-	model_name = 'nnwoc'
+	# model_name = 'nnwoc'
 
 	results_dir = 'results/' + train_set_type + '/no_hidden_layer/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
 	# results_dir = 'results/' + train_set_type + '/' + train_data_fname.split('_')[1] + '/' + model_name + '/'
