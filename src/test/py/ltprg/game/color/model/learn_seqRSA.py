@@ -25,7 +25,7 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS= 10000 #30000 #1000 #00
+TRAINING_ITERATIONS= 15000 #30000 #1000 #00
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
@@ -93,6 +93,7 @@ samples_per_input = int(sys.argv[20])
 embedding_size = int(sys.argv[21])
 rnn_size = int(sys.argv[22])
 training_data_size = sys.argv[23]
+seed = int(sys.argv[24])
 
 if training_data_size == "None":
     training_data_size = None
@@ -100,9 +101,9 @@ else:
     training_data_size = int(training_data_size)
 
 if gpu:
-    torch.cuda.manual_seed(1)
-torch.manual_seed(1)
-np.random.seed(1)
+    torch.cuda.manual_seed(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
@@ -117,6 +118,7 @@ D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 
 if training_data_size is not None:
+    D_train.shuffle()
     D_train = D_train.get_subset(0, training_data_size)
 
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
@@ -193,6 +195,7 @@ other_evaluations = [dev_l1_acc, dev_close_l0_acc, dev_close_l1_acc] #[dev_l1_ac
 #                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
 
 record_prefix = dict()
+record_prefix["seed"] = seed
 record_prefix["arch"] = meaning_fn_input_type
 record_prefix["lr"] = learning_rate
 record_prefix["bsz"] = batch_size
