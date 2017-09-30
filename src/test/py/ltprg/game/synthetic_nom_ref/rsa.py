@@ -10,7 +10,7 @@ def uniform_prior(len):
 
 def normalize_tensor_rows(t):
 	# t is 2D tensor
-	row_sums = torch.sum(t, dim=1)
+	row_sums = torch.unsqueeze(torch.sum(t, dim=1), 1)
 	return torch.div(t, row_sums.expand_as(t))
 
 def model_literal_listener(learned_lexicon, world_prior):
