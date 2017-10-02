@@ -27,7 +27,7 @@ def parse_args_and_run():
     assert len(sys.argv) == 12
 
     model_name = sys.argv[1]
-    hidden_szs = ast.literal_eval(sys.argv[2])
+    hidden_szs = [int(x) for x in sys.argv[2].split('_')]
     hiddens_nonlinearity = sys.argv[3]
     train_data_fname = sys.argv[4]
     validation_data_fname = sys.argv[5]
