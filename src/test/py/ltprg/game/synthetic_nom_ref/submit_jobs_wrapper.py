@@ -134,4 +134,15 @@ if __name__=='__main__':
 		'hidden_layer_szs':[[100, 100]],
 		'hiddens_nonlinearity': ['relu']
 	}
+        params = {
+                'rsa_alpha': [.5, 1],
+                'rsa_cost_weight': [.1],
+                'model_name': [
+                        'fasm_ersa', 'fasm_nnwc'
+			],
+                'decay':[0.00001],
+                'lr':[0.001],
+                'hidden_layer_szs':[[100, 100]],
+                'hiddens_nonlinearity': ['relu']
+        }
 	run_grid_search(params)
