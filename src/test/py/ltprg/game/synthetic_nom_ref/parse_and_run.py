@@ -2,13 +2,12 @@ import sys
 import ast
 import numpy as np
 from fixed_alternatives_set_models import  (
-    train_model,
-    load_json,
     FASM_ERSA_CTS,
     FASM_NNWC_CTS,
     FASM_NNWOC_CTS
 )
 from basic_model import ModelType, EmbeddingType
+from model_trainer import ModelTrainer
 
 # args should be in order:
 #   model_name
