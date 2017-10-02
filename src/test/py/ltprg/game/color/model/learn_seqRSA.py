@@ -94,6 +94,7 @@ embedding_size = int(sys.argv[21])
 rnn_size = int(sys.argv[22])
 training_data_size = sys.argv[23]
 seed = int(sys.argv[24])
+alpha = float(sys.argv[25])
 
 if training_data_size == "None":
     training_data_size = None
@@ -168,7 +169,7 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              sample_length=SAMPLE_LENGTH,
                                              n_before_heuristic=N_BEFORE_HEURISTIC)
 
-rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
+rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
 if gpu:
     rsa_model = rsa_model.cuda()
 
@@ -205,6 +206,7 @@ record_prefix["samples_per_input"] = samples_per_input
 record_prefix["rnn_size"] = rnn_size
 record_prefix["embedding_size"] = embedding_size
 record_prefix["training_size"] = training_data_size
+record_prefix["alpha"] = alpha
 logger.set_record_prefix(record_prefix)
 logger.set_file_path(output_results_path)
 
