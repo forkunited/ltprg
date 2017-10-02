@@ -84,11 +84,11 @@ class ModelTrainer(object):
     def train(self):
         # start_time = time.time()
         max_norm = 1 # grad norm
-        num_epochs = 1 # epochs to train
+        num_epochs = 500 # epochs to train
      
         self.train_loss_by_epoch = [] # learning curve
         self.train_acc_by_epoch  = []   
-        dataset_eval_freq = 1   #5 # every n epochs
+        dataset_eval_freq = 5   #5 # every n epochs
         self.dataset_eval_epoch      = [] # epoch evaluated
         self.mean_trainset_loss   = [] # mean of dataset
         self.mean_trainset_acc    = []
