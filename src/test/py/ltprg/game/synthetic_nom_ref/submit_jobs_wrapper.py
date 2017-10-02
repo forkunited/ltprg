@@ -15,7 +15,7 @@ def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 				  test_data_fname,
 				  weight_decay, lr, 
 				  alpha, cost_weight, save_path):
-	hidden_layer_szs_str = '_'.join([str(x) for x in hidden_layer_szs_str])
+	hidden_layer_szs_str = '_'.join([str(x) for x in hidden_layer_szs])
 	cmd = """python parse_and_run.py {} {} {} {} {} {} {} {} {} {} {}""".format(
 			model_name, hidden_layer_szs_str, hiddens_nonlinearity,
 		 	train_data_fname, validation_data_fname, 
@@ -97,7 +97,7 @@ def run_grid_search(search_params):
 		hiddens_nonlinearity = param_permutation['hiddens_nonlinearity']
 
 		# File Paths
-		train_type = 'uniform_condtions'
+		train_type = 'uniform_conditions'
 		validation_prefix = 'validation_set'
 		data_rt = 'synthetic_data/'
 		synthetic_datasets_dir = data_rt + 'datasets_by_num_trials/' + train_type + '/'

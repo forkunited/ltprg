@@ -2,12 +2,16 @@ import sys
 import ast
 import numpy as np
 from fixed_alternatives_set_models import  (
+    FASM_ERSA,
+    FASM_NNWC,
+    FASM_NNWOC,
     FASM_ERSA_CTS,
     FASM_NNWC_CTS,
     FASM_NNWOC_CTS
 )
 from basic_model import ModelType, EmbeddingType
-from model_trainer import ModelTrainer
+from model_trainer import ModelTrainer, load_json, train_model
+from rsa import RSAParams
 
 # args should be in order:
 #   model_name
@@ -26,7 +30,7 @@ def parse_args_and_run():
     print sys.argv
     assert len(sys.argv) == 12
 
-    model_name = sys.argv[1]
+    m = sys.argv[1]
     hidden_szs = [int(x) for x in sys.argv[2].split('_')]
     hiddens_nonlinearity = sys.argv[3]
     train_data_fname = sys.argv[4]
@@ -51,7 +55,7 @@ def parse_args_and_run():
     utt_dict = load_json(data_rt + 'utt_inds_to_names.JSON')
     obj_dict = load_json(data_rt + 'obj_inds_to_names.JSON')
     cost_dict = load_json(data_rt + 'costs_by_utterance.JSON')
-    true_lexicon  = load_json(data_rt + 'true_lexicon.JSON')
+    true_lexicon  = load_json(data_rt + 'true_lexicon.json')
     true_lexicon = np.array([true_lexicon[str(k)] for k in range(utt_set_sz)]) + 10e-06
     obj_embedding_type = EmbeddingType.ONE_HOT
     should_visualize = False
@@ -62,8 +66,6 @@ def parse_args_and_run():
         cost_dict=cost_dict,
         gold_standard_lexicon=true_lexicon
     )
-
-    save_path_full = '{}/{}'.format(save_path, '/'.join(hidden_szs))
 
     if m == 'fasm_ersa':
         model = FASM_ERSA(
@@ -79,7 +81,7 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     elif m == 'fasm_nnwc':
         model = FASM_NNWC(
@@ -95,7 +97,7 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     elif m == 'fasm_nnwoc':
         model = FASM_NNWOC(
@@ -111,7 +113,7 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     elif m == 'fasm_ersa_cts':
         model = FASM_ERSA_CTS(
@@ -127,7 +129,7 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     elif m == 'fasm_nnwc_cts':
         model = FASM_NNWC_CTS(
@@ -143,7 +145,7 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     elif m == 'fasm_nnwoc_cts':
         model = FASM_NNWOC_CTS(
@@ -159,18 +161,18 @@ def parse_args_and_run():
             weight_decay=weight_decay,
             learning_rate=learning_rate,
             rsa_params=rsa_params,
-            save_path=save_path_full
+            save_path=save_path
         )
     else:
         raise Exception("Unrecognized Model Requested.")
 
-    # Example
     train_model(
         model=model,
         train_data=train_data,
         validation_data=validation_data,
-        should_visualize=should_visualize,
-        save_path=save_path_full
+        test_data=test_data,
+        should_visualize=False,
+        save_path=model.save_path
     )
 
 if __name__=='__main__':

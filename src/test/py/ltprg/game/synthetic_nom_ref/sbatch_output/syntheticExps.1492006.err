@@ -1,0 +1,22 @@
+Lmod has detected the following error: The following module(s) are unknown:
+"python/2.7.5"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore-cache load "python/2.7.5"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+Traceback (most recent call last):
+  File "parse_and_run.py", line 179, in <module>
+    parse_args_and_run()
+  File "parse_and_run.py", line 175, in parse_args_and_run
+    save_path=model.save_path
+  File "/home/users/schopra8/ltprg/src/test/py/ltprg/game/synthetic_nom_ref/model_trainer.py", line 467, in train_model
+    trainer.evaluate_test_set_at_peak(test_data, rsa_on_top=False)
+  File "/home/users/schopra8/ltprg/src/test/py/ltprg/game/synthetic_nom_ref/model_trainer.py", line 278, in evaluate_test_set_at_peak
+    np.save(model.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
+NameError: global name 'model' is not defined

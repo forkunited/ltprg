@@ -84,7 +84,7 @@ class ModelTrainer(object):
     def train(self):
         # start_time = time.time()
         max_norm = 1 # grad norm
-        num_epochs = 500 # epochs to train
+        num_epochs = 1 # epochs to train
      
         self.train_loss_by_epoch = [] # learning curve
         self.train_acc_by_epoch  = []   
