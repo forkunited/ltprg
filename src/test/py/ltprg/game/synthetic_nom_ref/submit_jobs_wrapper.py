@@ -8,6 +8,7 @@ import fnmatch
 import numpy as np
 import json
 from model_trainer import train_model, load_json
+from itertools import product, izip
 
 def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 				  train_data_fname, validation_data_fname, 
@@ -21,7 +22,7 @@ def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 			weight_decay, lr, alpha, cost_weight, save_path)
 	return cmd
 
-def run_models():
+def run_models_over_data_sets():
 	train_type = 'random_distractors'
 	validation_prefix = 'randomdistractors_' # stopping defined on 
 	#random distractors validation set
@@ -79,5 +80,58 @@ def run_models():
 
 			call(["sbatch", "--export=cmd={}".format(cmd), "submit_sbatch.sh"])
 
+
+def run_grid_search(search_params):
+	def gen_param_permutations(search_params):
+	    return (dict(izip(search_params, x)) for x in product(*search_params.itervalues()))
+
+	for param_permutation in gen_param_permutations(search_params):
+		# Grid Search Params
+		rsa_alpha = param_permutation['rsa_alpha']
+		rsa_cost_weight = param_permutation['rsa_cost_weight']
+		model_name = param_permutation['model_name']
+		decay = param_permutation['decay']
+		lr = param_permutation['lr']
+		hidden_layer_szs = param_permutation['hidden_layer_szs']
+		hiddens_nonlinearity = param_permutation['hiddens_nonlinearity']
+
+		# File Paths
+		train_type = 'uniform_condtions'
+		validation_prefix = 'validation_set'
+		data_rt = 'synthetic_data/'
+		synthetic_datasets_dir = data_rt + 'datasets_by_num_trials/' + train_type + '/'
+		results_dir = '/'.join(
+			['results', train_type, '_'.join([str(x) for x in hidden_layer_szs]),
+			 'set_99', model_name, str(rsa_alpha) + "_alpha", str(rsa_cost_weight) + "_cost_weight", 
+			 str(decay) + "_decay", str(lr) + "_lr"]
+		)
+
+		# Data
+		trainf = synthetic_datasets_dir + 'train_set99_3300train_trials.JSON'
+		validationf = synthetic_datasets_dir + 'validation_set99_600validation_trials.JSON'
+		testf = synthetic_datasets_dir + 'test_set99_600test_trials.JSON'
+
+		# Results
+		if os.path.isdir(results_dir) == False:
+			os.makedirs(results_dir)		
+
+		cmd = construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity, trainf, 
+		 					validationf, testf,
+		 					lr, decay, rsa_alpha, rsa_cost_weight,
+							results_dir)
+		call(["sbatch", "--export=cmd={}".format(cmd), "submit_sbatch.sh"])	 	
+
+
 if __name__=='__main__':
-	run_models()
+	params = {
+		'rsa_alpha': [.5, 1, 10, 100],
+		'rsa_cost_weight': [.1, .01],
+		'model_name': [
+			'fasm_ersa', 'fasm_nnwc', 'fasm_nnwoc', 'fasm_ersa_cts', 'fasm_nnwc_cts', 'fasm_nnwoc_cts'
+		],
+		'decay':[0.00001],
+		'lr':[0.001, .0001],
+		'hidden_layer_szs':[[100, 100]],
+		'hiddens_nonlinearity': ['relu']
+	}
+	run_grid_search(params)
