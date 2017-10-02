@@ -15,8 +15,9 @@ def construct_cmd(model_name, hidden_layer_szs, hiddens_nonlinearity,
 				  test_data_fname,
 				  weight_decay, lr, 
 				  alpha, cost_weight, save_path):
+	hidden_layer_szs_str = '_'.join([str(x) for x in hidden_layer_szs_str])
 	cmd = """python parse_and_run.py {} {} {} {} {} {} {} {} {} {} {}""".format(
-			model_name, hidden_layer_szs, hiddens_nonlinearity,
+			model_name, hidden_layer_szs_str, hiddens_nonlinearity,
 		 	train_data_fname, validation_data_fname, 
 		 	test_data_fname,
 			weight_decay, lr, alpha, cost_weight, save_path)
