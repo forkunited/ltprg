@@ -272,10 +272,10 @@ class ModelTrainer(object):
         dataset_evals['Mean_testset_dist_from_goldstandard_S1_by_cond'] = dist_from_goldstandard_by_cond
         
         if rsa_on_top:
-            model.save_path = model.save_path + 'rsa_added_for_test_set/'
-            if os.path.isdir(model.save_path) == False:
-                os.makedirs(model.save_path)
-        np.save(model.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
+            self.model.save_path = self.model.save_path + 'rsa_added_for_test_set/'
+            if os.path.isdir(self.model.save_path) == False:
+                os.makedirs(self.model.save_path)
+        np.save(self.model.save_path + 'DatasetEvaluations_AtPeak_TestSet.npy', dataset_evals)
 
     def save_results(self):
         """ Save results dictionaries as npy files.
