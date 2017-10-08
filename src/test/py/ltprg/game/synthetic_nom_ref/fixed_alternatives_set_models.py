@@ -345,11 +345,11 @@ class FASM_NN_CTS(FixedAlternativeSetModel):
                 else:
                     utt_scores = torch.cat([utt_scores, utt_score], 1)
             m = nn.LogSoftmax()
-            pred = m(utt_scores)
+            pred = m(utt_scores).type(self.dtype)
 
 
         # format label
-        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.dtype))
+        label = Variable(torch.FloatTensor([trial['utterance']]).type(self.label_dtype))
 
         # display, if necessary
         if display_prediction:

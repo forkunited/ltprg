@@ -76,7 +76,7 @@ class BasicModel(object):
         """
         loss = self.criterion(prediction.type(self.dtype), label.type(self.label_dtype))
         _, ind = torch.max(prediction, 1)
-        accuracy = ind.type(self.label_dtype) ==label
+        accuracy = ind.type(self.label_dtype) == label
         return loss, accuracy
 
 
