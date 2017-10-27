@@ -42,8 +42,8 @@ class DataParameter:
         return data_parameters
 
 class SamplingMode:
-    FORWARD = 0
-    BEAM = 1
+    FORWARD = "FORWARD"
+    BEAM = "BEAM"
 
 class VariableLengthNLLLoss(nn.Module):
     def __init__(self, norm_dim=False):
@@ -224,7 +224,7 @@ class SequenceModel(nn.Module):
                 input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
             sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
             seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
-            
+
             if heuristic is not None:
                 context_in = (context[0][(i*samples_per_input):((i+1)*samples_per_input)], context[1][(i*samples_per_input):((i+1)*samples_per_input)])
                 heuristic_output, _ = heuristic((sample_in, seq_length_in), Variable(input_in), None, context=context_in)
@@ -251,7 +251,7 @@ class SequenceModel(nn.Module):
                 if seq_part is not None:
                     seq_part_i = seq_part[i].transpose(1,0)
                 input_i = input[i]
-                
+
                 context_i = None
                 input_index_i = None
                 if context is not None:
@@ -305,7 +305,7 @@ class SequenceModel(nn.Module):
         # first on ended sequences
         ended_ignore_mask = torch.ones(vocab_size)
         ended_ignore_mask[0] = 0.0
-        
+
         vocab = None
         vocab_rep = None
         heuristic_state = None
@@ -377,7 +377,7 @@ class SequenceModel(nn.Module):
                 expanded_input = None
                 if input is not None:
                     expanded_input = input_single.expand(expanded_beam.size(1), input_single.size(1))
-                
+
                 expanded_context = None
                 if context is not None and context[0] is not None:
                     expanded_context = (context_single[0].expand(expanded_beam.size(1), context_single[0].size(1)).contiguous(), context_single[1].expand(expanded_beam.size(1), context_single[1].size(1)).contiguous())
@@ -537,7 +537,7 @@ class SequenceModelInputToHidden(SequenceModel):
         self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
-        
+
         self._init_weights()
 
     def _get_init_params(self):
@@ -545,7 +545,7 @@ class SequenceModelInputToHidden(SequenceModel):
 
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
- 
+
         hidden = self._encoder_nl(self._encoder(input))
         if self._input_layers > 1:
             hidden = self._encoder_0_nl(self._encoder_0(hidden))
@@ -575,7 +575,7 @@ class SequenceModelInputToHidden(SequenceModel):
 
     def _init_weights(self):
         init_range = 0.01
-        
+
         #self._emb.weight.data.uniform_(-initrange, initrange)
         init.normal(self._emb.weight.data, mean=0.0, std=init_range)
 

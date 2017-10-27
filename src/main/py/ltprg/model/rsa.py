@@ -431,8 +431,8 @@ class L(RSA):
 
 
 class RSADistributionAccuracy(DistributionAccuracy):
-    def __init__(self, name, level, distribution_type, data, data_parameters, target_indexed = False, L_bottom = True):
-        super(RSADistributionAccuracy, self).__init__(name, data, data_parameters, model_fn=None, target_indexed = target_indexed)
+    def __init__(self, name, level, distribution_type, data, data_parameters, target_indexed = False, L_bottom = True, trials=1):
+        super(RSADistributionAccuracy, self).__init__(name, data, data_parameters, model_fn=None, target_indexed = target_indexed, trials=trials)
 
         def _mfn(batch, model, data_parameters):
             model = model.to_level(self._distribution_type, self._level, L_bottom=L_bottom, soft_bottom=model._soft_bottom)
