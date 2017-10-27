@@ -10,22 +10,24 @@ from torch.autograd import Variable
 from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
+from mung.torch_ext.eval import Loss, Evaluation
+from mung.torch_ext.learn import OptimizerType, Trainer
+from mung.util.log import Logger
+
 from torch.nn import NLLLoss
 
 from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
 from ltprg.model.seq_heuristic import HeuristicL0
-from ltprg.model.eval import Loss
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
-from ltprg.model.learn import OptimizerType, Trainer
-from ltprg.util.log import Logger
+from ltprg.game.color.eval import ColorMeaningPlot
 
 RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS= 15000 #30000 #1000 #00
+TRAINING_ITERATIONS=7000 #9000 #10000 #30000 #1000 #00
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
@@ -95,6 +97,8 @@ rnn_size = int(sys.argv[22])
 training_data_size = sys.argv[23]
 seed = int(sys.argv[24])
 alpha = float(sys.argv[25])
+output_meaning_prefix = sys.argv[26]
+final_output_results_path = sys.argv[27]
 
 if training_data_size == "None":
     training_data_size = None
@@ -117,20 +121,21 @@ partition = Partition.load(partition_file)
 
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
+D_dev = D_parts["dev"]
 
 if training_data_size is not None:
     D_train.shuffle()
     D_train = D_train.get_subset(0, training_data_size)
 
-D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
-D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
-D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
-D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
+D_train_sample = D_train.get_random_subset(DEV_SAMPLE_SIZE)
+D_dev_sample = D_dev.get_random_subset(DEV_SAMPLE_SIZE)
+D_dev_sample_close = D_dev_sample.filter(lambda d : d.get("state.condition") == "close")
+D_dev_sample_split = D_dev_sample.filter(lambda d : d.get("state.condition") == "split")
+D_dev_sample_far = D_dev_sample.filter(lambda d : d.get("state.condition") == "far")
 
 world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 3
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
-logger = Logger()
 data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L_observation="L_observation",
                                      S_world="S_world", S_observation="S_observation",
                                      mode=training_dist, utterance_seq=True)
@@ -177,23 +182,59 @@ loss_criterion_unnorm = NLLLoss(size_average=False)
 if gpu:
     loss_criterion_unnorm = loss_criterion_unnorm.cuda()
 
+train_sample_loss =  Loss("Train Sample Loss", D_train_sample, data_parameters, loss_criterion_unnorm)
+dev_sample_loss = Loss("Dev Sample Loss", D_dev_sample, data_parameters, loss_criterion_unnorm)
+
+train_l0_sample_acc = RSADistributionAccuracy("Train Sample L0 Accuracy", 0, DistributionType.L, D_train_sample, data_parameters)
+dev_l0_sample_acc = RSADistributionAccuracy("Dev Sample L0 Accuracy", 0, DistributionType.L, D_dev_sample, data_parameters)
+#dev_close_l0_sample_acc = RSADistributionAccuracy("Dev Sample Close L0 Accuracy", 0, DistributionType.L, D_dev_sample_close, data_parameters)
+#dev_split_l0_sample_acc = RSADistributionAccuracy("Dev Sample Split L0 Accuracy", 0, DistributionType.L, D_dev_sample_split, data_parameters)
+#dev_far_l0_sample_acc = RSADistributionAccuracy("Dev Sample Far L0 Accuracy", 0, DistributionType.L, D_dev_sample_far, data_parameters)
+
+train_l1_sample_acc = RSADistributionAccuracy("Train Sample L1 Accuracy", 1, DistributionType.L, D_train_sample, data_parameters)
+dev_l1_sample_acc = RSADistributionAccuracy("Dev Sample L1 Accuracy", 1, DistributionType.L, D_dev_sample, data_parameters)
+#dev_close_l1_sample_acc = RSADistributionAccuracy("Dev Sample Close L1 Accuracy", 1, DistributionType.L, D_dev_sample_close, data_parameters)
+#dev_split_l1_sample_acc = RSADistributionAccuracy("Dev Sample Split L1 Accuracy", 1, DistributionType.L, D_dev_sample_split, data_parameters)
+#dev_far_l1_sample_acc = RSADistributionAccuracy("Dev Sample Far L1 Accuracy", 1, DistributionType.L, D_dev_sample_far, data_parameters)
+
+train_loss =  Loss("Train Loss", D_train, data_parameters, loss_criterion_unnorm)
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 
+train_l0_acc = RSADistributionAccuracy("Train L0 Accuracy", 0, DistributionType.L, D_train, data_parameters)
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
-dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
-dev_split_l0_acc = RSADistributionAccuracy("Dev Split L0 Accuracy", 0, DistributionType.L, D_dev_split, data_parameters)
-dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
+#dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
+#dev_split_l0_acc = RSADistributionAccuracy("Dev Split L0 Accuracy", 0, DistributionType.L, D_dev_split, data_parameters)
+#dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
 
+train_l1_acc = RSADistributionAccuracy("Train L1 Accuracy", 1, DistributionType.L, D_train, data_parameters)
 dev_l1_acc = RSADistributionAccuracy("Dev L1 Accuracy", 1, DistributionType.L, D_dev, data_parameters)
-dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
-dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
-dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
+#dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
+#dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
+#dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
 
-#evaluation = dev_loss
-evaluation = dev_l0_acc
-other_evaluations = [dev_l1_acc, dev_close_l0_acc, dev_close_l1_acc] #[dev_l1_acc] #[dev_l0_acc, dev_l1_acc] #, \
-#                      dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
-#                      dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+
+#evaluation = dev_l1_sample_acc
+#other_evaluations = [dev_l0_sample_acc, \
+#                     train_sample_loss, dev_sample_loss, \
+#                     train_l0_sample_acc, train_l1_sample_acc]
+#                     dev_close_l0_sample_acc, dev_close_l1_sample_acc, \
+#                     dev_split_l0_sample_acc, dev_split_l1_sample_acc, \
+#                     dev_far_l0_sample_acc, dev_far_l1_sample_acc]
+
+evaluation = dev_l1_acc
+other_evaluations = [dev_l0_acc] #, \
+#                     train_loss, dev_loss, \
+#                     train_l0_acc, train_l1_acc]
+
+if output_meaning_prefix != "None":
+    sampled_plot = ColorMeaningPlot("Sampled Meaning Plot", D_dev, data_parameters, output_meaning_prefix + "_sample", output_meaning_prefix + "_sample_utts", \
+                     seq_prior_model, SamplingMode.FORWARD, meaning_fn, D["utterance"])
+    beam_plot = ColorMeaningPlot("Beam Meaning Plot", D_dev, data_parameters, output_meaning_prefix + "_beam", output_meaning_prefix + "_beam_utts", \
+                     seq_prior_model, SamplingMode.BEAM, meaning_fn, D["utterance"])
+    other_evaluations.extend([sampled_plot, beam_plot])
+
+logger = Logger()
+final_logger = Logger()
 
 record_prefix = dict()
 record_prefix["seed"] = seed
@@ -209,17 +250,42 @@ record_prefix["training_size"] = training_data_size
 record_prefix["alpha"] = alpha
 logger.set_record_prefix(record_prefix)
 logger.set_file_path(output_results_path)
+final_logger.set_record_prefix(record_prefix)
+final_logger.set_file_path(final_output_results_path)
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
-            evaluation, other_evaluations=other_evaluations)
-rsa_model, best_meaning = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
+            evaluation, other_evaluations=other_evaluations, max_evaluation=True)
+rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
             batch_size=batch_size, optimizer_type=OPTIMIZER_TYPE, lr=learning_rate, \
             grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
 
-output_model_samples(best_model, data_parameters, D_dev_close)
-output_model_samples(best_model, data_parameters, D_dev_split)
-output_model_samples(best_model, data_parameters, D_dev_far)
+#output_model_samples(best_model, data_parameters, D_dev_sample_close)
+#output_model_samples(best_model, data_parameters, D_dev_sample_split)
+#output_model_samples(best_model, data_parameters, D_dev_sample_far)
 
 logger.dump(file_path=output_results_path, record_prefix=record_prefix)
+
+D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
+D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
+D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
+
+dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
+dev_split_l0_acc = RSADistributionAccuracy("Dev Split L0 Accuracy", 0, DistributionType.L, D_dev_split, data_parameters)
+dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
+
+dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
+dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
+dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
+
+final_evals = [train_loss, dev_loss, \
+               train_l0_acc, dev_l0_acc, dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
+               train_l1_acc, dev_l1_acc, dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+
+results = Evaluation.run_all(final_evals, best_model)
+results["Model"] = best_model.get_name()
+results["Iteration"] = best_iteration
+final_logger.log(results)
+final_logger.dump(file_path=final_output_results_path, record_prefix=record_prefix)
+

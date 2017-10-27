@@ -9,11 +9,11 @@ from torch.autograd import Variable
 from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
+from mung.torch_ext.eval import Loss
+from mung.torch_ext.learn import OptimizerType, Trainer
+from mung.util.log import Logger
 
-from ltprg.model.eval import Loss
 from ltprg.model.seq import RNNType, SequenceModelNoInput, SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
-from ltprg.model.learn import OptimizerType, Trainer
-from ltprg.util.log import Logger
 
 RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
