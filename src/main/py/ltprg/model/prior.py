@@ -34,7 +34,7 @@ class UniformIndexPriorFn(nn.Module):
         pass
 
 class SequenceSamplingPriorFn(nn.Module):
-    def __init__(self, model, input_size, training_mode=SamplingMode.FORWARD, eval_mode=Sampling.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S, heuristic=None, n_before_heuristic=20, training_input_mode=None, sample_length=15):
+    def __init__(self, model, input_size, training_mode=SamplingMode.FORWARD, eval_mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S, heuristic=None, n_before_heuristic=20, training_input_mode=None, sample_length=15):
         super(SequenceSamplingPriorFn, self).__init__()
         self._model = model
         self._input_size = input_size
@@ -125,10 +125,10 @@ class SequenceSamplingPriorFn(nn.Module):
             all_input_indices = all_input_indices.cuda()
 
         samples = None
-        if (self.training and self._training_mode == SamplingMode.FORWARD) or ((not self.training) and self._eval_mode == Sampling.FORWARD):
+        if (self.training and self._training_mode == SamplingMode.FORWARD) or ((not self.training) and self._eval_mode == SamplingMode.FORWARD):
             samples = self._model.sample(n_per_input=self._samples_per_input, max_length=self._sample_length, input=all_inputs, heuristic=self._heuristic, \
                                          context=(all_contexts, all_input_indices), n_before_heuristic=self._n_before_heuristic)
-        elif (self.training and self._training_mode == SamplingMode.BEAM) or ((not self.training) and self._eval_mode == Sampling.BEAM):
+        elif (self.training and self._training_mode == SamplingMode.BEAM) or ((not self.training) and self._eval_mode == SamplingMode.BEAM):
             samples = self._model.beam_search(beam_size=self._samples_per_input, max_length=self._sample_length, input=all_inputs, heuristic=self._heuristic, context=(all_contexts, all_input_indices))
 
         has_fixed = 0

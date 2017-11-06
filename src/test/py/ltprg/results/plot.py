@@ -38,6 +38,10 @@ groupby = None
 if len(sys.argv) > 8:
     groupby = sys.argv[8].split(",")
 
+make_table = False
+if len(sys.argv) > 9:
+    make_table = (sys.argv[9] == "True")
+
 def read_tsv_file(file_path):
     f = open(file_path, 'rt')
     rows = []
@@ -167,8 +171,41 @@ def make_latex_plot(statistics, overall_statistics, xlabel, ylabel, groupby):
 
     return s
 
+def make_aggregate_table_helper(statistics, groupby, depth, keys, s):
+    if depth == 0:
+        x_values = [float(x_value) for x_value in statistics.keys()]
+        x_values.sort()
+        for x_value in x_values:
+            x_str = str(x_value)
+            for key in keys:
+                s += key + "\t"
+            if x_str not in statistics:
+                x_str = str(int(float(x_str))) # FIXME Stupid hack for now
+            s += x_str + "\t" + str(statistics[x_str]["mu"]) + "\t" + str(statistics[x_str]["stderr"]) + "\n"
+        return s
+    else:
+        for key in statistics:
+            keys.append(key)
+            s = make_aggregate_table_helper(statistics[key], groupby, depth - 1, keys, s)
+            keys.pop()
+        return s
+
+def make_aggregate_table(statistics, overall_statistics, xlabel, ylabel, groupby):
+    s = "\t".join(groupby) + "\t" + xlabel + "\t" + ylabel + "\t" + ylabel + " (stderr)\n"
+
+    depth = 0
+    if groupby is not None:
+        depth = len(groupby)
+
+    s = s + make_aggregate_table_helper(statistics, groupby, depth, [], "")
+
+    return s
 
 rows = read_tsv_file(input_file)
 agg = aggregate(rows, x, y, where, where_values, groupby)
 statistics, overall_statistics = compute_statistics(agg, groupby)
-print(make_latex_plot(statistics, overall_statistics, xlabel, ylabel, groupby))
+if make_table:
+    print(make_aggregate_table(statistics, overall_statistics, xlabel, ylabel, groupby))
+else:
+    print(make_latex_plot(statistics, overall_statistics, xlabel, ylabel, groupby))
+

@@ -6,7 +6,7 @@ import numpy as np
 import torch
 import abc
 import copy
-import ltprg.model.eval
+import mung.torch_ext.eval
 from torch.autograd import Variable
 from mung.feature import Symbol
 

@@ -100,7 +100,7 @@ final_output_results_path = sys.argv[27]
 training_sampling_mode = sys.argv[28]
 eval_sampling_mode = sys.argv[29]
 small_sample_size = sys.argv[30]
-selection_eval_trials = sys.argv[31]
+selection_eval_trials = int(sys.argv[31])
 
 if training_data_size == "None":
     training_data_size = None
@@ -192,7 +192,7 @@ loss_criterion_unnorm = NLLLoss(size_average=False)
 if gpu:
     loss_criterion_unnorm = loss_criterion_unnorm.cuda()
 
-dev_l0_sample_acc = RSADistributionAccuracy("Dev Sample L0 Accuracy", 0, DistributionType.L, D_dev_sample, data_parameters, trials=selection_eval_trials)
+dev_l0_sample_acc = RSADistributionAccuracy("Dev Sample L0 Accuracy", 0, DistributionType.L, D_dev_sample, data_parameters)
 dev_l1_sample_acc = RSADistributionAccuracy("Dev Sample L1 Accuracy", 1, DistributionType.L, D_dev_sample, data_parameters, trials=selection_eval_trials)
 
 evaluation = dev_l1_sample_acc
@@ -231,7 +231,7 @@ rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAI
             batch_size=batch_size, optimizer_type=OPTIMIZER_TYPE, lr=learning_rate, \
             grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
-best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom)
+best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
 
 #output_model_samples(best_model, data_parameters, D_dev_sample_close)
 #output_model_samples(best_model, data_parameters, D_dev_sample_split)

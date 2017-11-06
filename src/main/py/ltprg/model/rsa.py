@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
-import ltprg.model.eval
+import mung.torch_ext.eval
 from torch.autograd import Variable
 from ltprg.model.dist import Categorical
-from ltprg.model.eval import DistributionAccuracy
+from mung.torch_ext.eval import DistributionAccuracy
 
 EPSILON = 1e-6
 
@@ -33,7 +33,7 @@ class DataParameter:
                 return self._L_world
             elif key == DataParameter.OBSERVATION:
                 return self._L_observation
-            elif key == ltprg.model.eval.DataParameter.TARGET:
+            elif key == mung.torch_ext.eval.DataParameter.TARGET:
                 return self._L_world
         else:
             if key == DataParameter.UTTERANCE:
@@ -42,7 +42,7 @@ class DataParameter:
                 return self._S_world
             elif key == DataParameter.OBSERVATION:
                 return self._S_observation
-            elif key == ltprg.model.eval.DataParameter.TARGET:
+            elif key == mung.torch_ext.eval.DataParameter.TARGET:
                 return self._utterance
 
     def is_utterance_seq(self):
