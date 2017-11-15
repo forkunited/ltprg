@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View some shape grids</title>
+
+    <link href="view.css" media="screen" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="trial.js"></script>
+    <script type="text/javascript" src="drawing.js"></script>
+    <script>
+        var makeRound = function(gameId, roundJson) {
+            var roundElement = document.createElement("div");
+            var roundHeaderElement = document.createElement("div");
+            var roundHeaderTextElement = document.createElement("h1");
+            var roundMainElement = document.createElement("div");
+            var roundMessagesElement = document.createElement("ul");
+            var roundViewportElement = document.createElement("canvas");
+
+            roundElement.setAttribute("class", "round");
+            roundHeaderElement.setAttribute("class", "roundHeader");
+            roundMainElement.setAttribute("class", "roundMain");
+            roundMessagesElement.setAttribute("class", "messages");
+            roundViewportElement.setAttribute("class", "viewport");
+
+            document.getElementById("rounds").appendChild(roundElement);
+            roundElement.appendChild(roundHeaderElement);
+            roundHeaderElement.appendChild(roundHeaderTextElement);
+            roundElement.appendChild(roundMainElement);
+            roundMainElement.appendChild(roundMessagesElement);
+            roundMainElement.appendChild(roundViewportElement);
+
+            roundViewportElement.width = 600; //roundViewportElement.offsetWidth;
+            roundViewportElement.height = 400; //roundViewportElement.offsetHeight;
+
+            roundHeaderTextElement.innerHTML = "Round " + roundJson.roundNum + " (" + gameId + ")";
+
+            var lClicked = 0;
+            var mouseX = 0;
+            var mouseY = 0;
+            var ctx = roundViewportElement.getContext("2d");
+            var game = {
+              ctx : ctx,
+              viewport : { width : 600, height : 400 },
+              world : { width : 600, height : 400 },
+              playerRoleNames : { role1 : "speaker", role2 : "listener" },
+              my_role : "listener"
+            };
+
+            for (var i = 0; i < roundJson.events.length; i++) {
+                var eventJson = roundJson.events[i];
+                if (eventJson.eventType == "utterance") {
+                    var messageElement = document.createElement("li");
+                    if (eventJson.sender == "speaker") {
+                        messageElement.innerHTML = "<b>SPEAKER: </b>" + eventJson.contents;
+                    } else {
+                        messageElement.innerHTML = "<span style=\"color:#AAAAAA;\"><b>LISTENER: </b>" + eventJson.contents + "</span>";
+                    }
+                    roundMessagesElement.appendChild(messageElement);
+                } else if (eventJson.eventType == "action") {
+                    lClicked = parseInt(eventJson.lClicked);
+                    mouseX = parseInt(eventJson.mouseX);
+                    mouseY = parseInt(eventJson.mouseY);
+                } else {
+                    game.currStim = fromFlatObject(eventJson);
+                }
+            }
+
+            drawScreen(game);
+            drawClickedCorrectBox(game, mouseX, mouseY);
+        }
+
+        var makeGame = function(gameJson) {
+            var roundsElement = document.getElementById("rounds");
+            while (roundsElement.hasChildNodes()) {
+                roundsElement.removeChild(roundsElement.firstChild);
+            }
+
+            for (var i = 0; i < gameJson.records.length; i++) {
+                makeRound(gameJson.gameid, gameJson.records[i]);
+            }
+        }
+
+        window.onload = function() {
+            var fileInput = document.getElementById('fileInput');
+            fileInput.addEventListener('change', function(e) {
+                var file = fileInput.files[0];
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var gameJson = JSON.parse(reader.result);
+                    makeGame(gameJson);
+                }
+
+                reader.readAsText(file);
+            });
+        };
+    </script>
+</head>
+<body>
+    <div id="header">
+        <p>Game JSON: <input type="file" id="fileInput"></p>
+    </div>
+    <div id="rounds">
+    </div>
+</body>
+</html>
