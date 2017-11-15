@@ -94,6 +94,11 @@ record_groupby = sys.argv[2]
 input_dirs = sys.argv[3].split(",")
 input_file_types = sys.argv[4].split(",")
 output_dir = sys.argv[5]
+delimiter = ","
+if len(sys.argv) > 6:
+    delimiter = sys.argv[6]
+    if delimiter == "[TAB]":
+        delimiter = "\t"
 
 def process_csv_files(input_dirs, input_file_types):
     D = dict()
@@ -107,7 +112,7 @@ def process_csv_files(input_dirs, input_file_types):
 def process_csv_file(file_path, D, file_type):
     f = open(file_path, 'rt')
     try:
-        reader = csv.DictReader(f, delimiter=',')
+        reader = csv.DictReader(f, delimiter=delimiter)
         for record in reader:
             process_record(record, D, file_type)
     finally:
@@ -123,7 +128,7 @@ def process_record(record, D, record_type):
     if record[record_groupby] not in D_sub:
         D_sub[record[record_groupby]] = []
     D_sub = D_sub[record[record_groupby]]
-
+    
     sub_record = dict()
     for key in record:
         if key != game_groupby and key != record_groupby:

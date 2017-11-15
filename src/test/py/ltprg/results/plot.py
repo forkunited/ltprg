@@ -95,6 +95,7 @@ def compute_statistics_helper(agg, agg_depth, keys, statistics, overall_statisti
             cur_stats = cur_stats[key]
         cur_stats["mu"] = np.mean(agg)
         cur_stats["stderr"] = stats.sem(agg)
+        cur_stats["max"] = max(agg)
         overall_statistics["y_max"] = max(overall_statistics["y_max"], cur_stats["mu"])
         overall_statistics["x_max"] = max(overall_statistics["x_max"], float(keys[len(keys) - 1]))
     else:
@@ -181,7 +182,7 @@ def make_aggregate_table_helper(statistics, groupby, depth, keys, s):
                 s += key + "\t"
             if x_str not in statistics:
                 x_str = str(int(float(x_str))) # FIXME Stupid hack for now
-            s += x_str + "\t" + str(statistics[x_str]["mu"]) + "\t" + str(statistics[x_str]["stderr"]) + "\n"
+            s += x_str + "\t" + str(statistics[x_str]["mu"]) + "\t" + str(statistics[x_str]["stderr"]) + "\t" + str(statistics[x_str]["max"]) + "\n"
         return s
     else:
         for key in statistics:
@@ -191,7 +192,7 @@ def make_aggregate_table_helper(statistics, groupby, depth, keys, s):
         return s
 
 def make_aggregate_table(statistics, overall_statistics, xlabel, ylabel, groupby):
-    s = "\t".join(groupby) + "\t" + xlabel + "\t" + ylabel + "\t" + ylabel + " (stderr)\n"
+    s = "\t".join(groupby) + "\t" + xlabel + "\t" + ylabel + "\t" + ylabel + " (stderr)" + "\t" + ylabel + " (max)\n"
 
     depth = 0
     if groupby is not None:
