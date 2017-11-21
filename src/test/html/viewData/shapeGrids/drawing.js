@@ -75,7 +75,7 @@ var drawTargetBox = function(game) {
     objIndex = world.listenerOrder.indexOf(world.target);
   }
 
-  drawBox(game, objIndex, "rgba(0, 255, 0, 0.8)")
+  drawBox(game, objIndex, "rgba(255, 0, 0, 0.8)")
 }
 
 var drawClickedCorrectBox = function(game, mouseX, mouseY) {
@@ -85,7 +85,7 @@ var drawClickedCorrectBox = function(game, mouseX, mouseY) {
   if (game.my_role !== game.playerRoleNames.role1) { // Listener
     var targetIndex = game.currStim.listenerOrder.indexOf(game.currStim.target);
     if (targetIndex == clickedObj) {
-      drawBox(game, clickedObj, "rgba(255, 0, 0, 0.8)");
+      drawBox(game, clickedObj, "rgba(0, 255, 0, 0.8)");
     } else {
       drawTargetBox(game);
     }
