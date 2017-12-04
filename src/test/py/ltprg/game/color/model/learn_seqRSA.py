@@ -101,6 +101,7 @@ training_sampling_mode = sys.argv[28]
 eval_sampling_mode = sys.argv[29]
 small_sample_size = sys.argv[30]
 selection_eval_trials = int(sys.argv[31])
+selection_model_type = sys.argv[32]
 
 if training_data_size == "None":
     training_data_size = None
@@ -197,6 +198,9 @@ dev_l1_sample_acc = RSADistributionAccuracy("Dev Sample L1 Accuracy", 1, Distrib
 
 evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
+if selection_model_type == "L_0":
+    evaluation = dev_l0_sample_acc
+    other_evaluations = [dev_l1_sample_acc]
 
 if output_meaning_prefix != "None":
     sampled_plot = ColorMeaningPlot("Sampled Meaning Plot", D_dev, data_parameters, output_meaning_prefix + "_sample", output_meaning_prefix + "_sample_utts", \
@@ -220,6 +224,7 @@ record_prefix["rnn_size"] = rnn_size
 record_prefix["embedding_size"] = embedding_size
 record_prefix["training_size"] = training_data_size
 record_prefix["alpha"] = alpha
+record_prefix["selection_model_type"] = selection_model_type
 logger.set_record_prefix(record_prefix)
 logger.set_file_path(output_results_path)
 final_logger.set_record_prefix(record_prefix)
