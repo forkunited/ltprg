@@ -19,7 +19,7 @@ from torch.nn import NLLLoss
 from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
 from ltprg.model.seq_heuristic import HeuristicL0
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
-from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
+from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn, MultiLayerIndexPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
 from ltprg.game.color.eval import ColorMeaningPlot
 
@@ -102,6 +102,7 @@ eval_sampling_mode = sys.argv[29]
 small_sample_size = sys.argv[30]
 selection_eval_trials = int(sys.argv[31])
 selection_model_type = sys.argv[32]
+world_prior_depth = int(sys.argv[33])
 
 if training_data_size == "None":
     training_data_size = None
@@ -169,6 +170,8 @@ else:
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
 
 world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 colors per observation
+if world_prior_depth > 0:
+    world_prior_fn = MultiLayerIndexPriorFn(3, world_input_size*3, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":

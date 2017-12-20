@@ -33,6 +33,47 @@ class UniformIndexPriorFn(nn.Module):
     def set_data_batch(self, batch, data_parameters):
         pass
 
+class MultiLayerIndexPriorFn(nn.Module):
+    def __init__(self, size, observation_size, depth, on_gpu=False, unnorm=False):
+        super(MultiLayerIndexPriorFn, self).__init__()
+        self._size = size
+        self._depth = depth
+        self._on_gpu = on_gpu
+        self._unnorm = unnorm
+        self._observation_size = observation_size
+
+        self._nl = nn.Tanh()
+        self._softmax = nn.Softmax()
+
+        layers = []
+        if self._depth > 1:
+            for i in range(self._depth - 1):
+                layers.append(nn.Linear(observation_size, observation_size))
+        layers.append(nn.Linear(observation_size, size))
+        self._layers = nn.ModuleList(layers)
+
+    def on_gpu(self):
+        return self._on_gpu
+
+    def forward(self, observation):
+        cur = observation
+        if self._depth > 1:
+            for i in range(self._depth - 1):
+                cur = self._nl(layers[i](cur))
+        ps = self._softmax(self._layers[self._depth - 1](cur))
+        vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
+        if self.on_gpu():
+            vs = vs.cuda()
+        return Categorical(vs, ps=ps, on_gpu=self.on_gpu(), unnorm=self._unnorm)
+
+    # NOTE: This assumes that all values in vs are indices that fall within
+    # the range of the support
+    def get_index(self, vs, observation, support, preset_batch=False):
+        return vs.data.long().squeeze(), False, None
+
+    def set_data_batch(self, batch, data_parameters):
+        pass
+
 class SequenceSamplingPriorFn(nn.Module):
     def __init__(self, model, input_size, training_mode=SamplingMode.FORWARD, eval_mode=SamplingMode.FORWARD, samples_per_input=1, uniform=True, seq_length=15, dist_type=DistributionType.S, heuristic=None, n_before_heuristic=20, training_input_mode=None, sample_length=15):
         super(SequenceSamplingPriorFn, self).__init__()
