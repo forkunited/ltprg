@@ -453,6 +453,13 @@ class SequenceModel(nn.Module):
         state_dict = model_obj["state_dict"]
         arch_type = model_obj["arch_type"]
 
+        model = SequenceModel.make(init_params)
+        model.load_state_dict(state_dict)
+
+        return model
+
+    @staticmethod
+    def make(init_params):
         model = None
         if arch_type == "SequenceModelInputEmbedded":
             model = SequenceModelInputEmbedded.make(init_params)
@@ -460,8 +467,6 @@ class SequenceModel(nn.Module):
             model = SequenceModelInputToHidden.make(init_params)
         elif arch_type == "SequenceModelNoInput":
             model = SequenceModelNoInput.make(init_params)
-        model.load_state_dict(state_dict)
-
         return model
 
 """ FIXME Put his back later maybe
