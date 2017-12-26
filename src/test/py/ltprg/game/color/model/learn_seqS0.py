@@ -10,7 +10,7 @@ from torch.optim import Adam
 from mung.feature import MultiviewDataSet, Symbol
 from mung.data import Partition
 from mung.torch_ext.eval import Loss
-from mung.torch_ext.learn import Traniner, OptimizerType
+from mung.torch_ext.learn import Trainer, OptimizerType
 from mung.util.log import Logger
 
 from ltprg.model.seq import RNNType, SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
@@ -115,7 +115,7 @@ other_evaluations = [dev_close_loss, dev_split_loss, dev_far_loss]
 
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations)
-model, best_model = trainer.train(model, D_train, TRAINING_ITERATIONS, \
+model, best_model, best_iteration = trainer.train(model, D_train, TRAINING_ITERATIONS, \
             batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 

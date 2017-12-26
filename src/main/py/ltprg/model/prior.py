@@ -34,7 +34,7 @@ class UniformIndexPriorFn(nn.Module):
         pass
 
 class MultiLayerIndexPriorFn(nn.Module):
-    def __init__(self, size, observation_size, depth, on_gpu=False, unnorm=False):
+    def __init__(self, size, observation_size, depth, on_gpu=False, unnorm=False, dropout=0.5):
         super(MultiLayerIndexPriorFn, self).__init__()
         self._size = size
         self._depth = depth
@@ -46,11 +46,14 @@ class MultiLayerIndexPriorFn(nn.Module):
         self._softmax = nn.Softmax()
 
         layers = []
+        drops = []
         if self._depth > 1:
             for i in range(self._depth - 1):
                 layers.append(nn.Linear(observation_size, observation_size))
+                drops.append(nn.Dropout(dropout))
         layers.append(nn.Linear(observation_size, size))
         self._layers = nn.ModuleList(layers)
+        self._drops = nn.ModuleList(drops)
 
     def on_gpu(self):
         return self._on_gpu
@@ -59,7 +62,7 @@ class MultiLayerIndexPriorFn(nn.Module):
         cur = observation
         if self._depth > 1:
             for i in range(self._depth - 1):
-                cur = self._nl(layers[i](cur))
+                cur = self._drops[i](self._nl(self._layers[i](cur)))
         ps = self._softmax(self._layers[self._depth - 1](cur))
         vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
         if self.on_gpu():
