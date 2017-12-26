@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors
+from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors, SequenceModel
 from torch.autograd import Variable
 
 class MeaningModel(nn.Module):
@@ -14,6 +14,28 @@ class MeaningModel(nn.Module):
 
     def on_gpu(self):
         return next(self.parameters()).is_cuda
+
+    def save(self, model_path):
+        init_params = self._get_init_params()
+        model_obj = dict()
+        model_obj["init_params"] = init_params
+        model_obj["state_dict"] = self.state_dict()
+        model_obj["meaning_type"] = type(self).__name__
+        torch.save(model_obj, model_path)
+
+    @staticmethod
+    def load(model_path):
+        model_obj = torch.load(model_path)
+        init_params = model_obj["init_params"]
+        state_dict = model_obj["state_dict"]
+        meaning_type = model_obj["meaning_type"]
+
+        model = None
+        if meaning_type == "MeaningModelIndexedWorldSequentialUtterance":
+            model = MeaningModelIndexedWorldSequentialUtterance.make(init_params)
+        model.load_state_dict(state_dict)
+
+        return model
 
 class MeaningModelIndexedWorld(MeaningModel):
 
@@ -81,28 +103,50 @@ class SequentialUtteranceInputType:
 class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
     def __init__(self, world_input_size, seq_model, input_type=SequentialUtteranceInputType.IN_SEQ, encode_input=False, enc_size=0):
         super(MeaningModelIndexedWorldSequentialUtterance, self).__init__(world_input_size)
+
+        self._init_params = dict()
+        self._init_params["world_input_size"] = world_input_size
+        self._init_params["seq_model"] = seq_model._get_init_params()
+        self._init_params["input_type"] = input_type
+        self._init_params["encode_input"] = encode_input
+        self._init_params["enc_size"] = enc_size
+
         self._seq_model = seq_model
 
         if input_type == SequentialUtteranceInputType.IN_SEQ:
             self._decoder = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), 1)
         else:
             self._encode_input = encode_input
-            
+
             if encode_input:
                 self._input_enc = nn.Linear(self._world_input_size, enc_size)
                 self._input_nl = nn.Tanh()
                 self._enc_size = enc_size
-            else: 
-                self._enc_size = self._world_input_size    
+            else:
+                self._enc_size = self._world_input_size
 
             self._decoder_mu = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._enc_size)
             self._decoder_Sigma = nn.Linear(seq_model.get_hidden_size()*seq_model.get_directions(), self._enc_size * self._enc_size)
             self._decoder_Sigma.bias = nn.Parameter(torch.eye(self._enc_size).view(self._enc_size * self._enc_size))
             self._mse = nn.MSELoss()
-            
 
         self._decoder_nl = nn.Sigmoid()
         self._input_type = input_type
+
+    def _get_init_params(self):
+        return self._init_params
+
+    @staticmethod
+    def make(init_params):
+        world_input_size = init_params["world_input_size"]
+        seq_model = SequenceModel.make(init_params["seq_model"])
+        input_type = init_params["input_type"]
+        encode_input = init_params["encode_input"]
+        enc_size = init_params["enc_size"]
+        return MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_model, input_type=input_type, encode_input=encode_input, enc_size=enc_size)
+
+    def get_seq_model(self):
+        return self._seq_model
 
     def _meaning(self, utterance, input):
         seq = utterance[0].transpose(0,1)
@@ -121,7 +165,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             if isinstance(hidden, tuple): # Handle LSTM
                 hidden = hidden[0]
             mu = self._decoder_mu(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
-            
+
             #score = Variable(torch.zeros(mu.size(0)))
             #for i in range(mu.size(0)):
             #    score[i] = -self._mse(mu[i], sorted_inputs[0][i])
@@ -141,4 +185,3 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             output = score
 
         return unsort_seq_tensors(sorted_indices, [output])[0]
-

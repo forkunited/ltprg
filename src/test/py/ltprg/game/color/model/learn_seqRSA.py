@@ -103,6 +103,7 @@ small_sample_size = sys.argv[30]
 selection_eval_trials = int(sys.argv[31])
 selection_model_type = sys.argv[32]
 world_prior_depth = int(sys.argv[33])
+output_meaning_model_path = sys.argv[34]
 
 if training_data_size == "None":
     training_data_size = None
@@ -273,3 +274,5 @@ results["Model"] = best_model.get_name()
 results["Iteration"] = best_iteration
 final_logger.log(results)
 final_logger.dump(file_path=final_output_results_path, record_prefix=record_prefix)
+
+best_meaning.save(output_meaning_model_path)
