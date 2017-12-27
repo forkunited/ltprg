@@ -68,7 +68,7 @@ class UtteranceTemplate:
         if ARG_POSITION_ROW in self._form:
             template_args[ARG_POSITION_ROW] = shape.sample_row_description()
         if ARG_POSITION_CORNER in self._form:
-            template_args[ARG_POSITION_CORNER] = shape.sample_column_description()
+            template_args[ARG_POSITION_CORNER] = shape.sample_position_description()
         return template_args
 
 class Utterance:
@@ -132,7 +132,7 @@ class ColorDescription:
         self._desc_indices = desc_indices
         self._desc_str = " ".join([D_COLOR["utterance"].get_feature_token(desc_indices[0][j,0]).get_value() for j in range(1,desc_indices[1][0]-1)])
         self._desc_str = self._desc_str.replace(" -er", "er").replace(" -est", "est").replace(" -ish", "ish")
-        self._desc_str = self._desc_str.replace(" ?", "").replace(" .", "").replace(" !", "")
+        self._desc_str = self._desc_str.replace(" ?", "").replace(" .", "").replace(" !", "").replace(" ,", "")
 
     def __str__(self):
         return self._desc_str
@@ -159,7 +159,7 @@ class Color:
         desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)[0]
         desc = ColorDescription(desc_indices)
 
-        while "#unc#" in str(desc) or str(desc).split(" ") > 7:
+        while "#unc#" in str(desc) or len(str(desc).split(" ")) > 7:
             desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)[0]
             desc = ColorDescription(desc_indices)
 
@@ -314,11 +314,11 @@ utt_templates = [UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_CORNER + " 
                  UtteranceTemplate(ARG_COLOR + " color in " + ARG_POSITION_CORNER + " corner"), \
                  UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_ROW + " row"), \
                  UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION + " spot"), \
-                 UtteranceTemplate(ARG_COLOR + "  on " + ARG_POSITION_ROW + " row"), \
+                 UtteranceTemplate(ARG_COLOR + " on " + ARG_POSITION_ROW + " row"), \
                  UtteranceTemplate(ARG_COLOR + " in the " + ARG_POSITION), \
                  UtteranceTemplate(ARG_COLOR + " " + ARG_POSITION), \
                  UtteranceTemplate(ARG_COLOR + " " + ARG_POSITION_CORNER + " corner"), \
-                 UtteranceTemplate(ARG_COLOR + "  on the " + ARG_POSITION_ROW + " row") \
+                 UtteranceTemplate(ARG_COLOR + " on the " + ARG_POSITION_ROW + " row") \
                 ]
 
 D = DataSet.load(trials_dir, id_key="gameid")
