@@ -24,7 +24,7 @@ MODEL_COLOR_S0 = SequenceModel.load(model_color_s0_path)
 MODEL_COLOR_MEANING = MeaningModel.load(model_color_meaning_path)
 UTTERANCE_PRIOR_SAMPLES_PER_COLOR = 3
 MAX_UTTERANCE_LENGTH = 24
-SPEAKER_ALPHA = 8.0
+SPEAKER_ALPHA = 16.0
 
 OBJECT_WIDTH = 3
 OBJECT_HEIGHT = 3
