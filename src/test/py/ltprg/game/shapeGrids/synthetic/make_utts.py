@@ -131,6 +131,8 @@ class ColorDescription:
     def __init__(self, desc_indices):
         self._desc_indices = desc_indices
         self._desc_str = " ".join([D_COLOR["utterance"].get_feature_token(desc_indices[0][j,0]).get_value() for j in range(1,desc_indices[1][0]-1)])
+        self._desc_str = self._desc_str.replace(" -er", "er").replace(" -est", "est").replace(" -ish", "ish")
+        self._desc_str = self._desc_str.replace(" ?", "").replace(" .", "").replace(" !", "")
 
     def __str__(self):
         return self._desc_str
@@ -155,7 +157,13 @@ class Color:
 
     def sample_description(self):
         desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)[0]
-        return ColorDescription(desc_indices)
+        desc = ColorDescription(desc_indices)
+
+        while "#unc#" in str(desc) or str(desc).split(" ") > 7:
+            desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)[0]
+            desc = ColorDescription(desc_indices)
+
+        return desc
 
 class Shape:
     def __init__(self, color, row, column, obj_width, obj_height):
@@ -323,22 +331,21 @@ for datum in D:
         utt = sample_utterance(round_json, utt_templates)
         round_json["events"].append({
           "type": "Utterance",
+          "eventType" : "utterance",
           "sender": "speaker",
           "contents": utt,
           "time": round_json["events"][0]["time"] + 1
         });
 
-        round_json["events"].append({
-          "type": "ActionGrid",
-          "time": 1476997184185,
-          "time": round_json["events"][0]["time"] + 2
-        }); # NOTE: Filler action
-        
+        #round_json["events"].append({
+        #  "type": "ActionGrid",
+        #  "eventType" : "action",
+        #  "time": round_json["events"][0]["time"] + 2
+        #}); # NOTE: Filler action
+
         print "Utterance for game " + str(g) + " round " + str(i) + ": " + utt
-    
+
     g += 1
 
     with open(join(output_dir, str(game_json["gameid"])), 'w') as fp:
         json.dump(game_json, fp)
-
-
