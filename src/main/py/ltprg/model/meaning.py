@@ -106,6 +106,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
 
         self._init_params = dict()
         self._init_params["world_input_size"] = world_input_size
+        self._init_params["arch_type"] = type(seq_model).__name__
         self._init_params["seq_model"] = seq_model._get_init_params()
         self._init_params["input_type"] = input_type
         self._init_params["encode_input"] = encode_input
@@ -139,7 +140,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
     @staticmethod
     def make(init_params):
         world_input_size = init_params["world_input_size"]
-        seq_model = SequenceModel.make(init_params["seq_model"])
+        seq_model = SequenceModel.make(init_params["seq_model"], init_params["arch_type"])
         input_type = init_params["input_type"]
         encode_input = init_params["encode_input"]
         enc_size = init_params["enc_size"]

@@ -453,13 +453,13 @@ class SequenceModel(nn.Module):
         state_dict = model_obj["state_dict"]
         arch_type = model_obj["arch_type"]
 
-        model = SequenceModel.make(init_params)
+        model = SequenceModel.make(init_params, arch_type)
         model.load_state_dict(state_dict)
 
         return model
 
     @staticmethod
-    def make(init_params):
+    def make(init_params, arch_type):
         model = None
         if arch_type == "SequenceModelInputEmbedded":
             model = SequenceModelInputEmbedded.make(init_params)

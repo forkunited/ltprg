@@ -4,7 +4,8 @@ import json
 import torch
 from os.path import join
 from torch.autograd import Variable
-from mung.data import DataSet, MultiviewDataSet
+from mung.data import DataSet
+from mung.feature import MultiviewDataSet
 from ltprg.model.meaning import MeaningModel
 from ltprg.model.seq import SequenceModel
 from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs, rgbs_to_labs
@@ -21,9 +22,9 @@ output_dir = sys.argv[6]
 D_COLOR = MultiviewDataSet.load(data_color_dir, dfmatseq_paths={ "utterance" : data_utterance_dir })
 MODEL_COLOR_S0 = SequenceModel.load(model_color_s0_path)
 MODEL_COLOR_MEANING = MeaningModel.load(model_color_meaning_path)
-UTTERANCE_PRIOR_SAMPLES_PER_COLOR = 10
+UTTERANCE_PRIOR_SAMPLES_PER_COLOR = 3
 MAX_UTTERANCE_LENGTH = 24
-SPEAKER_ALPHA = 1.0
+SPEAKER_ALPHA = 8.0
 
 OBJECT_WIDTH = 3
 OBJECT_HEIGHT = 3
@@ -53,9 +54,10 @@ class UtteranceTemplate:
         utt_str = self._form
         for arg in args:
             utt_str = utt_str.replace(arg, str(args[arg]))
+        return utt_str
 
     def has_corner_arg(self):
-        return (ARG_POSITION_CORNER is in self._form)
+        return (ARG_POSITION_CORNER in self._form)
 
     def sample_args(self, shape):
         template_args = dict()
@@ -115,7 +117,7 @@ class Utterance:
 
 
 class PositionDescription:
-    def __init__(desc_str, extension):
+    def __init__(self, desc_str, extension):
         self._desc_str = desc_str
         self._extension = extension # Set of coordinates
 
@@ -128,14 +130,14 @@ class PositionDescription:
 class ColorDescription:
     def __init__(self, desc_indices):
         self._desc_indices = desc_indices
-        self._desc_str = " ".join([D_COLOR["utterance"].get_feature_token(desc_indices[0][j,0]).get_value() for j in range(desc_indices[1][0])])
+        self._desc_str = " ".join([D_COLOR["utterance"].get_feature_token(desc_indices[0][j,0]).get_value() for j in range(1,desc_indices[1][0]-1)])
 
     def __str__(self):
         return self._desc_str
 
-    def apply(color):
+    def apply(self, color):
         # Utterance, world , observation
-        return MODEL_COLOR_MEANING(self._desc_indices, Variable(torch.zeros(1).long()), color).data[0]
+        return MODEL_COLOR_MEANING((Variable(self._desc_indices[0].transpose(0,1).unsqueeze(0)), self._desc_indices[1].unsqueeze(0)), Variable(torch.zeros(1,1).long()), Variable(color.get_cielab_tensor())).data[0,0,0]
 
 class Color:
     def __init__(self, hsl_obj):
@@ -149,10 +151,10 @@ class Color:
         return lab
 
     def get_cielab_tensor(self):
-        return torch.from_numpy(self._cielab_arr).unsqueeze(0)
+        return torch.from_numpy(self._cielab_arr).unsqueeze(0).float()
 
     def sample_description(self):
-        desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)
+        desc_indices = MODEL_COLOR_S0.sample(input=self.get_cielab_tensor(), max_length=MAX_UTTERANCE_LENGTH)[0]
         return ColorDescription(desc_indices)
 
 class Shape:
@@ -166,11 +168,14 @@ class Shape:
     def get_color(self):
         return self._color
 
+    def get_position(self):
+        return (self._row, self._column)
+
     def is_center(self):
-        if (not self.is_column_left()) and (not self.is_column_right()) and \
+        return (not self.is_column_left()) and (not self.is_column_right()) and \
            (not self.is_row_top()) and (not self.is_row_bottom())
 
-    def is_corner():
+    def is_corner(self):
         return (self._row == 0 or self._row == self._obj_height - 1) and \
             (self._column == 0 or self._column == self._obj_width - 1)
 
@@ -194,30 +199,39 @@ class Shape:
 
     def sample_column_description(self):
         if self.is_column_left():
-            return np.random.choice(COLUMN_LEFT_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(COLUMN_LEFT_DESCRIPTIONS), set([(0,0),(1,0),(2,0)]))
         elif self.is_column_right():
-            return np.random.choice(COLUMN_RIGHT_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(COLUMN_RIGHT_DESCRIPTIONS), set([(0,2),(1,2),(2,2)]))
         else:
-            return np.random.choice(COLUMN_MIDDLE_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(COLUMN_MIDDLE_DESCRIPTIONS), set([(0,1),(1,1),(2,1)]))
 
     def sample_row_description(self):
         if self.is_row_top():
-            return np.random.choice(ROW_TOP_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(ROW_TOP_DESCRIPTIONS), set([(0,0),(0,1),(0,2)]))
         elif self.is_row_bottom():
-            return np.random.choice(ROW_BOTTOM_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(ROW_BOTTOM_DESCRIPTIONS), set([(2,0),(2,1),(2,2)]))
         else:
-            return np.random.choice(ROW_MIDDLE_DESCRIPTIONS)
+            return PositionDescription(np.random.choice(ROW_MIDDLE_DESCRIPTIONS), set([(1,0),(1,1),(1,2)]))
 
     def sample_position_description(self):
-        if self.is_center():
-            return self.sample_row_description()
-        else:
-            return self.sample_row_description() + " " + self.sample_column_description()
+        row_desc = self.sample_row_description()
+        col_desc = self.sample_column_description()
+        ext = row_desc.get_extension() & col_desc.get_extension()
+
+        desc_str = str(row_desc)
+        if not self.is_center():
+            desc_str += " " + str(col_desc)
+
+        return PositionDescription(desc_str, ext)
 
 class GridObject:
     def __init__(self, shapes, target):
         self._shapes = shapes
         self._target = target
+
+        self._shapes_dict = dict()
+        for shape in self._shapes:
+            self._shapes_dict[shape.get_position()] = shape
 
     def get_all_positions(self):
         return ALL_POSITIONS
@@ -226,7 +240,7 @@ class GridObject:
         return self._shapes
 
     def get_shape(self, coordinate):
-        return self._shapes[coordinate]
+        return self._shapes_dict[coordinate]
 
     def is_target(self):
         return self._target
@@ -249,7 +263,7 @@ class GridObject:
 
         target_idx = int(state_json["sTarget"])
         objs = [None for i in range(len(objs_dict))]
-        for i in range(len(objs_dict))
+        for i in range(len(objs_dict)):
             shapes = [None for j in range(len(objs_dict[i]))]
             for j in range(len(objs_dict[i])):
                 shapes[j] = Shape(Color(objs_dict[i][j]), j / OBJECT_WIDTH, j % OBJECT_WIDTH, OBJECT_WIDTH, OBJECT_HEIGHT)
@@ -277,13 +291,13 @@ def sample_utterance(round_json, utt_templates):
     state_json = round_json["events"][0]
     objs = GridObject.make_from_state(state_json)
     target_obj = GridObject.get_target(objs)
-    utts = make_utt_prior_support(objs)
+    utts = make_utt_prior_support(objs, utt_templates)
     p_l0 = np.zeros(shape=(len(utts))) # p(t|u) for each u
     for i in range(len(utts)):
         norm_l0 = 0.0
-        for j in range(len(objs))
+        for j in range(len(objs)):
             norm_l0 += utts[i].apply(objs[j])
-        p_l0 = utts[i].apply(target_obj) / norm_l0
+        p_l0[i] = utts[i].apply(target_obj) / norm_l0
     p_s1 = (p_l0 ** SPEAKER_ALPHA)/np.sum(p_l0 ** SPEAKER_ALPHA)
     utt = np.random.choice(utts, p=p_s1)
     return str(utt)
@@ -300,7 +314,7 @@ utt_templates = [UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_CORNER + " 
                 ]
 
 D = DataSet.load(trials_dir, id_key="gameid")
-
+g = 1
 for datum in D:
     game_json = datum.to_dict()
 
@@ -315,10 +329,16 @@ for datum in D:
         });
 
         round_json["events"].append({
-          "type": "ActionGrid,
+          "type": "ActionGrid",
           "time": 1476997184185,
           "time": round_json["events"][0]["time"] + 2
         }); # NOTE: Filler action
+        
+        print "Utterance for game " + str(g) + " round " + str(i) + ": " + utt
+    
+    g += 1
 
-    with open(join(output_dir, + str(game_json["gameid"])), 'w') as fp:
+    with open(join(output_dir, str(game_json["gameid"])), 'w') as fp:
         json.dump(game_json, fp)
+
+
