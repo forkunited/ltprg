@@ -10,12 +10,20 @@ from ltprg.model.meaning import MeaningModel
 from ltprg.model.seq import SequenceModel
 from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs, rgbs_to_labs
 
+gpu = True
+seed = 1
 data_color_dir = sys.argv[1]
 data_utterance_dir = sys.argv[2]
 model_color_s0_path = sys.argv[3]
 model_color_meaning_path = sys.argv[4]
 trials_dir = sys.argv[5]
 output_dir = sys.argv[6]
+
+
+if gpu:
+    torch.cuda.manual_seed(seed)
+torch.manual_seed(seed)
+np.random.seed(seed)
 
 # NOTE: Unncecessary to load all this.  Just need the feature set for the
 # utterance token vocabulary.  But doing it this way for now because it's easy
