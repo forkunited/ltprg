@@ -568,6 +568,7 @@ class SequenceModelInputToHidden(SequenceModel):
 
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
+        self._rnn.flatten_parameters()
         output, hidden = self._rnn(emb, hidden)
 
         output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)

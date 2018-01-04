@@ -27,13 +27,14 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=7000 #7000 #9000 #10000 #30000 #1000 #00
+TRAINING_ITERATIONS=10000 #7000 #9000 #10000 #30000 #1000 #00
 DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
 N_BEFORE_HEURISTIC=100
-SAMPLE_LENGTH = 8
+SAMPLE_LENGTH = 8 # Usually 8
 GRADIENT_CLIPPING = 5.0
+EVALUATE_TEST = True
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -132,6 +133,7 @@ partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
+D_test = D_parts["test"]
 
 if training_data_size is not None:
     D_train.shuffle()
@@ -268,6 +270,27 @@ dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionT
 final_evals = [train_loss, dev_loss, \
                dev_l0_acc, dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
                dev_l1_acc, dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+
+if EVALUATE_TEST:
+    D_test_close = D_test.filter(lambda d : d.get("state.condition") == "close")
+    D_test_split = D_test.filter(lambda d : d.get("state.condition") == "split")
+    D_test_far = D_test.filter(lambda d : d.get("state.condition") == "far")
+
+    test_loss = Loss("Test Loss", D_test, data_parameters, loss_criterion_unnorm)
+    test_l0_acc = RSADistributionAccuracy("Test L0 Accuracy", 0, DistributionType.L, D_test, data_parameters)
+    test_l1_acc = RSADistributionAccuracy("Test L1 Accuracy", 1, DistributionType.L, D_test, data_parameters)
+
+    test_close_l0_acc = RSADistributionAccuracy("Test Close L0 Accuracy", 0, DistributionType.L, D_test_close, data_parameters)
+    test_split_l0_acc = RSADistributionAccuracy("Test Split L0 Accuracy", 0, DistributionType.L, D_test_split, data_parameters)
+    test_far_l0_acc = RSADistributionAccuracy("Test Far L0 Accuracy", 0, DistributionType.L, D_test_far, data_parameters)
+
+    test_close_l1_acc = RSADistributionAccuracy("Test Close L1 Accuracy", 1, DistributionType.L, D_test_close, data_parameters)
+    test_split_l1_acc = RSADistributionAccuracy("Test Split L1 Accuracy", 1, DistributionType.L, D_test_split, data_parameters)
+    test_far_l1_acc = RSADistributionAccuracy("Test Far L1 Accuracy", 1, DistributionType.L, D_test_far, data_parameters)
+
+    final_evals.extend([test_loss, \
+                        test_l0_acc, test_close_l0_acc, test_split_l0_acc, test_far_l0_acc, \
+                        test_l1_acc, test_close_l1_acc, test_split_l1_acc, test_far_l1_acc])
 
 results = Evaluation.run_all(final_evals, best_model)
 results["Model"] = best_model.get_name()
