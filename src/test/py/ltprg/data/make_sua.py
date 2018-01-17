@@ -32,8 +32,8 @@ UTTERANCES_LISTENER_LAST = "UTTERANCES_LISTENER_LAST"
 utterance_mode = sys.argv[1]
 input_data_dir = sys.argv[2]
 output_data_dir = sys.argv[3]
-exclude_missing_utts = bool(sys.argv[4])
-exclude_missing_actions = bool(sys.argv[5])
+exclude_missing_utts = bool(int(sys.argv[4]))
+exclude_missing_actions = bool(int(sys.argv[5]))
 
 np.random.seed(1) # Ensures data loaded in same order each time
 

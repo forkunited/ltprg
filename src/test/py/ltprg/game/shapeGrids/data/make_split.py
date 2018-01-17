@@ -7,7 +7,7 @@ np.random.seed(1)
 SPLIT_SIZES = [0.75,0.25,0.0]
 PART_NAMES = ["train", "dev", "test"]
 
-game_dir = sys.argv[1]
+data_dir = sys.argv[1]
 split_output_file = sys.argv[2]
 
 D_all = DataSet.load(data_dir, id_key="gameid")
