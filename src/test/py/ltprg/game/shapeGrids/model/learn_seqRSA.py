@@ -137,10 +137,6 @@ D_dev_sample = D_dev
 if small_sample_size is not None:
     D_dev_sample = D_dev.get_random_subset(small_sample_size)
 
-D_dev_sample_close = D_dev_sample.filter(lambda d : d.get("state.condition") == "close")
-D_dev_sample_split = D_dev_sample.filter(lambda d : d.get("state.condition") == "split")
-D_dev_sample_far = D_dev_sample.filter(lambda d : d.get("state.condition") == "far")
-
 world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 3
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
@@ -244,26 +240,14 @@ best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, 
 
 logger.dump(file_path=output_results_path, record_prefix=record_prefix)
 
-D_dev_close = D_dev.filter(lambda d : d.get("state.condition") == "close")
-D_dev_split = D_dev.filter(lambda d : d.get("state.condition") == "split")
-D_dev_far = D_dev.filter(lambda d : d.get("state.condition") == "far")
-
 train_loss =  Loss("Train Loss", D_train, data_parameters, loss_criterion_unnorm)
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
 dev_l1_acc = RSADistributionAccuracy("Dev L1 Accuracy", 1, DistributionType.L, D_dev, data_parameters)
 
-dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
-dev_split_l0_acc = RSADistributionAccuracy("Dev Split L0 Accuracy", 0, DistributionType.L, D_dev_split, data_parameters)
-dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
-
-dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
-dev_split_l1_acc = RSADistributionAccuracy("Dev Split L1 Accuracy", 1, DistributionType.L, D_dev_split, data_parameters)
-dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
-
 final_evals = [train_loss, dev_loss, \
-               dev_l0_acc, dev_close_l0_acc, dev_split_l0_acc, dev_far_l0_acc, \
-               dev_l1_acc, dev_close_l1_acc, dev_split_l1_acc, dev_far_l1_acc]
+               dev_l0_acc, \
+               dev_l1_acc]
 
 results = Evaluation.run_all(final_evals, best_model)
 results["Model"] = best_model.get_name()
