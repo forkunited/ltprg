@@ -19,7 +19,7 @@ RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=10000 # 10000 #4000 #1000 #00
+TRAINING_ITERATIONS=5000 # 10000 #4000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
@@ -91,7 +91,7 @@ model, best_model, best_iteration = trainer.train(model, D_train, TRAINING_ITERA
             batch_size=TRAINING_BATCH_SIZE, optimizer_type=OPTIMIZER_TYPE, lr=LEARNING_RATE, \
             log_interval=LOG_INTERVAL)
 
-output_model_samples(best_model, D_dev_close, utterance_length)
+output_model_samples(best_model, D_dev, utterance_length)
 
 logger.dump(file_path=output_results_path)
 best_model.save(output_model_path)

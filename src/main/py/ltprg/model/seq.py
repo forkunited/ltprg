@@ -119,7 +119,7 @@ class SequenceModel(nn.Module):
             seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
                 .repeat(n).long().view(1, n)
             seq_length = torch.ones(n)
-
+        
         hidden = self._init_hidden(seq_length.size(0), input=input)
         return self._forward_from_hidden(hidden, seq_part, seq_length, input=input)
 

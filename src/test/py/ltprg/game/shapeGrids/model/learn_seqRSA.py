@@ -28,12 +28,12 @@ BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=7000 #7000 #9000 #10000 #30000 #1000 #00
-DROP_OUT = 0.5 # BEST 0.5
+DROP_OUT = 0.0 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
 N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 8
-GRADIENT_CLIPPING = 5.0
+GRADIENT_CLIPPING = 5.0 # 5.0
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -137,7 +137,7 @@ D_dev_sample = D_dev
 if small_sample_size is not None:
     D_dev_sample = D_dev.get_random_subset(small_sample_size)
 
-world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 3
+world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 2
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 
 data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L_observation="L_observation",
@@ -152,8 +152,8 @@ seq_prior_model = SequenceModel.load(seq_model_path)
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
+    seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL) #, input_layers=INPUT_LAYERS)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
@@ -162,9 +162,9 @@ else:
 
 meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
 
-world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 colors per observation
+world_prior_fn = UniformIndexPriorFn(2, on_gpu=gpu, unnorm=soft_bottom) # 2 objs per observation
 if world_prior_depth > 0:
-    world_prior_fn = MultiLayerIndexPriorFn(3, world_input_size*3, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
+    world_prior_fn = MultiLayerIndexPriorFn(2, world_input_size*2, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":
@@ -196,14 +196,7 @@ evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
 if selection_model_type == "L_0":
     evaluation = dev_l0_sample_acc
-    other_evaluations = [dev_l1_sample_acc]
-
-if output_meaning_prefix != "None":
-    sampled_plot = ColorMeaningPlot("Sampled Meaning Plot", D_dev, data_parameters, output_meaning_prefix + "_sample", output_meaning_prefix + "_sample_utts", \
-                     seq_prior_model, SamplingMode.FORWARD, meaning_fn, D["utterance"])
-    beam_plot = ColorMeaningPlot("Beam Meaning Plot", D_dev, data_parameters, output_meaning_prefix + "_beam", output_meaning_prefix + "_beam_utts", \
-                     seq_prior_model, SamplingMode.BEAM, meaning_fn, D["utterance"])
-    other_evaluations.extend([sampled_plot, beam_plot])
+    other_evaluations = [] #[dev_l1_sample_acc]
 
 logger = Logger()
 final_logger = Logger()

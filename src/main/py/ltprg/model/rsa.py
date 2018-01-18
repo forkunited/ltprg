@@ -392,7 +392,7 @@ class L(RSA):
                     raise ValueError("Utterance prior missing input utterance") #ps = ps * mask.expand_as(ps) # FIXME Broken
             else:
                 ps = _size_down_tensor(ps)
-
+        
         return Categorical(world_prior.support(), ps=ps)
 
     def forward_batch(self, batch, data_parameters):
