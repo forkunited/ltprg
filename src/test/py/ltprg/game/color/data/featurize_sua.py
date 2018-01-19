@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 import sys
 import mung.feature_helpers
+import ltprg.game.color.data.feature_helpers
 from os.path import join
 
 input_data_dir = sys.argv[1]
@@ -101,7 +102,7 @@ class FeaturizeSUA(unittest.TestCase):
             15, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
-    
+
     # Constructs sequences of integer indices representing last cleaned utterances
     def test_utterance_clean_last_indices(self):
         print "Featurizing utterance clean last indices"
@@ -254,6 +255,34 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "speaker_target_idx",
             ["state.sTargetIndex"])
+
+    def test_speaker_target_color_cielab(self):
+        print "Featurizing speaker target color (cielab)"
+        ltprg.game.color.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "speaker_target_color_cielab"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "target_fc_embedding",
+            "speaker_target_color_cielab",
+            [["state.sTargetH", "state.sTargetS", "state.sTargetL"]],
+            # "fc-6",
+             "cielab")
+
+    def test_speaker_colors_cielab(self):
+        print "Featurizing speaker colors (cielab)"
+        ltprg.game.color.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "speaker_colors_cielab"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "speaker_colors_cielab",
+            [["state.lH_0", "state.lS_0", "state.lL_0"],
+             ["state.lH_1", "state.lS_1", "state.lL_1"],
+             ["state.lH_2", "state.lS_2", "state.lL_2"]],
+             # "fc-6",
+             "cielab")
 
 if __name__ == '__main__':
     unittest.main()
