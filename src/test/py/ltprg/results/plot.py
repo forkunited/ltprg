@@ -98,7 +98,10 @@ def compute_statistics_helper(agg, agg_depth, keys, statistics, overall_statisti
         cur_stats["max"] = max(agg)
         overall_statistics["y_max"] = max(overall_statistics["y_max"], cur_stats["mu"])
         if len(keys[len(keys) - 1]) != 0:
-            overall_statistics["x_max"] = max(overall_statistics["x_max"], float(keys[len(keys) - 1]))
+            try:
+                overall_statistics["x_max"] = max(overall_statistics["x_max"], float(keys[len(keys) - 1]))
+            except ValueError:
+                pass
     else:
         for key in agg:
             keys.append(key)
@@ -175,7 +178,10 @@ def make_latex_plot(statistics, overall_statistics, xlabel, ylabel, groupby):
 
 def make_aggregate_table_helper(statistics, groupby, depth, keys, s):
     if depth == 0:
-        x_values = [float(x_value) if len(x_value) != 0 else "" for x_value in statistics.keys()]
+        try:
+            x_values = [float(x_value) if len(x_value) != 0 else "" for x_value in statistics.keys()]
+        except ValueError:
+            x_values = [x_value for x_value in statistics.keys()]
         x_values.sort()
         for x_value in x_values:
             x_str = str(x_value)

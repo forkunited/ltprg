@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import sys
 import mung.feature_helpers
-import ltprg.game.color.data.feature_helpers
+import ltprg.data.feature_helpers
 from os.path import join
 
 input_data_dir = sys.argv[1]
@@ -98,7 +98,7 @@ class FeaturizeSUA(unittest.TestCase):
 
     def test_speaker_colors_cielab(self):
         print "Featurizing speaker colors (cielab)"
-        ltprg.game.color.data.feature_helpers.featurize_embeddings(
+        ltprg.data.feature_helpers.featurize_embeddings(
             input_data_dir,
             join(output_feature_dir, "speaker_colors_cielab"),
             partition_file,

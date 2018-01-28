@@ -27,7 +27,7 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=7000 #7000 #9000 #10000 #30000 #1000 #00
+TRAINING_ITERATIONS=10000 #7000 #9000 #10000 #30000 #1000 #00
 DROP_OUT = 0.0 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
@@ -100,6 +100,7 @@ selection_eval_trials = int(sys.argv[31])
 selection_model_type = sys.argv[32]
 world_prior_depth = int(sys.argv[33])
 output_meaning_model_path = sys.argv[34]
+training_condition = sys.argv[35]
 
 if training_data_size == "None":
     training_data_size = None
@@ -129,6 +130,26 @@ D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
 
+D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) < 5)
+D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > 5)
+D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) < 5)
+D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > 5)
+
+if D_train_close.get_size() > D_train_far.get_size():
+    D_train_close = D_train_close.get_random_subset(D_train_far.get_size())
+    D_dev_close = D_dev_close.get_random_subset(D_dev_far.get_size())
+elif D_train_close.get_size() < D_train_far.get_size():
+    D_train_far = D_train_far.get_random_subset(D_train_close.get_size())
+    D_dev_far = D_dev_far.get_random_subset(D_dev_close.get_size())
+
+print "Split train into " + str(D_train_close.get_size()) + " close and " + str(D_train_far.get_size()) + " far"
+print "Split dev into " + str(D_dev_close.get_size()) + " close and " + str(D_dev_far.get_size()) + " far"
+
+if training_condition == "close":
+    D_train = D_train_close
+elif training_condition == "far":
+    D_train = D_train_far
+
 if training_data_size is not None:
     D_train.shuffle()
     D_train = D_train.get_subset(0, training_data_size)
@@ -152,8 +173,8 @@ seq_prior_model = SequenceModel.load(seq_model_path)
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputEmbedded("Meaning", utterance_size, world_input_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL) #, input_layers=INPUT_LAYERS)
+    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
@@ -196,7 +217,7 @@ evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
 if selection_model_type == "L_0":
     evaluation = dev_l0_sample_acc
-    other_evaluations = [] #[dev_l1_sample_acc]
+    other_evaluations = [dev_l1_sample_acc]
 
 logger = Logger()
 final_logger = Logger()
@@ -214,6 +235,7 @@ record_prefix["embedding_size"] = embedding_size
 record_prefix["training_size"] = training_data_size
 record_prefix["alpha"] = alpha
 record_prefix["selection_model_type"] = selection_model_type
+record_prefix["training_condition"] = training_condition
 logger.set_record_prefix(record_prefix)
 logger.set_file_path(output_results_path)
 final_logger.set_record_prefix(record_prefix)
@@ -237,10 +259,16 @@ train_loss =  Loss("Train Loss", D_train, data_parameters, loss_criterion_unnorm
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
 dev_l1_acc = RSADistributionAccuracy("Dev L1 Accuracy", 1, DistributionType.L, D_dev, data_parameters)
+dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
+dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
+dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
+dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
+
 
 final_evals = [train_loss, dev_loss, \
-               dev_l0_acc, \
-               dev_l1_acc]
+               dev_l0_acc, dev_l1_acc, \
+               dev_close_l0_acc, dev_close_l1_acc, \
+               dev_far_l0_acc, dev_far_l1_acc]
 
 results = Evaluation.run_all(final_evals, best_model)
 results["Model"] = best_model.get_name()
