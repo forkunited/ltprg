@@ -302,7 +302,7 @@ class SequenceModel(nn.Module):
                 for i in range(input_count):
                     w_normalized = nn.functional.softmax(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)])
                     sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
-                    sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices].transpose(0,1)
+                    sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
 
         # Return a list... like beam search...
         ret_samples = []

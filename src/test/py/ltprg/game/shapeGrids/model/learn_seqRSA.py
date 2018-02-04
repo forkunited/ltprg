@@ -34,6 +34,7 @@ LOG_INTERVAL = 100
 N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 8
 GRADIENT_CLIPPING = 5.0 # 5.0
+WEIGHT_DECAY=0.0 # 1e-6
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
     data = D.get_data()
@@ -217,7 +218,7 @@ evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
 if selection_model_type == "L_0":
     evaluation = dev_l0_sample_acc
-    other_evaluations = [dev_l1_sample_acc]
+    other_evaluations = [] # FIXME [dev_l1_sample_acc]
 
 logger = Logger()
 final_logger = Logger()
@@ -244,7 +245,7 @@ final_logger.set_file_path(final_output_results_path)
 trainer = Trainer(data_parameters, loss_criterion, logger, \
             evaluation, other_evaluations=other_evaluations, max_evaluation=True)
 rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAINING_ITERATIONS, \
-            batch_size=batch_size, optimizer_type=OPTIMIZER_TYPE, lr=learning_rate, \
+            batch_size=batch_size, optimizer_type=OPTIMIZER_TYPE, lr=learning_rate, weight_decay=WEIGHT_DECAY, \
             grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)

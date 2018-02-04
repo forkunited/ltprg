@@ -62,6 +62,7 @@ class DataParameter:
 def _normalize_rows(t, softmax=False):
     if not softmax:
         row_sums = torch.sum(t, len(t.size())-1, keepdim=True)
+        #return torch.exp(torch.log(t)-torch.log(row_sums+EPSILON).expand_as(t))
         return torch.div(t, row_sums.expand_as(t))
     else:
         s = nn.Softmax()
