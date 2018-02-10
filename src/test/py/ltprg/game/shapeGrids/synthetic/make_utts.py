@@ -18,6 +18,7 @@ model_color_s0_path = sys.argv[3]
 model_color_meaning_path = sys.argv[4]
 trials_dir = sys.argv[5]
 output_dir = sys.argv[6]
+grid_dim = int(sys.argv[7])
 
 
 if gpu:
@@ -37,9 +38,10 @@ SPEAKER_ALPHA = 16.0
 OBJECT_WIDTH = 3
 OBJECT_HEIGHT = 3
 
-ALL_POSITIONS = set([(0,0),(0,1),(0,2), \
-                     (1,0),(1,1),(1,2), \
-                     (2,0),(2,1),(2,2)])
+ALL_POSITIONS = set([])
+for i in range(grid_dim):
+    for j in range(grid_dim):
+        ALL_POSITIONS.add((i,j))
 
 ARG_COLOR = "[color]"
 ARG_POSITION = "[pos]"
@@ -215,19 +217,39 @@ class Shape:
 
     def sample_column_description(self):
         if self.is_column_left():
-            return PositionDescription(np.random.choice(COLUMN_LEFT_DESCRIPTIONS), set([(0,0),(1,0),(2,0)]))
+            ext = set([])
+            for i in range(grid_dim):
+                ext.add((i,0))
+            return PositionDescription(np.random.choice(COLUMN_LEFT_DESCRIPTIONS), ext)
         elif self.is_column_right():
-            return PositionDescription(np.random.choice(COLUMN_RIGHT_DESCRIPTIONS), set([(0,2),(1,2),(2,2)]))
+            ext = set([])
+            for i in range(grid_dim):
+                ext.add((i,grid_dim-1))
+            return PositionDescription(np.random.choice(COLUMN_RIGHT_DESCRIPTIONS), ext)
         else:
-            return PositionDescription(np.random.choice(COLUMN_MIDDLE_DESCRIPTIONS), set([(0,1),(1,1),(2,1)]))
+            ext = set([])
+            for i in range(grid_dim):
+                for j in range(1, grid_dim-1)
+                ext.add((i,j))
+            return PositionDescription(np.random.choice(COLUMN_MIDDLE_DESCRIPTIONS), ext)
 
     def sample_row_description(self):
         if self.is_row_top():
-            return PositionDescription(np.random.choice(ROW_TOP_DESCRIPTIONS), set([(0,0),(0,1),(0,2)]))
+            ext = set([])
+            for i in range(grid_dim):
+                ext.add((0,i))
+            return PositionDescription(np.random.choice(ROW_TOP_DESCRIPTIONS), ext)
         elif self.is_row_bottom():
-            return PositionDescription(np.random.choice(ROW_BOTTOM_DESCRIPTIONS), set([(2,0),(2,1),(2,2)]))
+            ext = set([])
+            for i in range(grid_dim):
+                ext.add((grid_dim-1,i))
+            return PositionDescription(np.random.choice(ROW_BOTTOM_DESCRIPTIONS), ext)
         else:
-            return PositionDescription(np.random.choice(ROW_MIDDLE_DESCRIPTIONS), set([(1,0),(1,1),(1,2)]))
+            ext = set([])
+            for i in range(grid_dim):
+                for j in range(1, grid_dim-1)
+                ext.add((j,i))
+            return PositionDescription(np.random.choice(ROW_MIDDLE_DESCRIPTIONS), ext)
 
     def sample_position_description(self):
         row_desc = self.sample_row_description()
@@ -318,7 +340,10 @@ def sample_utterance(round_json, utt_templates):
     utt = np.random.choice(utts, p=p_s1)
     return str(utt)
 
-utt_templates = [UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_CORNER + " corner"), \
+if grid_dim == 1:
+    utt_templates = [UtteranceTemplate(ARG_COLOR)]
+else:
+    utt_templates = [UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_CORNER + " corner"), \
                  UtteranceTemplate(ARG_COLOR + " color in " + ARG_POSITION_CORNER + " corner"), \
                  UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION_ROW + " row"), \
                  UtteranceTemplate(ARG_COLOR + " in " + ARG_POSITION + " spot"), \
