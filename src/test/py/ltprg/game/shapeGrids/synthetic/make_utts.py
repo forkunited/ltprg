@@ -229,8 +229,8 @@ class Shape:
         else:
             ext = set([])
             for i in range(grid_dim):
-                for j in range(1, grid_dim-1)
-                ext.add((i,j))
+                for j in range(1, grid_dim-1):
+                    ext.add((i,j))
             return PositionDescription(np.random.choice(COLUMN_MIDDLE_DESCRIPTIONS), ext)
 
     def sample_row_description(self):
@@ -247,8 +247,8 @@ class Shape:
         else:
             ext = set([])
             for i in range(grid_dim):
-                for j in range(1, grid_dim-1)
-                ext.add((j,i))
+                for j in range(1, grid_dim-1):
+                    ext.add((j,i))
             return PositionDescription(np.random.choice(ROW_MIDDLE_DESCRIPTIONS), ext)
 
     def sample_position_description(self):
