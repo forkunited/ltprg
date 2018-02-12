@@ -8,8 +8,10 @@ from os.path import join
 input_data_dir = sys.argv[1]
 output_feature_dir = sys.argv[2]
 partition_file = sys.argv[3]
+grid_dim = int(sys.argv[4])
 
 # Necessary to allow unittest.main() to work
+del sys.argv[4]
 del sys.argv[3]
 del sys.argv[2]
 del sys.argv[1]
@@ -71,33 +73,32 @@ class FeaturizeSUA(unittest.TestCase):
     # Constructs vectors of the colors that the speaker observed
     def test_speaker_colors(self):
         print "Featurizing speaker colors"
+        
+        dims = []
+        for i in range(grid_dim*grid_dim):
+            dims.append("state.sObj0_Shp" + str(i) + "_ClrH")
+            dims.append("state.sObj0_Shp" + str(i) + "_ClrS")
+        for i in range(grid_dim*grid_dim):
+            dims.append("state.sObj1_Shp" + str(i) + "_ClrH")
+            dims.append("state.sObj1_Shp" + str(i) + "_ClrS")
+
         mung.feature_helpers.featurize_path_scalars(
             input_data_dir,
             join(output_feature_dir, "speaker_colors"),
             partition_file,
             lambda d : d.get("gameid"),
             "speaker_colors",
-            ["state.sObj0_Shp0_ClrH","state.sObj0_Shp0_ClrS",
-             "state.sObj0_Shp1_ClrH","state.sObj0_Shp1_ClrS",
-             "state.sObj0_Shp2_ClrH","state.sObj0_Shp2_ClrS",
-             "state.sObj0_Shp3_ClrH","state.sObj0_Shp3_ClrS",
-             "state.sObj0_Shp4_ClrH","state.sObj0_Shp4_ClrS",
-             "state.sObj0_Shp5_ClrH","state.sObj0_Shp5_ClrS",
-             "state.sObj0_Shp6_ClrH","state.sObj0_Shp6_ClrS",
-             "state.sObj0_Shp7_ClrH","state.sObj0_Shp7_ClrS",
-             "state.sObj0_Shp8_ClrH","state.sObj0_Shp8_ClrS",
-             "state.sObj1_Shp0_ClrH","state.sObj1_Shp0_ClrS",
-             "state.sObj1_Shp1_ClrH","state.sObj1_Shp1_ClrS",
-             "state.sObj1_Shp2_ClrH","state.sObj1_Shp2_ClrS",
-             "state.sObj1_Shp3_ClrH","state.sObj1_Shp3_ClrS",
-             "state.sObj1_Shp4_ClrH","state.sObj1_Shp4_ClrS",
-             "state.sObj1_Shp5_ClrH","state.sObj1_Shp5_ClrS",
-             "state.sObj1_Shp6_ClrH","state.sObj1_Shp6_ClrS",
-             "state.sObj1_Shp7_ClrH","state.sObj1_Shp7_ClrS",
-             "state.sObj1_Shp8_ClrH","state.sObj1_Shp8_ClrS"])
+            dims)
 
     def test_speaker_colors_cielab(self):
         print "Featurizing speaker colors (cielab)"
+        
+        dims = []
+        for i in range(grid_dim*grid_dim):
+            dims.append(["state.sObj0_Shp" + str(i) + "_ClrH","state.sObj0_Shp" + str(i) + "_ClrS","state.sObj0_Shp" + str(i) + "_ClrL"])
+        for i in range(grid_dim*grid_dim):
+            dims.append(["state.sObj1_Shp" + str(i) + "_ClrH","state.sObj0_Shp" + str(i) + "_ClrS","state.sObj0_Shp" + str(i) + "_ClrL"])
+
         ltprg.data.feature_helpers.featurize_embeddings(
             input_data_dir,
             join(output_feature_dir, "speaker_colors_cielab"),
@@ -105,26 +106,9 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             # "context_fc_embedding",
             "speaker_colors_cielab",
-            [["state.sObj0_Shp0_ClrH","state.sObj0_Shp0_ClrS","state.sObj0_Shp0_ClrL"],
-             ["state.sObj0_Shp1_ClrH","state.sObj0_Shp1_ClrS","state.sObj0_Shp1_ClrL"],
-             ["state.sObj0_Shp2_ClrH","state.sObj0_Shp2_ClrS","state.sObj0_Shp2_ClrL"],
-             ["state.sObj0_Shp3_ClrH","state.sObj0_Shp3_ClrS","state.sObj0_Shp3_ClrL"],
-             ["state.sObj0_Shp4_ClrH","state.sObj0_Shp4_ClrS","state.sObj0_Shp4_ClrL"],
-             ["state.sObj0_Shp5_ClrH","state.sObj0_Shp5_ClrS","state.sObj0_Shp5_ClrL"],
-             ["state.sObj0_Shp6_ClrH","state.sObj0_Shp6_ClrS","state.sObj0_Shp6_ClrL"],
-             ["state.sObj0_Shp7_ClrH","state.sObj0_Shp7_ClrS","state.sObj0_Shp7_ClrL"],
-             ["state.sObj0_Shp8_ClrH","state.sObj0_Shp8_ClrS","state.sObj0_Shp8_ClrL"],
-             ["state.sObj1_Shp0_ClrH","state.sObj1_Shp0_ClrS","state.sObj1_Shp0_ClrL"],
-             ["state.sObj1_Shp1_ClrH","state.sObj1_Shp1_ClrS","state.sObj1_Shp1_ClrL"],
-             ["state.sObj1_Shp2_ClrH","state.sObj1_Shp2_ClrS","state.sObj1_Shp2_ClrL"],
-             ["state.sObj1_Shp3_ClrH","state.sObj1_Shp3_ClrS","state.sObj1_Shp3_ClrL"],
-             ["state.sObj1_Shp4_ClrH","state.sObj1_Shp4_ClrS","state.sObj1_Shp4_ClrL"],
-             ["state.sObj1_Shp6_ClrH","state.sObj1_Shp6_ClrS","state.sObj1_Shp5_ClrL"],
-             ["state.sObj1_Shp5_ClrH","state.sObj1_Shp5_ClrS","state.sObj1_Shp6_ClrL"],
-             ["state.sObj1_Shp7_ClrH","state.sObj1_Shp7_ClrS","state.sObj1_Shp7_ClrL"],
-             ["state.sObj1_Shp8_ClrH","state.sObj1_Shp8_ClrS","state.sObj1_Shp8_ClrL"]],
-             # "fc-6",
-             "cielab")
+            dims,
+            # "fc-6",
+            "cielab")
 
     # Constructs an index of the target color index (0, 1, or 2) that
     # the speaker observed
