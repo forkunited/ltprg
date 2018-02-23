@@ -5,7 +5,7 @@ from torch.autograd import Variable
 from ltprg.model.dist import Categorical
 from mung.torch_ext.eval import DistributionAccuracy
 
-EPSILON = 1e-6
+EPSILON=1e-9 # Note, was 1e-6 on color, and not in normalize_rows back then
 
 class DistributionType:
     L = "L"
@@ -61,7 +61,7 @@ class DataParameter:
 
 def _normalize_rows(t, softmax=False):
     if not softmax:
-        row_sums = torch.sum(t, len(t.size())-1, keepdim=True)
+        row_sums = torch.sum(t, len(t.size())-1, keepdim=True) + EPSILON
         #return torch.exp(torch.log(t)-torch.log(row_sums+EPSILON).expand_as(t))
         return torch.div(t, row_sums.expand_as(t))
     else:

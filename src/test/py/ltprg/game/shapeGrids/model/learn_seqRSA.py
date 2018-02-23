@@ -27,13 +27,13 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=15000 #7000 #9000 #10000 #30000 #1000 #00
+TRAINING_ITERATIONS=20000 #7000 #9000 #10000 #30000 #1000 #00
 DROP_OUT = 0.0 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
 LOG_INTERVAL = 100
 N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 8
-GRADIENT_CLIPPING = 5.0 # 5.0
+GRADIENT_CLIPPING = 5.0 #5.0 # 5.0
 WEIGHT_DECAY=0.0 # 1e-6
 
 def output_model_samples(model, data_parameters, D, batch_size=20):
@@ -131,10 +131,24 @@ D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
 
-D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) < 5)
-D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > 5)
-D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) < 5)
-D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > 5)
+grid_size = (D_train["L_observation"].get_feature_set().get_token_count() / 2) / 3 # FIXME Note this is broken... assumes cielab for 3
+close_far_split = np.ceil(grid_size/2.0)
+
+if grid_size == 1:
+    D_train_close = D_train 
+    D_train_far = D_train
+    D_dev_close = D_dev
+    D_dev_far = D_dev
+elif grid_size % 2 == 0:
+    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
+    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
+    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
+    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
+else:
+    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
+    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
+    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
+    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
 
 if D_train_close.get_size() > D_train_far.get_size():
     D_train_close = D_train_close.get_random_subset(D_train_far.get_size())
@@ -218,7 +232,7 @@ evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
 if selection_model_type == "L_0":
     evaluation = dev_l0_sample_acc
-    other_evaluations = [] # FIXME [dev_l1_sample_acc]
+    other_evaluations = [dev_l1_sample_acc]
 
 logger = Logger()
 final_logger = Logger()
