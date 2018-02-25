@@ -785,7 +785,8 @@ class SequenceModelInputEmbedded(SequenceModel):
 
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
+                 embedding_init=None):
         super(SequenceModelNoInput, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -806,7 +807,7 @@ class SequenceModelNoInput(SequenceModel):
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
 
-        self._init_weights
+        self._init_weights(embedding_init=embedding_init)
 
     def _get_init_params(self):
         return self._init_params
@@ -832,11 +833,14 @@ class SequenceModelNoInput(SequenceModel):
 
         return output, hidden
 
-    def _init_weights(self):
-        init_range = 0.01
+    def _init_weights(self, embedding_init=None):
+        if embedding_init is None:
+            init_range = 0.01
+            init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+        else:
+            self._emb.weight.data = embedding_init
 
         #self._emb.weight.data.uniform_(-initrange, initrange)
-        init.normal(self._emb.weight.data, mean=0.0, std=init_range)
 
         #self._encoder.bias.data.fill_(0)
         #self._encoder.weight.data.uniform_(-initrange, initrange)

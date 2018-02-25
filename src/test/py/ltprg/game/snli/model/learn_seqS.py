@@ -55,6 +55,7 @@ partition_file = sys.argv[3]
 utterance_dir = sys.argv[4]
 output_results_path = sys.argv[5]
 output_model_path = sys.argv[6]
+word_embeddings_file = sys.argv[7]
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ },
@@ -67,11 +68,14 @@ D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 utterance_length = D_train["utterance"].get_feature_seq_set().get_size()
 
+embedding_init = torch.from_numpy(np.load(word_embeddings_file))
+
 logger = Logger()
 data_parameters = DataParameter.make(seq="utterance", input="world")
 loss_criterion = VariableLengthNLLLoss()
 model = SequenceModelNoInput("S", utterance_size, \
-        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
+        EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE,
+        embedding_init=embedding_init)
 
 loss_criterion_unnorm = VariableLengthNLLLoss(norm_dim=True)
 
