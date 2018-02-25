@@ -20,7 +20,7 @@ def load_wv():
 
 token_to_wv, wv_size = load_wv()
 feature_seq = FeatureSequenceSet.load(feature_seq_dir)
-vocab_size = feature_seq.get_feature_set_size()
+vocab_size = feature_seq.get_feature_set(0).get_token_count()
 wv_mat = np.zeros(shape=(vocab_size, wv_size))
 
 for i in range(vocab_size):

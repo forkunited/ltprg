@@ -16,7 +16,7 @@ from mung.util.log import Logger
 from ltprg.model.seq import RNNType, SequenceModelNoInput, SequenceModelInputToHidden, SequenceModelInputEmbedded, VariableLengthNLLLoss, DataParameter
 
 RNN_TYPE = RNNType.LSTM
-EMBEDDING_SIZE = 100
+EMBEDDING_SIZE = 300
 RNN_SIZE = 100
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=10000 # 10000 #4000 #1000 #00
@@ -61,7 +61,7 @@ D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ },
                           dfmatseq_paths={ "utterance" : utterance_dir })
 partition = Partition.load(partition_file)
-D_parts = D.partition(partition, lambda d : d.get("gameid"))
+D_parts = D.partition(partition, lambda d : d.get("id"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 
