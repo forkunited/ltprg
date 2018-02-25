@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from mung.feature import FeatureSequenceSet
 
@@ -20,7 +21,7 @@ def load_wv():
 token_to_wv, wv_size = load_wv()
 feature_seq = FeatureSequenceSet.load(feature_seq_dir)
 vocab_size = feature_seq.get_feature_set_size()
-wv_mat = np.array(shape=(vocab_size, wv_size))
+wv_mat = np.zeros(shape=(vocab_size, wv_size))
 
 for i in range(vocab_size):
     token = feature_seq.get_feature_token(i).get_value()

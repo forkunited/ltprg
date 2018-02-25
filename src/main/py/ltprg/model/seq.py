@@ -300,7 +300,7 @@ class SequenceModel(nn.Module):
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input), None, context=context)
                 for i in range(input_count):
-                    w_normalized = nn.functional.softmax(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)])
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)]))
                     sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
                     sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
 

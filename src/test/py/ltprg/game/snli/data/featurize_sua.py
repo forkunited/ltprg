@@ -10,7 +10,6 @@ output_feature_dir = sys.argv[2]
 partition_file = sys.argv[3]
 
 # Necessary to allow unittest.main() to work
-del sys.argv[4]
 del sys.argv[3]
 del sys.argv[2]
 del sys.argv[1]
@@ -26,7 +25,7 @@ class FeaturizeSUA(unittest.TestCase):
             input_data_dir, # Source data set
             join(output_feature_dir, "utterance_idx"), # Output directory
             partition_file, # Data partition
-            lambda d : d.get("gameid"), # Function that partitions the data
+            lambda d : d.get("id"), # Function that partitions the data
             "utterance_idx", # Name of the feature
             ["utterance.nlp.token_strs.strs"], # JSON path into data examples
             40, # Maximum utterance length
@@ -40,7 +39,7 @@ class FeaturizeSUA(unittest.TestCase):
             input_data_dir, # Source data set
             join(output_feature_dir, "premise_idx"), # Output directory
             partition_file, # Data partition
-            lambda d : d.get("gameid"), # Function that partitions the data
+            lambda d : d.get("id"), # Function that partitions the data
             "premise_idx", # Name of the feature
             ["state.nlp.token_strs.strs"], # JSON path into data examples
             40, # Maximum utterance length
@@ -55,7 +54,7 @@ class FeaturizeSUA(unittest.TestCase):
             input_data_dir,
             join(output_feature_dir, "speaker_target_idx"),
             partition_file,
-            lambda d : d.get("gameid"),
+            lambda d : d.get("id"),
             "speaker_target_idx",
             ["state.sTarget"])
 

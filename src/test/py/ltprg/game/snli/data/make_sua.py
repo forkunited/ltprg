@@ -13,33 +13,33 @@ def make_sua(raw_data, split, part_name):
     sua_id = 0
     for datum in raw_data:
         label = None
-        if datum["gold_label"] == "-":
+        if datum.get("gold_label") == "-":
             continue
-        elif datum["gold_label"] == "contradiction":
+        elif datum.get("gold_label") == "contradiction":
             label = 0
-        elif datum["gold_label"] == "entailment":
+        elif datum.get("gold_label") == "entailment":
             label = 1
-        elif datum["gold_label"] == "neutral":
+        elif datum.get("gold_label") == "neutral":
             label = 2
+
+        print "Making datum " + str(sua_id) + "..."
 
         split[part_name][str(sua_id)] = 1
 
         sua_properties = dict()
         sua_properties["id"] = str(sua_id)
-        sua_properties["game_id"] = datum["pairID"]
+        sua_properties["game_id"] = datum.get("pairID")
         sua_properties["sua"] = 0
         sua_properties["roundNum"] = 0
         sua_properties["state"] = {
             "type" : "StateSNLI",
             "sTarget" : label,
-            "contents" : datum["sentence1"]
+            "contents" : datum.get("sentence1")
         }
-        sua_properties["utterances"] = {
+        sua_properties["utterance"] = {
             "sender": "speaker",
-            "eventType": "utterance",
-            "time": 1,
             "type": "Utterance",
-            "contents": datum["sentence2"]
+            "contents": datum.get("sentence2")
         }
         sua_properties["action"] = None
         sua_datums.append(Datum(properties=sua_properties))
@@ -48,8 +48,8 @@ def make_sua(raw_data, split, part_name):
     return sua_datums
 
 raw_train = DataSet.load(raw_train_dir, id_key="pairID")
-raw_dev = DataSet.load(raw_train_dir, id_key="pairID")
-raw_test = DataSet.load(raw_train_dir, id_key="pairID")
+raw_dev = DataSet.load(raw_dev_dir, id_key="pairID")
+raw_test = DataSet.load(raw_test_dir, id_key="pairID")
 
 sua_datums = []
 partition_split = { "train" : dict(), "dev" : dict(), "test" : dict()}
@@ -57,8 +57,8 @@ sua_datums.extend(make_sua(raw_train, partition_split, "train"))
 sua_datums.extend(make_sua(raw_dev, partition_split, "dev"))
 sua_datums.extend(make_sua(raw_test, partition_split, "test"))
 
-sua_data.save(output_data_dir)
 sua_data = DataSet(data=sua_datums)
+sua_data.save(output_data_dir)
 
 partition = dict()
 partition["keep_data"] = False
