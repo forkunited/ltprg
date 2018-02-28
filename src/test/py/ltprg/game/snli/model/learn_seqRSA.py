@@ -19,6 +19,7 @@ from torch.nn import NLLLoss
 from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
 from ltprg.model.seq_heuristic import HeuristicL0
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
+from ltprg.model.obs import ObservationModelIndexedSequential
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn, MultiLayerIndexPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
 from ltprg.game.color.eval import ColorMeaningPlot
@@ -102,7 +103,9 @@ selection_model_type = sys.argv[32]
 world_prior_depth = int(sys.argv[33])
 output_meaning_model_path = sys.argv[34]
 training_condition = sys.argv[35]
-word_embeddings_file = sys.argv[36]
+utt_word_embeddings_file = sys.argv[36]
+premise_word_embeddings_file = sys.argv[37]
+premise_embedding_size = int(sys.argv[38])
 
 if training_data_size == "None":
     training_data_size = None
@@ -121,50 +124,19 @@ np.random.seed(seed)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ "L_world" : L_world_dir, \
-                                        "L_observation" : L_observation_dir, \
-                                        "S_world" : S_world_dir, \
-                                        "S_observation" : S_observation_dir \
+                                        "S_world" : S_world_dir
                            },
-                          dfmatseq_paths={ "utterance" : utterance_dir })
+                          dfmatseq_paths={ "utterance" : utterance_dir, \
+                                           "L_observation" : L_observation_dir, \
+                                           "S_observation" : S_observation_dir })
 partition = Partition.load(partition_file)
 
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
 
-grid_size = (D_train["L_observation"].get_feature_set().get_token_count() / 2) / 3 # FIXME Note this is broken... assumes cielab for 3
-close_far_split = np.ceil(grid_size/2.0)
-
-if grid_size == 1:
-    D_train_close = D_train
-    D_train_far = D_train
-    D_dev_close = D_dev
-    D_dev_far = D_dev
-elif grid_size % 2 == 0:
-    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
-    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
-    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-else:
-    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
-    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
-    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-
-if D_train_close.get_size() > D_train_far.get_size():
-    D_train_close = D_train_close.get_random_subset(D_train_far.get_size())
-    D_dev_close = D_dev_close.get_random_subset(D_dev_far.get_size())
-elif D_train_close.get_size() < D_train_far.get_size():
-    D_train_far = D_train_far.get_random_subset(D_train_close.get_size())
-    D_dev_far = D_dev_far.get_random_subset(D_dev_close.get_size())
-
-print "Split train into " + str(D_train_close.get_size()) + " close and " + str(D_train_far.get_size()) + " far"
-print "Split dev into " + str(D_dev_close.get_size()) + " close and " + str(D_dev_far.get_size()) + " far"
-
-if training_condition == "close":
-    D_train = D_train_close
-elif training_condition == "far":
-    D_train = D_train_far
+utt_embedding_init = torch.from_numpy(np.load(utt_word_embeddings_file)).float()
+premise_embedding_init = torch.from_numpy(np.load(premise_word_embeddings_file)).float()
 
 if training_data_size is not None:
     D_train.shuffle()
@@ -174,8 +146,8 @@ D_dev_sample = D_dev
 if small_sample_size is not None:
     D_dev_sample = D_dev.get_random_subset(small_sample_size)
 
-world_input_size = D_train["L_observation"].get_feature_set().get_token_count() / 2
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
+premise_size = D_train["L_observation"].get_matrix(0).get_feature_set().get_token_count()
 
 data_parameters = DataParameter.make(utterance="utterance", L_world="L_world", L_observation="L_observation",
                                      S_world="S_world", S_observation="S_observation",
@@ -186,22 +158,27 @@ if gpu:
 
 seq_prior_model = SequenceModel.load(seq_model_path)
 
+# 3 Is for one-hot indicating the relation type
+seq_observation_model = SequenceModelInputToHidden("Observation", premise_size, 3, \
+    embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS, embedding_init=premise_embedding_init)
+observation_fn = ObservationModelIndexedSequential(premise_embedding_size, 3, seq_observation_model)
+
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
+    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, premise_embedding_size, \
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS, embedding_init=utt_embedding_init)
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, embedding_init=utt_embedding_init)
     soft_bottom = True
 
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
+meaning_fn = MeaningModelIndexedWorldSequentialUtterance(premise_embedding_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
 
-world_prior_fn = UniformIndexPriorFn(2, on_gpu=gpu, unnorm=soft_bottom) # 2 objs per observation
+world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 2 objs per observation
 if world_prior_depth > 0:
-    world_prior_fn = MultiLayerIndexPriorFn(2, world_input_size*2, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
+    world_prior_fn = MultiLayerIndexPriorFn(3, premise_embedding_size*3, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":
@@ -218,7 +195,7 @@ utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, 
                                              sample_length=SAMPLE_LENGTH,
                                              n_before_heuristic=N_BEFORE_HEURISTIC)
 
-rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
+rsa_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 if gpu:
     rsa_model = rsa_model.cuda()
 
@@ -275,16 +252,9 @@ train_loss =  Loss("Train Loss", D_train, data_parameters, loss_criterion_unnorm
 dev_loss = Loss("Dev Loss", D_dev, data_parameters, loss_criterion_unnorm)
 dev_l0_acc = RSADistributionAccuracy("Dev L0 Accuracy", 0, DistributionType.L, D_dev, data_parameters)
 dev_l1_acc = RSADistributionAccuracy("Dev L1 Accuracy", 1, DistributionType.L, D_dev, data_parameters)
-dev_close_l0_acc = RSADistributionAccuracy("Dev Close L0 Accuracy", 0, DistributionType.L, D_dev_close, data_parameters)
-dev_close_l1_acc = RSADistributionAccuracy("Dev Close L1 Accuracy", 1, DistributionType.L, D_dev_close, data_parameters)
-dev_far_l0_acc = RSADistributionAccuracy("Dev Far L0 Accuracy", 0, DistributionType.L, D_dev_far, data_parameters)
-dev_far_l1_acc = RSADistributionAccuracy("Dev Far L1 Accuracy", 1, DistributionType.L, D_dev_far, data_parameters)
-
 
 final_evals = [train_loss, dev_loss, \
-               dev_l0_acc, dev_l1_acc, \
-               dev_close_l0_acc, dev_close_l1_acc, \
-               dev_far_l0_acc, dev_far_l1_acc]
+               dev_l0_acc, dev_l1_acc]
 
 results = Evaluation.run_all(final_evals, best_model)
 results["Model"] = best_model.get_name()

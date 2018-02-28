@@ -94,7 +94,7 @@ def _size_down_tensor(t):
     return torch.squeeze(t, 1)
 
 class RSA(nn.Module):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         super(RSA, self).__init__()
         self._name = name
         self._level = level
@@ -104,6 +104,7 @@ class RSA(nn.Module):
         self._L_bottom = L_bottom
         self._soft_bottom = soft_bottom
         self._alpha = alpha
+        self._observation_fn =observation_fn
 
     def get_name(self):
         return self._name
@@ -117,12 +118,15 @@ class RSA(nn.Module):
     def get_utterance_prior_fn(self):
         return self._utterance_prior_fn
 
+    def get_observation_fn(self):
+        return self._observation_fn
+
     def to_level(self, dist_type, level, L_bottom=True, soft_bottom=False):
         model = None
         if dist_type == DistributionType.L:
-            model = L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=self._alpha)
+            model = L(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=self._alpha, observation_fn=self._observation_fn)
         else:
-            model = S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=self._alpha)
+            model = S(self._name, level, self._meaning_fn, self._world_prior_fn, self._utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=self._alpha, observation_fn=self._observation_fn)
         if self.on_gpu():
             model = model.cuda()
         return model
@@ -131,14 +135,14 @@ class RSA(nn.Module):
         return next(self.parameters()).is_cuda
 
     @staticmethod
-    def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0):
+    def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         if dist_type == DistributionType.L:
-            return L(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+            return L(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
         else:
-            return S(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+            return S(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
 class S(RSA):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         """
         Constructs an RSA speaker module.  This module assumes world priors and
         utterance priors have finite discrete support.
@@ -179,14 +183,14 @@ class S(RSA):
                 a literal listener or a literal speaker.  Defaults to True.
         """
 
-        super(S, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+        super(S, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
         self._L = None
         if self._level != 0:
             next_level = self._level
             if L_bottom:
                 next_level = self._level - 1
-            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
     def forward(self, world, observation=None, world_dist=False):
         """
@@ -213,6 +217,9 @@ class S(RSA):
 
         if observation is None:
             observation = torch.zeros(world.size(0))
+
+        if self._observation_fn is not None:
+            observation = self._observation_fn(observation)
 
         utterance_prior = self._utterance_prior_fn(observation)
         world_support = None
@@ -284,7 +291,7 @@ class S(RSA):
         return loss_criterion(torch.log(model_dist.p() + EPSILON), Variable(index))
 
 class L(RSA):
-    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0):
+    def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         """
         Constructs an RSA listener module.  This module assumes world priors and
         utterance priors have finite discrete support.
@@ -324,14 +331,14 @@ class L(RSA):
             L_bottom (bool, optional): Indicates whether the model bottoms out at
                 a literal listener or a literal speaker.  Defaults to True.
         """
-        super(L, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+        super(L, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
         self._S = None
         if self._level != 0:
             next_level = self._level
             if not L_bottom:
                 next_level = self._level - 1
-            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
     def forward(self, utterance, observation=None, utterance_dist=False):
         """
@@ -366,6 +373,9 @@ class L(RSA):
             else:
                 observation = torch.zeros(utterance.size(0))
 
+        if observation_fn is not None:
+            observation = self._observation_fn(observation)
+
         world_prior = self._world_prior_fn(observation)
         utterance_support = None
         ps = None
@@ -393,7 +403,7 @@ class L(RSA):
                     raise ValueError("Utterance prior missing input utterance") #ps = ps * mask.expand_as(ps) # FIXME Broken
             else:
                 ps = _size_down_tensor(ps)
-        
+
         return Categorical(world_prior.support(), ps=ps)
 
     def forward_batch(self, batch, data_parameters):
