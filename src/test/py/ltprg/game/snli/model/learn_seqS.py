@@ -68,7 +68,7 @@ D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 utterance_length = D_train["utterance"].get_feature_seq_set().get_size()
 
-embedding_init = torch.from_numpy(np.load(word_embeddings_file))
+embedding_init = torch.from_numpy(np.load(word_embeddings_file)).float()
 
 logger = Logger()
 data_parameters = DataParameter.make(seq="utterance", input="world")
