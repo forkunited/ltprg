@@ -190,7 +190,7 @@ class S(RSA):
             next_level = self._level
             if L_bottom:
                 next_level = self._level - 1
-            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
+            self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
 
     def forward(self, world, observation=None, world_dist=False):
         """
@@ -338,7 +338,7 @@ class L(RSA):
             next_level = self._level
             if not L_bottom:
                 next_level = self._level - 1
-            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
+            self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
 
     def forward(self, utterance, observation=None, utterance_dist=False):
         """
