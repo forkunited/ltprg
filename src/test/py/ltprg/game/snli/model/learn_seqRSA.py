@@ -131,7 +131,7 @@ D = MultiviewDataSet.load(data_dir,
                                            "S_observation" : S_observation_dir })
 partition = Partition.load(partition_file)
 
-D_parts = D.partition(partition, lambda d : d.get("gameid"))
+D_parts = D.partition(partition, lambda d : d.get("id"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"]
 
@@ -184,7 +184,7 @@ beam_heuristic = None
 if prior_beam_heuristic == "L0":
     beam_heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=soft_bottom)
 
-utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, \
+utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, premise_embedding_size, \
                                              training_mode=training_sampling_mode,
                                              eval_mode=eval_sampling_mode,
                                              samples_per_input=samples_per_input,

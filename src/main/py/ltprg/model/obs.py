@@ -56,13 +56,15 @@ class ObservationModelIndexed(ObservationModel):
         pass
 
     def forward(self, observation):
-        indices = torch.eye(self._num_indices).unsqueeze(0).expand(observation.size(0), self._num_indices, self._num_indices)
+        indices = torch.eye(self._num_indices).unsqueeze(0).expand(observation[0].size(0), self._num_indices, self._num_indices)
 
         if self.on_gpu():
             indices = indices.cuda()
+        
+        indices = Variable(indices)
 
         transformed = self._forward_for_indices(observation, indices)
-        return transformed.view(observation.size(0), self.num_indices*self._indexed_obs_size)
+        return transformed.view(indices.size(0), self._num_indices*self._indexed_obs_size)
 
 
 class ObservationModelIndexedSequential(ObservationModelIndexed):
@@ -71,7 +73,7 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
 
         self._init_params = dict()
         self._init_params["indexed_obs_size"] = indexed_obs_size
-        self._init_hidden["num_indices"] = num_indices
+        self._init_params["num_indices"] = num_indices
         self._init_params["arch_type"] = type(seq_model).__name__
         self._init_params["seq_model"] = seq_model._get_init_params()
 
@@ -88,7 +90,7 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
         indexed_obs_size = init_params["indexed_obs_size"]
         num_indices = init_hidden["num_indices"]
         seq_model = SequenceModel.make(init_params["seq_model"], init_params["arch_type"])
-        return ObservationModelIndexedSequential(indexd_obs_size, num_indices, seq_model)
+        return ObservationModelIndexedSequential(indexed_obs_size, num_indices, seq_model)
 
     def get_seq_model(self):
         return self._seq_model
@@ -98,17 +100,17 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
     # return batch x num_indices x indexed_obs_size
     def _forward_for_indices(self, observation, indices):
         num_indices = indices.size(2)
-        batch_size = observation[0].size(1)
-        max_len = observation[0].size(0)
-        seq = observation[0] # Length x batch
-        seq_lengths = observation[1] # Batch
+        batch_size = indices.size(0)
+        max_len = observation[0].size(1)
+        seq = observation[0].transpose(0,1) # After transpose: Length x batch
+        seq_length = observation[1] # Batch
 
         # length, indices*batch
-        seq = seq.unsqueeze(1).expand(max_len, num_indices, batch_size).view(-1, num_indices*batch_size)
-        seq_lengths = seq_length.unsqueeze(1).expand(batch_size, num_indices).view(-1, num_indices*batch_size)
+        seq = seq.unsqueeze(1).expand(max_len, num_indices, batch_size).contiguous().view(-1, num_indices*batch_size)
+        seq_length = seq_length.unsqueeze(1).expand(batch_size, num_indices).contiguous().view(-1, num_indices*batch_size).squeeze()
         indices = indices.contiguous().view(-1, num_indices)
 
-        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input], on_gpu=self.on_gpu())
+        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[indices], on_gpu=self.on_gpu())
 
         output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
         if isinstance(hidden, tuple): # Handle LSTM
@@ -118,3 +120,4 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
 
         unsorted_output = unsort_seq_tensors(sorted_indices, [output])[0]
         return unsorted_output.view(batch_size, num_indices, self._indexed_obs_size)
+
