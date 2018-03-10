@@ -662,7 +662,7 @@ class SequenceModelInputToHidden(SequenceModel):
         return output, hidden
 
     def _init_weights(self, embedding_init=None):
-        if self._embedding_init is None:
+        if embedding_init is None:
             init_range = 0.01
             init.normal(self._emb.weight.data, mean=0.0, std=init_range)
         else:

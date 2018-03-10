@@ -373,7 +373,7 @@ class L(RSA):
             else:
                 observation = torch.zeros(utterance.size(0))
 
-        if observation_fn is not None:
+        if self._observation_fn is not None:
             observation = self._observation_fn(observation)
 
         world_prior = self._world_prior_fn(observation)
@@ -419,9 +419,18 @@ class L(RSA):
             if self.on_gpu():
                 utterance = utterance.cuda()
 
-        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
-        if self.on_gpu():
-            observation = observation.cuda()
+        # FIXME This should be checked in a nicer way
+        # Also need to add it to the speaker
+        if self._observation_fn is not None:
+            seq, length, _ = batch[data_parameters[DataParameter.OBSERVATION]]
+            seq = Variable(seq.long())
+            if self.on_gpu():
+                seq = seq.cuda()
+            observation = (seq.transpose(0,1), length)
+        else:
+            observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+            if self.on_gpu():
+                observation = observation.cuda()
 
         self._utterance_prior_fn.set_data_batch(batch, data_parameters)
         self._world_prior_fn.set_data_batch(batch, data_parameters)
