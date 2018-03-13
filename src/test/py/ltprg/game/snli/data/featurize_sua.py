@@ -28,7 +28,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("id"), # Function that partitions the data
             "utterance_idx", # Name of the feature
             ["utterance.nlp.token_strs.strs"], # JSON path into data examples
-            40, # Maximum utterance length
+            30, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
 
@@ -42,7 +42,7 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("id"), # Function that partitions the data
             "premise_idx", # Name of the feature
             ["state.nlp.token_strs.strs"], # JSON path into data examples
-            40, # Maximum utterance length
+            30, # Maximum utterance length
             token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
             indices=True) # Indicates that indices will be computed instead of one-hot vectors
 

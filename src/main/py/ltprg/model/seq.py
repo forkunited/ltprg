@@ -13,7 +13,7 @@ from mung.feature import Symbol
 def sort_seq_tensors(seq, length, inputs=None, on_gpu=False):
     sorted_length, sorted_indices = torch.sort(length, 0, True)
     if on_gpu:
-        sorted_indices = sorted_indices.cuda()
+        sorted_indices = sorted_indices.cuda(seq.get_device())
     sorted_seq = seq.transpose(0,1)[sorted_indices].transpose(0,1)
 
     if inputs is not None:
@@ -198,13 +198,13 @@ class SequenceModel(nn.Module):
         seq_length = unit_length*seq_part.size(0)
         sample = copy.deepcopy(seq_part)
 
-        output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
+        output, hidden = self(seq_part=Variable(seq_part, requires_grad=False), seq_length=seq_length, input=Variable(input, requires_grad=False))
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1].exp()
             next_token = torch.multinomial(output_dist).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
             output, hidden = self._forward_from_hidden(hidden,
-                                                       Variable(next_token.view(1, next_token.size(0))),
+                                                       Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
                                                        unit_length,
                                                        input=Variable(input))
 
@@ -228,7 +228,7 @@ class SequenceModel(nn.Module):
 
             if heuristic is not None:
                 context_in = (context[0][(i*samples_per_input):((i+1)*samples_per_input)], context[1][(i*samples_per_input):((i+1)*samples_per_input)])
-                heuristic_output, _ = heuristic((sample_in, seq_length_in), Variable(input_in), None, context=context_in)
+                heuristic_output, _ = heuristic((sample_in, seq_length_in), Variable(input_in, requires_grad=False), None, context=context_in)
                 top_indices = heuristic_output.topk(n_per_input)[1]
                 sample_in = sample_in.transpose(0,1)[top_indices].transpose(0,1)
                 seq_length_in = seq_length_in[top_indices.cpu()]
@@ -284,9 +284,9 @@ class SequenceModel(nn.Module):
             next_token = torch.multinomial(output_dist).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
             output, hidden = self._forward_from_hidden(hidden,
-                                                       Variable(next_token.view(1, next_token.size(0))),
+                                                       Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
                                                        unit_length,
-                                                       input=Variable(input))
+                                                       input=Variable(input, requires_grad=False))
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
@@ -300,7 +300,7 @@ class SequenceModel(nn.Module):
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input), None, context=context)
                 for i in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)]))
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)], requires_grad=False))
                     sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
                     sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
 
@@ -590,7 +590,7 @@ class EvaluationSequential(ltprg.model.eval.Evaluation):
 class SequenceModelInputToHidden(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
-                 input_layers=1, embedding_init=None):
+                 input_layers=1, embedding_init=None, freeze_embedding=False):
         super(SequenceModelInputToHidden, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -604,12 +604,14 @@ class SequenceModelInputToHidden(SequenceModel):
         self._init_params["dropout"] = dropout
         self._init_params["bidir"] = bidir
         self._init_params["input_layers"] = input_layers
+        self._init_params["freeze_embedding"] = freeze_embedding
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
         self._seq_size = seq_size
 
         self._input_layers = input_layers
+        self._freeze_embedding = freeze_embedding
 
         self._encoder = nn.Linear(input_size, rnn_size*rnn_layers*self._directions/(4**(input_layers-1)))
         self._encoder_nl = nn.Tanh()
@@ -625,7 +627,7 @@ class SequenceModelInputToHidden(SequenceModel):
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
 
-        self._init_weights(embedding_init=embedding_init)
+        self._init_weights(embedding_init=embedding_init, freeze_embedding=freeze_embedding)
 
     def _get_init_params(self):
         return self._init_params
@@ -661,14 +663,16 @@ class SequenceModelInputToHidden(SequenceModel):
 
         return output, hidden
 
-    def _init_weights(self, embedding_init=None):
+    def _init_weights(self, embedding_init=None, freeze_embedding=False):
         if embedding_init is None:
             init_range = 0.01
             init.normal(self._emb.weight.data, mean=0.0, std=init_range)
         else:
             self._emb.weight.data = embedding_init
-        #self._emb.weight.data.uniform_(-initrange, initrange)
+            if freeze_embedding:
+                self._emb.weight.requires_grad = False
 
+        #self._emb.weight.data.uniform_(-initrange, initrange)
 
         #self._encoder.bias.data.fill_(0)
         #self._encoder.weight.data.uniform_(-initrange, initrange)
@@ -697,12 +701,16 @@ class SequenceModelInputToHidden(SequenceModel):
         if "input_layers" in init_params:
             input_layers = init_params["input_layers"]
 
-        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, input_layers=input_layers)
+        freeze_embedding = False
+        if "freeze_embedding" in init_params:
+            freeze_embedding = init_params["freeze_embedding"]
+
+        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, input_layers=input_layers, freeze_embedding=freeze_embedding)
 
 
 class SequenceModelInputEmbedded(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False, embedding_init=None, freeze_embedding=False):
         super(SequenceModelInputEmbedded, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -715,6 +723,9 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
         self._init_params["bidir"] = bidir
+        self._init_params["freeze_embedding"] = freeze_embedding
+
+        self._freeze_embedding = freeze_embedding
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -724,7 +735,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
 
-        self._init_weights()
+        self._init_weights(embedding_init=embedding_init, freeze_embedding=freeze_embedding)
 
     def _get_init_params(self):
         return self._init_params
@@ -755,11 +766,17 @@ class SequenceModelInputEmbedded(SequenceModel):
 
         return output, hidden
 
-    def _init_weights(self):
-        init_range = 0.01
+    def _init_weights(self, embedding_init=None, freeze_embedding=False):
+        if embedding_init is None:
+            init_range = 0.01
+            init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+        else:
+            self._emb.weight.data = embedding_init
+            if freeze_embedding:
+                self._emb.weight.requires_grad = False
 
         #self._emb.weight.data.uniform_(-initrange, initrange)
-        init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+        #init.normal(self._emb.weight.data, mean=0.0, std=init_range)
 
         #self._encoder.bias.data.fill_(0)
         #self._encoder.weight.data.uniform_(-initrange, initrange)
@@ -780,13 +797,18 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
         bidir = init_params["bidir"]
-        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir)
+        
+        freeze_embedding = False
+        if "freeze_embedding" in init_params:
+            freeze_embedding = init_params["freeze_embedding"]
+
+        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, freeze_embedding=freeze_embedding)
 
 
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
-                 embedding_init=None):
+                 embedding_init=None, freeze_embedding=False):
         super(SequenceModelNoInput, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -798,6 +820,9 @@ class SequenceModelNoInput(SequenceModel):
         self._init_params["rnn_type"] = rnn_type
         self._init_params["dropout"] = dropout
         self._init_params["bidir"] = bidir
+        self._init_params["freeze_embedding"] = freeze_embedding
+
+        self._freeze_embedding = freeze_embedding
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -807,7 +832,7 @@ class SequenceModelNoInput(SequenceModel):
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
 
-        self._init_weights(embedding_init=embedding_init)
+        self._init_weights(embedding_init=embedding_init, freeze_embedding=freeze_embedding)
 
     def _get_init_params(self):
         return self._init_params
@@ -833,12 +858,15 @@ class SequenceModelNoInput(SequenceModel):
 
         return output, hidden
 
-    def _init_weights(self, embedding_init=None):
+    def _init_weights(self, embedding_init=None, freeze_embedding=False):
         if embedding_init is None:
             init_range = 0.01
             init.normal(self._emb.weight.data, mean=0.0, std=init_range)
         else:
             self._emb.weight.data = embedding_init
+            if freeze_embedding:
+                self._emb.weight.requires_grad = False
+
 
         #self._emb.weight.data.uniform_(-initrange, initrange)
 
