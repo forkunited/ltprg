@@ -283,10 +283,15 @@ class SequenceModel(nn.Module):
             output_dist = output[output.size(0)-1].exp()
             next_token = torch.multinomial(output_dist).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
-            output, hidden = self._forward_from_hidden(hidden,
-                                                       Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
-                                                       unit_length,
-                                                       input=Variable(input, requires_grad=False))
+
+            if heuristic is not None:
+                heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
+                for i in range(input_count):
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)], requires_grad=False))
+                    sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
+                    sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
+                    next_token[(i*samples_per_input):((i+1)*samples_per_input)] = next_token[sample_indices.data]
+                    hidden[(i*samples_per_input):((i+1)*samples_per_input)] = hidden[sample_indices.data]
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
@@ -297,12 +302,10 @@ class SequenceModel(nn.Module):
             if ended_count == n:
                 break
 
-            if heuristic is not None:
-                heuristic_output, _ = heuristic((sample, seq_length), Variable(input), None, context=context)
-                for i in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)], requires_grad=False))
-                    sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
-                    sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
+            output, hidden = self._forward_from_hidden(hidden,
+                                                       Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
+                                                       unit_length,
+                                                       input=Variable(input, requires_grad=False))
 
         # Return a list... like beam search...
         ret_samples = []
@@ -797,7 +800,7 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
         bidir = init_params["bidir"]
-        
+
         freeze_embedding = False
         if "freeze_embedding" in init_params:
             freeze_embedding = init_params["freeze_embedding"]
