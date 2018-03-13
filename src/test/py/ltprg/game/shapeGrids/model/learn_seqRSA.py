@@ -102,6 +102,7 @@ selection_model_type = sys.argv[32]
 world_prior_depth = int(sys.argv[33])
 output_meaning_model_path = sys.argv[34]
 training_condition = sys.argv[35]
+data_condition = sys.argv[36]
 
 if training_data_size == "None":
     training_data_size = None
@@ -132,30 +133,48 @@ D_train = D_parts["train"]
 D_dev = D_parts["dev"]
 
 grid_size = (D_train["L_observation"].get_feature_set().get_token_count() / 2) / 3 # FIXME Note this is broken... assumes cielab for 3
-close_far_split = np.ceil(grid_size/2.0)
 
-if grid_size == 1:
+close_far_split_field = None
+close_far_split = None
+if data_condition == "SKEWED":
+    close_far_split_field = "state.skewProb"
+    close_far_split = 0.5
+elif data_condition == "COLORDIFFS":
+    close_far_split_field = "state.colorDiffMin"
+    close_far_split = 12.5
+else:
+    close_far_split_field = "state.diffs"
+    close_far_split = np.ceil(grid_size/2.0)
+
+if grid_size == 1 and data_condition != "SKEWED" and data_condition != "COLORDIFFS":
     D_train_close = D_train 
     D_train_far = D_train
     D_dev_close = D_dev
     D_dev_far = D_dev
-elif grid_size % 2 == 0:
-    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
-    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) <= close_far_split)
-    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
+elif grid_size % 2 == 0 and data_condition != "SKEWED" and data_condition != "COLORDIFFS":
+    D_train_close = D_train.filter(lambda d : int(d.get(close_far_split_field)) <= close_far_split)
+    D_train_far = D_train.filter(lambda d : int(d.get(close_far_split_field)) > close_far_split)
+    D_dev_close = D_dev.filter(lambda d : int(d.get(close_far_split_field)) <= close_far_split)
+    D_dev_far = D_dev.filter(lambda d : int(d.get(close_far_split_field)) > close_far_split)
 else:
-    D_train_close = D_train.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
-    D_train_far = D_train.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
-    D_dev_close = D_dev.filter(lambda d : int(d.get("state.diffs")) < close_far_split)
-    D_dev_far = D_dev.filter(lambda d : int(d.get("state.diffs")) > close_far_split)
+    D_train_close = D_train.filter(lambda d : float(d.get(close_far_split_field)) < close_far_split)
+    D_train_far = D_train.filter(lambda d : float(d.get(close_far_split_field)) > close_far_split)
+    D_dev_close = D_dev.filter(lambda d : float(d.get(close_far_split_field)) < close_far_split)
+    D_dev_far = D_dev.filter(lambda d : float(d.get(close_far_split_field)) > close_far_split)
 
-if D_train_close.get_size() > D_train_far.get_size():
-    D_train_close = D_train_close.get_random_subset(D_train_far.get_size())
-    D_dev_close = D_dev_close.get_random_subset(D_dev_far.get_size())
-elif D_train_close.get_size() < D_train_far.get_size():
-    D_train_far = D_train_far.get_random_subset(D_train_close.get_size())
-    D_dev_far = D_dev_far.get_random_subset(D_dev_close.get_size())
+# FIXME Put this back later
+#if D_train_close.get_size() > D_train_far.get_size():
+#    D_train_close = D_train_close.get_random_subset(D_train_far.get_size())
+#    D_dev_close = D_dev_close.get_random_subset(D_dev_far.get_size())
+#elif D_train_close.get_size() < D_train_far.get_size():
+#    D_train_far = D_train_far.get_random_subset(D_train_close.get_size())
+#    D_dev_far = D_dev_far.get_random_subset(D_dev_close.get_size())
+
+# FIXME Temporary hack to make all data conditions the same size
+D_train_far = D_train_far.get_random_subset(6000)
+D_dev_far = D_dev_far.get_random_subset(2000)
+D_train_close = D_train_close.get_random_subset(6000)
+D_dev_close = D_dev_close.get_random_subset(2000)
 
 print "Split train into " + str(D_train_close.get_size()) + " close and " + str(D_train_far.get_size()) + " far"
 print "Split dev into " + str(D_dev_close.get_size()) + " close and " + str(D_dev_far.get_size()) + " far"
