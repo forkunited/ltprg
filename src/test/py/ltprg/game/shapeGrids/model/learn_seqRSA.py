@@ -147,7 +147,7 @@ else:
     close_far_split = np.ceil(grid_size/2.0)
 
 if grid_size == 1 and data_condition != "SKEWED" and data_condition != "COLORDIFFS":
-    D_train_close = D_train 
+    D_train_close = D_train
     D_train_far = D_train
     D_dev_close = D_dev
     D_dev_far = D_dev
@@ -283,9 +283,9 @@ rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAI
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
 
-#output_model_samples(best_model, data_parameters, D_dev_sample_close)
-#output_model_samples(best_model, data_parameters, D_dev_sample_split)
-#output_model_samples(best_model, data_parameters, D_dev_sample_far)
+output_model_samples(best_model, data_parameters, D_dev_close)
+#output_model_samples(best_model, data_parameters, D_dev_split)
+#output_model_samples(best_model, data_parameters, D_dev_far)
 
 logger.dump(file_path=output_results_path, record_prefix=record_prefix)
 
