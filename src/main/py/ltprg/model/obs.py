@@ -59,12 +59,18 @@ class ObservationModelIndexed(ObservationModel):
         indices = torch.eye(self._num_indices).unsqueeze(0).expand(observation[0].size(0), self._num_indices, self._num_indices)
 
         if self.on_gpu():
-            indices = indices.cuda()
+            device = 0
+            if isinstance(observation, tuple):
+                device = observation[0].get_device()
+            else:
+                device = observation.get_device()
+            indices = indices.cuda(device)
         
-        indices = Variable(indices)
+        indices = Variable(indices, requires_grad=False)
 
         transformed = self._forward_for_indices(observation, indices)
-        return transformed.view(indices.size(0), self._num_indices*self._indexed_obs_size)
+        transformed = torch.cat((transformed, indices), 2)
+        return transformed.view(indices.size(0), self._num_indices*(self._num_indices+self._indexed_obs_size))
 
 
 class ObservationModelIndexedSequential(ObservationModelIndexed):
@@ -119,5 +125,6 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
         output = self._decoder_nl(decoded)
 
         unsorted_output = unsort_seq_tensors(sorted_indices, [output])[0]
-        return unsorted_output.view(batch_size, num_indices, self._indexed_obs_size)
+        unsorted_output = unsorted_output.view(batch_size, num_indices, self._indexed_obs_size)
 
+        return unsorted_output

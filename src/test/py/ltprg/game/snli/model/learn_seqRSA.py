@@ -28,12 +28,12 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=20000 #7000 #9000 #10000 #30000 #1000 #00
+TRAINING_ITERATIONS=600000 #120000 #7000 #9000 #10000 #30000 #1000 #00
 DROP_OUT = 0.0 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
-LOG_INTERVAL = 100
+LOG_INTERVAL = 30000 #1200
 N_BEFORE_HEURISTIC=100
-SAMPLE_LENGTH = 8
+SAMPLE_LENGTH = 15 #8
 GRADIENT_CLIPPING = 5.0 #5.0 # 5.0
 WEIGHT_DECAY=0.0 # 1e-6
 
@@ -159,32 +159,32 @@ if gpu:
 seq_prior_model = SequenceModel.load(seq_model_path)
 
 # 3 Is for one-hot indicating the relation type
-seq_observation_model = SequenceModelInputToHidden("Observation", premise_size, 3, \
-    embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS, embedding_init=premise_embedding_init)
+seq_observation_model = SequenceModelInputEmbedded("Observation", premise_size, 3, \
+    embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, embedding_init=premise_embedding_init, freeze_embedding=False)
 observation_fn = ObservationModelIndexedSequential(premise_embedding_size, 3, seq_observation_model)
 
 seq_meaning_model = None
 soft_bottom = None
 if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, premise_embedding_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS, embedding_init=utt_embedding_init)
+    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, premise_embedding_size + 3, \
+        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, embedding_init=utt_embedding_init, freeze_embedding=False) # ToHidden, input_layers=INPUT_LAYERS
     soft_bottom = False
 else:
     seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
         embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, embedding_init=utt_embedding_init)
     soft_bottom = True
 
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(premise_embedding_size, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
+meaning_fn = MeaningModelIndexedWorldSequentialUtterance(premise_embedding_size+3, seq_meaning_model, input_type=meaning_fn_input_type)#, encode_input=True, enc_size=100)
 
 world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 2 objs per observation
 if world_prior_depth > 0:
-    world_prior_fn = MultiLayerIndexPriorFn(3, premise_embedding_size*3, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
+    world_prior_fn = MultiLayerIndexPriorFn(3, (premise_embedding_size+3)*3, world_prior_depth, on_gpu=gpu, unnorm=soft_bottom)
 
 beam_heuristic = None
 if prior_beam_heuristic == "L0":
     beam_heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=soft_bottom)
 
-utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, premise_embedding_size, \
+utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, premise_embedding_size+3, \
                                              training_mode=training_sampling_mode,
                                              eval_mode=eval_sampling_mode,
                                              samples_per_input=samples_per_input,
@@ -210,7 +210,7 @@ evaluation = dev_l1_sample_acc
 other_evaluations = [dev_l0_sample_acc]
 if selection_model_type == "L_0":
     evaluation = dev_l0_sample_acc
-    other_evaluations = [dev_l1_sample_acc]
+    other_evaluations = [] #[dev_l1_sample_acc]
 
 logger = Logger()
 final_logger = Logger()
@@ -240,7 +240,7 @@ rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAI
             batch_size=batch_size, optimizer_type=OPTIMIZER_TYPE, lr=learning_rate, weight_decay=WEIGHT_DECAY, \
             grad_clip=GRADIENT_CLIPPING, log_interval=LOG_INTERVAL, best_part_fn=lambda m : m.get_meaning_fn())
 
-best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
+best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
 #output_model_samples(best_model, data_parameters, D_dev_sample_close)
 #output_model_samples(best_model, data_parameters, D_dev_sample_split)

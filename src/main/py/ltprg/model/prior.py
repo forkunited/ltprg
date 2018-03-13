@@ -23,7 +23,7 @@ class UniformIndexPriorFn(nn.Module):
         vs = torch.arange(0,self._size).unsqueeze(0).repeat(observation.size(0),1)
         if self.on_gpu():
             vs = vs.cuda()
-        return Categorical(Variable(vs), on_gpu=self.on_gpu(), unnorm=self._unnorm)
+        return Categorical(Variable(vs, requires_grad=False), on_gpu=self.on_gpu(), unnorm=self._unnorm)
 
     # NOTE: This assumes that all values in vs are indices that fall within
     # the range of the support
@@ -138,7 +138,7 @@ class SequenceSamplingPriorFn(nn.Module):
                 all_input_indices = self._fixed_input.long()
                 all_contexts = observation
         elif self._ignored_input is not None:
-            all_inputs = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size))
+            all_inputs = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, self._input_size), requires_grad=False)
             obs_inputs = observation.view(batch_size, inputs_per_observation, self._input_size)
             all_index = 0
 
@@ -182,7 +182,7 @@ class SequenceSamplingPriorFn(nn.Module):
         if self._fixed_seq is not None:
             has_fixed = 1
 
-        seq_supp_batch = Variable(torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed, self._seq_length).long())
+        seq_supp_batch = Variable(torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed, self._seq_length).long(), requires_grad=False)
         length_supp_batch = torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + has_fixed).long()
 
         if self.on_gpu():

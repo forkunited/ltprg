@@ -134,6 +134,15 @@ class RSA(nn.Module):
     def on_gpu(self):
         return next(self.parameters()).is_cuda
 
+    def cuda(self):
+        ret = super(RSA, self).cuda()
+
+        if torch.cuda.device_count() > 1:
+            if self._observation_fn is not None:
+                self._observation_fn = self._observation_fn.cuda(1)
+
+        return ret
+
     @staticmethod
     def make(name, dist_type, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         if dist_type == DistributionType.L:
@@ -219,7 +228,17 @@ class S(RSA):
             observation = torch.zeros(world.size(0))
 
         if self._observation_fn is not None:
+            if torch.cuda.device_count() > 1:
+                if isinstance(observation, tuple):
+                    observation = (observation[0].cuda(1),observation[1])
+                else:
+                    observation = observation.cuda(1)
             observation = self._observation_fn(observation)
+            if self.on_gpu():
+                if isinstance(observation, tuple):
+                    observation = (observation[0].cuda(),observation[1])
+                else:
+                    observation = observation.cuda()
 
         utterance_prior = self._utterance_prior_fn(observation)
         world_support = None
@@ -256,8 +275,8 @@ class S(RSA):
         return Categorical(utterance_prior.support(), ps=ps)
 
     def forward_batch(self, batch, data_parameters):
-        world = Variable(batch[data_parameters[DataParameter.WORLD]])
-        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+        world = Variable(batch[data_parameters[DataParameter.WORLD]], requires_grad=False)
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
         if self.on_gpu():
             world = world.cuda()
             observation = observation.cuda()
@@ -271,24 +290,24 @@ class S(RSA):
         utterance = None
         if data_parameters.is_utterance_seq():
             seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
-            seq = Variable(seq)
-            length = Variable(length)
+            seq = Variable(seq, requires_grad=False)
+            length = Variable(length, requires_grad=False)
 
             if self.on_gpu():
                seq = seq.cuda()
 
             utterance = (seq.transpose(0,1), length)
         else:
-            utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]])
+            utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]], requires_grad=False)
 
             if self.on_gpu():
                 utterance = utterance.cuda()
 
-        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
 
         model_dist = self.forward_batch(batch, data_parameters)
         index, _, _ = self._utterance_prior_fn.get_index(utterance, observation, model_dist.support(), preset_batch=True)
-        return loss_criterion(torch.log(model_dist.p() + EPSILON), Variable(index))
+        return loss_criterion(torch.log(model_dist.p() + EPSILON), Variable(index, requires_grad=False))
 
 class L(RSA):
     def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
@@ -374,7 +393,17 @@ class L(RSA):
                 observation = torch.zeros(utterance.size(0))
 
         if self._observation_fn is not None:
+            if torch.cuda.device_count() > 1:
+                if isinstance(observation, tuple):
+                    observation = (observation[0].cuda(1),observation[1])
+                else:
+                    observation = observation.cuda(1)
             observation = self._observation_fn(observation)
+            if self.on_gpu():
+                if isinstance(observation, tuple):
+                    observation = (observation[0].cuda(),observation[1])
+                else:
+                    observation = observation.cuda()
 
         world_prior = self._world_prior_fn(observation)
         utterance_support = None
@@ -410,12 +439,12 @@ class L(RSA):
         utterance = None
         if data_parameters.is_utterance_seq():
             seq, length, _ = batch[data_parameters[DataParameter.UTTERANCE]]
-            seq = Variable(seq.long())
+            seq = Variable(seq.long(), requires_grad=False)
             if self.on_gpu():
                 seq = seq.cuda()
             utterance = (seq.transpose(0,1), length)
         else:
-            utterance = Variable(batch[data_parameters[DataParameter.WORLD]])
+            utterance = Variable(batch[data_parameters[DataParameter.WORLD]], requires_grad=False)
             if self.on_gpu():
                 utterance = utterance.cuda()
 
@@ -428,7 +457,7 @@ class L(RSA):
                 seq = seq.cuda()
             observation = (seq.transpose(0,1), length)
         else:
-            observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
+            observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
             if self.on_gpu():
                 observation = observation.cuda()
 
@@ -439,15 +468,25 @@ class L(RSA):
 
     def loss(self, batch, data_parameters, loss_criterion):
         world = Variable(batch[data_parameters[DataParameter.WORLD]]).squeeze()
-        observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]])
-
         if self.on_gpu():
             world = world.cuda()
-            observation = observation.cuda()
+
+        # FIXME This should be checked in a nicer way
+        # Also need to add it to the speaker
+        if self._observation_fn is not None:
+            seq, length, _ = batch[data_parameters[DataParameter.OBSERVATION]]
+            seq = Variable(seq.long(), requires_grad=False)
+            if self.on_gpu():
+                seq = seq.cuda()
+            observation = (seq.transpose(0,1), length)
+        else:
+            observation = Variable(batch[data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
+            if self.on_gpu():
+                observation = observation.cuda()
 
         model_dist = self.forward_batch(batch, data_parameters)
         index, _, _ = self._world_prior_fn.get_index(world, observation, model_dist.support(), preset_batch=True)
-        return loss_criterion(torch.log(model_dist.p() + EPSILON), Variable(index))
+        return loss_criterion(torch.log(model_dist.p() + EPSILON), Variable(index, requires_grad=False))
 
 
 class RSADistributionAccuracy(DistributionAccuracy):

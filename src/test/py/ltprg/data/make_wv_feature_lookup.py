@@ -1,10 +1,13 @@
 import sys
 import numpy as np
-from mung.feature import FeatureSequenceSet
+from mung.feature import FeatureSequenceSet, Symbol
+
+NUM_SYMBOLS = 4
 
 feature_seq_dir= sys.argv[1]
 wv_file = sys.argv[2]
 output_file = sys.argv[3]
+missing_random = bool(int(sys.argv[4]))
 
 def load_wv():
     token_to_wv = dict()
@@ -16,6 +19,11 @@ def load_wv():
             wv = np.array([float(line_parts[i]) for i in range(1, len(line_parts))])
             token_to_wv[token] = wv
             wv_size = wv.shape[0]
+
+            if not missing_random:
+                wv_size += NUM_SYMBOLS
+                token_to_wv[token] = np.concatenate((token_to_wv[token], np.zeros(NUM_SYMBOLS)))
+
     return token_to_wv, wv_size
 
 token_to_wv, wv_size = load_wv()
@@ -28,8 +36,14 @@ for i in range(vocab_size):
     wv = None
     if token in token_to_wv:
         wv = token_to_wv[token]
+    elif missing_random:
+        wv = np.random.normal(loc=0.0, scale=0.01, size=(wv_size))
     else:
-        wv = np.random.normal(loc=0.0, scale=1.0, size=(wv_size))
+       symbol_idx = Symbol.index(token)        
+       if symbol_idx is None:
+           symbol_idx = Symbol.index(Symbol.SEQ_UNC)
+       wv = np.zeros(wv_size)
+       wv[wv_size - NUM_SYMBOLS + symbol_idx] = 1.0
     wv_mat[i] = wv
 
 np.save(output_file, wv_mat)
