@@ -185,6 +185,7 @@ class SequenceModel(nn.Module):
                 .repeat(n).long().view(1,n)
 
         if heuristic is not None:
+            # FIXME Fix to match smc if used later
             context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).contiguous().view(n, context[0].size(1)),
                        context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).contiguous().view(n, 1))
 
@@ -265,8 +266,8 @@ class SequenceModel(nn.Module):
                 .repeat(n).long().view(1,n)
 
         if heuristic is not None:
-            context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).contiguous().view(n, context[0].size(1)),
-                       context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).contiguous().view(n, 1))
+            context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).transpose(0,1).contiguous().view(n, context[0].size(1)),
+                       context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).transpose(0,1).contiguous().view(n, 1))
 
         if self.on_gpu():
             seq_part = seq_part.cuda()
@@ -286,12 +287,16 @@ class SequenceModel(nn.Module):
 
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
-                for i in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(i*samples_per_input):((i+1)*samples_per_input)], requires_grad=False))
-                    sample_indices = i*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
-                    sample[:,(i*samples_per_input):((i+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
-                    next_token[(i*samples_per_input):((i+1)*samples_per_input)] = next_token[sample_indices.data]
-                    hidden[(i*samples_per_input):((i+1)*samples_per_input)] = hidden[sample_indices.data]
+                for j in range(input_count):
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
+                    sample_indices = j*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
+                    sample[:,(j*samples_per_input):((j+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
+                    next_token[(j*samples_per_input):((j+1)*samples_per_input)] = next_token[sample_indices.data]
+                    if isinstance(hidden, tuple):
+                        hidden[0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][:,sample_indices.data]
+                        hidden[1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][:,sample_indices.data]
+                    else:
+                        hidden[:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[:,sample_indices.data]
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
