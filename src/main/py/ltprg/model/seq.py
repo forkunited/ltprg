@@ -285,6 +285,12 @@ class SequenceModel(nn.Module):
             next_token = torch.multinomial(output_dist).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
 
+            for j in range(next_token.size(0)):
+                seq_length[j] += 1 - ended[j]
+                if next_token[j][0] == end_idx:
+                    ended[j] = 1
+                    ended_count += 1
+
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
@@ -297,12 +303,6 @@ class SequenceModel(nn.Module):
                         hidden[1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][:,sample_indices.data]
                     else:
                         hidden[:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[:,sample_indices.data]
-
-            for j in range(next_token.size(0)):
-                seq_length[j] += 1 - ended[j]
-                if next_token[j][0] == end_idx:
-                    ended[j] = 1
-                    ended_count += 1
 
             if ended_count == n:
                 break

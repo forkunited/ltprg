@@ -283,7 +283,7 @@ rsa_model, best_meaning, best_iteration = trainer.train(rsa_model, D_train, TRAI
 
 best_model = RSA.make(training_dist + "_" + str(training_level), training_dist, training_level, best_meaning, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=soft_bottom, alpha=alpha)
 
-output_model_samples(best_model, data_parameters, D_dev_close)
+#output_model_samples(best_model, data_parameters, D_dev_close)
 #output_model_samples(best_model, data_parameters, D_dev_split)
 #output_model_samples(best_model, data_parameters, D_dev_far)
 
