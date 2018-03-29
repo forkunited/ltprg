@@ -134,7 +134,7 @@ def process_record(record, D, record_type):
         if key != game_groupby and key != record_groupby:
             if key == "time":
                 sub_record[key] = int(record[key])
-            elif record[key].startswith("[") and record[key].endswith("]"):
+            elif (record[key].startswith("[") and record[key].endswith("]")) or (record[key].startswith("{") and record[key].endswith("}")):
                 sub_record[key] = json.loads(record[key])
             else:
                 sub_record[key] = record[key]
