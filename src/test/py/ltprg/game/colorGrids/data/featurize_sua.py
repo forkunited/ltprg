@@ -4,6 +4,7 @@ import sys
 import mung.feature_helpers
 import ltprg.data.feature_helpers
 from os.path import join
+from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs, rgbs_to_labs
 
 input_data_dir = sys.argv[1]
 output_feature_dir = sys.argv[2]
@@ -43,6 +44,10 @@ class FeaturizeSUA(unittest.TestCase):
             seq = np.zeros(shape=(seq_length, color_dim))
             for i in range(num_objs):
                 obj_colors = np.array(datum.get("state.objs[" + str(i) + "].shapes[*].color"))
+                for i in range(obj_colors.shape[0]): # Convert to cielab
+                    color_lst = [obj_colors[i,0], obj_colors[i,1], obj_colors[i,2]]
+                    rgb = np.array(hsls_to_rgbs([map(int, hsl)]))[0]
+                    obj_colors[i] = np.array(rgbs_to_labs([rgb]))[0]
                 seq[i*grid_dim*grid_dim:(i+1)*grid_dim*grid_dim,:] = obj_colors
                 seq[(i+1)*grid_dim*grid_dim,:] = 0.0
             return seq
@@ -60,46 +65,6 @@ class FeaturizeSUA(unittest.TestCase):
                              seq_length,
                              color_dim,
                              init_data="train")
-
-    # Constructs vectors of the colors that the speaker observed
-    def test_speaker_colors(self):
-        print "Featurizing speaker colors"
-
-        dims = []
-        for i in range(grid_dim*grid_dim):
-            dims.append("state.sObj0_Shp" + str(i) + "_ClrH")
-            dims.append("state.sObj0_Shp" + str(i) + "_ClrS")
-        for i in range(grid_dim*grid_dim):
-            dims.append("state.sObj1_Shp" + str(i) + "_ClrH")
-            dims.append("state.sObj1_Shp" + str(i) + "_ClrS")
-
-        mung.feature_helpers.featurize_path_scalars(
-            input_data_dir,
-            join(output_feature_dir, "speaker_colors"),
-            partition_file,
-            lambda d : d.get("gameid"),
-            "speaker_colors",
-            dims)
-
-    def test_speaker_colors_cielab(self):
-        print "Featurizing speaker colors (cielab)"
-
-        dims = []
-        for i in range(grid_dim*grid_dim):
-            dims.append(["state.sObj0_Shp" + str(i) + "_ClrH","state.sObj0_Shp" + str(i) + "_ClrS","state.sObj0_Shp" + str(i) + "_ClrL"])
-        for i in range(grid_dim*grid_dim):
-            dims.append(["state.sObj1_Shp" + str(i) + "_ClrH","state.sObj0_Shp" + str(i) + "_ClrS","state.sObj0_Shp" + str(i) + "_ClrL"])
-
-        ltprg.data.feature_helpers.featurize_embeddings(
-            input_data_dir,
-            join(output_feature_dir, "speaker_colors_cielab"),
-            partition_file,
-            lambda d : d.get("gameid"),
-            # "context_fc_embedding",
-            "speaker_colors_cielab",
-            dims,
-            # "fc-6",
-            "cielab")
 
     # Constructs an index of the target color index (0, 1, or 2)
     def test_target_indices(self):
