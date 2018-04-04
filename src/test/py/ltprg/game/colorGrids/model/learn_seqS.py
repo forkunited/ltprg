@@ -63,9 +63,9 @@ partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
-D_dev_close = D_dev.filter(lambda d : d.get("state.condition.name") == "CLOSE")
-D_dev_split = D_dev.filter(lambda d : d.get("state.condition.name") == "SPLIT")
-D_dev_far = D_dev.filter(lambda d : d.get("state.condition.name") == "FAR")
+D_dev_close = D_dev.filter(lambda d : d.get("state.state.condition.name") == "CLOSE")
+D_dev_split = D_dev.filter(lambda d : d.get("state.state.condition.name") == "SPLIT")
+D_dev_far = D_dev.filter(lambda d : d.get("state.state.condition.name") == "FAR")
 
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
 utterance_length = D_train["utterance"].get_feature_seq_set().get_size()

@@ -19,7 +19,7 @@ RNN_TYPE = RNNType.LSTM
 EMBEDDING_SIZE = 100
 RNN_SIZE = 100
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=10000 #10000 #1000 #00
+TRAINING_ITERATIONS=500 #10000 #1000 #00
 TRAINING_BATCH_SIZE=128
 DROP_OUT = 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM
@@ -35,9 +35,6 @@ def output_model_samples(model, D, max_length, batch_size=20):
 
     for i in range(len(batch_indices)):
         index = batch_indices[i]
-        H = data.get(index).get("state.sTargetH")
-        S = data.get(index).get("state.sTargetS")
-        L = data.get(index).get("state.sTargetL")
 
         utterance_lists = data.get(index).get("utterances[*].nlp.lemmas.lemmas", first=False)
         observed_utt = " # ".join([" ".join(utterance) for utterance in utterance_lists])
@@ -47,7 +44,7 @@ def output_model_samples(model, D, max_length, batch_size=20):
         beam, utterance_length, scores = beams[i]
         top_utts = [" ".join([D["utterance"].get_feature_token(beam[k][j]).get_value() for k in range(utterance_length[j])]) for j in range(beam.size(1))]
 
-        print "Condition: " + data.get(index).get("state.condition")
+        print "Condition: " + data.get(index).get("state.state.condition.name")
         print "ID: " + data.get(index).get("id")
         print "H: " + str(H) + ", S: " + str(S) + ", L: " + str(L)
         print "True utterance: " + observed_utt
@@ -72,14 +69,14 @@ if gpu:
 np.random.seed(1)
 
 D = MultiviewDataSet.load(data_dir,
-                          dfmatseq_paths={ "world" : world_dir, "utterance" : utterance_dir })
+                          dfmatseq_paths={ "utterance" : utterance_dir, "world" : world_dir })
 partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
-D_dev_close = D_dev.filter(lambda d : d.get("state.condition.name") == "CLOSE")
-D_dev_split = D_dev.filter(lambda d : d.get("state.condition.name") == "SPLIT")
-D_dev_far = D_dev.filter(lambda d : d.get("state.condition.name") == "FAR")
+D_dev_close = D_dev.filter(lambda d : d.get("state.state.condition.name") == "CLOSE")
+D_dev_split = D_dev.filter(lambda d : d.get("state.state.condition.name") == "SPLIT")
+D_dev_far = D_dev.filter(lambda d : d.get("state.state.condition.name") == "FAR")
 
 world_size = D_train["world"].get_matrix(0).get_feature_set().get_token_count()
 utterance_size = D_train["utterance"].get_matrix(0).get_feature_set().get_token_count()
@@ -91,7 +88,7 @@ loss_criterion = VariableLengthNLLLoss()
 model=None
 
 in_model = SequenceModelNoInput("S0_in", world_size, EMBEDDING_SIZE, RNN_SIZE,
-             RNN_LAYERS, rnn_type=RNN_TYPE, dropout=DROP_OUT, bidir=True)
+             RNN_LAYERS, rnn_type=RNN_TYPE, dropout=DROP_OUT, bidir=True, non_emb=True)
 out_model = SequenceModelInputToHidden("S0_out", utterance_size, RNN_SIZE, \
     EMBEDDING_SIZE, RNN_SIZE, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE)
 model = SequenceModelPair("S0", in_model, out_model, RNN_SIZE)

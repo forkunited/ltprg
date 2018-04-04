@@ -127,7 +127,10 @@ class SequenceModel(nn.Module):
     def forward_batch(self, batch, data_parameters):
         input = None
         if DataParameter.INPUT in data_parameters and data_parameters[DataParameter.INPUT] in batch:
-            input = Variable(batch[data_parameters[DataParameter.INPUT]])
+            if isinstance(batch[data_parameters[DataParameter.INPUT]], tuple):
+                input = (Variable(batch[data_parameters[DataParameter.INPUT]][0]), batch[data_parameters[DataParameter.INPUT]][1])
+            else:
+                input = Variable(batch[data_parameters[DataParameter.INPUT]])
 
         seq, length, mask = batch[data_parameters[DataParameter.SEQ]]
         length = length - 1
@@ -822,7 +825,10 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
         bidir = init_params["bidir"]
-        non_emb = init_params["non_emb"]
+
+        non_emb = False
+        if "non_emb" in init_params:
+            non_emb = init_params["non_emb"]
 
         freeze_embedding = False
         if "freeze_embedding" in init_params:
@@ -834,7 +840,7 @@ class SequenceModelInputEmbedded(SequenceModel):
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
-                 embedding_init=None, freeze_embedding=False):
+                 embedding_init=None, freeze_embedding=False, non_emb=False):
         super(SequenceModelNoInput, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -847,13 +853,20 @@ class SequenceModelNoInput(SequenceModel):
         self._init_params["dropout"] = dropout
         self._init_params["bidir"] = bidir
         self._init_params["freeze_embedding"] = freeze_embedding
+        self._init_params["non_emb"] = non_emb
 
         self._freeze_embedding = freeze_embedding
 
+        if non_emb:
+            self._emb = nn.Linear(seq_size, embedding_size)
+            self._tanh = nn.Tanh()
+        else:
+            self._emb = nn.Embedding(seq_size, embedding_size)
+
+        self._non_emb = non_emb
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
-        self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
@@ -872,7 +885,11 @@ class SequenceModelNoInput(SequenceModel):
                     Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
-        emb_pad = self._drop(self._emb(seq_part))
+        if self._non_emb:
+            emb_pad = self._drop(self._tanh(self._emb(seq_part)))
+        else:
+            emb_pad = self._drop(self._emb(seq_part)) 
+
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
@@ -902,11 +919,14 @@ class SequenceModelNoInput(SequenceModel):
         rnn_layers = init_params["rnn_layers"]
         dropout = init_params["dropout"]
         rnn_type = init_params["rnn_type"]
+        non_emb = False
+        if "non_emb" in init_params:
+            non_emb = init_params["non_emb"]
 
         bidir = False
         if "bidir" in init_params:
             bidir = init_params["bidir"]
-        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir)
+        return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, non_emb=non_emb)
 
 
 class SequenceModelPair(SequenceModel):
@@ -918,8 +938,8 @@ class SequenceModelPair(SequenceModel):
         self._init_params["hidden_size"] = hidden_size
         self._init_params["in_model"] = in_model._get_init_params()
         self._init_params["out_model"] = out_model._get_init_params()
-        self._init_parmas["in_model_arch"] = type(in_model).__name__
-        self._init_parmas["out_model_arch"] = type(out_model).__name__
+        self._init_params["in_model_arch"] = type(in_model).__name__
+        self._init_params["out_model_arch"] = type(out_model).__name__
 
         self._in_model = in_model
         self._out_model = out_model

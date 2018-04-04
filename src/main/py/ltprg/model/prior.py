@@ -144,7 +144,9 @@ class SequenceSamplingPriorFn(nn.Module):
 
             if self._heuristic is not None:
                 all_input_indices = torch.zeros((inputs_per_observation - 1)*batch_size).long()
-                all_contexts = torch.zeros((inputs_per_obervation - 1)*batch_size, observation.size(1))
+                all_contexts = Variable(torch.zeros((inputs_per_observation - 1)*batch_size, observation.size(1)), requires_grad=False)
+                if self.on_gpu():
+                    all_contexts = all_contexts.cuda()
 
             for i in range(batch_size):
                 ignored_i = self._ignored_input[i]
