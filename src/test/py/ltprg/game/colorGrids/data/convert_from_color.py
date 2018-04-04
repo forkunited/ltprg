@@ -8,7 +8,7 @@ output_dir = sys.argv[2]
 D = DataSet.load(data_dir, id_key="gameid")
 grid_data = []
 for datum in D:
-    color_dict = D.to_dict()
+    color_dict = datum.to_dict()
     grid_dict = dict()
     grid_dict["gameid"] = color_dict["gameid"]
     grid_dict["records"] = []

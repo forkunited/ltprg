@@ -32,8 +32,8 @@ class FeaturizeSUA(unittest.TestCase):
             "utterance_clean_idx", # Name of the feature
             ["utterances[*].nlp.clean_strs.strs"], # JSON path into data examples
             50, # Maximum utterance length
-            indices=True) # Indicates that indices will be computed instead of one-hot vectors
-            token_fn=lambda x : x, # Function applied to tokens to construct the vocabulary
+            indices=True, # Indicates that indices will be computed instead of one-hot vectors
+            token_fn=lambda x : x) # Function applied to tokens to construct the vocabulary
 
     def test_colors_seq(self):
         print "Featurizing color sequence"
@@ -43,13 +43,14 @@ class FeaturizeSUA(unittest.TestCase):
         def matrix_fn(datum):
             seq = np.zeros(shape=(seq_length, color_dim))
             for i in range(num_objs):
-                obj_colors = np.array(datum.get("state.objs[" + str(i) + "].shapes[*].color"))
-                for i in range(obj_colors.shape[0]): # Convert to cielab
-                    color_lst = [obj_colors[i,0], obj_colors[i,1], obj_colors[i,2]]
-                    rgb = np.array(hsls_to_rgbs([map(int, hsl)]))[0]
-                    obj_colors[i] = np.array(rgbs_to_labs([rgb]))[0]
-                seq[i*grid_dim*grid_dim:(i+1)*grid_dim*grid_dim,:] = obj_colors
-                seq[(i+1)*grid_dim*grid_dim,:] = 0.0
+                obj_colors = np.array(datum.get("state.state.objs[" + str(i) + "].shapes[*].color", first=False))
+                for j in range(obj_colors.shape[0]): # Convert to cielab
+                    color_lst = [obj_colors[j,0], obj_colors[j,1], obj_colors[j,2]]
+                    rgb = np.array(hsls_to_rgbs([map(int, color_lst)]))[0]
+                    lab = np.array(rgbs_to_labs([rgb]))[0]
+                    obj_colors[j] = lab
+                seq[(i+i*grid_dim*grid_dim):(i+(i+1)*grid_dim*grid_dim),:] = obj_colors
+                seq[i+(i+1)*grid_dim*grid_dim,:] = 0.0
             return seq
 
         def length_fn(datum):

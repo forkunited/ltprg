@@ -288,7 +288,7 @@ class GridObject:
         objs_dict = dict()
         obj_idx = 0
         # Note: This may seem silly.  It is.  Because based on old version.
-        for src_obj in state_json["objs"]:
+        for src_obj in state_json["state"]["objs"]:
             shp_idx = 0
             for src_shape in src_obj["shapes"]:
                 hsl_obj = { "H" : float(src_shape["color"][0]),  \
@@ -296,12 +296,11 @@ class GridObject:
                             "L" : float(src_shape["color"][2]) }
                 if obj_idx not in objs_dict:
                     objs_dict[obj_idx] = dict()
-                if shp_idx not in objs_dict[obj_idx]:
-                    objs_dict[obj_idx][shp_idx] = dict()
+                objs_dict[obj_idx][shp_idx] = hsl_obj
                 shp_idx += 1
             obj_idx += 1
 
-        target_idx = int(state_json["target"])
+        target_idx = int(state_json["state"]["target"])
         objs = [None for i in range(len(objs_dict))]
         for i in range(len(objs_dict)):
             shapes = [None for j in range(len(objs_dict[i]))]
