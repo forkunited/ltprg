@@ -136,7 +136,10 @@ class SequenceModel(nn.Module):
         if self.on_gpu():
             seq_in = seq_in.cuda()
             if input is not None:
-                input = input.cuda()
+                if isinstance(input, tuple):
+                    input[0] = input[0].cuda()
+                else:
+                    input = input.cuda()
 
         model_out, hidden = self(seq_part=seq_in, seq_length=length, input=input)
         return model_out, hidden
@@ -890,17 +893,6 @@ class SequenceModelNoInput(SequenceModel):
             if freeze_embedding:
                 self._emb.weight.requires_grad = False
 
-
-        #self._emb.weight.data.uniform_(-initrange, initrange)
-
-        #self._encoder.bias.data.fill_(0)
-        #self._encoder.weight.data.uniform_(-initrange, initrange)
-        #init.normal(self._encoder.weight.data, mean=0.0, std=init_range)
-
-        #self._decoder.bias.data.fill_(0)
-        #self._decoder.weight.data.uniform_(-initrange, initrange)
-        #init.normal(self._decoder.weight.data, mean=0.0, std=init_range)
-
     @staticmethod
     def make(init_params):
         name = init_params["name"]
@@ -915,3 +907,48 @@ class SequenceModelNoInput(SequenceModel):
         if "bidir" in init_params:
             bidir = init_params["bidir"]
         return SequenceModelNoInput(name, seq_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir)
+
+
+class SequenceModelPair(SequenceModel):
+    def __init__(self, name, in_model, out_model, hidden_size):
+        super(SequenceModelPair, self).__init__(name, hidden_size, False)
+
+        self._init_params = dict()
+        self._init_params["name"] = name
+        self._init_params["hidden_size"] = hidden_size
+        self._init_params["in_model"] = in_model._get_init_params()
+        self._init_params["out_model"] = out_model._get_init_params()
+        self._init_parmas["in_model_arch"] = type(in_model).__name__
+        self._init_parmas["out_model_arch"] = type(out_model).__name__
+
+        self._in_model = in_model
+        self._out_model = out_model
+        self._hidden_size = hidden_size
+
+        self._hidden = nn.Linear(in_model.get_hidden_size()*in_model.get_directions(), hidden_size)
+        self._hidden_nl = nn.Tanh()
+
+    def _get_init_params(self):
+        return self._init_params
+
+    def forward(self, seq_part=None, seq_length=None, input=None):
+        output, hidden = self._in_model(seq_part=input[0], seq_length=input[1])
+        if isinstance(hidden, tuple): # Handle LSTM
+            hidden = hidden[0]
+        hidden = self._hidden(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
+        hidden = self._hidden_nl(hidden)
+
+        return self._out_model(seq_part=seq_part, seq_length=seq_length, input=hidden)
+
+    @staticmethod
+    def make(init_params):
+        name = init_params["name"]
+        hidden_size = init_params["hidden_size"]
+        in_model_params = init_params["in_model"]
+        out_model_params = init_params["out_model"]
+        in_model_arch = init_params["in_model_arch"]
+        out_model_arch = init_params["out_model_arch"]
+
+        in_model = SequenceModel.make(in_model_params, in_model_arch)
+        out_model = SequenceModel.make(out_model_params, out_model_arch)
+        return SequenceModelPair(name, in_model, out_model, hidden_size)
