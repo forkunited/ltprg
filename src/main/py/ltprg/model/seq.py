@@ -718,7 +718,8 @@ class SequenceModelInputToHidden(SequenceModel):
 
 class SequenceModelInputEmbedded(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
-                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False, embedding_init=None, freeze_embedding=False):
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False, embedding_init=None,
+                 freeze_embedding=False, non_emb=False):
         super(SequenceModelInputEmbedded, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -732,13 +733,22 @@ class SequenceModelInputEmbedded(SequenceModel):
         self._init_params["dropout"] = dropout
         self._init_params["bidir"] = bidir
         self._init_params["freeze_embedding"] = freeze_embedding
+        self._init_params["non_emb"] = non_emb
 
         self._freeze_embedding = freeze_embedding
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
-        self._emb = nn.Embedding(seq_size, embedding_size)
+
+        self._non_emb = non_emb
+
+        if non_emb:
+            self._emb = nn.Linear(seq_size, embedding_size)
+            self._tanh = nn.Tanh()
+        else:
+            self._emb = nn.Embedding(seq_size, embedding_size)
+
         self._rnn = getattr(nn, rnn_type)(embedding_size + input_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
@@ -757,7 +767,11 @@ class SequenceModelInputEmbedded(SequenceModel):
                     Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_()))
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
-        emb_pad = self._drop(self._emb(seq_part))
+        emb_pad = None
+        if self._non_emb:
+            emb_pad = self._drop(self._tanh(self._emb(seq_part)))
+        else:
+            emb_pad = self._drop(self._emb(seq_part))
 
         input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
         emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
@@ -805,12 +819,13 @@ class SequenceModelInputEmbedded(SequenceModel):
         rnn_type = init_params["rnn_type"]
         dropout = init_params["dropout"]
         bidir = init_params["bidir"]
+        non_emb = init_params["non_emb"]
 
         freeze_embedding = False
         if "freeze_embedding" in init_params:
             freeze_embedding = init_params["freeze_embedding"]
 
-        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, freeze_embedding=freeze_embedding)
+        return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, freeze_embedding=freeze_embedding, non_emb=non_emb)
 
 
 class SequenceModelNoInput(SequenceModel):
