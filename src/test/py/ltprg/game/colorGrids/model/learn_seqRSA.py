@@ -100,7 +100,7 @@ selection_model_type = sys.argv[30]
 world_prior_depth = int(sys.argv[31])
 output_meaning_model_path = sys.argv[32]
 training_condition = sys.argv[33]
-data_condition = sys.argv[34]
+#data_condition = sys.argv[34]
 
 if training_data_size == "None":
     training_data_size = None
