@@ -69,7 +69,8 @@ if gpu:
 np.random.seed(1)
 
 D = MultiviewDataSet.load(data_dir,
-                          dfmatseq_paths={ "utterance" : utterance_dir, "world" : world_dir })
+                          dfmatseq_paths={ "utterance" : utterance_dir, "world" : world_dir },
+                          "orderng_seq" : "world")
 partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]

@@ -55,6 +55,12 @@ partition_file = sys.argv[3]
 utterance_dir = sys.argv[4]
 output_results_path = sys.argv[5]
 output_model_path = sys.argv[6]
+training_data_size = sys.argv[7]
+
+if training_data_size == "None":
+    training_data_size = None
+else:
+    training_data_size = int(training_data_size)
 
 D = MultiviewDataSet.load(data_dir,
                           dfmat_paths={ },
@@ -62,6 +68,11 @@ D = MultiviewDataSet.load(data_dir,
 partition = Partition.load(partition_file)
 D_parts = D.partition(partition, lambda d : d.get("gameid"))
 D_train = D_parts["train"]
+
+if training_data_size is not None:
+    D_train.shuffle()
+    D_train = D_train.get_subset(0, training_data_size)
+
 D_dev = D_parts["dev"].get_random_subset(DEV_SAMPLE_SIZE)
 D_dev_close = D_dev.filter(lambda d : d.get("state.state.condition.name") == "CLOSE")
 D_dev_split = D_dev.filter(lambda d : d.get("state.state.condition.name") == "SPLIT")
