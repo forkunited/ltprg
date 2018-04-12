@@ -139,6 +139,8 @@ def process_record(record, D, record_type):
                 if key == "action" or key == "utterance" or key == "obj":
                     for k in obj:
                         sub_record[k] = obj[k]
+                else:
+                    sub_record[key] = obj
             else:
                 sub_record[key] = record[key]
     sub_record["type"] = record_type
