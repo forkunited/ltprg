@@ -1,2 +1,0 @@
-eventType	gameid	time	roundNum	obj
-action	0554-031bdfe7-3ba7-4880-b6a2-11d4df3945c2	1522280762538	1	{"type":"ActionColorGrid","lClicked":0,"mouseX":254,"mouseY":106,"time":1522280762538,"condition":{"name":"SPLIT"}}

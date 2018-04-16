@@ -1,2 +1,0 @@
-eventType	gameid	time	roundNum	obj
-action	5524-1b02e0b3-70d1-4283-9bcc-64cd28e03f3d	1522269089414	1	{"type":"ActionColorGrid","lClicked":1,"mouseX":282,"mouseY":152,"time":1522269089414,"condition":{"name":"CLOSE"}}
