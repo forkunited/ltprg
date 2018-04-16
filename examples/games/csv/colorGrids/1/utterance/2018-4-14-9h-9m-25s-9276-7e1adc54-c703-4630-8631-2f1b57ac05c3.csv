@@ -1,0 +1,19 @@
+eventType	gameid	time	roundNum	obj
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722165376	1	{"type":"Utterance","sender":"speaker","contents":"The one with the brown in the middle","time":1523722165376}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722222703	2	{"type":"Utterance","sender":"speaker","contents":"dark orange on left side in middle","time":1523722222703}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722285496	3	{"type":"Utterance","sender":"speaker","contents":"2 gray tiles","time":1523722285496}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722322933	4	{"type":"Utterance","sender":"speaker","contents":"has lightest blue in middle of bottom row","time":1523722322933}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722345885	5	{"type":"Utterance","sender":"speaker","contents":"Bright orange one","time":1523722345885}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722387866	6	{"type":"Utterance","sender":"speaker","contents":"has lightest aqua color on top left side","time":1523722387866}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722449860	6	{"type":"Utterance","sender":"speaker","contents":"brightest dark blue color in top center","time":1523722449860}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722520333	6	{"type":"Utterance","sender":"speaker","contents":"has the least faded colors collectively (?)","time":1523722520333}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722611870	6	{"type":"Utterance","sender":"listener","contents":"0-0=","time":1523722611870}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722671448	7	{"type":"Utterance","sender":"speaker","contents":"                                                                                                                                                                           DARK PURPLE MIDDLE TOP                                                                                                                        ","time":1523722671448}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722698052	7	{"type":"Utterance","sender":"listener","contents":"the one with orange on the left?","time":1523722698052}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722793331	8	{"type":"Utterance","sender":"speaker","contents":"the one with the pinkish purplish in the bottom center square","time":1523722793331}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722848548	8	{"type":"Utterance","sender":"speaker","contents":"has a gray square in the top right","time":1523722848548}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722905957	8	{"type":"Utterance","sender":"speaker","contents":"light bluish green in the right center","time":1523722905957}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523722948845	8	{"type":"Utterance","sender":"speaker","contents":"yellow in the top center","time":1523722948845}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523723044772	8	{"type":"Utterance","sender":"speaker","contents":"hello (?) :)","time":1523723044772}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523723128582	8	{"type":"Utterance","sender":"speaker","contents":"is there another side ?","time":1523723128582}
+utterance	9276-7e1adc54-c703-4630-8631-2f1b57ac05c3	1523723187378	8	{"type":"Utterance","sender":"speaker","contents":"r u there ?","time":1523723187378}

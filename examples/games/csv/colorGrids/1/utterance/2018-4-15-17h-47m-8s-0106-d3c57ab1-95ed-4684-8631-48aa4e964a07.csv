@@ -1,0 +1,240 @@
+eventType	gameid	time	roundNum	obj
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839628186	1	{"type":"Utterance","sender":"speaker","contents":"the correct target is plum in far left middle","time":1523839628186}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839642930	2	{"type":"Utterance","sender":"speaker","contents":"nice one","time":1523839642930}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839646721	2	{"type":"Utterance","sender":"listener","contents":"ty","time":1523839646721}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839663020	2	{"type":"Utterance","sender":"speaker","contents":"the correct one is dark blue bottom row in the middle ","time":1523839663020}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839666210	2	{"type":"Utterance","sender":"speaker","contents":"darkest blue","time":1523839666210}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839699595	3	{"type":"Utterance","sender":"speaker","contents":"target is lime green in center","time":1523839699595}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839726973	4	{"type":"Utterance","sender":"speaker","contents":"light blue in top left corner, purple in bottom left corner ","time":1523839726973}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839771001	5	{"type":"Utterance","sender":"speaker","contents":"target light blue top left corner purple top right corner","time":1523839771001}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839827706	6	{"type":"Utterance","sender":"speaker","contents":"bottom row from left to right, light blue, purple, orange","time":1523839827706}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839870821	7	{"type":"Utterance","sender":"speaker","contents":"top row orange, yellow, med blue","time":1523839870821}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839955424	8	{"type":"Utterance","sender":"speaker","contents":"this one is tough, its the one with the brightest red orange and purple in the top row","time":1523839955424}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523839997265	9	{"type":"Utterance","sender":"speaker","contents":"wow these are getting hard","time":1523839997265}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840005429	9	{"type":"Utterance","sender":"listener","contents":"yeah haha, im sorry if i cant describe it properly","time":1523840005429}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840014338	9	{"type":"Utterance","sender":"speaker","contents":"me too","time":1523840014338}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840020196	9	{"type":"Utterance","sender":"listener","contents":"so its not the one with the green in the bottom right, right?","time":1523840020196}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840022419	9	{"type":"Utterance","sender":"listener","contents":"we can work together","time":1523840022419}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840032601	9	{"type":"Utterance","sender":"speaker","contents":"hold on","time":1523840032601}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840037438	9	{"type":"Utterance","sender":"listener","contents":"sure","time":1523840037438}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840048571	9	{"type":"Utterance","sender":"speaker","contents":"the one that has no green","time":1523840048571}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840062803	9	{"type":"Utterance","sender":"speaker","contents":"bottom right is purple not plum","time":1523840062803}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840076811	9	{"type":"Utterance","sender":"listener","contents":"i think I got it","time":1523840076811}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840082664	10	{"type":"Utterance","sender":"speaker","contents":"nice job","time":1523840082664}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840089686	10	{"type":"Utterance","sender":"listener","contents":"thanks you too","time":1523840089686}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840110762	10	{"type":"Utterance","sender":"speaker","contents":"okay bright orange top left and plum/magenta top right ","time":1523840110762}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840114034	10	{"type":"Utterance","sender":"speaker","contents":"lime green bottom left","time":1523840114034}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840137792	11	{"type":"Utterance","sender":"speaker","contents":"baby blue middle right","time":1523840137792}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840158487	11	{"type":"Utterance","sender":"listener","contents":"the light blue one with purple in the bottom row in the middle?","time":1523840158487}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840171105	11	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523840171105}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840182771	12	{"type":"Utterance","sender":"speaker","contents":"fuckkk ","time":1523840182771}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840182937	12	{"type":"Utterance","sender":"listener","contents":"yuck","time":1523840182937}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840186300	12	{"type":"Utterance","sender":"listener","contents":"lol","time":1523840186300}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840190827	12	{"type":"Utterance","sender":"speaker","contents":"lol alright lets see","time":1523840190827}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840206100	12	{"type":"Utterance","sender":"speaker","contents":"process of elimination, it is NOT the one with baby blue ","time":1523840206100}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840214948	12	{"type":"Utterance","sender":"listener","contents":"ok","time":1523840214948}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840216440	12	{"type":"Utterance","sender":"speaker","contents":"out of the two that are left","time":1523840216440}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840238181	12	{"type":"Utterance","sender":"speaker","contents":"its the one that has two similar shades of pink next to eachother in the bottom left","time":1523840238181}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840253744	13	{"type":"Utterance","sender":"listener","contents":"nice one ","time":1523840253744}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840254006	13	{"type":"Utterance","sender":"speaker","contents":"yay","time":1523840254006}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840320146	13	{"type":"Utterance","sender":"listener","contents":"the center square might be easiest for this one","time":1523840320146}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840330834	13	{"type":"Utterance","sender":"speaker","contents":"ok it is middle row blue purple the dullest of the brown","time":1523840330834}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840341861	13	{"type":"Utterance","sender":"speaker","contents":"with the dullest green bottom left corner","time":1523840341861}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840380109	13	{"type":"Utterance","sender":"speaker","contents":"it is neither with the top left grey","time":1523840380109}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840388995	13	{"type":"Utterance","sender":"listener","contents":"the one with 3 brown squares, 1st row in the middle, 2nd row on the right, and 3rd in the middle","time":1523840388995}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840396261	14	{"type":"Utterance","sender":"speaker","contents":"nice job","time":1523840396261}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840403551	14	{"type":"Utterance","sender":"speaker","contents":"the one with yellow in the top row","time":1523840403551}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840413354	14	{"type":"Utterance","sender":"speaker","contents":"purple, yellow, blue,","time":1523840413354}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840414316	14	{"type":"Utterance","sender":"listener","contents":"some of these are really hard","time":1523840414316}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840415095	14	{"type":"Utterance","sender":"speaker","contents":"top row","time":1523840415095}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840417093	14	{"type":"Utterance","sender":"speaker","contents":"yeah lmao","time":1523840417093}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840446476	15	{"type":"Utterance","sender":"speaker","contents":"the one with the brightest purple top middle","time":1523840446476}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840475429	16	{"type":"Utterance","sender":"speaker","contents":"okay so the darkest red on the right with blue in the bottom left ","time":1523840475429}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840477433	16	{"type":"Utterance","sender":"speaker","contents":"not purple ","time":1523840477433}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840478206	16	{"type":"Utterance","sender":"listener","contents":"I think we are doing great","time":1523840478206}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840480844	16	{"type":"Utterance","sender":"speaker","contents":"dude same","time":1523840480844}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840516351	17	{"type":"Utterance","sender":"speaker","contents":"the one with same color blue on left","time":1523840516351}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840527646	17	{"type":"Utterance","sender":"listener","contents":"so the left boy with green in the middle?","time":1523840527646}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840531740	17	{"type":"Utterance","sender":"speaker","contents":"lime green middle","time":1523840531740}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840535104	17	{"type":"Utterance","sender":"listener","contents":"nice","time":1523840535104}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840545353	18	{"type":"Utterance","sender":"speaker","contents":"this a really fun hit actually","time":1523840545353}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840553586	18	{"type":"Utterance","sender":"listener","contents":"I know","time":1523840553586}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840558004	18	{"type":"Utterance","sender":"speaker","contents":"orange center with green on left and right ","time":1523840558004}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840564066	18	{"type":"Utterance","sender":"listener","contents":"I love when they are like this","time":1523840564066}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840567108	18	{"type":"Utterance","sender":"speaker","contents":"same ","time":1523840567108}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840603850	19	{"type":"Utterance","sender":"speaker","contents":"far left dull purple purple blue from top to bottom","time":1523840603850}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840636591	20	{"type":"Utterance","sender":"speaker","contents":"the one with purple in the bottom left ","time":1523840636591}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840660071	21	{"type":"Utterance","sender":"speaker","contents":"the one with purple middle","time":1523840660071}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840690483	22	{"type":"Utterance","sender":"speaker","contents":"the one with light blue in the bottom left and lime green above it ","time":1523840690483}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840691899	22	{"type":"Utterance","sender":"speaker","contents":"wait","time":1523840691899}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840694334	22	{"type":"Utterance","sender":"speaker","contents":"im sorry","time":1523840694334}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840695845	22	{"type":"Utterance","sender":"speaker","contents":"bottom right","time":1523840695845}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840716122	23	{"type":"Utterance","sender":"speaker","contents":"lol I was like I cant find it","time":1523840716122}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840720306	23	{"type":"Utterance","sender":"listener","contents":"LOL yeah my bad","time":1523840720306}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840741291	23	{"type":"Utterance","sender":"speaker","contents":"the one with grey in top left purple under it","time":1523840741291}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840757082	24	{"type":"Utterance","sender":"speaker","contents":"hmm ","time":1523840757082}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840769578	24	{"type":"Utterance","sender":"speaker","contents":"the one with the two most similar shades of purple in the bottom right ","time":1523840769578}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840772496	24	{"type":"Utterance","sender":"speaker","contents":"with dark blue in top right","time":1523840772496}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840815393	25	{"type":"Utterance","sender":"listener","contents":"this one looks tough","time":1523840815393}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840820659	25	{"type":"Utterance","sender":"listener","contents":"we can maybe use elimination","time":1523840820659}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840827786	25	{"type":"Utterance","sender":"listener","contents":"not the one with the grey in the middle im assuming right?","time":1523840827786}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840828421	25	{"type":"Utterance","sender":"speaker","contents":"middle row grey dull fuchsia and green dark blue top right","time":1523840828421}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840845058	25	{"type":"Utterance","sender":"speaker","contents":"yeah some are ","time":1523840845058}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840873983	25	{"type":"Utterance","sender":"listener","contents":"so its the one with two shades of green that are similar in the 1st row, middle and 2nd row to the right?","time":1523840873983}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840877518	25	{"type":"Utterance","sender":"speaker","contents":"no orange","time":1523840877518}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840882155	25	{"type":"Utterance","sender":"speaker","contents":"no","time":1523840882155}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840895995	25	{"type":"Utterance","sender":"speaker","contents":"dull green bottom left","time":1523840895995}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840897109	25	{"type":"Utterance","sender":"listener","contents":"okay so its the one with bottom row green, grey, and like a rust color","time":1523840897109}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840911801	25	{"type":"Utterance","sender":"speaker","contents":"the lighter of the 2 rust ","time":1523840911801}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840928119	25	{"type":"Utterance","sender":"listener","contents":"hmm okay","time":1523840928119}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840930738	25	{"type":"Utterance","sender":"listener","contents":"i think i know which one","time":1523840930738}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840942548	26	{"type":"Utterance","sender":"listener","contents":"yay","time":1523840942548}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840962956	26	{"type":"Utterance","sender":"speaker","contents":"okay so its NOT the one with pink in the center ","time":1523840962956}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840967262	26	{"type":"Utterance","sender":"listener","contents":"ok","time":1523840967262}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523840973883	26	{"type":"Utterance","sender":"speaker","contents":"out of the other two, its the one with blue in the top right","time":1523840973883}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841002561	27	{"type":"Utterance","sender":"speaker","contents":"the one with no green","time":1523841002561}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841061340	28	{"type":"Utterance","sender":"speaker","contents":"okay so its one of the ones with green in the center ","time":1523841061340}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841069846	28	{"type":"Utterance","sender":"listener","contents":"ok","time":1523841069846}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841079322	28	{"type":"Utterance","sender":"speaker","contents":"and its the one with the dullest pink and the brightest green ","time":1523841079322}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841094416	29	{"type":"Utterance","sender":"speaker","contents":"very good","time":1523841094416}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841100412	29	{"type":"Utterance","sender":"listener","contents":"thanks!","time":1523841100412}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841113856	29	{"type":"Utterance","sender":"speaker","contents":"it is the one with the dull red bottom middle","time":1523841113856}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841135409	29	{"type":"Utterance","sender":"listener","contents":"not the orange one bottom row in the middle right?","time":1523841135409}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841142576	29	{"type":"Utterance","sender":"listener","contents":"just making sure im not confusing dull red with orange","time":1523841142576}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841156155	29	{"type":"Utterance","sender":"speaker","contents":"it has green in the center middle row","time":1523841156155}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841166322	29	{"type":"Utterance","sender":"listener","contents":"okay i think i know which one","time":1523841166322}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841173231	30	{"type":"Utterance","sender":"speaker","contents":"nice one","time":1523841173231}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841175820	30	{"type":"Utterance","sender":"listener","contents":"yay","time":1523841175820}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841181137	30	{"type":"Utterance","sender":"speaker","contents":"only one with green in the top row","time":1523841181137}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841211131	31	{"type":"Utterance","sender":"speaker","contents":"the one with the bottom orange right ","time":1523841211131}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841236782	32	{"type":"Utterance","sender":"speaker","contents":"dark blue in the bottom right and light blue 2nd row to the left","time":1523841236782}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841287749	32	{"type":"Utterance","sender":"listener","contents":"is there a lime green in top right","time":1523841287749}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841292089	32	{"type":"Utterance","sender":"speaker","contents":"you got it boss","time":1523841292089}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841299210	33	{"type":"Utterance","sender":"listener","contents":"xD","time":1523841299210}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841302357	33	{"type":"Utterance","sender":"listener","contents":"the most lime green haha","time":1523841302357}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841317802	33	{"type":"Utterance","sender":"speaker","contents":"brightest red center ","time":1523841317802}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841335171	34	{"type":"Utterance","sender":"speaker","contents":"good call","time":1523841335171}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841335519	34	{"type":"Utterance","sender":"listener","contents":"lol hard when they are so close in color","time":1523841335519}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841340786	34	{"type":"Utterance","sender":"speaker","contents":"yeah i know but were doing great man","time":1523841340786}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841344470	34	{"type":"Utterance","sender":"listener","contents":"yes we are","time":1523841344470}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841373020	34	{"type":"Utterance","sender":"speaker","contents":"brown, green, fuchsia bottom row ","time":1523841373020}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841376924	34	{"type":"Utterance","sender":"speaker","contents":"with a dull purple in the center","time":1523841376924}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841394638	35	{"type":"Utterance","sender":"listener","contents":"this one seems difficult","time":1523841394638}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841399119	35	{"type":"Utterance","sender":"speaker","contents":"purple bottom left corner","time":1523841399119}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841409536	36	{"type":"Utterance","sender":"speaker","contents":"nicee","time":1523841409536}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841417779	36	{"type":"Utterance","sender":"listener","contents":"you too","time":1523841417779}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841432200	36	{"type":"Utterance","sender":"speaker","contents":"left coloumn from top to bottom, light blue, dull purple, yellow","time":1523841432200}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841436912	36	{"type":"Utterance","sender":"speaker","contents":"with light blue in the center","time":1523841436912}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841479341	37	{"type":"Utterance","sender":"speaker","contents":"ok","time":1523841479341}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841484949	37	{"type":"Utterance","sender":"listener","contents":"yeah this one seems harder","time":1523841484949}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841505550	37	{"type":"Utterance","sender":"speaker","contents":"left side top to bottom blue purple brown","time":1523841505550}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841522275	37	{"type":"Utterance","sender":"speaker","contents":"bottom right like a plum color","time":1523841522275}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841539840	38	{"type":"Utterance","sender":"speaker","contents":"nailed it with that plum color addon","time":1523841539840}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841545254	38	{"type":"Utterance","sender":"listener","contents":"yay","time":1523841545254}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841553399	38	{"type":"Utterance","sender":"listener","contents":"oh boy","time":1523841553399}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841562281	38	{"type":"Utterance","sender":"listener","contents":"they are really hard now","time":1523841562281}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841567807	38	{"type":"Utterance","sender":"speaker","contents":"okay so this is the one with purple in the bottom left and then dull purple in the top row right in the middle","time":1523841567807}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841572249	38	{"type":"Utterance","sender":"speaker","contents":"with the brightest blue top right","time":1523841572249}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841602225	39	{"type":"Utterance","sender":"listener","contents":"yeah theyre getting much harder LOL","time":1523841602225}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841612997	39	{"type":"Utterance","sender":"speaker","contents":"top left orange with the lightest blue under it","time":1523841612997}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841634504	39	{"type":"Utterance","sender":"speaker","contents":"not the one wit hfuchsia","time":1523841634504}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841649528	39	{"type":"Utterance","sender":"listener","contents":"the brighter blue one?","time":1523841649528}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841654075	39	{"type":"Utterance","sender":"listener","contents":"like he blue just seems brighter","time":1523841654075}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841654911	39	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523841654911}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841662588	40	{"type":"Utterance","sender":"speaker","contents":"great freakin call dude","time":1523841662588}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841672183	40	{"type":"Utterance","sender":"speaker","contents":"lime green top left lol ","time":1523841672183}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841672299	40	{"type":"Utterance","sender":"listener","contents":"we are killin this","time":1523841672299}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841686905	41	{"type":"Utterance","sender":"listener","contents":"we got good communication for sure","time":1523841686905}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841691129	41	{"type":"Utterance","sender":"speaker","contents":"yes we do","time":1523841691129}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841703642	41	{"type":"Utterance","sender":"listener","contents":"center might be easiest to identify","time":1523841703642}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841707275	41	{"type":"Utterance","sender":"speaker","contents":"ok left top purple","time":1523841707275}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841714764	41	{"type":"Utterance","sender":"listener","contents":"with light blue center right?","time":1523841714764}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841715726	41	{"type":"Utterance","sender":"speaker","contents":"blue center","time":1523841715726}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841717798	41	{"type":"Utterance","sender":"listener","contents":"niceeee","time":1523841717798}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841717909	41	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523841717909}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841728155	42	{"type":"Utterance","sender":"listener","contents":"what","time":1523841728155}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841731976	42	{"type":"Utterance","sender":"listener","contents":"yikes","time":1523841731976}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841742197	42	{"type":"Utterance","sender":"speaker","contents":"i think youll get this though ","time":1523841742197}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841745258	42	{"type":"Utterance","sender":"listener","contents":"lets try bottom right","time":1523841745258}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841758767	42	{"type":"Utterance","sender":"speaker","contents":"so its the one with 3 green squares diagnolly that all look the same color to me","time":1523841758767}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841763358	42	{"type":"Utterance","sender":"speaker","contents":"with purple in the top row in the middle","time":1523841763358}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841770128	43	{"type":"Utterance","sender":"listener","contents":"great job","time":1523841770128}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841770354	43	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523841770354}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841793378	43	{"type":"Utterance","sender":"speaker","contents":"ok top row blue the brighter yellow and lime green","time":1523841793378}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841815267	43	{"type":"Utterance","sender":"listener","contents":"okay i think i got you, it has bright pink in bottom left?","time":1523841815267}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841825129	43	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523841825129}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841826696	43	{"type":"Utterance","sender":"listener","contents":"niceeee","time":1523841826696}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841842889	44	{"type":"Utterance","sender":"speaker","contents":"hmmm alright lol","time":1523841842889}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841846611	44	{"type":"Utterance","sender":"listener","contents":"lol","time":1523841846611}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841871639	44	{"type":"Utterance","sender":"speaker","contents":"so left row from top to bottom, dark blue, fuchsia, purple","time":1523841871639}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841877198	44	{"type":"Utterance","sender":"speaker","contents":"not the dull purple one","time":1523841877198}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841888753	45	{"type":"Utterance","sender":"speaker","contents":"nailed it ","time":1523841888753}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841891693	45	{"type":"Utterance","sender":"speaker","contents":"nice","time":1523841891693}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841892868	45	{"type":"Utterance","sender":"listener","contents":"fuck yeah","time":1523841892868}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841902233	45	{"type":"Utterance","sender":"listener","contents":"this would be so much better if it was 5 cents a win","time":1523841902233}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841904049	45	{"type":"Utterance","sender":"speaker","contents":"the brighter green in middle","time":1523841904049}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841907201	45	{"type":"Utterance","sender":"speaker","contents":"i know","time":1523841907201}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841919034	45	{"type":"Utterance","sender":"listener","contents":"with the not dull purple in bottom left?","time":1523841919034}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841924110	45	{"type":"Utterance","sender":"speaker","contents":"maybe we will get a bigger bonus if we get all of them","time":1523841924110}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841927889	45	{"type":"Utterance","sender":"listener","contents":"i hope so","time":1523841927889}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841930239	45	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523841930239}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841939250	46	{"type":"Utterance","sender":"speaker","contents":"LOL","time":1523841939250}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841941856	46	{"type":"Utterance","sender":"speaker","contents":"this one is real tough","time":1523841941856}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841947645	46	{"type":"Utterance","sender":"speaker","contents":"yellow left corner","time":1523841947645}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841951683	46	{"type":"Utterance","sender":"listener","contents":"lol","time":1523841951683}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841979275	47	{"type":"Utterance","sender":"listener","contents":"the bottom right one might be easiest, pink, dull purple or regular purple","time":1523841979275}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523841998081	47	{"type":"Utterance","sender":"speaker","contents":"bottom right brighter purple with brighter yellow on top","time":1523841998081}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842023823	48	{"type":"Utterance","sender":"speaker","contents":"the one with the brightest red in the bottom right and purple in the center","time":1523842023823}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842055806	49	{"type":"Utterance","sender":"speaker","contents":"the one with the 2 greens side by side top row","time":1523842055806}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842061933	49	{"type":"Utterance","sender":"speaker","contents":"light blue middle","time":1523842061933}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842065177	49	{"type":"Utterance","sender":"listener","contents":"brown and blue in the bottom right?","time":1523842065177}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842071178	49	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523842071178}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842094398	50	{"type":"Utterance","sender":"speaker","contents":"so the middle row from top to bottom, dull blue, pink, pink ","time":1523842094398}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842100748	50	{"type":"Utterance","sender":"speaker","contents":"with a dull yellow bottom right","time":1523842100748}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842157104	51	{"type":"Utterance","sender":"listener","contents":"hmm ","time":1523842157104}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842161108	51	{"type":"Utterance","sender":"speaker","contents":"the one with 3 purple top row","time":1523842161108}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842163646	51	{"type":"Utterance","sender":"listener","contents":"is it one of the ones with green in the center","time":1523842163646}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842165554	51	{"type":"Utterance","sender":"listener","contents":"okay","time":1523842165554}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842176790	52	{"type":"Utterance","sender":"listener","contents":"wow","time":1523842176790}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842210433	52	{"type":"Utterance","sender":"speaker","contents":"okay so middle row lime green, pink, brown and right row, purple, light blue","time":1523842210433}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842232847	53	{"type":"Utterance","sender":"listener","contents":"niceeeee","time":1523842232847}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842253506	53	{"type":"Utterance","sender":"speaker","contents":"ok top row left to right lime green light blue dull green","time":1523842253506}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842277296	54	{"type":"Utterance","sender":"speaker","contents":"the brightest orange/red in the center ","time":1523842277296}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842287584	55	{"type":"Utterance","sender":"listener","contents":"sweet","time":1523842287584}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842306889	55	{"type":"Utterance","sender":"speaker","contents":"the one with the most greens with the light blue middle right","time":1523842306889}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842330646	55	{"type":"Utterance","sender":"speaker","contents":"dark blue middle left","time":1523842330646}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842341691	56	{"type":"Utterance","sender":"listener","contents":"yay","time":1523842341691}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842360079	56	{"type":"Utterance","sender":"speaker","contents":"okay so the brightest red in the middle row all the way to the left, darkest blue bottom left","time":1523842360079}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842375895	57	{"type":"Utterance","sender":"speaker","contents":"phew","time":1523842375895}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842381010	57	{"type":"Utterance","sender":"listener","contents":"so close too lol","time":1523842381010}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842396525	57	{"type":"Utterance","sender":"listener","contents":"if you need to clarify anything ever always just ask ","time":1523842396525}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842410099	57	{"type":"Utterance","sender":"speaker","contents":"ok top row left to right the greys that look almost the same with plum color","time":1523842410099}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842436295	57	{"type":"Utterance","sender":"speaker","contents":"with the 2 blues that look the same in bottom left and right corner","time":1523842436295}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842445283	57	{"type":"Utterance","sender":"speaker","contents":"you too","time":1523842445283}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842455257	57	{"type":"Utterance","sender":"listener","contents":"the one with the brightest green in the right row?","time":1523842455257}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842455434	57	{"type":"Utterance","sender":"speaker","contents":"i think we are working wonderful together","time":1523842455434}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842462831	57	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523842462831}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842464649	57	{"type":"Utterance","sender":"listener","contents":"sweet","time":1523842464649}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842485199	58	{"type":"Utterance","sender":"speaker","contents":"okay okay","time":1523842485199}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842488499	58	{"type":"Utterance","sender":"speaker","contents":"we will get this one i have faight","time":1523842488499}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842489256	58	{"type":"Utterance","sender":"listener","contents":"lol","time":1523842489256}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842494630	58	{"type":"Utterance","sender":"listener","contents":"yes we will","time":1523842494630}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842496360	58	{"type":"Utterance","sender":"speaker","contents":"it is NOT the one with green in the bottom row","time":1523842496360}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842502683	58	{"type":"Utterance","sender":"listener","contents":"ok","time":1523842502683}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842516047	58	{"type":"Utterance","sender":"speaker","contents":"out of the two that are left, it is NOT the one with similar shades of green in the top left","time":1523842516047}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842525203	58	{"type":"Utterance","sender":"speaker","contents":"so the one with 4 different shades of green in the top left","time":1523842525203}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842547421	58	{"type":"Utterance","sender":"listener","contents":"is it the one with top row all green","time":1523842547421}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842564415	58	{"type":"Utterance","sender":"speaker","contents":"no, its more like a dull yellow or something in the top left","time":1523842564415}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842577124	59	{"type":"Utterance","sender":"listener","contents":"i called it green but its more like dull yellow","time":1523842577124}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842577716	59	{"type":"Utterance","sender":"speaker","contents":"got it","time":1523842577716}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842583224	59	{"type":"Utterance","sender":"listener","contents":"nicely doneee","time":1523842583224}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842593891	59	{"type":"Utterance","sender":"speaker","contents":"ok fuchsia top left corner","time":1523842593891}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842606161	60	{"type":"Utterance","sender":"listener","contents":"I have really enjoyed","time":1523842606161}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842612973	60	{"type":"Utterance","sender":"listener","contents":"hagn","time":1523842612973}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842620568	60	{"type":"Utterance","sender":"speaker","contents":"same here, i really enjoyed too and thanks for cooperating and being patient","time":1523842620568}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842622803	60	{"type":"Utterance","sender":"speaker","contents":"this ones super easy","time":1523842622803}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842626214	60	{"type":"Utterance","sender":"speaker","contents":"but i guess this will be it","time":1523842626214}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842629862	60	{"type":"Utterance","sender":"speaker","contents":"i hope you enjoy your day bud","time":1523842629862}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842631134	60	{"type":"Utterance","sender":"listener","contents":"yep","time":1523842631134}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842635911	60	{"type":"Utterance","sender":"listener","contents":"you to","time":1523842635911}
+utterance	0106-d3c57ab1-95ed-4684-8631-48aa4e964a07	1523842636915	60	{"type":"Utterance","sender":"speaker","contents":"its the one with purple, blue, purple top row","time":1523842636915}

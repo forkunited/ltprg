@@ -1,0 +1,3 @@
+eventType	gameid	time	roundNum	obj
+action	5266-56e696a1-cf53-49a8-b1b3-99337fd9ae37	1522271649276	1	{"type":"ActionColorGrid","lClicked":1,"mouseX":429,"mouseY":70,"time":1522271649276,"condition":{"name":"FAR"}}
+action	5266-56e696a1-cf53-49a8-b1b3-99337fd9ae37	1522271661672	2	{"type":"ActionColorGrid","lClicked":0,"mouseX":209,"mouseY":129,"time":1522271661672,"condition":{"name":"FAR"}}

@@ -1,0 +1,4 @@
+eventType	gameid	time	roundNum	obj
+action	4415-2e870b79-324d-4d1a-ba33-8e8d571716d4	1522269261647	1	{"type":"ActionColorGrid","lClicked":2,"mouseX":728,"mouseY":150,"time":1522269261647,"condition":{"name":"SPLIT"}}
+action	4415-2e870b79-324d-4d1a-ba33-8e8d571716d4	1522269283709	2	{"type":"ActionColorGrid","lClicked":1,"mouseX":418,"mouseY":128,"time":1522269283709,"condition":{"name":"SPLIT"}}
+action	4415-2e870b79-324d-4d1a-ba33-8e8d571716d4	1522269310951	3	{"type":"ActionColorGrid","lClicked":1,"mouseX":455,"mouseY":82,"time":1522269310951,"condition":{"name":"CLOSE"}}

@@ -1,0 +1,19 @@
+eventType	gameid	time	roundNum	obj
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901632566	1	{"type":"Utterance","sender":"speaker","contents":"HI","time":1523901632566}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901639520	1	{"type":"Utterance","sender":"listener","contents":"sup","time":1523901639520}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901697004	1	{"type":"Utterance","sender":"speaker","contents":"FIRST ROW IS FROM LEFT PURPLE, BLUE AND GRAY","time":1523901697004}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901756834	2	{"type":"Utterance","sender":"speaker","contents":"left column brown green maroon","time":1523901756834}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901838031	3	{"type":"Utterance","sender":"speaker","contents":"FIRST COLUMN GREEN PURPLE GREEN ","time":1523901838031}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901871524	4	{"type":"Utterance","sender":"speaker","contents":"1st column green yellow purple","time":1523901871524}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901927170	5	{"type":"Utterance","sender":"speaker","contents":"FIRST  COLUMN GREEN PURPLE GREY ","time":1523901927170}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523901956515	6	{"type":"Utterance","sender":"speaker","contents":"1st yellow brown blue","time":1523901956515}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902004866	7	{"type":"Utterance","sender":"speaker","contents":"FIRST COLUMN VIOLET YELLOW BLUE","time":1523902004866}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902048614	8	{"type":"Utterance","sender":"speaker","contents":"last column green green green","time":1523902048614}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902079134	9	{"type":"Utterance","sender":"listener","contents":"this is going to take over an hour. must leave","time":1523902079134}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902094190	9	{"type":"Utterance","sender":"speaker","contents":"1ST ROW BROWN PURPLE GREEN","time":1523902094190}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902117740	9	{"type":"Utterance","sender":"speaker","contents":"OK","time":1523902117740}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902309161	9	{"type":"Utterance","sender":"speaker","contents":"1ST COLUMN BROWN GREEN YELLOW","time":1523902309161}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902335830	9	{"type":"Utterance","sender":"speaker","contents":"2ND COLUMN PURPLE GREEN GRAY","time":1523902335830}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902356705	9	{"type":"Utterance","sender":"speaker","contents":"3RD GREEN PURPLE GREEN","time":1523902356705}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902509756	9	{"type":"Utterance","sender":"speaker","contents":"HELLO","time":1523902509756}
+utterance	0701-a3455492-d837-415e-819b-0d81d19efe53	1523902518735	9	{"type":"Utterance","sender":"speaker","contents":"PLEASE RESPOND","time":1523902518735}

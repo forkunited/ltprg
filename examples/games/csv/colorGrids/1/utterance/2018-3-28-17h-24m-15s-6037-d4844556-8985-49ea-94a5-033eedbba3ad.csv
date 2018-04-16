@@ -1,0 +1,6 @@
+eventType	gameid	time	roundNum	obj
+utterance	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283055593	1	{"type":"Utterance","sender":"speaker","contents":"hi","time":1522283055593}
+utterance	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283066222	2	{"type":"Utterance","sender":"speaker","contents":"hi","time":1522283066222}
+utterance	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283096573	3	{"type":"Utterance","sender":"listener","contents":"i am l","time":1522283096573}
+utterance	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283101675	3	{"type":"Utterance","sender":"speaker","contents":"me too","time":1522283101675}
+utterance	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283129883	4	{"type":"Utterance","sender":"speaker","contents":"asdf","time":1522283129883}

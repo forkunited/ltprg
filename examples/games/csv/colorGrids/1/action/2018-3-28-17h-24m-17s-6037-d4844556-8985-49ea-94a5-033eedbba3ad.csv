@@ -1,0 +1,5 @@
+eventType	gameid	time	roundNum	obj
+action	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283057503	1	{"type":"ActionColorGrid","lClicked":1,"mouseX":474,"mouseY":116,"time":1522283057503,"condition":{"name":"FAR"}}
+action	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283067871	2	{"type":"ActionColorGrid","lClicked":1,"mouseX":501,"mouseY":48,"time":1522283067871,"condition":{"name":"FAR"}}
+action	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283104188	3	{"type":"ActionColorGrid","lClicked":0,"mouseX":212,"mouseY":106,"time":1522283104188,"condition":{"name":"FAR"}}
+action	6037-d4844556-8985-49ea-94a5-033eedbba3ad	1522283155943	4	{"type":"ActionColorGrid","lClicked":1,"mouseX":480,"mouseY":92,"time":1522283155943,"condition":{"name":"CLOSE"}}

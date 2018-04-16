@@ -1,0 +1,4 @@
+eventType	gameid	time	roundNum	obj
+utterance	0532-9979bd46-68bd-4765-8136-2e0a57fa8789	1522278643510	1	{"type":"Utterance","sender":"speaker","contents":"asdf","time":1522278643510}
+utterance	0532-9979bd46-68bd-4765-8136-2e0a57fa8789	1522278664473	2	{"type":"Utterance","sender":"listener","contents":"asdf","time":1522278664473}
+utterance	0532-9979bd46-68bd-4765-8136-2e0a57fa8789	1522278675180	2	{"type":"Utterance","sender":"speaker","contents":"asdf","time":1522278675180}

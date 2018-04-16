@@ -1,0 +1,2 @@
+eventType	type	gameid	time	roundNum	action
+action	ActionColorGrid	6595-ce177f5f-e309-4a58-9846-d1c37f419b9e	1523071189719	1	{"lClicked":0,"mouseX":221,"mouseY":40,"condition":{"name":"FAR"}}

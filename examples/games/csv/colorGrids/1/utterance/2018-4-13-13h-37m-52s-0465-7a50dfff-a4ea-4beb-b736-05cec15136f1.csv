@@ -1,0 +1,70 @@
+eventType	gameid	time	roundNum	obj
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523651872881	1	{"type":"Utterance","sender":"speaker","contents":"The target top row is: turquoise, light beige, olive green. Seond row is light green, purple, and magenta~~~","time":1523651872881}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523651901641	2	{"type":"Utterance","sender":"speaker","contents":"The top row is lime, then purple","time":1523651901641}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523651937461	3	{"type":"Utterance","sender":"speaker","contents":"Top row is three shades of blue. ","time":1523651937461}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523651957270	4	{"type":"Utterance","sender":"speaker","contents":"top left is green, then pink","time":1523651957270}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523651983454	5	{"type":"Utterance","sender":"speaker","contents":"top row is green, blue, orange.","time":1523651983454}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652014824	6	{"type":"Utterance","sender":"speaker","contents":"Top is purple-ish brown, then green, then purple. ","time":1523652014824}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652067299	7	{"type":"Utterance","sender":"speaker","contents":"top row is bluish, tan, lilac. There is a yellowish square in the bottom center~~~","time":1523652067299}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652095756	8	{"type":"Utterance","sender":"speaker","contents":"Bottom row is red, blue, purple, top has red in center","time":1523652095756}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652161623	9	{"type":"Utterance","sender":"speaker","contents":"top row is turquoise, dark yellow, purple.~~~~~~~~~center of whole square is brightest mint","time":1523652161623}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652183034	10	{"type":"Utterance","sender":"speaker","contents":"Top row has lime green in center","time":1523652183034}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652240765	11	{"type":"Utterance","sender":"speaker","contents":"top row is bright blue, grayish purple, then soft lilac. Bottom RIGHT is pale soft green~~~","time":1523652240765}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652264917	12	{"type":"Utterance","sender":"speaker","contents":"Top row hsa blue in center square","time":1523652264917}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652285720	13	{"type":"Utterance","sender":"speaker","contents":"bottom left is bright orange","time":1523652285720}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652300874	14	{"type":"Utterance","sender":"speaker","contents":"bottom left is yellow","time":1523652300874}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652324401	15	{"type":"Utterance","sender":"speaker","contents":"bottom left is bright orange.","time":1523652324401}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652335948	16	{"type":"Utterance","sender":"speaker","contents":"top left is pink","time":1523652335948}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652339014	16	{"type":"Utterance","sender":"speaker","contents":"bright pink","time":1523652339014}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652360036	17	{"type":"Utterance","sender":"speaker","contents":"top left is magenta","time":1523652360036}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652375916	18	{"type":"Utterance","sender":"speaker","contents":"top left is gray","time":1523652375916}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652423806	19	{"type":"Utterance","sender":"speaker","contents":"bottom right is coral.~~~~~~top right is dark mint","time":1523652423806}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652447849	20	{"type":"Utterance","sender":"speaker","contents":"center square is bright green","time":1523652447849}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652469883	21	{"type":"Utterance","sender":"speaker","contents":"top left is purple","time":1523652469883}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652482670	22	{"type":"Utterance","sender":"speaker","contents":"top center is light blue","time":1523652482670}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652504889	23	{"type":"Utterance","sender":"speaker","contents":"right middle is bright green","time":1523652504889}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652519176	24	{"type":"Utterance","sender":"speaker","contents":"top left is bright pink","time":1523652519176}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652533122	24	{"type":"Utterance","sender":"listener","contents":"top right color?","time":1523652533122}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652564047	24	{"type":"Utterance","sender":"speaker","contents":"It is a brownish purple, middle is light green.  The top left is the brightest pink so it should be noticable?","time":1523652564047}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652588712	25	{"type":"Utterance","sender":"speaker","contents":"mostly purple square","time":1523652588712}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652605963	26	{"type":"Utterance","sender":"speaker","contents":"top left is mustardy yellow","time":1523652605963}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652630432	27	{"type":"Utterance","sender":"speaker","contents":"bottom center is lime green","time":1523652630432}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652646326	28	{"type":"Utterance","sender":"speaker","contents":"top right is lime green","time":1523652646326}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652660249	29	{"type":"Utterance","sender":"speaker","contents":"top left is purple","time":1523652660249}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652672647	30	{"type":"Utterance","sender":"speaker","contents":"top left is reddish orange","time":1523652672647}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652700227	31	{"type":"Utterance","sender":"speaker","contents":"top right is bright magenta.~~~~~~~~~bottom right is mint","time":1523652700227}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652716799	32	{"type":"Utterance","sender":"speaker","contents":"top right is turquoise","time":1523652716799}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652734434	33	{"type":"Utterance","sender":"speaker","contents":"middle right is coral","time":1523652734434}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652746941	34	{"type":"Utterance","sender":"speaker","contents":"top left is yellow","time":1523652746941}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652763096	35	{"type":"Utterance","sender":"speaker","contents":"middle right is bright green","time":1523652763096}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652788564	36	{"type":"Utterance","sender":"speaker","contents":"middle is purple","time":1523652788564}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652799797	36	{"type":"Utterance","sender":"listener","contents":"light or dark?","time":1523652799797}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652808116	36	{"type":"Utterance","sender":"listener","contents":"just making sure","time":1523652808116}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652815894	36	{"type":"Utterance","sender":"speaker","contents":"It's dark purple.  The other is pink~~~  :) ","time":1523652815894}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652852918	37	{"type":"Utterance","sender":"speaker","contents":"top middle is bluish with the slightest hint of purple","time":1523652852918}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652868409	38	{"type":"Utterance","sender":"speaker","contents":"top left is bright red","time":1523652868409}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652880438	39	{"type":"Utterance","sender":"speaker","contents":"bottom right is pink","time":1523652880438}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652896565	40	{"type":"Utterance","sender":"speaker","contents":"top middle is orange","time":1523652896565}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652942584	41	{"type":"Utterance","sender":"speaker","contents":"top row is light orange, brightest mint, then grayish purple.~~~~~~~~~~~~bottom iddle is darker green","time":1523652942584}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652944991	41	{"type":"Utterance","sender":"speaker","contents":"middle*","time":1523652944991}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652974224	42	{"type":"Utterance","sender":"speaker","contents":"bottom middle is turquoise","time":1523652974224}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523652998096	43	{"type":"Utterance","sender":"speaker","contents":"top right is bright blue","time":1523652998096}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653012062	44	{"type":"Utterance","sender":"speaker","contents":"top right is brightest blue","time":1523653012062}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653052756	45	{"type":"Utterance","sender":"speaker","contents":"top left is light olive","time":1523653052756}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653071784	46	{"type":"Utterance","sender":"speaker","contents":"Top left is purple","time":1523653071784}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653085251	47	{"type":"Utterance","sender":"speaker","contents":"bottom right is bright pink","time":1523653085251}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653103820	48	{"type":"Utterance","sender":"speaker","contents":"middle right is bright orangish-red","time":1523653103820}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653126547	49	{"type":"Utterance","sender":"speaker","contents":"middle of whole square is lime green","time":1523653126547}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653141775	50	{"type":"Utterance","sender":"speaker","contents":"middle top is brightest pink","time":1523653141775}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653159174	51	{"type":"Utterance","sender":"speaker","contents":"top right is magenta","time":1523653159174}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653179731	52	{"type":"Utterance","sender":"speaker","contents":"middle square is brightest orange-ish red","time":1523653179731}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653201008	53	{"type":"Utterance","sender":"speaker","contents":"left middle is bright pink","time":1523653201008}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653217184	54	{"type":"Utterance","sender":"speaker","contents":"left middle is bright lime green","time":1523653217184}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653232354	55	{"type":"Utterance","sender":"speaker","contents":"bottom left is brightest bluw","time":1523653232354}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653235102	55	{"type":"Utterance","sender":"speaker","contents":"blue*","time":1523653235102}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653249700	56	{"type":"Utterance","sender":"speaker","contents":"top left is bright blue","time":1523653249700}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653278728	57	{"type":"Utterance","sender":"speaker","contents":"middle is bright yellow ALMOST lime","time":1523653278728}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653310219	58	{"type":"Utterance","sender":"speaker","contents":"Top left is blue, middle of whole square is magenta","time":1523653310219}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653326266	59	{"type":"Utterance","sender":"speaker","contents":"middle left is bright pink","time":1523653326266}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653345262	60	{"type":"Utterance","sender":"speaker","contents":"Have a nice day!  :)  Top left is pink.  ","time":1523653345262}
+utterance	0465-7a50dfff-a4ea-4beb-b736-05cec15136f1	1523653353625	60	{"type":"Utterance","sender":"listener","contents":"ty u2! :-)","time":1523653353625}
