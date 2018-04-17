@@ -1,0 +1,87 @@
+eventType	gameid	time	roundNum	obj
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989231064	1	{"type":"Utterance","sender":"speaker","contents":"One that has red","time":1523989231064}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989234352	1	{"type":"Utterance","sender":"speaker","contents":"very bright red","time":1523989234352}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989252730	2	{"type":"Utterance","sender":"speaker","contents":"purple on top of orange","time":1523989252730}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989260072	2	{"type":"Utterance","sender":"listener","contents":"we dont have the same arrangement","time":1523989260072}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989285488	3	{"type":"Utterance","sender":"speaker","contents":"or maybe we do","time":1523989285488}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989298684	3	{"type":"Utterance","sender":"listener","contents":"they just aren't in the same order","time":1523989298684}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989304551	3	{"type":"Utterance","sender":"speaker","contents":"purple on top of yellow","time":1523989304551}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989337997	4	{"type":"Utterance","sender":"speaker","contents":"washed out colors none bright","time":1523989337997}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989363114	5	{"type":"Utterance","sender":"speaker","contents":"blue in the center","time":1523989363114}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989395649	6	{"type":"Utterance","sender":"speaker","contents":"pale blue in upper left corner","time":1523989395649}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989426607	6	{"type":"Utterance","sender":"listener","contents":"neon green on its right?","time":1523989426607}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989434877	6	{"type":"Utterance","sender":"speaker","contents":"no","time":1523989434877}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989451735	7	{"type":"Utterance","sender":"speaker","contents":"my bad","time":1523989451735}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989481023	7	{"type":"Utterance","sender":"speaker","contents":"dark red upper right","time":1523989481023}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989509556	8	{"type":"Utterance","sender":"speaker","contents":"bright red right middle","time":1523989509556}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989570158	9	{"type":"Utterance","sender":"speaker","contents":"so hard","time":1523989570158}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989605214	9	{"type":"Utterance","sender":"speaker","contents":"bottom right, the least blue out of the three","time":1523989605214}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989641835	10	{"type":"Utterance","sender":"speaker","contents":"2 medium purples on the top starting oin the right","time":1523989641835}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989647937	10	{"type":"Utterance","sender":"speaker","contents":"left","time":1523989647937}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989669902	11	{"type":"Utterance","sender":"speaker","contents":"neon pink on upper middle","time":1523989669902}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989709307	12	{"type":"Utterance","sender":"speaker","contents":"bright pink in upper left","time":1523989709307}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989741806	13	{"type":"Utterance","sender":"speaker","contents":"brown upper right","time":1523989741806}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989767896	14	{"type":"Utterance","sender":"speaker","contents":"orange upper right brightest  yellow left middle","time":1523989767896}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989825681	15	{"type":"Utterance","sender":"speaker","contents":"yellow upper left","time":1523989825681}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989840137	16	{"type":"Utterance","sender":"speaker","contents":"bright red bottom middle","time":1523989840137}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989870781	17	{"type":"Utterance","sender":"speaker","contents":"gray upper right","time":1523989870781}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989887914	18	{"type":"Utterance","sender":"speaker","contents":"bright purple left middle","time":1523989887914}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989909782	19	{"type":"Utterance","sender":"speaker","contents":"blue upper right","time":1523989909782}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989943368	20	{"type":"Utterance","sender":"speaker","contents":"red top middle yellowish not greenish center ","time":1523989943368}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989951833	20	{"type":"Utterance","sender":"speaker","contents":"blue upper right","time":1523989951833}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523989976660	21	{"type":"Utterance","sender":"speaker","contents":"two purple upper middle and bottom right","time":1523989976660}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990000322	22	{"type":"Utterance","sender":"speaker","contents":"bright red middle left bright green center","time":1523990000322}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990022492	23	{"type":"Utterance","sender":"speaker","contents":"red center","time":1523990022492}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990036626	24	{"type":"Utterance","sender":"speaker","contents":"orange upper left","time":1523990036626}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990091723	25	{"type":"Utterance","sender":"speaker","contents":"brightest purple bottom right","time":1523990091723}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990130271	26	{"type":"Utterance","sender":"speaker","contents":"bright red upper left bright green upper right light blue lower right","time":1523990130271}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990163971	26	{"type":"Utterance","sender":"listener","contents":"nothing fits that","time":1523990163971}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990175998	26	{"type":"Utterance","sender":"speaker","contents":"orange middle top","time":1523990175998}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990205051	27	{"type":"Utterance","sender":"speaker","contents":"gray bottom middle","time":1523990205051}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990222034	27	{"type":"Utterance","sender":"listener","contents":"orange lower right?","time":1523990222034}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990234139	27	{"type":"Utterance","sender":"speaker","contents":"no","time":1523990234139}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990241234	27	{"type":"Utterance","sender":"speaker","contents":"reddish pink","time":1523990241234}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990263271	28	{"type":"Utterance","sender":"speaker","contents":"yellowish upper left and upper right","time":1523990263271}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990299175	29	{"type":"Utterance","sender":"speaker","contents":"middle right the closest to blue","time":1523990299175}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990316028	30	{"type":"Utterance","sender":"speaker","contents":"bright yellow lower left corner","time":1523990316028}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990333663	31	{"type":"Utterance","sender":"speaker","contents":"green middle","time":1523990333663}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990379012	32	{"type":"Utterance","sender":"speaker","contents":"teal upper right and lower right purple lower left corner","time":1523990379012}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990407874	33	{"type":"Utterance","sender":"speaker","contents":"yellow bottom right","time":1523990407874}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990432617	34	{"type":"Utterance","sender":"speaker","contents":"green middle right purple forms diagonal","time":1523990432617}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990466922	35	{"type":"Utterance","sender":"speaker","contents":"bottom right closest to yellow","time":1523990466922}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990490288	36	{"type":"Utterance","sender":"speaker","contents":"bottom right closest to yellow again","time":1523990490288}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990493374	36	{"type":"Utterance","sender":"speaker","contents":"bottom left","time":1523990493374}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990513409	37	{"type":"Utterance","sender":"speaker","contents":"same previously","time":1523990513409}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990516705	37	{"type":"Utterance","sender":"speaker","contents":"bottom right","time":1523990516705}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990521666	37	{"type":"Utterance","sender":"speaker","contents":"least green","time":1523990521666}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990524081	37	{"type":"Utterance","sender":"speaker","contents":"closer yellow","time":1523990524081}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990552240	38	{"type":"Utterance","sender":"speaker","contents":"lower left corner is not green and not bright yellow","time":1523990552240}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990575881	39	{"type":"Utterance","sender":"speaker","contents":"gray center","time":1523990575881}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990605430	40	{"type":"Utterance","sender":"speaker","contents":"purple top middle and purple lower right","time":1523990605430}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990624924	41	{"type":"Utterance","sender":"speaker","contents":"bright red upper left","time":1523990624924}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990661850	42	{"type":"Utterance","sender":"speaker","contents":"purple upper left and upper right with red middle top\\","time":1523990661850}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990681424	43	{"type":"Utterance","sender":"speaker","contents":"purple center","time":1523990681424}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990693469	44	{"type":"Utterance","sender":"speaker","contents":"yellow lower right","time":1523990693469}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990705536	44	{"type":"Utterance","sender":"listener","contents":"lower left?","time":1523990705536}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990713359	44	{"type":"Utterance","sender":"speaker","contents":"sorry. yes lower left","time":1523990713359}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990723448	45	{"type":"Utterance","sender":"speaker","contents":"red center","time":1523990723448}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990760009	46	{"type":"Utterance","sender":"speaker","contents":"bright purple center with purple upper left","time":1523990760009}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990802449	47	{"type":"Utterance","sender":"speaker","contents":"washed out green upper right","time":1523990802449}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990820428	48	{"type":"Utterance","sender":"speaker","contents":"bright orange lower right","time":1523990820428}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990834575	49	{"type":"Utterance","sender":"speaker","contents":"blue upper right","time":1523990834575}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990848705	50	{"type":"Utterance","sender":"speaker","contents":"orange bottom middle","time":1523990848705}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990870535	51	{"type":"Utterance","sender":"speaker","contents":"yellow top left","time":1523990870535}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990885796	52	{"type":"Utterance","sender":"speaker","contents":"orange top right","time":1523990885796}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990911064	53	{"type":"Utterance","sender":"speaker","contents":"bright blue green bottom right","time":1523990911064}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990931764	54	{"type":"Utterance","sender":"speaker","contents":"orange top left bright green center","time":1523990931764}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990951961	55	{"type":"Utterance","sender":"speaker","contents":"blue top middle","time":1523990951961}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990954375	55	{"type":"Utterance","sender":"speaker","contents":"gray mid","time":1523990954375}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523990979646	56	{"type":"Utterance","sender":"speaker","contents":"bright green middle left blue middle right","time":1523990979646}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991004711	57	{"type":"Utterance","sender":"speaker","contents":"all blue right","time":1523991004711}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991027758	58	{"type":"Utterance","sender":"speaker","contents":"bright pink purple bottom right","time":1523991027758}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991044535	59	{"type":"Utterance","sender":"speaker","contents":"brightest yellow top right","time":1523991044535}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991062213	60	{"type":"Utterance","sender":"listener","contents":"hey thanks","time":1523991062213}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991066890	60	{"type":"Utterance","sender":"speaker","contents":"u2","time":1523991066890}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991087569	60	{"type":"Utterance","sender":"speaker","contents":"purple upper left blue top middle green top right","time":1523991087569}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991091231	60	{"type":"Utterance","sender":"listener","contents":"bye!","time":1523991091231}
+utterance	5541-ffb402cf-9f49-4fb4-9089-18141546ce1f	1523991100992	60	{"type":"Utterance","sender":"speaker","contents":"by","time":1523991100992}

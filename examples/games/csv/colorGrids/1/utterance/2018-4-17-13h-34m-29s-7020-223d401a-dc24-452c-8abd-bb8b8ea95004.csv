@@ -1,0 +1,66 @@
+eventType	gameid	time	roundNum	obj
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997269980	1	{"type":"Utterance","sender":"speaker","contents":"purple, blue, gray","time":1523997269980}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997305523	2	{"type":"Utterance","sender":"speaker","contents":"2 yellow","time":1523997305523}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997330128	3	{"type":"Utterance","sender":"speaker","contents":"purple, orange, blue","time":1523997330128}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997350386	4	{"type":"Utterance","sender":"speaker","contents":"grey brown bright red","time":1523997350386}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997381486	5	{"type":"Utterance","sender":"speaker","contents":"2 green 2 gray","time":1523997381486}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997393117	6	{"type":"Utterance","sender":"speaker","contents":"bright pink top right","time":1523997393117}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997428673	7	{"type":"Utterance","sender":"speaker","contents":"blue gray green on top","time":1523997428673}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997450445	8	{"type":"Utterance","sender":"speaker","contents":"brightest purple bottom middle","time":1523997450445}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997504250	9	{"type":"Utterance","sender":"speaker","contents":"green all corners and brick red center","time":1523997504250}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997525054	10	{"type":"Utterance","sender":"speaker","contents":"double blue right side","time":1523997525054}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997560548	11	{"type":"Utterance","sender":"speaker","contents":"3 blue 4 green","time":1523997560548}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997583748	12	{"type":"Utterance","sender":"speaker","contents":"neon green right side middle","time":1523997583748}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997606494	13	{"type":"Utterance","sender":"speaker","contents":"purple center lime green bottom right","time":1523997606494}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997619843	14	{"type":"Utterance","sender":"speaker","contents":"yellow center","time":1523997619843}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997646938	15	{"type":"Utterance","sender":"speaker","contents":"purple center","time":1523997646938}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997658948	16	{"type":"Utterance","sender":"speaker","contents":"brightest green center","time":1523997658948}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997682292	17	{"type":"Utterance","sender":"speaker","contents":"double pink tp","time":1523997682292}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997701406	18	{"type":"Utterance","sender":"speaker","contents":"neon pink right middle","time":1523997701406}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997747355	19	{"type":"Utterance","sender":"speaker","contents":"2 neon grn","time":1523997747355}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997759292	20	{"type":"Utterance","sender":"speaker","contents":"pruple top right","time":1523997759292}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997799131	21	{"type":"Utterance","sender":"speaker","contents":"grn outside middles","time":1523997799131}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997817122	22	{"type":"Utterance","sender":"speaker","contents":"bright red bottom left","time":1523997817122}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997871109	23	{"type":"Utterance","sender":"speaker","contents":"red bottom middle","time":1523997871109}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997890403	24	{"type":"Utterance","sender":"speaker","contents":"double grey","time":1523997890403}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997912022	25	{"type":"Utterance","sender":"speaker","contents":"purple middle","time":1523997912022}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997926899	26	{"type":"Utterance","sender":"speaker","contents":"yellow left","time":1523997926899}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997976461	27	{"type":"Utterance","sender":"speaker","contents":"lime top right","time":1523997976461}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523997989532	28	{"type":"Utterance","sender":"speaker","contents":"pink center","time":1523997989532}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998024728	29	{"type":"Utterance","sender":"speaker","contents":"double pink","time":1523998024728}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998037475	30	{"type":"Utterance","sender":"speaker","contents":"pink center","time":1523998037475}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998069528	31	{"type":"Utterance","sender":"speaker","contents":"double mustard","time":1523998069528}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998078765	32	{"type":"Utterance","sender":"speaker","contents":"blue center","time":1523998078765}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998111599	33	{"type":"Utterance","sender":"speaker","contents":"gold center","time":1523998111599}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998127800	34	{"type":"Utterance","sender":"speaker","contents":"red top left","time":1523998127800}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998166278	35	{"type":"Utterance","sender":"speaker","contents":"lime corners","time":1523998166278}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998177573	36	{"type":"Utterance","sender":"speaker","contents":"green center","time":1523998177573}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998227940	37	{"type":"Utterance","sender":"speaker","contents":"pinkish vertical middle","time":1523998227940}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998247521	38	{"type":"Utterance","sender":"speaker","contents":"red center","time":1523998247521}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998261751	38	{"type":"Utterance","sender":"listener","contents":"blues","time":1523998261751}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998271313	38	{"type":"Utterance","sender":"speaker","contents":"hu?","time":1523998271313}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998310300	39	{"type":"Utterance","sender":"speaker","contents":"double grn brick red","time":1523998310300}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998335842	40	{"type":"Utterance","sender":"speaker","contents":"red bottom center","time":1523998335842}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998365271	41	{"type":"Utterance","sender":"speaker","contents":"brown left top corner","time":1523998365271}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998397832	42	{"type":"Utterance","sender":"speaker","contents":"pinkish purple bottom right","time":1523998397832}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998449900	43	{"type":"Utterance","sender":"speaker","contents":"dark purple middle","time":1523998449900}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998466071	44	{"type":"Utterance","sender":"speaker","contents":"bright blue left center","time":1523998466071}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998495107	45	{"type":"Utterance","sender":"speaker","contents":"red top right","time":1523998495107}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998505578	46	{"type":"Utterance","sender":"speaker","contents":"yellow top center","time":1523998505578}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998531766	47	{"type":"Utterance","sender":"speaker","contents":"brown top right","time":1523998531766}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998558411	48	{"type":"Utterance","sender":"speaker","contents":"brighter pink bottom left","time":1523998558411}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998575922	48	{"type":"Utterance","sender":"listener","contents":"gray bottom right corner","time":1523998575922}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998582103	48	{"type":"Utterance","sender":"speaker","contents":"wrong role","time":1523998582103}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998603405	48	{"type":"Utterance","sender":"speaker","contents":"are you speaker or listener?","time":1523998603405}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998627639	49	{"type":"Utterance","sender":"speaker","contents":"bright green top right","time":1523998627639}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998641427	50	{"type":"Utterance","sender":"speaker","contents":"puke center","time":1523998641427}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998684590	51	{"type":"Utterance","sender":"speaker","contents":"gray center","time":1523998684590}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998702518	52	{"type":"Utterance","sender":"speaker","contents":"grey top center","time":1523998702518}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998728819	53	{"type":"Utterance","sender":"speaker","contents":"purple top center","time":1523998728819}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998741262	54	{"type":"Utterance","sender":"speaker","contents":"bright red top left","time":1523998741262}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998768416	55	{"type":"Utterance","sender":"speaker","contents":"pink bottom left","time":1523998768416}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998780932	56	{"type":"Utterance","sender":"speaker","contents":"purple top center","time":1523998780932}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998803294	57	{"type":"Utterance","sender":"speaker","contents":"yellow bottom center","time":1523998803294}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998814753	58	{"type":"Utterance","sender":"speaker","contents":"top center red","time":1523998814753}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998838379	59	{"type":"Utterance","sender":"speaker","contents":"lime top left","time":1523998838379}
+utterance	7020-223d401a-dc24-452c-8abd-bb8b8ea95004	1523998850040	60	{"type":"Utterance","sender":"speaker","contents":"yellow bottom","time":1523998850040}

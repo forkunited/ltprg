@@ -1,0 +1,61 @@
+eventType	gameid	time	roundNum	obj
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000001268	1	{"type":"Utterance","sender":"speaker","contents":"the square with the purple tile in the top middle","time":1524000001268}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000062108	2	{"type":"Utterance","sender":"speaker","contents":"The square with the bright green square on the top right","time":1524000062108}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000081758	3	{"type":"Utterance","sender":"speaker","contents":"The square with the only orange tile","time":1524000081758}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000118628	4	{"type":"Utterance","sender":"speaker","contents":"the square with the blue square in the middle","time":1524000118628}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000146054	5	{"type":"Utterance","sender":"speaker","contents":"The square with a brown/tan tile in the top left corner","time":1524000146054}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000196145	6	{"type":"Utterance","sender":"speaker","contents":"the square with the yellowish square in the top left corner","time":1524000196145}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000213902	7	{"type":"Utterance","sender":"speaker","contents":"the square with the only red tile","time":1524000213902}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000252976	8	{"type":"Utterance","sender":"speaker","contents":"square with the green square in the middle","time":1524000252976}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000288194	9	{"type":"Utterance","sender":"speaker","contents":"square with two of the same color on the left side","time":1524000288194}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000357206	10	{"type":"Utterance","sender":"speaker","contents":"two orange squares one in the middle and one on its left","time":1524000357206}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000377238	11	{"type":"Utterance","sender":"speaker","contents":"square with a teal color on the top left","time":1524000377238}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000470671	12	{"type":"Utterance","sender":"speaker","contents":"bright purple on the top right and brown on the top left  brown on bottom right","time":1524000470671}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000497902	13	{"type":"Utterance","sender":"speaker","contents":"orange in the middle","time":1524000497902}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000529840	14	{"type":"Utterance","sender":"speaker","contents":"red in the top left ","time":1524000529840}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000548368	15	{"type":"Utterance","sender":"speaker","contents":"only one with yellow","time":1524000548368}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000583784	16	{"type":"Utterance","sender":"speaker","contents":"orangish on the top middle","time":1524000583784}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000603839	17	{"type":"Utterance","sender":"speaker","contents":"only one with red tile","time":1524000603839}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000647735	18	{"type":"Utterance","sender":"speaker","contents":"purple and gold in the top middle and top left","time":1524000647735}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000661756	19	{"type":"Utterance","sender":"speaker","contents":"lime green in the middle","time":1524000661756}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000709569	20	{"type":"Utterance","sender":"speaker","contents":"purple bottom left and maroonish in the bottom middle","time":1524000709569}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000734806	21	{"type":"Utterance","sender":"speaker","contents":"brownish tan in the bottom middle","time":1524000734806}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000787872	22	{"type":"Utterance","sender":"speaker","contents":"purple top middle and brown top right","time":1524000787872}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000805916	23	{"type":"Utterance","sender":"speaker","contents":"redish tile in the top middle","time":1524000805916}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000829018	24	{"type":"Utterance","sender":"speaker","contents":"red bottom right","time":1524000829018}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000866340	25	{"type":"Utterance","sender":"speaker","contents":"gray tile in the top middle and middle lef","time":1524000866340}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000905992	26	{"type":"Utterance","sender":"speaker","contents":"red tiles in the top right and middle right","time":1524000905992}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000937365	27	{"type":"Utterance","sender":"speaker","contents":"blue tile in the middle and orange tile under it","time":1524000937365}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524000975279	28	{"type":"Utterance","sender":"speaker","contents":"brown tile bottom right","time":1524000975279}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001019291	29	{"type":"Utterance","sender":"speaker","contents":"blue tile in the top middle and tanish brown tile to the middle left","time":1524001019291}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001103171	30	{"type":"Utterance","sender":"speaker","contents":"purple tile middle right and blue tile bottom right","time":1524001103171}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001147798	31	{"type":"Utterance","sender":"speaker","contents":"lime green tile in the middle bottom","time":1524001147798}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001187610	32	{"type":"Utterance","sender":"speaker","contents":"brown tiles in the top left and bottom left","time":1524001187610}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001212122	33	{"type":"Utterance","sender":"speaker","contents":"orange and brown tiles to the left","time":1524001212122}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001238818	34	{"type":"Utterance","sender":"speaker","contents":"blue tile top middle","time":1524001238818}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001262162	35	{"type":"Utterance","sender":"speaker","contents":"square with several pink tiles","time":1524001262162}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001292179	36	{"type":"Utterance","sender":"speaker","contents":"orange in the middle","time":1524001292179}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001314803	37	{"type":"Utterance","sender":"speaker","contents":"teal tile in the top middle","time":1524001314803}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001370436	38	{"type":"Utterance","sender":"speaker","contents":"mostly browns and purples  with green top middle","time":1524001370436}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001387741	39	{"type":"Utterance","sender":"speaker","contents":"red tile in the right middle","time":1524001387741}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001410515	40	{"type":"Utterance","sender":"speaker","contents":"orange middle","time":1524001410515}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001440610	41	{"type":"Utterance","sender":"speaker","contents":"blue tile in the middle","time":1524001440610}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001485697	42	{"type":"Utterance","sender":"speaker","contents":"blue top right","time":1524001485697}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001522228	43	{"type":"Utterance","sender":"speaker","contents":"sky blue in the middle","time":1524001522228}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001542157	44	{"type":"Utterance","sender":"speaker","contents":"blue top middle","time":1524001542157}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001559982	45	{"type":"Utterance","sender":"speaker","contents":"blue bottom right","time":1524001559982}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001579798	46	{"type":"Utterance","sender":"speaker","contents":"bright red bottom middle","time":1524001579798}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001598352	47	{"type":"Utterance","sender":"speaker","contents":"pink in the middle","time":1524001598352}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001623783	48	{"type":"Utterance","sender":"speaker","contents":"blue middle right","time":1524001623783}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001643660	49	{"type":"Utterance","sender":"speaker","contents":"light blue middle","time":1524001643660}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001679644	50	{"type":"Utterance","sender":"speaker","contents":"blue middle left","time":1524001679644}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001700041	51	{"type":"Utterance","sender":"speaker","contents":"grayish bottom left","time":1524001700041}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001731676	52	{"type":"Utterance","sender":"speaker","contents":"blue bottom left","time":1524001731676}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001751601	53	{"type":"Utterance","sender":"speaker","contents":"pink top middle","time":1524001751601}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001802124	54	{"type":"Utterance","sender":"speaker","contents":"redish pink top right","time":1524001802124}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001830892	55	{"type":"Utterance","sender":"speaker","contents":"greenish gray bottom left","time":1524001830892}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001867001	56	{"type":"Utterance","sender":"speaker","contents":"blue bottom middle","time":1524001867001}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001884194	57	{"type":"Utterance","sender":"speaker","contents":"orange bottom left","time":1524001884194}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001901238	58	{"type":"Utterance","sender":"speaker","contents":"grey bottom right","time":1524001901238}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001926915	59	{"type":"Utterance","sender":"speaker","contents":"greyish in the top middle","time":1524001926915}
+utterance	6242-49130cee-e2e7-4f18-bb62-991472d41eee	1524001967833	60	{"type":"Utterance","sender":"speaker","contents":"blue middle and bright green middle right","time":1524001967833}

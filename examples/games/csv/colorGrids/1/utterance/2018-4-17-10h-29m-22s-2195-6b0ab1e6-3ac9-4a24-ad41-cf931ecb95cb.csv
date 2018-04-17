@@ -1,0 +1,99 @@
+eventType	gameid	time	roundNum	obj
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986162713	1	{"type":"Utterance","sender":"speaker","contents":"The box with the most gray squares","time":1523986162713}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986176127	1	{"type":"Utterance","sender":"listener","contents":"Is it the one with 3 gray squares","time":1523986176127}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986188837	1	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523986188837}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986209112	2	{"type":"Utterance","sender":"speaker","contents":"It's the square with a bright purple square","time":1523986209112}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986228134	2	{"type":"Utterance","sender":"speaker","contents":"The other squares are grayish in that square","time":1523986228134}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986261813	3	{"type":"Utterance","sender":"speaker","contents":"The middle square in this box is bright red","time":1523986261813}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986291465	4	{"type":"Utterance","sender":"speaker","contents":"The square has a bright cyan colored box on its bottom row","time":1523986291465}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986336899	5	{"type":"Utterance","sender":"speaker","contents":"The box has two bright green squares ","time":1523986336899}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986364188	5	{"type":"Utterance","sender":"listener","contents":"Are they next to each  other on the same column ","time":1523986364188}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986403858	5	{"type":"Utterance","sender":"speaker","contents":"One green square is in the middle the other is on the bottom row","time":1523986403858}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986454468	6	{"type":"Utterance","sender":"speaker","contents":"The square has two gray squares on the top row and a single green square","time":1523986454468}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986513078	7	{"type":"Utterance","sender":"speaker","contents":"There is a gray square in the top middle row and a gray square in the bottom middle row","time":1523986513078}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986554278	8	{"type":"Utterance","sender":"speaker","contents":"The square has a hot pink square on the left column and a cyan colored square under the hot pink square","time":1523986554278}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986619049	9	{"type":"Utterance","sender":"speaker","contents":"The box that's filled with mostly green colored blocks","time":1523986619049}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986653429	10	{"type":"Utterance","sender":"speaker","contents":"The box with a bright green square on the bottom left and a bright orange square in the middle","time":1523986653429}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986712232	11	{"type":"Utterance","sender":"speaker","contents":"There's a purple block in between two hot pink blocks","time":1523986712232}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986760250	12	{"type":"Utterance","sender":"speaker","contents":"There's a bright green box in the middle. there's 2 cyan colored boxes on the bottom~~~ ","time":1523986760250}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986772075	12	{"type":"Utterance","sender":"speaker","contents":"It's not the one with the purple box on the top row","time":1523986772075}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986801779	12	{"type":"Utterance","sender":"listener","contents":"Is there a blue block?","time":1523986801779}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986811194	12	{"type":"Utterance","sender":"speaker","contents":"Yeah. Next to a brown block","time":1523986811194}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986843559	13	{"type":"Utterance","sender":"speaker","contents":"Almost half of this square is green","time":1523986843559}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986877419	14	{"type":"Utterance","sender":"speaker","contents":"The right column is very green ","time":1523986877419}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986884695	14	{"type":"Utterance","sender":"speaker","contents":"the middle is a dull range","time":1523986884695}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986887068	14	{"type":"Utterance","sender":"speaker","contents":"orange","time":1523986887068}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986943922	15	{"type":"Utterance","sender":"speaker","contents":"The bottom left block is bright green","time":1523986943922}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523986963829	16	{"type":"Utterance","sender":"speaker","contents":"The bottom right block is bright orange","time":1523986963829}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987011878	17	{"type":"Utterance","sender":"speaker","contents":"The bottom middle block is bright green ","time":1523987011878}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987047504	18	{"type":"Utterance","sender":"speaker","contents":"The bottom middle block is purple","time":1523987047504}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987062032	18	{"type":"Utterance","sender":"listener","contents":"Deep purple?","time":1523987062032}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987078537	18	{"type":"Utterance","sender":"speaker","contents":"It's sort of magenta-ish","time":1523987078537}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987082692	18	{"type":"Utterance","sender":"speaker","contents":"it's under a brown block","time":1523987082692}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987152408	19	{"type":"Utterance","sender":"speaker","contents":"A gray block is on top of a bright green block which is on top of a slightly darker green block","time":1523987152408}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987186283	20	{"type":"Utterance","sender":"speaker","contents":"There's an orange block on the middle of the bottom row","time":1523987186283}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987221879	21	{"type":"Utterance","sender":"speaker","contents":"A dark yellow block is in the middle ","time":1523987221879}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987266746	22	{"type":"Utterance","sender":"speaker","contents":"There's a dull orange block on the middle left row and a sky blue block in the middle","time":1523987266746}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987312804	23	{"type":"Utterance","sender":"speaker","contents":"A deep purple block is in the center","time":1523987312804}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987330352	24	{"type":"Utterance","sender":"speaker","contents":"There's a blue block in the middle","time":1523987330352}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987364816	25	{"type":"Utterance","sender":"speaker","contents":"Two hot pink blocks are in the top row","time":1523987364816}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987387706	26	{"type":"Utterance","sender":"speaker","contents":"There's a bright cyan block in the middle and a bright red block above it","time":1523987387706}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987433522	27	{"type":"Utterance","sender":"speaker","contents":"There's a bright green block in the top left corner and a deep purple block in the bottom right","time":1523987433522}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987450219	28	{"type":"Utterance","sender":"speaker","contents":"There's an orange block in the middle","time":1523987450219}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987513837	29	{"type":"Utterance","sender":"speaker","contents":"There's a dark brown block on the bottom right corner","time":1523987513837}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987552629	30	{"type":"Utterance","sender":"speaker","contents":"There's a red block in the upper left corner","time":1523987552629}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987578796	31	{"type":"Utterance","sender":"speaker","contents":"There's a bright green block in the bottom left corner","time":1523987578796}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987597557	32	{"type":"Utterance","sender":"speaker","contents":"bright red block in the middle","time":1523987597557}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987624099	33	{"type":"Utterance","sender":"speaker","contents":"Green block in the center","time":1523987624099}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987659558	34	{"type":"Utterance","sender":"speaker","contents":"The top middle has a darkish blue and the bottom middle has a brightish orange","time":1523987659558}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987695160	34	{"type":"Utterance","sender":"listener","contents":"Is there a deep purple block anywhere?","time":1523987695160}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987705303	34	{"type":"Utterance","sender":"speaker","contents":"Yes in the left corner","time":1523987705303}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987726139	35	{"type":"Utterance","sender":"speaker","contents":"Orange block in the top center","time":1523987726139}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987747947	35	{"type":"Utterance","sender":"listener","contents":"Is it next to a hot pink block?","time":1523987747947}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987769858	35	{"type":"Utterance","sender":"speaker","contents":"Is a bit darker than hot pink","time":1523987769858}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987794470	36	{"type":"Utterance","sender":"speaker","contents":"There's a sky blue block in the upper left corner and it's next to a cyan colored block","time":1523987794470}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987817463	36	{"type":"Utterance","sender":"listener","contents":"Is there a bright red block anywhere?","time":1523987817463}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987824521	36	{"type":"Utterance","sender":"speaker","contents":"Yes in the lower left ","time":1523987824521}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987882652	37	{"type":"Utterance","sender":"speaker","contents":"There's a red block in the bottom left corner","time":1523987882652}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987899824	37	{"type":"Utterance","sender":"listener","contents":"Is it the brightest red block","time":1523987899824}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987905518	37	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523987905518}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523987936156	38	{"type":"Utterance","sender":"speaker","contents":"There's a bright blue block on the top middle between 2 dull greenish blocks","time":1523987936156}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988008130	38	{"type":"Utterance","sender":"listener","contents":"Is there a bright pink block in the center left row?","time":1523988008130}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988031152	38	{"type":"Utterance","sender":"speaker","contents":"It's dull, not very bright","time":1523988031152}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988083483	39	{"type":"Utterance","sender":"speaker","contents":"There's a light brown box in the top left next to a gray blcok top center","time":1523988083483}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988110768	40	{"type":"Utterance","sender":"speaker","contents":"There's a very bright hot pink block in the bottom right corner","time":1523988110768}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988123725	40	{"type":"Utterance","sender":"speaker","contents":"it's the brightest pink of them all","time":1523988123725}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988147202	41	{"type":"Utterance","sender":"speaker","contents":"Bright green block in the top left row","time":1523988147202}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988165792	41	{"type":"Utterance","sender":"speaker","contents":"Not blue green","time":1523988165792}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988184100	41	{"type":"Utterance","sender":"speaker","contents":"top right row","time":1523988184100}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988187470	41	{"type":"Utterance","sender":"listener","contents":"oooh","time":1523988187470}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988211710	42	{"type":"Utterance","sender":"speaker","contents":"There's a bright orange block on the bottom right row","time":1523988211710}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988226116	42	{"type":"Utterance","sender":"speaker","contents":"the middle has a bright blue block, not dark ","time":1523988226116}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988263575	43	{"type":"Utterance","sender":"speaker","contents":"Hot pink block in the center left row","time":1523988263575}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988289988	44	{"type":"Utterance","sender":"speaker","contents":"there's two blue blocks in the right column","time":1523988289988}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988364333	45	{"type":"Utterance","sender":"speaker","contents":"There's a dark gray block sitting on a green block","time":1523988364333}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988384067	46	{"type":"Utterance","sender":"speaker","contents":"There's a hot pink block on the top row","time":1523988384067}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988389887	46	{"type":"Utterance","sender":"speaker","contents":"it's very bright","time":1523988389887}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988412203	47	{"type":"Utterance","sender":"speaker","contents":"There's a bright green block in the center","time":1523988412203}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988433151	48	{"type":"Utterance","sender":"speaker","contents":"There's a green, orange and light blue block on the top row","time":1523988433151}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988486459	49	{"type":"Utterance","sender":"speaker","contents":"There's a pink block in the center and a dark red block on the bottom right","time":1523988486459}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988514362	50	{"type":"Utterance","sender":"speaker","contents":"There's a deep bright red block in the left corner","time":1523988514362}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988524503	50	{"type":"Utterance","sender":"speaker","contents":"and a greenish blueish block in the middle","time":1523988524503}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988549396	50	{"type":"Utterance","sender":"listener","contents":"Is there a light purple block on the top row?","time":1523988549396}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988568240	50	{"type":"Utterance","sender":"speaker","contents":"no. there's a blue block ","time":1523988568240}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988572099	50	{"type":"Utterance","sender":"speaker","contents":"on the top row","time":1523988572099}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988585805	50	{"type":"Utterance","sender":"speaker","contents":"there's a bright cyan block in the right corner","time":1523988585805}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988626592	51	{"type":"Utterance","sender":"speaker","contents":"Lots of dull colored blocks with a light blue block in the center","time":1523988626592}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988667794	52	{"type":"Utterance","sender":"speaker","contents":"There's a bright blue block on the top row next to a dull red block and a dull purple-red block","time":1523988667794}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988688255	52	{"type":"Utterance","sender":"speaker","contents":"well the blue block is between them","time":1523988688255}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988744406	53	{"type":"Utterance","sender":"speaker","contents":"Three shades of purple down the middle ","time":1523988744406}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988784924	54	{"type":"Utterance","sender":"speaker","contents":"There's a bright orange block on right of the middle row","time":1523988784924}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988794859	54	{"type":"Utterance","sender":"speaker","contents":"there is no hot pink blocks","time":1523988794859}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988837753	55	{"type":"Utterance","sender":"speaker","contents":"Three shades of brown in the bottom blocks","time":1523988837753}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988864117	56	{"type":"Utterance","sender":"speaker","contents":"there's a bright hot pink block in the middle of the top row","time":1523988864117}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988904783	57	{"type":"Utterance","sender":"speaker","contents":"There's a gray block sitting on a green block which is sitting on a blue block","time":1523988904783}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988924937	58	{"type":"Utterance","sender":"speaker","contents":"bright green block in the middle","time":1523988924937}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988950845	59	{"type":"Utterance","sender":"speaker","contents":"Orange block on the top left row","time":1523988950845}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988977407	60	{"type":"Utterance","sender":"speaker","contents":"There's a bright purple block in the middle of the top row","time":1523988977407}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523988999590	60	{"type":"Utterance","sender":"speaker","contents":"the two green blocks on the left column have similar colors","time":1523988999590}
+utterance	2195-6b0ab1e6-3ac9-4a24-ad41-cf931ecb95cb	1523989005409	60	{"type":"Utterance","sender":"speaker","contents":"almost the same ","time":1523989005409}
