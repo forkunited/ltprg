@@ -112,10 +112,12 @@ class ObservationModelIndexedSequential(ObservationModelIndexed):
         seq_length = observation[1] # Batch
 
         # length, indices*batch
-        seq = seq.unsqueeze(1).expand(max_len, num_indices, batch_size).contiguous().view(-1, num_indices*batch_size)
+        if len(seq.size()) == 2:
+            seq = seq.unsqueeze(1).expand(max_len, num_indices, batch_size).contiguous().view(-1, num_indices*batch_size)
+        else:
+            seq = seq.unsqueeze(1).expand(max_len, num_indices, batch_size, seq.size(2)).contiguous().view(-1, num_indices*batch_size, seq.size(2)).float()
         seq_length = seq_length.unsqueeze(1).expand(batch_size, num_indices).contiguous().view(-1, num_indices*batch_size).squeeze()
         indices = indices.contiguous().view(-1, num_indices)
-
         sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[indices], on_gpu=self.on_gpu())
 
         output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
