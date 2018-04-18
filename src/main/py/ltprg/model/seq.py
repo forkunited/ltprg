@@ -775,13 +775,11 @@ class SequenceModelInputEmbedded(SequenceModel):
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = None
         if self._non_emb:
-            emb_pad = self._drop(self._tanh(self._emb(seq_part)))
+            emb_pad = self._drop(self._emb(seq_part)) #self._drop(self._tanh(self._emb(seq_part)))
         else:
             emb_pad = self._drop(self._emb(seq_part))
-
         input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
         emb_pad = torch.cat((emb_pad, input_seq), 2) # FIXME Is this right?
-
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
 
         output, hidden = self._rnn(emb, hidden)
@@ -867,7 +865,10 @@ class SequenceModelNoInput(SequenceModel):
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
-        self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        if non_emb:
+            self._rnn = getattr(nn, rnn_type)(seq_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        else:
+            self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
         self._softmax = nn.LogSoftmax()
 
@@ -886,7 +887,9 @@ class SequenceModelNoInput(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         if self._non_emb:
-            emb_pad = self._drop(self._tanh(self._emb(seq_part)))
+            #emb_pad = self._drop(self._tanh(self._emb(seq_part)))
+            emb_pad = seq_part
+            #emb_pad = self._drop(self._emb(seq_part))
         else:
             emb_pad = self._drop(self._emb(seq_part)) 
 
