@@ -1,0 +1,169 @@
+eventType	gameid	time	roundNum	obj
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899618593	1	{"type":"Utterance","sender":"speaker","contents":"Hello,  look for the top left square to be purple with teal under that","time":1523899618593}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899628055	1	{"type":"Utterance","sender":"speaker","contents":"no the top right sorry","time":1523899628055}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899642962	1	{"type":"Utterance","sender":"speaker","contents":"my bad I'm sorry its the right side","time":1523899642962}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899653991	1	{"type":"Utterance","sender":"listener","contents":"Teal being the less saturated looking one, correct? With like a red color in the first column second row?","time":1523899653991}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899665092	1	{"type":"Utterance","sender":"speaker","contents":"yes a blue green in color","time":1523899665092}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899700990	2	{"type":"Utterance","sender":"speaker","contents":"Salmon/dull red top left, purple/indigo top right, red bottom right","time":1523899700990}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899722925	3	{"type":"Utterance","sender":"speaker","contents":"good job!","time":1523899722925}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899725267	3	{"type":"Utterance","sender":"speaker","contents":"ok","time":1523899725267}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899743503	3	{"type":"Utterance","sender":"listener","contents":"oh shit these are hella similar","time":1523899743503}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899746986	3	{"type":"Utterance","sender":"speaker","contents":"bright neon green top right, bright red bottom right","time":1523899746986}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899750054	3	{"type":"Utterance","sender":"speaker","contents":"lol they are","time":1523899750054}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899768063	4	{"type":"Utterance","sender":"listener","contents":"good job!","time":1523899768063}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899780576	4	{"type":"Utterance","sender":"speaker","contents":"bright red top left, dull blue top right","time":1523899780576}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899801777	4	{"type":"Utterance","sender":"listener","contents":"bright green next to blue?","time":1523899801777}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899832669	4	{"type":"Utterance","sender":"speaker","contents":"nope. There is no bright green on the grid~~~ The center tile is an ugly grey and the bottom row center tile is like a teal","time":1523899832669}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899865223	4	{"type":"Utterance","sender":"listener","contents":"two purple on the right correct?","time":1523899865223}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899889277	4	{"type":"Utterance","sender":"speaker","contents":"Yup! Like a lighter, more saturated one on top of the two","time":1523899889277}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899899044	4	{"type":"Utterance","sender":"listener","contents":"ok hope this is right lol","time":1523899899044}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899907131	5	{"type":"Utterance","sender":"listener","contents":"niiice!","time":1523899907131}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899909075	5	{"type":"Utterance","sender":"speaker","contents":"lol","time":1523899909075}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899942545	5	{"type":"Utterance","sender":"speaker","contents":"ok.~~~~~~  center from top to bottom~~~~~~  greay, brown and green","time":1523899942545}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899944652	5	{"type":"Utterance","sender":"speaker","contents":"grey","time":1523899944652}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899963313	5	{"type":"Utterance","sender":"listener","contents":"with that ugly chartreuse/vomit-green in the top-left?","time":1523899963313}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523899992976	5	{"type":"Utterance","sender":"speaker","contents":"yes and poop brown in the bottom left hand corner lol","time":1523899992976}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900005200	6	{"type":"Utterance","sender":"speaker","contents":"lmfao that was easy","time":1523900005200}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900015323	6	{"type":"Utterance","sender":"speaker","contents":"Far left, top down: teal, purple, green","time":1523900015323}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900026838	6	{"type":"Utterance","sender":"listener","contents":"ezpz","time":1523900026838}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900038580	7	{"type":"Utterance","sender":"speaker","contents":"good job","time":1523900038580}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900081214	7	{"type":"Utterance","sender":"speaker","contents":"ok bottom row across.~~~~~~  grey, purple like color then a dull green on the right","time":1523900081214}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900101707	7	{"type":"Utterance","sender":"listener","contents":"this is the grid that looks similar to one of the others, but overall is more saturated/brighter, right?","time":1523900101707}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900140735	7	{"type":"Utterance","sender":"speaker","contents":"well.~~~~~~ this one has the bright blue square in the top left corner if that helps","time":1523900140735}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900150929	8	{"type":"Utterance","sender":"listener","contents":"bingo","time":1523900150929}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900164683	8	{"type":"Utterance","sender":"speaker","contents":"lord okay this one is similar","time":1523900164683}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900168451	8	{"type":"Utterance","sender":"listener","contents":"lol","time":1523900168451}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900193934	8	{"type":"Utterance","sender":"speaker","contents":"The top left is THE least vibrant red. It's almost to a brown~~~  The blue tile in the center of the entire grid is the brightest","time":1523900193934}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900193999	8	{"type":"Utterance","sender":"listener","contents":"go left side down","time":1523900193999}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900230315	8	{"type":"Utterance","sender":"listener","contents":"ok so the dark brown with bright green under it then a olive color green?","time":1523900230315}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900241693	8	{"type":"Utterance","sender":"listener","contents":"dark brown/red","time":1523900241693}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900248205	8	{"type":"Utterance","sender":"speaker","contents":"Yup, that sounds right1","time":1523900248205}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900249949	8	{"type":"Utterance","sender":"speaker","contents":"*!","time":1523900249949}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900258106	8	{"type":"Utterance","sender":"listener","contents":"not the one with yellow on the left","time":1523900258106}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900270033	8	{"type":"Utterance","sender":"speaker","contents":"Correct","time":1523900270033}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900281032	9	{"type":"Utterance","sender":"speaker","contents":"ez","time":1523900281032}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900302608	9	{"type":"Utterance","sender":"speaker","contents":"top left purple bottom left yellow/green","time":1523900302608}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900308125	9	{"type":"Utterance","sender":"speaker","contents":"no","time":1523900308125}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900309991	9	{"type":"Utterance","sender":"speaker","contents":"right again","time":1523900309991}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900318964	9	{"type":"Utterance","sender":"speaker","contents":"omg i'm so backwards today sorry","time":1523900318964}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900321917	9	{"type":"Utterance","sender":"speaker","contents":"lol its the right","time":1523900321917}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900324745	9	{"type":"Utterance","sender":"listener","contents":"lol it's all good; words are hard ;P","time":1523900324745}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900338350	9	{"type":"Utterance","sender":"listener","contents":"And then the top left of it is the bright green?","time":1523900338350}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900343273	9	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523900343273}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900353562	10	{"type":"Utterance","sender":"speaker","contents":"Top left: purple","time":1523900353562}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900356993	10	{"type":"Utterance","sender":"listener","contents":"lmao I don't know whats wrong with me","time":1523900356993}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900384180	11	{"type":"Utterance","sender":"speaker","contents":"uggh.~~~~~~ ok~~~~~~~~~  center square is poop brown","time":1523900384180}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900400144	12	{"type":"Utterance","sender":"speaker","contents":"Bottom row, middle tile: purple","time":1523900400144}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900442189	13	{"type":"Utterance","sender":"speaker","contents":"left side is all blue with center square being brighter green","time":1523900442189}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900467470	14	{"type":"Utterance","sender":"speaker","contents":"Bottom row, center tile: yellow-ish","time":1523900467470}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900480142	14	{"type":"Utterance","sender":"speaker","contents":"With pink to the left of it","time":1523900480142}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900485896	14	{"type":"Utterance","sender":"listener","contents":"just gonna ask lol","time":1523900485896}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900504224	15	{"type":"Utterance","sender":"speaker","contents":"top left bright green and blue below it","time":1523900504224}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900519824	16	{"type":"Utterance","sender":"speaker","contents":"top row, center tile: grey","time":1523900519824}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900579666	17	{"type":"Utterance","sender":"speaker","contents":"bottom row left tile is red/burgandy and bottom right is brighter green","time":1523900579666}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900605543	18	{"type":"Utterance","sender":"speaker","contents":"center tile is teal, with a red directly beneath it","time":1523900605543}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900658762	19	{"type":"Utterance","sender":"speaker","contents":"top left tile is orange and bottom left is a darker yellow","time":1523900658762}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900700448	20	{"type":"Utterance","sender":"speaker","contents":"This is one of the two grids that look very similar, but the center tile is the less vibrant orange.","time":1523900700448}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900719289	20	{"type":"Utterance","sender":"speaker","contents":"The center column going down from the top is pink, salmon, blue","time":1523900719289}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900720933	20	{"type":"Utterance","sender":"listener","contents":"ok brighter green on the bottom right?","time":1523900720933}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900724514	20	{"type":"Utterance","sender":"speaker","contents":"Yup!","time":1523900724514}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900745049	21	{"type":"Utterance","sender":"speaker","contents":"hmm","time":1523900745049}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900765459	21	{"type":"Utterance","sender":"speaker","contents":"second row across has 2 blue tiles","time":1523900765459}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900772331	21	{"type":"Utterance","sender":"speaker","contents":"first tile is greenish","time":1523900772331}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900786775	21	{"type":"Utterance","sender":"speaker","contents":"2 grey tiles on top row","time":1523900786775}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900792602	21	{"type":"Utterance","sender":"listener","contents":"Is the center tile the one that's more grey/less saturated?","time":1523900792602}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900805009	21	{"type":"Utterance","sender":"listener","contents":"oh wait, two grey on top","time":1523900805009}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900806441	21	{"type":"Utterance","sender":"speaker","contents":"no","time":1523900806441}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900807895	21	{"type":"Utterance","sender":"listener","contents":"with the teal in the top left","time":1523900807895}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900813143	21	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523900813143}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900825269	22	{"type":"Utterance","sender":"speaker","contents":"top left is the teal again","time":1523900825269}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900829066	22	{"type":"Utterance","sender":"listener","contents":"we make a good team :)","time":1523900829066}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900832579	22	{"type":"Utterance","sender":"speaker","contents":"right?","time":1523900832579}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900835004	22	{"type":"Utterance","sender":"speaker","contents":"It's working out well","time":1523900835004}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900861989	23	{"type":"Utterance","sender":"speaker","contents":"ok on the right the second tile down is orange","time":1523900861989}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900877563	24	{"type":"Utterance","sender":"speaker","contents":"bottom left is VIBRANT red","time":1523900877563}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900917354	25	{"type":"Utterance","sender":"speaker","contents":"left top to bottom.~~~~~~  bright green then purple and purple","time":1523900917354}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900934742	25	{"type":"Utterance","sender":"listener","contents":"with the kind of brownish-grey center tile?","time":1523900934742}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900943187	25	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523900943187}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900959291	26	{"type":"Utterance","sender":"speaker","contents":"bottom left is purple and bottom right is brown","time":1523900959291}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900974647	26	{"type":"Utterance","sender":"listener","contents":"bright green center?","time":1523900974647}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900977773	26	{"type":"Utterance","sender":"speaker","contents":"yup!","time":1523900977773}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523900991779	27	{"type":"Utterance","sender":"speaker","contents":"top left tile is yellow","time":1523900991779}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901005091	28	{"type":"Utterance","sender":"speaker","contents":"center of top row is red","time":1523901005091}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901015789	28	{"type":"Utterance","sender":"speaker","contents":"the more vibrant one","time":1523901015789}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901016837	28	{"type":"Utterance","sender":"listener","contents":"bright ried","time":1523901016837}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901018474	28	{"type":"Utterance","sender":"listener","contents":"ok","time":1523901018474}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901019752	28	{"type":"Utterance","sender":"speaker","contents":"yup!","time":1523901019752}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901032420	29	{"type":"Utterance","sender":"speaker","contents":"center tile is orange","time":1523901032420}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901051901	30	{"type":"Utterance","sender":"speaker","contents":"bottom right is fushia/pink","time":1523901051901}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901057066	30	{"type":"Utterance","sender":"speaker","contents":"*fuschia","time":1523901057066}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901071537	31	{"type":"Utterance","sender":"speaker","contents":"good thing I'm not color blind lol","time":1523901071537}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901086474	31	{"type":"Utterance","sender":"speaker","contents":"top left is purple followed by 2 blue below it","time":1523901086474}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901089574	31	{"type":"Utterance","sender":"listener","contents":"lol right? This would be hell otherwise","time":1523901089574}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901106426	32	{"type":"Utterance","sender":"listener","contents":"wow this one","time":1523901106426}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901109716	32	{"type":"Utterance","sender":"speaker","contents":"top right is dull pink","time":1523901109716}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901120358	32	{"type":"Utterance","sender":"listener","contents":"then brighter pink below","time":1523901120358}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901123266	32	{"type":"Utterance","sender":"speaker","contents":"yup!","time":1523901123266}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901137681	33	{"type":"Utterance","sender":"speaker","contents":"top right is bright green","time":1523901137681}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901147530	34	{"type":"Utterance","sender":"speaker","contents":"top right purple","time":1523901147530}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901163173	35	{"type":"Utterance","sender":"speaker","contents":"top right is green","time":1523901163173}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901172026	36	{"type":"Utterance","sender":"speaker","contents":"top right darkest blue","time":1523901172026}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901176186	36	{"type":"Utterance","sender":"speaker","contents":"with bright green to the left","time":1523901176186}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901191023	36	{"type":"Utterance","sender":"listener","contents":"ok","time":1523901191023}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901192196	36	{"type":"Utterance","sender":"speaker","contents":"and the bottom left is fuschia","time":1523901192196}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901227302	37	{"type":"Utterance","sender":"speaker","contents":"left side top to bottom.~~~  grey, bright green then pinkish","time":1523901227302}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901250263	38	{"type":"Utterance","sender":"speaker","contents":"center of the top row is a smoky blue","time":1523901250263}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901278168	38	{"type":"Utterance","sender":"listener","contents":"no bright blue in any other tiles right","time":1523901278168}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901288981	38	{"type":"Utterance","sender":"speaker","contents":"correct! it's mostly purples on this grid","time":1523901288981}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901319752	39	{"type":"Utterance","sender":"speaker","contents":"top right is blue and top left is grey","time":1523901319752}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901350909	40	{"type":"Utterance","sender":"speaker","contents":"top-down left column: brown, purple, bright blue","time":1523901350909}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901389008	40	{"type":"Utterance","sender":"listener","contents":"could bright blue be that teal color","time":1523901389008}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901403878	40	{"type":"Utterance","sender":"speaker","contents":"yeah! then the bottom right is a brownish-red","time":1523901403878}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901415464	40	{"type":"Utterance","sender":"listener","contents":"I'm sure I have it right","time":1523901415464}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901454056	41	{"type":"Utterance","sender":"speaker","contents":"no reds in it.~~~~~~~~~  center is bright purple with bright green on the left and right below the center","time":1523901454056}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901473711	42	{"type":"Utterance","sender":"speaker","contents":"center is bright fuschia/pink","time":1523901473711}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901490201	43	{"type":"Utterance","sender":"speaker","contents":"center is yellow","time":1523901490201}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901499628	44	{"type":"Utterance","sender":"speaker","contents":"center is purple","time":1523901499628}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901517077	45	{"type":"Utterance","sender":"speaker","contents":"center is poop brown  lol","time":1523901517077}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901568217	46	{"type":"Utterance","sender":"speaker","contents":"The grid is one of the two with purple in the bottom right, and it's the one with the darker brown center tile of those two","time":1523901568217}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901596858	47	{"type":"Utterance","sender":"speaker","contents":"center tile is blue","time":1523901596858}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901615798	48	{"type":"Utterance","sender":"speaker","contents":"bottom right is saturated purple","time":1523901615798}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901626698	48	{"type":"Utterance","sender":"speaker","contents":"with two blues in the row to the left","time":1523901626698}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901627904	48	{"type":"Utterance","sender":"listener","contents":"with pink above it","time":1523901627904}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901630231	48	{"type":"Utterance","sender":"speaker","contents":"Yup!","time":1523901630231}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901676177	49	{"type":"Utterance","sender":"speaker","contents":"top right is brighter blue with duller purple below and 2 grey squares in the center top and middle","time":1523901676177}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901699692	50	{"type":"Utterance","sender":"speaker","contents":"top left is blue","time":1523901699692}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901716407	51	{"type":"Utterance","sender":"speaker","contents":"top left is grey","time":1523901716407}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901728342	52	{"type":"Utterance","sender":"speaker","contents":"top left is blue","time":1523901728342}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901750287	53	{"type":"Utterance","sender":"speaker","contents":"center is bright red and lower left is bright blue","time":1523901750287}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901762372	54	{"type":"Utterance","sender":"speaker","contents":"top left is yellow","time":1523901762372}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901793627	55	{"type":"Utterance","sender":"speaker","contents":"no pink in it","time":1523901793627}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901808404	55	{"type":"Utterance","sender":"listener","contents":"with the tan/browns in the top row?","time":1523901808404}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901811508	55	{"type":"Utterance","sender":"speaker","contents":"top left is purple then below is mint green","time":1523901811508}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901825615	56	{"type":"Utterance","sender":"listener","contents":"nice job!","time":1523901825615}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901828695	56	{"type":"Utterance","sender":"speaker","contents":"center is mint","time":1523901828695}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901836527	56	{"type":"Utterance","sender":"speaker","contents":"(this is easily my favorite hit in a long time)","time":1523901836527}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901855616	56	{"type":"Utterance","sender":"speaker","contents":"the top-left is a sort of teal blue","time":1523901855616}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901858007	56	{"type":"Utterance","sender":"listener","contents":"bright blue bottom right","time":1523901858007}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901865082	56	{"type":"Utterance","sender":"speaker","contents":"Yeah, it's a LITTLE purple","time":1523901865082}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901895356	56	{"type":"Utterance","sender":"listener","contents":"is the second down on the left poop brown?","time":1523901895356}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901902673	56	{"type":"Utterance","sender":"speaker","contents":"The first column going top-down is teal (with a darker blue to the right), orange, green","time":1523901902673}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901943836	56	{"type":"Utterance","sender":"listener","contents":"hope I have this one right.~~~ fingers crossed lol","time":1523901943836}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901949875	56	{"type":"Utterance","sender":"speaker","contents":"lol it's all good if not","time":1523901949875}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901960370	57	{"type":"Utterance","sender":"listener","contents":"we got the penny ;P","time":1523901960370}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901963223	57	{"type":"Utterance","sender":"speaker","contents":"whwww","time":1523901963223}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901964294	57	{"type":"Utterance","sender":"speaker","contents":"lol","time":1523901964294}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523901997717	57	{"type":"Utterance","sender":"speaker","contents":"ok bottom row from left to right.~~~  purple, pinkish and bright green","time":1523901997717}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902013829	58	{"type":"Utterance","sender":"speaker","contents":"oh no rip x_x","time":1523902013829}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902021387	58	{"type":"Utterance","sender":"listener","contents":"no biggie  lol","time":1523902021387}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902030679	58	{"type":"Utterance","sender":"speaker","contents":"okay center tile is purple","time":1523902030679}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902053864	59	{"type":"Utterance","sender":"speaker","contents":"top left is purple","time":1523902053864}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902063527	60	{"type":"Utterance","sender":"listener","contents":"our last one","time":1523902063527}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902073989	60	{"type":"Utterance","sender":"speaker","contents":"Thanks for helping with the hit! The bottom right is a dark blue","time":1523902073989}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902076207	60	{"type":"Utterance","sender":"listener","contents":"btw my name is Bill.~~~ nice to meet you :)","time":1523902076207}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902076729	60	{"type":"Utterance","sender":"speaker","contents":"top right is red","time":1523902076729}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902082343	60	{"type":"Utterance","sender":"speaker","contents":"I'm Jon!","time":1523902082343}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902088234	60	{"type":"Utterance","sender":"speaker","contents":"Enjoy and good luck turking!","time":1523902088234}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902106121	60	{"type":"Utterance","sender":"listener","contents":"and above it is a lime green?","time":1523902106121}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902111193	60	{"type":"Utterance","sender":"listener","contents":"same to you Jon!","time":1523902111193}
+utterance	1071-1610f674-2a91-4633-86a7-a25fa6ac492e	1523902116692	60	{"type":"Utterance","sender":"speaker","contents":"Yup! The last column, top-down is red, green, blue","time":1523902116692}

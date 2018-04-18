@@ -128,14 +128,19 @@ def process_record(record, D, record_type):
     if record[record_groupby] not in D_sub:
         D_sub[record[record_groupby]] = []
     D_sub = D_sub[record[record_groupby]]
-    
+
     sub_record = dict()
     for key in record:
         if key != game_groupby and key != record_groupby:
             if key == "time":
                 sub_record[key] = int(record[key])
             elif (record[key].startswith("[") and record[key].endswith("]")) or (record[key].startswith("{") and record[key].endswith("}")):
-                sub_record[key] = json.loads(record[key])
+                obj = json.loads(record[key])
+                if key == "action" or key == "utterance" or key == "obj":
+                    for k in obj:
+                        sub_record[k] = obj[k]
+                else:
+                    sub_record[key] = obj
             else:
                 sub_record[key] = record[key]
     sub_record["type"] = record_type

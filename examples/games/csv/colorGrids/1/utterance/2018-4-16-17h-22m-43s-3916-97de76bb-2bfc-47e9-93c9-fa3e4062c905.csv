@@ -1,0 +1,67 @@
+eventType	gameid	time	roundNum	obj
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924563929	1	{"type":"Utterance","sender":"speaker","contents":"there is a green square in the upper left corner","time":1523924563929}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924607972	2	{"type":"Utterance","sender":"speaker","contents":"there is a red block top left cornor","time":1523924607972}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924684021	3	{"type":"Utterance","sender":"speaker","contents":"The top row is bright purple, gray and some weird grayish purple color.","time":1523924684021}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924704602	3	{"type":"Utterance","sender":"listener","contents":"dont see that ","time":1523924704602}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924736213	3	{"type":"Utterance","sender":"speaker","contents":"Bottom left corner is a bright green and the bottom right corner is the same bright green","time":1523924736213}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924807737	4	{"type":"Utterance","sender":"speaker","contents":"top blocks are dark blue,lightblue ,purple","time":1523924807737}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924845921	5	{"type":"Utterance","sender":"speaker","contents":"Center blocks are purple, bright green and brown.","time":1523924845921}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924928385	6	{"type":"Utterance","sender":"speaker","contents":"top blocks are blue, grayish redish  and the bottom left is a greenish block","time":1523924928385}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523924977628	7	{"type":"Utterance","sender":"speaker","contents":"Center block is grey.  There is a pink block on the left and a greenish block on the right~~~","time":1523924977628}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925060031	8	{"type":"Utterance","sender":"speaker","contents":"has mostly greenish blocks a pink block bottom left cornor","time":1523925060031}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925128425	9	{"type":"Utterance","sender":"speaker","contents":"Mostly green blocks with a bright blue block center right","time":1523925128425}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925191572	10	{"type":"Utterance","sender":"speaker","contents":"yellow block center roll far right ","time":1523925191572}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925214766	11	{"type":"Utterance","sender":"speaker","contents":"Bright green center box","time":1523925214766}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925260516	12	{"type":"Utterance","sender":"speaker","contents":"top blocks center is red ","time":1523925260516}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925293189	13	{"type":"Utterance","sender":"speaker","contents":"Lower right corner is gray.  ","time":1523925293189}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925332387	14	{"type":"Utterance","sender":"speaker","contents":"top roll far right block is orange","time":1523925332387}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925368211	15	{"type":"Utterance","sender":"speaker","contents":"Top left corner is yellow gold.","time":1523925368211}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925419619	16	{"type":"Utterance","sender":"speaker","contents":"middle roll  far right block is dark blue ","time":1523925419619}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925473687	17	{"type":"Utterance","sender":"speaker","contents":"Top right corner is purple.  The block below that is yellowish","time":1523925473687}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925598720	18	{"type":"Utterance","sender":"speaker","contents":"first and second roll on the left the first blocks are purple they look the same color","time":1523925598720}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925658061	19	{"type":"Utterance","sender":"speaker","contents":"Left row top to bottom is green, dark green, bright green.","time":1523925658061}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925761006	20	{"type":"Utterance","sender":"speaker","contents":"far right block is greenish top roll","time":1523925761006}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925773678	20	{"type":"Utterance","sender":"speaker","contents":"yellow under it","time":1523925773678}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925827155	21	{"type":"Utterance","sender":"speaker","contents":"Bottom row center is a bright blue with red to the left and greenish to the right.","time":1523925827155}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925910973	22	{"type":"Utterance","sender":"speaker","contents":"bottom roll purple yellow yellow","time":1523925910973}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925943648	23	{"type":"Utterance","sender":"speaker","contents":"Center square is yellow gold.","time":1523925943648}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523925989268	24	{"type":"Utterance","sender":"speaker","contents":"top roll left block is redish","time":1523925989268}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926051703	25	{"type":"Utterance","sender":"speaker","contents":"Top center is yellow and bottom center is yellow.  They are almost the same color~~~","time":1523926051703}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926160394	26	{"type":"Utterance","sender":"speaker","contents":"top roll middle block is redish bottom middle block is grayish","time":1523926160394}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926195943	27	{"type":"Utterance","sender":"speaker","contents":"Top left is greenish.  Center block is the same greenish color~~~","time":1523926195943}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926292247	28	{"type":"Utterance","sender":"speaker","contents":"top roll far right block is purpleish and the middle block is near the same color ","time":1523926292247}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926324746	28	{"type":"Utterance","sender":"listener","contents":"Is the center block bright pink?","time":1523926324746}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926332248	28	{"type":"Utterance","sender":"speaker","contents":"no ","time":1523926332248}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926350184	28	{"type":"Utterance","sender":"speaker","contents":"almost the same as the cornor","time":1523926350184}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926371149	29	{"type":"Utterance","sender":"speaker","contents":"Center block is yellowgold","time":1523926371149}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926440823	30	{"type":"Utterance","sender":"speaker","contents":"top right corner  block is purple  under it dark blue","time":1523926440823}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926490154	31	{"type":"Utterance","sender":"speaker","contents":"Bottom left is red, next to that is a grayish color.  The center block is bluish","time":1523926490154}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926559573	32	{"type":"Utterance","sender":"speaker","contents":"bottom left block is purple top of it is greenish ","time":1523926559573}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926599444	33	{"type":"Utterance","sender":"speaker","contents":"Top left is red.","time":1523926599444}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926627716	34	{"type":"Utterance","sender":"speaker","contents":"top right is blue","time":1523926627716}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926680805	35	{"type":"Utterance","sender":"speaker","contents":"top row is green, bright green, red","time":1523926680805}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926731493	36	{"type":"Utterance","sender":"speaker","contents":"top right is blue bottom left is blue ","time":1523926731493}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926775205	37	{"type":"Utterance","sender":"speaker","contents":"Top right is red","time":1523926775205}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926827010	38	{"type":"Utterance","sender":"speaker","contents":"center block is green and the bottom right corner block is green","time":1523926827010}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926893235	39	{"type":"Utterance","sender":"speaker","contents":"top left is pinkish, center is red.  Next to the center is red and above that is red","time":1523926893235}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523926963720	40	{"type":"Utterance","sender":"speaker","contents":"top roll is blue,gray,bright green ","time":1523926963720}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927020164	41	{"type":"Utterance","sender":"speaker","contents":"Bottom row right is purple","time":1523927020164}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927066223	42	{"type":"Utterance","sender":"speaker","contents":"top roll blue green red","time":1523927066223}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927118348	43	{"type":"Utterance","sender":"speaker","contents":"bottom row pink, yellow gold and dark purpleish","time":1523927118348}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927185934	44	{"type":"Utterance","sender":"speaker","contents":"top roll pink purple gray ","time":1523927185934}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927218784	45	{"type":"Utterance","sender":"speaker","contents":"top row purple, brown, grey","time":1523927218784}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927288844	46	{"type":"Utterance","sender":"speaker","contents":"bottom roll corner blocks are  purple ","time":1523927288844}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927336206	47	{"type":"Utterance","sender":"speaker","contents":"top row, teal, brown yellow gold.  Below the teal is red~~~","time":1523927336206}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927401259	48	{"type":"Utterance","sender":"speaker","contents":"middle roll pink blue yellowish green ","time":1523927401259}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927443115	49	{"type":"Utterance","sender":"speaker","contents":"top right is red, center square is purple.","time":1523927443115}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927501562	50	{"type":"Utterance","sender":"speaker","contents":"top roll left corner is green","time":1523927501562}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927537871	51	{"type":"Utterance","sender":"speaker","contents":"Top right is green and there is a green below that.","time":1523927537871}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927685063	52	{"type":"Utterance","sender":"speaker","contents":"top left corner block is purple  right corner blue  bottom  roll corner block left is blue and the right bottom cornor block is green ","time":1523927685063}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927737023	53	{"type":"Utterance","sender":"speaker","contents":"Bottom left is brown, center is green, top right is purple","time":1523927737023}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927830197	54	{"type":"Utterance","sender":"speaker","contents":"middle roll is purple blue gray  top roll left corner block is yellowish","time":1523927830197}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927877359	55	{"type":"Utterance","sender":"speaker","contents":"Center block is orange","time":1523927877359}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927923573	56	{"type":"Utterance","sender":"speaker","contents":"middle roll left block is red ","time":1523927923573}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523927968080	57	{"type":"Utterance","sender":"speaker","contents":"Top middle is red.  Bottom middle is orange/red~~~  Teal is the center~~~","time":1523927968080}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523928036211	58	{"type":"Utterance","sender":"speaker","contents":"topand bottom middle blocks are green  bottom right corner block is purple","time":1523928036211}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523928110009	59	{"type":"Utterance","sender":"speaker","contents":"Left center block is blue, middle block is greenish, center right block is yellow.","time":1523928110009}
+utterance	3916-97de76bb-2bfc-47e9-93c9-fa3e4062c905	1523928194689	60	{"type":"Utterance","sender":"speaker","contents":"middle roll is brownish brown yellow top left corner block is purple","time":1523928194689}

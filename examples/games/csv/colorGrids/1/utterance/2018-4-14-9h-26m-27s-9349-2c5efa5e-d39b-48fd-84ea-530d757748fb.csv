@@ -1,0 +1,78 @@
+eventType	gameid	time	roundNum	obj
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723187850	1	{"type":"Utterance","sender":"speaker","contents":"hi","time":1523723187850}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723196874	1	{"type":"Utterance","sender":"listener","contents":"Hello","time":1523723196874}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723210601	1	{"type":"Utterance","sender":"speaker","contents":"the one that is highlighted has a very deep blue in the bottom right corner, it stands out the most","time":1523723210601}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723216145	1	{"type":"Utterance","sender":"speaker","contents":"it also has brown in the middle","time":1523723216145}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723256119	2	{"type":"Utterance","sender":"speaker","contents":"It has pink on the right lower side","time":1523723256119}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723286282	3	{"type":"Utterance","sender":"speaker","contents":"the one that is highlighted has yellow on the bottom left and then pink in the middle of the bottom row","time":1523723286282}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723318724	4	{"type":"Utterance","sender":"speaker","contents":"the upper left side is light blue","time":1523723318724}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723341418	5	{"type":"Utterance","sender":"speaker","contents":"the top middle is orange","time":1523723341418}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723369468	6	{"type":"Utterance","sender":"speaker","contents":"lower bottom right is brown","time":1523723369468}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723393899	7	{"type":"Utterance","sender":"speaker","contents":"the top row middle is the most orange","time":1523723393899}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723419905	8	{"type":"Utterance","sender":"speaker","contents":"top right is blue","time":1523723419905}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723437403	8	{"type":"Utterance","sender":"listener","contents":"what is the first color of the second row on the left","time":1523723437403}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723461286	8	{"type":"Utterance","sender":"speaker","contents":"light green","time":1523723461286}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723477571	9	{"type":"Utterance","sender":"speaker","contents":"bottom row has two greens and a reddish color","time":1523723477571}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723530875	10	{"type":"Utterance","sender":"speaker","contents":"first on the middle left hand side is dark blue.","time":1523723530875}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723560956	11	{"type":"Utterance","sender":"speaker","contents":"most orange in the top right, then kind of a lime green color in the middle","time":1523723560956}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723633216	12	{"type":"Utterance","sender":"speaker","contents":"Middle is pink or mauve.","time":1523723633216}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723673701	13	{"type":"Utterance","sender":"speaker","contents":"middle is kind of a yellowish color","time":1523723673701}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723744027	14	{"type":"Utterance","sender":"speaker","contents":"Bottom row left is grayish","time":1523723744027}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723780150	15	{"type":"Utterance","sender":"speaker","contents":"green in the top row in the middle","time":1523723780150}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723834806	16	{"type":"Utterance","sender":"speaker","contents":"Upper middle is brown","time":1523723834806}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723855798	17	{"type":"Utterance","sender":"speaker","contents":"middle is grey right below it is green","time":1523723855798}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723936604	18	{"type":"Utterance","sender":"speaker","contents":"Upper left is light blue","time":1523723936604}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523723981759	19	{"type":"Utterance","sender":"speaker","contents":"upper left corner is yellow-green","time":1523723981759}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724005688	20	{"type":"Utterance","sender":"speaker","contents":"Middle is green","time":1523724005688}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724039479	21	{"type":"Utterance","sender":"speaker","contents":"middle is green","time":1523724039479}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724107615	22	{"type":"Utterance","sender":"speaker","contents":"top middle is purple","time":1523724107615}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724138888	22	{"type":"Utterance","sender":"listener","contents":"what is to the right of it brown or more reddish?","time":1523724138888}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724157732	22	{"type":"Utterance","sender":"speaker","contents":"brown","time":1523724157732}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724193416	23	{"type":"Utterance","sender":"speaker","contents":"top right corner and left corenr are green, ","time":1523724193416}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724196400	23	{"type":"Utterance","sender":"speaker","contents":"in the second row","time":1523724196400}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724221393	24	{"type":"Utterance","sender":"speaker","contents":"Top left is light blue","time":1523724221393}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724235153	25	{"type":"Utterance","sender":"speaker","contents":"top left corner is teal","time":1523724235153}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724288473	26	{"type":"Utterance","sender":"speaker","contents":"Second middle and third middle are purple","time":1523724288473}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724324577	27	{"type":"Utterance","sender":"speaker","contents":"bottom middle is orange","time":1523724324577}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724358779	28	{"type":"Utterance","sender":"speaker","contents":"Top left and right are both purplish","time":1523724358779}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724379090	28	{"type":"Utterance","sender":"listener","contents":"whats inbetween it","time":1523724379090}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724386539	28	{"type":"Utterance","sender":"speaker","contents":"Pink","time":1523724386539}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724404137	29	{"type":"Utterance","sender":"speaker","contents":"bottom row- green in the middle","time":1523724404137}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724427292	30	{"type":"Utterance","sender":"speaker","contents":"Top left is lime","time":1523724427292}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724449738	31	{"type":"Utterance","sender":"speaker","contents":"brightest orange in the top left","time":1523724449738}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724532075	32	{"type":"Utterance","sender":"speaker","contents":"Middle row left is blue and purple next to it.","time":1523724532075}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724576267	33	{"type":"Utterance","sender":"speaker","contents":"fuschia/purple in the middle","time":1523724576267}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724631399	34	{"type":"Utterance","sender":"speaker","contents":"Middle and bottom are both brown","time":1523724631399}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724657210	35	{"type":"Utterance","sender":"speaker","contents":"top left is bright pink/fuschia","time":1523724657210}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724687484	36	{"type":"Utterance","sender":"speaker","contents":"Upper left is light blue","time":1523724687484}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724702972	37	{"type":"Utterance","sender":"speaker","contents":"middle is teal","time":1523724702972}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724707035	37	{"type":"Utterance","sender":"speaker","contents":"or blue","time":1523724707035}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724746979	38	{"type":"Utterance","sender":"speaker","contents":"Top middle is dark blue","time":1523724746979}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724767803	39	{"type":"Utterance","sender":"speaker","contents":"bottom left is fuschia/reddish","time":1523724767803}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724833499	40	{"type":"Utterance","sender":"speaker","contents":"Middle nis brown with blur to it's right","time":1523724833499}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724851212	41	{"type":"Utterance","sender":"speaker","contents":"middle is the most yellow","time":1523724851212}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724899664	42	{"type":"Utterance","sender":"speaker","contents":"Bottom left is purplish","time":1523724899664}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523724954645	43	{"type":"Utterance","sender":"speaker","contents":"middle is orange above it is pink (not purple)","time":1523724954645}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725009663	44	{"type":"Utterance","sender":"speaker","contents":"Top right is brownish","time":1523725009663}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725029605	45	{"type":"Utterance","sender":"speaker","contents":"top middle has the most yellow in it","time":1523725029605}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725068932	46	{"type":"Utterance","sender":"speaker","contents":"Middle left is the most orange","time":1523725068932}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725115221	47	{"type":"Utterance","sender":"speaker","contents":"bottom left is brown, above it is green, not yellow-green","time":1523725115221}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725163626	48	{"type":"Utterance","sender":"speaker","contents":"Middle right and lower right are both green","time":1523725163626}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725219791	49	{"type":"Utterance","sender":"speaker","contents":"top right is most green (not yellow-green)","time":1523725219791}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725249687	49	{"type":"Utterance","sender":"listener","contents":"What is the top left?","time":1523725249687}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725268846	49	{"type":"Utterance","sender":"speaker","contents":"whoops sorry I meant the top left haha","time":1523725268846}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725275334	49	{"type":"Utterance","sender":"speaker","contents":"the top left is the most green, not yellow green","time":1523725275334}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725315889	50	{"type":"Utterance","sender":"speaker","contents":"Bottom left is grey","time":1523725315889}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725352647	51	{"type":"Utterance","sender":"speaker","contents":"top left is the most blue","time":1523725352647}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725383951	52	{"type":"Utterance","sender":"speaker","contents":"Bottom left is mostly orange","time":1523725383951}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725402743	53	{"type":"Utterance","sender":"speaker","contents":"bottom left is ligth blue","time":1523725402743}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725404167	53	{"type":"Utterance","sender":"speaker","contents":"light","time":1523725404167}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725430047	54	{"type":"Utterance","sender":"speaker","contents":"Bottom right is mostly purple","time":1523725430047}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725470440	55	{"type":"Utterance","sender":"speaker","contents":"top left and top right corners are red","time":1523725470440}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725528249	56	{"type":"Utterance","sender":"speaker","contents":"Top middle and right are both purplish","time":1523725528249}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725554288	57	{"type":"Utterance","sender":"speaker","contents":"middle is teal","time":1523725554288}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725595843	57	{"type":"Utterance","sender":"listener","contents":"What is upper right?","time":1523725595843}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725610593	57	{"type":"Utterance","sender":"speaker","contents":"blue","time":1523725610593}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725635291	58	{"type":"Utterance","sender":"speaker","contents":"Upper left is purplish","time":1523725635291}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725668384	59	{"type":"Utterance","sender":"speaker","contents":"all three in the top are blue as is the middle","time":1523725668384}
+utterance	9349-2c5efa5e-d39b-48fd-84ea-530d757748fb	1523725700461	60	{"type":"Utterance","sender":"speaker","contents":"Bottom left is most blue","time":1523725700461}

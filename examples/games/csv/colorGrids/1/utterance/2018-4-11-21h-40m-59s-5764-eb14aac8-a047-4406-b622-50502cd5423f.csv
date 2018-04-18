@@ -1,0 +1,68 @@
+eventType	gameid	time	roundNum	obj
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508059581	1	{"type":"Utterance","sender":"speaker","contents":"Choose grid with top row: beige (brown/green), sea green, mauve","time":1523508059581}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508098174	1	{"type":"Utterance","sender":"listener","contents":"Does this square have a pink box?  or is it mostly purple and brown?","time":1523508098174}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508114087	1	{"type":"Utterance","sender":"speaker","contents":"Mostly purple and brown. No pink~~~","time":1523508114087}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508152590	2	{"type":"Utterance","sender":"speaker","contents":"The box with two light green boxes, one row is orange, purple and light green, ","time":1523508152590}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508271849	3	{"type":"Utterance","sender":"speaker","contents":"Middle is light green (not yellow), has one purple square","time":1523508271849}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508328893	4	{"type":"Utterance","sender":"speaker","contents":"Has one bright pink box, has one row with two bright green colors and a blueish purple color box","time":1523508328893}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508361069	4	{"type":"Utterance","sender":"speaker","contents":"actually its more dark blue than purple","time":1523508361069}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508414719	4	{"type":"Utterance","sender":"listener","contents":"Is it the brightest pink (of the two boxes with pink squares)? ","time":1523508414719}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508438964	4	{"type":"Utterance","sender":"speaker","contents":"there should only be one really bright pink box","time":1523508438964}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508464548	5	{"type":"Utterance","sender":"speaker","contents":"The one with the pink center","time":1523508464548}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508504292	6	{"type":"Utterance","sender":"speaker","contents":"The one with the bright pink box in the center, it has a red box on the left and a light blue on the right","time":1523508504292}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508552217	7	{"type":"Utterance","sender":"speaker","contents":"The one with the orange upper left corner","time":1523508552217}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508574277	8	{"type":"Utterance","sender":"speaker","contents":"The one with the really light blue box in the middle","time":1523508574277}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508592626	9	{"type":"Utterance","sender":"speaker","contents":"The one with the bright green center","time":1523508592626}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508609700	9	{"type":"Utterance","sender":"listener","contents":"it's bright green and doesn't look yellowish right?","time":1523508609700}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508634231	9	{"type":"Utterance","sender":"speaker","contents":"Exactly. And the upper left square is vivid purple","time":1523508634231}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508700556	10	{"type":"Utterance","sender":"speaker","contents":"It's the one with the purple and pink looking box in the lower left. It has a slight bright blue box in the middle with a dark blue box on the top of it","time":1523508700556}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508767775	11	{"type":"Utterance","sender":"speaker","contents":"The center is green with a bright green square directly above it","time":1523508767775}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508810194	12	{"type":"Utterance","sender":"speaker","contents":"It has a really light green middle box and an orange box on the left of it","time":1523508810194}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508891531	13	{"type":"Utterance","sender":"speaker","contents":"Top row: yellow/green, blue/grey, grey/pink. Middle: bright purple, mauve, blue/purple","time":1523508891531}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508961636	14	{"type":"Utterance","sender":"speaker","contents":"The one right with the really bright green box in the lower left corner. it should also have a really bright blue box on the upper left corner~~~ ","time":1523508961636}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523508994841	15	{"type":"Utterance","sender":"speaker","contents":"Center is purple; lower left corner is orange","time":1523508994841}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509042915	16	{"type":"Utterance","sender":"speaker","contents":"lower left corner is bright red and pink colored, above that is a blue box. They're really bright, not the darker looking versions","time":1523509042915}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509108039	17	{"type":"Utterance","sender":"speaker","contents":"Center is bright sea green. Top row: bright pink, grey, bright green (not yellow-green)","time":1523509108039}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509149074	18	{"type":"Utterance","sender":"speaker","contents":"the lower left corner is the brighter orange box.","time":1523509149074}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509194853	19	{"type":"Utterance","sender":"speaker","contents":"Center is darkest blue with pink on the right","time":1523509194853}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509224651	20	{"type":"Utterance","sender":"speaker","contents":"Has the brightest pink in the middle of the bottom row.","time":1523509224651}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509336036	21	{"type":"Utterance","sender":"speaker","contents":"Middle is pink; Top row: green (not bright), deep blue, bright pink","time":1523509336036}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509403537	22	{"type":"Utterance","sender":"speaker","contents":"Has a bright green in the middle, the blue to the left of it looks dull. The top left corner box is light green but yellowish","time":1523509403537}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509446388	23	{"type":"Utterance","sender":"speaker","contents":" Middle is pink; upper right corner is gold","time":1523509446388}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509481833	24	{"type":"Utterance","sender":"speaker","contents":"The top left corner is brightest green. ","time":1523509481833}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509539925	25	{"type":"Utterance","sender":"speaker","contents":"Top row: royal blue, dark red, purple","time":1523509539925}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509558177	26	{"type":"Utterance","sender":"speaker","contents":"top left corner is bright purple","time":1523509558177}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509608375	27	{"type":"Utterance","sender":"speaker","contents":"Top row has two blue squares with purple in the middle; no bright green","time":1523509608375}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509637296	28	{"type":"Utterance","sender":"speaker","contents":"the middle box is orange, it's dulled and not bright","time":1523509637296}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509677463	29	{"type":"Utterance","sender":"speaker","contents":"Middle is muted blue with a bright green square above it","time":1523509677463}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509706248	30	{"type":"Utterance","sender":"speaker","contents":"Top left corner is bright purple with bright pink under it. ","time":1523509706248}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509767780	31	{"type":"Utterance","sender":"speaker","contents":"Middle is sea green (the brightest middle of the three).","time":1523509767780}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509803007	32	{"type":"Utterance","sender":"speaker","contents":"lower right corner is bright pink, with blue to the left of it.","time":1523509803007}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509848924	33	{"type":"Utterance","sender":"speaker","contents":"Middle is muted purple, not bright green or royal blue","time":1523509848924}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509874271	34	{"type":"Utterance","sender":"speaker","contents":"middle is purple with bright orange above it","time":1523509874271}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509918648	35	{"type":"Utterance","sender":"speaker","contents":"Middle is grey with bright blue directly above it","time":1523509918648}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523509971800	36	{"type":"Utterance","sender":"speaker","contents":"lower left corner is bright green with a dull red to the right of it. Middle box is normal blue","time":1523509971800}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510023894	37	{"type":"Utterance","sender":"speaker","contents":"Middle is bright green (normal green, not sea green)","time":1523510023894}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510067126	38	{"type":"Utterance","sender":"speaker","contents":"lower row is dulled pink, normal blue and yellow on the right","time":1523510067126}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510106608	39	{"type":"Utterance","sender":"speaker","contents":"Middle is muted orange with bright green directly below","time":1523510106608}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510146479	40	{"type":"Utterance","sender":"speaker","contents":"It has two bright red boxes. One to the left of the center and one in the top right corner","time":1523510146479}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510187796	41	{"type":"Utterance","sender":"speaker","contents":"Center is bright green with bright pink to the left and grey on the right","time":1523510187796}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510223519	42	{"type":"Utterance","sender":"speaker","contents":"It has a darkish blue in the middle and a bright yellow on the right ","time":1523510223519}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510257897	43	{"type":"Utterance","sender":"speaker","contents":"Middle is bright blue; bottom left is yellow","time":1523510257897}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510279662	44	{"type":"Utterance","sender":"speaker","contents":"Top left corner is bright green","time":1523510279662}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510306914	45	{"type":"Utterance","sender":"speaker","contents":"Middle is green","time":1523510306914}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510323423	46	{"type":"Utterance","sender":"speaker","contents":"middle is lime green and the left is yellow","time":1523510323423}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510352628	47	{"type":"Utterance","sender":"speaker","contents":"Middle is dark grey with bright green above it","time":1523510352628}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510372429	48	{"type":"Utterance","sender":"speaker","contents":"top left corner is normal orange","time":1523510372429}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510389691	49	{"type":"Utterance","sender":"speaker","contents":"Center is blue","time":1523510389691}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510414868	50	{"type":"Utterance","sender":"speaker","contents":"has the brightest red box, middle is dulled pink","time":1523510414868}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510438614	51	{"type":"Utterance","sender":"speaker","contents":"Center is bright pink","time":1523510438614}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510460367	52	{"type":"Utterance","sender":"speaker","contents":"top left corner is purple","time":1523510460367}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510488082	53	{"type":"Utterance","sender":"speaker","contents":"Top right corner is bright red; top left is pink","time":1523510488082}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510511821	54	{"type":"Utterance","sender":"speaker","contents":"has a bright red box to the right of the middle","time":1523510511821}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510571801	55	{"type":"Utterance","sender":"speaker","contents":"Center is muted purple; top row is grey, regular blue and a red-orange","time":1523510571801}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510608979	56	{"type":"Utterance","sender":"speaker","contents":"has a green box on the top left and the top right. Middle box is normal blue","time":1523510608979}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510645938	57	{"type":"Utterance","sender":"speaker","contents":"Center is pink with yellow to the left","time":1523510645938}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510674445	58	{"type":"Utterance","sender":"speaker","contents":"lightest blue in the middle box","time":1523510674445}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510724507	59	{"type":"Utterance","sender":"speaker","contents":"Center row: muted sea green, dark pink, grey-purple. Lower right corner is pink","time":1523510724507}
+utterance	5764-eb14aac8-a047-4406-b622-50502cd5423f	1523510759804	60	{"type":"Utterance","sender":"speaker","contents":"bright pink in the top right and normal pink in the lower right, should be the brighter ones","time":1523510759804}

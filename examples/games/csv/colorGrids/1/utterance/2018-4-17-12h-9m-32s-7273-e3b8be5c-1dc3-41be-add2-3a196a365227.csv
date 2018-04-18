@@ -1,0 +1,68 @@
+eventType	gameid	time	roundNum	obj
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992172460	1	{"type":"Utterance","sender":"speaker","contents":"top left box is orange","time":1523992172460}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992186182	2	{"type":"Utterance","sender":"speaker","contents":"lop left is blue","time":1523992186182}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992206691	3	{"type":"Utterance","sender":"speaker","contents":"top row grey,dull brown,green","time":1523992206691}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992247430	4	{"type":"Utterance","sender":"speaker","contents":"Middle row left, bright green","time":1523992247430}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992267139	5	{"type":"Utterance","sender":"speaker","contents":"top left dark purple","time":1523992267139}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992286342	6	{"type":"Utterance","sender":"speaker","contents":"bottom right: dark purple","time":1523992286342}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992302131	7	{"type":"Utterance","sender":"speaker","contents":"top left bright green","time":1523992302131}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992318128	7	{"type":"Utterance","sender":"listener","contents":"what about the middle ","time":1523992318128}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992329826	7	{"type":"Utterance","sender":"speaker","contents":"bright pink","time":1523992329826}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992340602	8	{"type":"Utterance","sender":"listener","contents":"also only 13mins before hit expires","time":1523992340602}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992348019	8	{"type":"Utterance","sender":"listener","contents":"for me at least","time":1523992348019}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992350584	8	{"type":"Utterance","sender":"speaker","contents":"same","time":1523992350584}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992362428	8	{"type":"Utterance","sender":"speaker","contents":"middle left turquose bright","time":1523992362428}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992383875	9	{"type":"Utterance","sender":"speaker","contents":"middle left turquoise","time":1523992383875}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992399535	10	{"type":"Utterance","sender":"speaker","contents":"top right bright green","time":1523992399535}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992417555	11	{"type":"Utterance","sender":"speaker","contents":"middle right navy","time":1523992417555}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992443631	12	{"type":"Utterance","sender":"speaker","contents":"bottom left brightest red, does the bonus matter for you?","time":1523992443631}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992464393	13	{"type":"Utterance","sender":"speaker","contents":"top right brightest pink","time":1523992464393}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992486547	14	{"type":"Utterance","sender":"speaker","contents":"bottom right bright turquiose ","time":1523992486547}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992487097	14	{"type":"Utterance","sender":"listener","contents":"it does but not to the point of not getting paid for the hit so let's get this done if we miss some whatever","time":1523992487097}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992505010	16	{"type":"Utterance","sender":"speaker","contents":"okay just guess immediately","time":1523992505010}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992522201	17	{"type":"Utterance","sender":"speaker","contents":"that's fine","time":1523992522201}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992530680	18	{"type":"Utterance","sender":"speaker","contents":"cool","time":1523992530680}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992561508	19	{"type":"Utterance","sender":"speaker","contents":"we do have a grace period before we can pick so i'll say tl and color if you can guess great","time":1523992561508}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992563047	19	{"type":"Utterance","sender":"listener","contents":"you'll have dto type for me to guess","time":1523992563047}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992572535	20	{"type":"Utterance","sender":"speaker","contents":"green bottom right","time":1523992572535}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992580561	21	{"type":"Utterance","sender":"speaker","contents":"tl green bright","time":1523992580561}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992599737	22	{"type":"Utterance","sender":"speaker","contents":"bright green bottom middle","time":1523992599737}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992614497	23	{"type":"Utterance","sender":"speaker","contents":"tl b purp","time":1523992614497}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992619288	23	{"type":"Utterance","sender":"listener","contents":"if all else fails screenshot progress and send  them message","time":1523992619288}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992633160	24	{"type":"Utterance","sender":"speaker","contents":"top left green","time":1523992633160}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992644585	25	{"type":"Utterance","sender":"speaker","contents":"tl blue","time":1523992644585}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992646401	25	{"type":"Utterance","sender":"listener","contents":"they;re usually good compensatiing","time":1523992646401}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992663673	27	{"type":"Utterance","sender":"speaker","contents":"tl blue","time":1523992663673}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992677448	28	{"type":"Utterance","sender":"speaker","contents":"top middle purple","time":1523992677448}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992690009	29	{"type":"Utterance","sender":"speaker","contents":"tr dark green","time":1523992690009}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992701448	30	{"type":"Utterance","sender":"speaker","contents":"middle right green","time":1523992701448}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992719624	31	{"type":"Utterance","sender":"speaker","contents":"tl dark purp","time":1523992719624}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992733080	32	{"type":"Utterance","sender":"speaker","contents":"bottom mid green","time":1523992733080}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992743344	33	{"type":"Utterance","sender":"speaker","contents":"tl green","time":1523992743344}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992752569	34	{"type":"Utterance","sender":"speaker","contents":"mid left green","time":1523992752569}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992766960	35	{"type":"Utterance","sender":"speaker","contents":"tm yellow","time":1523992766960}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992781889	36	{"type":"Utterance","sender":"speaker","contents":"middle right turquose ","time":1523992781889}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992801544	37	{"type":"Utterance","sender":"speaker","contents":"bl bright red","time":1523992801544}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992818549	38	{"type":"Utterance","sender":"speaker","contents":"top left pink","time":1523992818549}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992842113	39	{"type":"Utterance","sender":"speaker","contents":"bl brown","time":1523992842113}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992850409	40	{"type":"Utterance","sender":"speaker","contents":"top right green ","time":1523992850409}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992863887	41	{"type":"Utterance","sender":"speaker","contents":"bm orange","time":1523992863887}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992879977	42	{"type":"Utterance","sender":"speaker","contents":"top miodle red","time":1523992879977}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992899727	43	{"type":"Utterance","sender":"speaker","contents":"mm bright green","time":1523992899727}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992910209	44	{"type":"Utterance","sender":"speaker","contents":"mid right orange","time":1523992910209}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992917832	45	{"type":"Utterance","sender":"speaker","contents":"g","time":1523992917832}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992924160	46	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992924160}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992930007	47	{"type":"Utterance","sender":"speaker","contents":"a","time":1523992930007}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992933839	48	{"type":"Utterance","sender":"speaker","contents":"s","time":1523992933839}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992938928	49	{"type":"Utterance","sender":"speaker","contents":"l","time":1523992938928}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992942858	50	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992942858}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992948687	51	{"type":"Utterance","sender":"speaker","contents":"l","time":1523992948687}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992952535	52	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992952535}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992957287	53	{"type":"Utterance","sender":"speaker","contents":"l","time":1523992957287}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992961609	54	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992961609}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992966063	55	{"type":"Utterance","sender":"speaker","contents":"l","time":1523992966063}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992969593	56	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992969593}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992970054	56	{"type":"Utterance","sender":"listener","contents":"l","time":1523992970054}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992977929	58	{"type":"Utterance","sender":"speaker","contents":"d","time":1523992977929}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992983510	59	{"type":"Utterance","sender":"speaker","contents":"l","time":1523992983510}
+utterance	7273-e3b8be5c-1dc3-41be-add2-3a196a365227	1523992988328	60	{"type":"Utterance","sender":"speaker","contents":"ggwp","time":1523992988328}

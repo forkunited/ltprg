@@ -1,0 +1,67 @@
+eventType	gameid	time	roundNum	obj
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926271937	1	{"type":"Utterance","sender":"speaker","contents":"It has pink on 3rd column","time":1523926271937}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926330165	2	{"type":"Utterance","sender":"speaker","contents":"on its 1st row It has pink on 2nd column","time":1523926330165}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926375137	3	{"type":"Utterance","sender":"speaker","contents":"1st row colors are green, blue, violet","time":1523926375137}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926426695	4	{"type":"Utterance","sender":"speaker","contents":"2nd column colors are pink, violet, and brown","time":1523926426695}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926498877	5	{"type":"Utterance","sender":"speaker","contents":"1st column's first 2 row colors are same, and 3rd row color is orange","time":1523926498877}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926553625	6	{"type":"Utterance","sender":"speaker","contents":"middle brick is orange, darker than other 2","time":1523926553625}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926607134	7	{"type":"Utterance","sender":"speaker","contents":"1st row fills with red associated group, like red,pink and etc","time":1523926607134}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926688047	8	{"type":"Utterance","sender":"speaker","contents":"let's mark as 1st row 1st column = 1.1","time":1523926688047}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926709635	8	{"type":"Utterance","sender":"speaker","contents":"as like as 1st row 2nd column =1.2","time":1523926709635}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926720632	8	{"type":"Utterance","sender":"listener","contents":"okay that's good","time":1523926720632}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926748871	8	{"type":"Utterance","sender":"speaker","contents":"so 1.1,2~~~1,2~~~2 all 3 are green","time":1523926748871}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926772067	8	{"type":"Utterance","sender":"speaker","contents":"and 3.3 is more darker than other","time":1523926772067}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926821318	9	{"type":"Utterance","sender":"speaker","contents":"2.2 is blue and 3~~~2 is Red","time":1523926821318}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926849459	10	{"type":"Utterance","sender":"speaker","contents":"1.2 is vioet and 1~~~3 is green","time":1523926849459}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523926938215	11	{"type":"Utterance","sender":"speaker","contents":"2.1 and 2~~~3 are different colors and 3~~~2 and 3~~~3 are also different color","time":1523926938215}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927014949	12	{"type":"Utterance","sender":"speaker","contents":"most colors filled with violet and pink","time":1523927014949}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927059367	13	{"type":"Utterance","sender":"speaker","contents":"1.3=green;3~~~3=yellowish green","time":1523927059367}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927109550	14	{"type":"Utterance","sender":"speaker","contents":"1.3=orange; 2~~~1= green","time":1523927109550}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927152897	15	{"type":"Utterance","sender":"speaker","contents":"1.1=violet and 1~~~3=pink with violet","time":1523927152897}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927286882	16	{"type":"Utterance","sender":"speaker","contents":"2.1 - blue; 2~~~2- brown","time":1523927286882}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927297660	16	{"type":"Utterance","sender":"listener","contents":"then","time":1523927297660}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927356878	16	{"type":"Utterance","sender":"speaker","contents":"1.3- darker green than others","time":1523927356878}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927411838	17	{"type":"Utterance","sender":"speaker","contents":"1.1= brwon and 1~~~3 is little lighter than 1~~~1","time":1523927411838}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927462252	18	{"type":"Utterance","sender":"speaker","contents":"1.2cyan2~~~1blue 2~~~3is not good green","time":1523927462252}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927516113	19	{"type":"Utterance","sender":"speaker","contents":"1.3 is similar to brown","time":1523927516113}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927541548	20	{"type":"Utterance","sender":"speaker","contents":"1.3 is bright green than any other","time":1523927541548}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927564745	21	{"type":"Utterance","sender":"speaker","contents":"1.2 is bright yellow than any","time":1523927564745}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927614108	22	{"type":"Utterance","sender":"speaker","contents":"1.1 cyan~~~ 1~~~2 yellow, 1~~~3 lighter than other","time":1523927614108}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927697943	23	{"type":"Utterance","sender":"speaker","contents":"3.1 = green","time":1523927697943}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927714108	24	{"type":"Utterance","sender":"speaker","contents":"2.3=green","time":1523927714108}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927733654	25	{"type":"Utterance","sender":"speaker","contents":"1.1= dark orange","time":1523927733654}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927757671	26	{"type":"Utterance","sender":"speaker","contents":"2.2 = greenish yellow","time":1523927757671}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927778918	27	{"type":"Utterance","sender":"speaker","contents":"2.1= bright yellow","time":1523927778918}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927802848	28	{"type":"Utterance","sender":"speaker","contents":"2.3= strong blue","time":1523927802848}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927825752	29	{"type":"Utterance","sender":"speaker","contents":"1.3- strong blue","time":1523927825752}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927865008	30	{"type":"Utterance","sender":"speaker","contents":"1.3= cyan and 3~~~3= good green than other","time":1523927865008}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927896793	31	{"type":"Utterance","sender":"speaker","contents":"2.2,3~~~3 both are yellow","time":1523927896793}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927919208	32	{"type":"Utterance","sender":"speaker","contents":"2.2 yellow","time":1523927919208}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927937378	33	{"type":"Utterance","sender":"speaker","contents":"3.3 is brighter pink","time":1523927937378}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523927991361	34	{"type":"Utterance","sender":"speaker","contents":"1.1=1~~~2= pinkish and 1~~~3= violet","time":1523927991361}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928031086	35	{"type":"Utterance","sender":"speaker","contents":"3.2 yellow","time":1523928031086}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928075597	36	{"type":"Utterance","sender":"speaker","contents":"1.2=blue3~~~1 brightgreen","time":1523928075597}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928132494	37	{"type":"Utterance","sender":"speaker","contents":"3.1 dark pink, 3~~~2 dark green than other","time":1523928132494}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928154726	38	{"type":"Utterance","sender":"speaker","contents":"1.2 dark orange","time":1523928154726}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928175480	39	{"type":"Utterance","sender":"speaker","contents":"1.1 bright green","time":1523928175480}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928194110	40	{"type":"Utterance","sender":"speaker","contents":"1.2 bright green","time":1523928194110}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928222233	41	{"type":"Utterance","sender":"speaker","contents":"1.2 bright pink and 2~~~3 bright blue","time":1523928222233}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928241990	42	{"type":"Utterance","sender":"speaker","contents":"1.1 bright green","time":1523928241990}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928265386	43	{"type":"Utterance","sender":"speaker","contents":"3.1 light green not blue mixed","time":1523928265386}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928285067	44	{"type":"Utterance","sender":"speaker","contents":"1.1=2~~~3= green","time":1523928285067}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928306298	45	{"type":"Utterance","sender":"speaker","contents":"2.3= cyan or blue","time":1523928306298}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928349937	46	{"type":"Utterance","sender":"speaker","contents":"1.2= bright pink; 2~~~2 dark green 3~~~3 not green","time":1523928349937}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928369636	47	{"type":"Utterance","sender":"speaker","contents":"3.1 green","time":1523928369636}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928400063	48	{"type":"Utterance","sender":"speaker","contents":"2.1 bright green, 2~~~2 bright blue","time":1523928400063}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928420301	49	{"type":"Utterance","sender":"speaker","contents":"2.2 green","time":1523928420301}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928439172	50	{"type":"Utterance","sender":"speaker","contents":"2.2 bright pink","time":1523928439172}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928460990	51	{"type":"Utterance","sender":"speaker","contents":"1.1 blue, 1~~~2 green","time":1523928460990}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928505127	52	{"type":"Utterance","sender":"speaker","contents":"1.3  bright green 1~~~3>2~~~3","time":1523928505127}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928530920	53	{"type":"Utterance","sender":"speaker","contents":"1.2 blue not viloet","time":1523928530920}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928552078	54	{"type":"Utterance","sender":"speaker","contents":"2.1 orange","time":1523928552078}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928609968	55	{"type":"Utterance","sender":"speaker","contents":"1.1 purple and 2~~~2 bright green","time":1523928609968}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928642862	56	{"type":"Utterance","sender":"speaker","contents":"1.2 cyan; 3~~~2 bright green","time":1523928642862}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928665228	57	{"type":"Utterance","sender":"speaker","contents":"1.2 orange","time":1523928665228}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928687827	58	{"type":"Utterance","sender":"speaker","contents":"1.2 blue or violet","time":1523928687827}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928720068	59	{"type":"Utterance","sender":"speaker","contents":"1.1 pink 3~~~1 cyan","time":1523928720068}
+utterance	9193-e80b9de9-7035-4132-a05d-786e925f9e1c	1523928741706	60	{"type":"Utterance","sender":"speaker","contents":"3.3 bright green\\","time":1523928741706}

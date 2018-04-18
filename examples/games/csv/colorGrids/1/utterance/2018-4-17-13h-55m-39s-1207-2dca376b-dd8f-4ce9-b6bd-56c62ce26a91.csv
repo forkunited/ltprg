@@ -1,0 +1,5 @@
+eventType	gameid	time	roundNum	obj
+utterance	1207-2dca376b-dd8f-4ce9-b6bd-56c62ce26a91	1523998539281	1	{"type":"Utterance","sender":"speaker","contents":"top left is blue","time":1523998539281}
+utterance	1207-2dca376b-dd8f-4ce9-b6bd-56c62ce26a91	1523998567157	2	{"type":"Utterance","sender":"speaker","contents":"Bottom middle is purple","time":1523998567157}
+utterance	1207-2dca376b-dd8f-4ce9-b6bd-56c62ce26a91	1523998590803	3	{"type":"Utterance","sender":"speaker","contents":"top left is green","time":1523998590803}
+utterance	1207-2dca376b-dd8f-4ce9-b6bd-56c62ce26a91	1523998620037	4	{"type":"Utterance","sender":"speaker","contents":"Top left is green","time":1523998620037}

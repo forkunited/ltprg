@@ -1,0 +1,19 @@
+eventType	gameid	time	roundNum	obj
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925249176	1	{"type":"Utterance","sender":"speaker","contents":"top row: forest green, grey and sky blue","time":1523925249176}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925268702	1	{"type":"Utterance","sender":"listener","contents":"What's the middle color?","time":1523925268702}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925275848	1	{"type":"Utterance","sender":"speaker","contents":"grey","time":1523925275848}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925290457	1	{"type":"Utterance","sender":"listener","contents":"No, the middle color of the square","time":1523925290457}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925299977	1	{"type":"Utterance","sender":"speaker","contents":"oh sorry blue","time":1523925299977}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925330896	2	{"type":"Utterance","sender":"speaker","contents":"Yellow and purplish blue on top","time":1523925330896}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925339984	2	{"type":"Utterance","sender":"speaker","contents":"The two las colors","time":1523925339984}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925345784	2	{"type":"Utterance","sender":"speaker","contents":"last*","time":1523925345784}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925388219	3	{"type":"Utterance","sender":"speaker","contents":"first two top row purple and blue","time":1523925388219}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925417972	3	{"type":"Utterance","sender":"listener","contents":"Tell me what's the bottom, please","time":1523925417972}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925456581	3	{"type":"Utterance","sender":"speaker","contents":"bottom is harder.  colors are closer together, grey, light grey and a funny purple color","time":1523925456581}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925498417	4	{"type":"Utterance","sender":"speaker","contents":"The one with the funny colors at the bottom and then fuscia (neon pink)","time":1523925498417}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925542953	5	{"type":"Utterance","sender":"speaker","contents":"middle row: poop brown, green then blue","time":1523925542953}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925626879	6	{"type":"Utterance","sender":"speaker","contents":"Ok, this one is hard, light blue fuscia, and the more palest orange (the orange that doesnt look orange at all)","time":1523925626879}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925703107	6	{"type":"Utterance","sender":"speaker","contents":"Hello?","time":1523925703107}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925784100	6	{"type":"Utterance","sender":"speaker","contents":"Sorry, I forgot a comma.  Light blue, fuscia, and the orange that doesn't look orange~~~","time":1523925784100}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523925913545	6	{"type":"Utterance","sender":"speaker","contents":"Partner, are you still there? ","time":1523925913545}
+utterance	4054-bc4c37eb-5528-42ea-a4d8-2123371fbdd7	1523926903193	6	{"type":"Utterance","sender":"speaker","contents":"It's still your turn.","time":1523926903193}

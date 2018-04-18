@@ -1,0 +1,69 @@
+eventType	gameid	time	roundNum	obj
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838320363	1	{"type":"Utterance","sender":"speaker","contents":"two blue, red, green, yellow, tan, magenta, orange, blue","time":1523838320363}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838388298	1	{"type":"Utterance","sender":"listener","contents":"ok","time":1523838388298}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838452965	2	{"type":"Utterance","sender":"speaker","contents":"grey, blue, purple, deeper purple, gray, magenta, blue, gray","time":1523838452965}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838540038	3	{"type":"Utterance","sender":"speaker","contents":"light blue, light green, purple, darker purple, dark tan, yellow, grey, dark purple, neon green","time":1523838540038}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838589395	4	{"type":"Utterance","sender":"speaker","contents":"most vibrant red","time":1523838589395}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838628900	5	{"type":"Utterance","sender":"speaker","contents":"most vibrant pink/purple (magenta)","time":1523838628900}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838656920	6	{"type":"Utterance","sender":"speaker","contents":"old lady colors","time":1523838656920}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838681850	7	{"type":"Utterance","sender":"speaker","contents":"three grays","time":1523838681850}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838694986	8	{"type":"Utterance","sender":"speaker","contents":"most vibrant blue","time":1523838694986}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838736428	9	{"type":"Utterance","sender":"speaker","contents":"neon green, three blues, purple","time":1523838736428}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838774145	10	{"type":"Utterance","sender":"speaker","contents":"most vibrant blue","time":1523838774145}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838795414	11	{"type":"Utterance","sender":"speaker","contents":"two vibrant blues, two light blues","time":1523838795414}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838834697	12	{"type":"Utterance","sender":"speaker","contents":"vibrant red","time":1523838834697}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838876713	13	{"type":"Utterance","sender":"speaker","contents":"vibrant purple, three blues","time":1523838876713}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838911719	14	{"type":"Utterance","sender":"speaker","contents":"3 yellow/ mustard colors","time":1523838911719}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838944133	15	{"type":"Utterance","sender":"speaker","contents":"two vibrant pink/purples, vibrant red, two greens, two purples","time":1523838944133}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838975576	16	{"type":"Utterance","sender":"speaker","contents":"not the vibrant red","time":1523838975576}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523838981309	16	{"type":"Utterance","sender":"speaker","contents":"not the one with the royal blue","time":1523838981309}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839027525	17	{"type":"Utterance","sender":"speaker","contents":"vibrant pink, lighter pink, lightest pink, three green","time":1523839027525}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839091574	18	{"type":"Utterance","sender":"speaker","contents":"vibrant red","time":1523839091574}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839122828	19	{"type":"Utterance","sender":"speaker","contents":"two ligt blues, one brown","time":1523839122828}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839151757	19	{"type":"Utterance","sender":"listener","contents":"is there a vibrant red in there?","time":1523839151757}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839179087	19	{"type":"Utterance","sender":"speaker","contents":"No. There is two purples, one more vibrant~~~","time":1523839179087}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839207814	20	{"type":"Utterance","sender":"speaker","contents":"only yellow ","time":1523839207814}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839241679	21	{"type":"Utterance","sender":"speaker","contents":"two neon greens, couple blues and grays","time":1523839241679}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839264663	22	{"type":"Utterance","sender":"speaker","contents":"lightest green","time":1523839264663}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839303371	23	{"type":"Utterance","sender":"speaker","contents":"two dark purples, two lighter purples, bunch of greens","time":1523839303371}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839338952	24	{"type":"Utterance","sender":"speaker","contents":"vibrant red","time":1523839338952}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839394451	25	{"type":"Utterance","sender":"speaker","contents":"two grays, vibrant pink, vibrant purple, light brown","time":1523839394451}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839425112	25	{"type":"Utterance","sender":"listener","contents":"vibrant green?","time":1523839425112}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839481434	26	{"type":"Utterance","sender":"speaker","contents":"dullest red","time":1523839481434}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839513059	27	{"type":"Utterance","sender":"speaker","contents":"vibrant brown","time":1523839513059}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839555613	27	{"type":"Utterance","sender":"speaker","contents":"darker purples and one blue","time":1523839555613}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839569841	28	{"type":"Utterance","sender":"speaker","contents":"vibrant pink","time":1523839569841}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839620945	29	{"type":"Utterance","sender":"speaker","contents":"dull red, dull pink, dull blue, two grays","time":1523839620945}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839669594	29	{"type":"Utterance","sender":"speaker","contents":"tan","time":1523839669594}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839704825	30	{"type":"Utterance","sender":"speaker","contents":"truest blue","time":1523839704825}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839732085	31	{"type":"Utterance","sender":"speaker","contents":"two grays, four purples","time":1523839732085}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839798930	32	{"type":"Utterance","sender":"speaker","contents":"dull blue in the middle","time":1523839798930}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839851640	33	{"type":"Utterance","sender":"speaker","contents":"tan/stone, vibrant purple","time":1523839851640}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839877721	33	{"type":"Utterance","sender":"speaker","contents":"three shades of blue","time":1523839877721}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839975560	34	{"type":"Utterance","sender":"speaker","contents":"vibrant red","time":1523839975560}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523839984039	34	{"type":"Utterance","sender":"speaker","contents":"no neon green","time":1523839984039}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840004964	35	{"type":"Utterance","sender":"speaker","contents":"truest blue","time":1523840004964}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840024699	36	{"type":"Utterance","sender":"speaker","contents":"not the vibrant pink","time":1523840024699}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840034798	36	{"type":"Utterance","sender":"speaker","contents":"but the other shades of pink/purple","time":1523840034798}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840052520	37	{"type":"Utterance","sender":"speaker","contents":"vibrant yellow","time":1523840052520}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840066120	38	{"type":"Utterance","sender":"speaker","contents":"alot of purples","time":1523840066120}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840085024	39	{"type":"Utterance","sender":"speaker","contents":"only yellow","time":1523840085024}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840094252	40	{"type":"Utterance","sender":"speaker","contents":"vibrant pink","time":1523840094252}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840114765	41	{"type":"Utterance","sender":"speaker","contents":"neon green","time":1523840114765}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840131165	42	{"type":"Utterance","sender":"speaker","contents":"vibrant pink","time":1523840131165}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840174678	43	{"type":"Utterance","sender":"speaker","contents":"two vibrant purples, two grays, yellow, dull red","time":1523840174678}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840229795	44	{"type":"Utterance","sender":"speaker","contents":"two oranges","time":1523840229795}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840255747	45	{"type":"Utterance","sender":"speaker","contents":"four grays, dull red, three purples, light blue","time":1523840255747}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840278187	46	{"type":"Utterance","sender":"speaker","contents":"only neon green","time":1523840278187}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840301796	47	{"type":"Utterance","sender":"speaker","contents":"light yellow, dark yellow, dull green, four gray","time":1523840301796}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840337896	48	{"type":"Utterance","sender":"speaker","contents":"only dark blue","time":1523840337896}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840363328	49	{"type":"Utterance","sender":"listener","contents":"almost there!","time":1523840363328}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840371050	49	{"type":"Utterance","sender":"speaker","contents":"two yellows","time":1523840371050}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840388592	50	{"type":"Utterance","sender":"speaker","contents":"vibrant red with two baby blues","time":1523840388592}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840417725	51	{"type":"Utterance","sender":"speaker","contents":"two dull purples, two dull greens, dull red","time":1523840417725}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840464887	51	{"type":"Utterance","sender":"speaker","contents":"one light blue","time":1523840464887}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840530275	52	{"type":"Utterance","sender":"speaker","contents":"3 vibrant pinks and one dull yellow","time":1523840530275}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840603838	53	{"type":"Utterance","sender":"listener","contents":"almost there!","time":1523840603838}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840712991	53	{"type":"Utterance","sender":"listener","contents":"???","time":1523840712991}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840852979	53	{"type":"Utterance","sender":"listener","contents":"you there?","time":1523840852979}
+utterance	8508-190b62fb-5776-469f-8adc-95a66c271fc9	1523840876738	53	{"type":"Utterance","sender":"listener","contents":"This sucks lol","time":1523840876738}

@@ -1,0 +1,68 @@
+eventType	gameid	time	roundNum	obj
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924454107	1	{"type":"Utterance","sender":"speaker","contents":"there is one square that is brown","time":1523924454107}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924492573	2	{"type":"Utterance","sender":"speaker","contents":"The square on the far right and in the middle place is orange","time":1523924492573}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924535844	2	{"type":"Utterance","sender":"listener","contents":"none have orange in the middle. is there a very purple piece in the square?","time":1523924535844}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924564948	2	{"type":"Utterance","sender":"speaker","contents":"The top row has a middle purple square","time":1523924564948}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924594501	3	{"type":"Utterance","sender":"speaker","contents":"2 squares are very light bluish one kind of a little green-blue","time":1523924594501}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924653052	4	{"type":"Utterance","sender":"speaker","contents":"the top row is blue, yellowish, purple","time":1523924653052}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924705957	5	{"type":"Utterance","sender":"speaker","contents":"bottom row blue yellow bright green","time":1523924705957}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924760011	6	{"type":"Utterance","sender":"speaker","contents":"yellow center","time":1523924760011}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924828997	7	{"type":"Utterance","sender":"speaker","contents":"top row green kind of brown then kind of burgundy","time":1523924828997}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924868166	8	{"type":"Utterance","sender":"speaker","contents":"lots of pink and purple with one orange square","time":1523924868166}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924886193	9	{"type":"Utterance","sender":"speaker","contents":"the most greens one red","time":1523924886193}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924915719	10	{"type":"Utterance","sender":"speaker","contents":"top row brown, green, blue","time":1523924915719}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523924938272	11	{"type":"Utterance","sender":"speaker","contents":"top row 2 blues then grey","time":1523924938272}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925016462	12	{"type":"Utterance","sender":"speaker","contents":"bottom row pink purple green","time":1523925016462}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925037138	12	{"type":"Utterance","sender":"listener","contents":"i have no pinks and 2 of them have those basic colors","time":1523925037138}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925053058	12	{"type":"Utterance","sender":"listener","contents":"is there a blue square in the very center of the square?","time":1523925053058}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925059003	12	{"type":"Utterance","sender":"speaker","contents":"yes","time":1523925059003}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925099957	13	{"type":"Utterance","sender":"speaker","contents":"very center square is red. top row has last one as a bright purple","time":1523925099957}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925155633	14	{"type":"Utterance","sender":"speaker","contents":"the bottom row has a pink square in the middle","time":1523925155633}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925190024	15	{"type":"Utterance","sender":"speaker","contents":"bottom row is a rusty red green then brown","time":1523925190024}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925241183	16	{"type":"Utterance","sender":"speaker","contents":"top row has two bright green boxes on either side","time":1523925241183}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925280338	17	{"type":"Utterance","sender":"speaker","contents":"top row has has blue in the middle","time":1523925280338}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925298733	18	{"type":"Utterance","sender":"speaker","contents":"top row has two purple on either side","time":1523925298733}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925350029	19	{"type":"Utterance","sender":"speaker","contents":"bottom row green, blue, darker green","time":1523925350029}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925380539	20	{"type":"Utterance","sender":"speaker","contents":"top row pink and two bright greens","time":1523925380539}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925417408	21	{"type":"Utterance","sender":"speaker","contents":"bottom row dark blue, lighter blue, olive green","time":1523925417408}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925452612	22	{"type":"Utterance","sender":"speaker","contents":"purple is the middle in the middle row","time":1523925452612}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925528347	23	{"type":"Utterance","sender":"speaker","contents":"bottom row green, greyish, red","time":1523925528347}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925568925	24	{"type":"Utterance","sender":"speaker","contents":"middle row purple pink light green","time":1523925568925}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925622637	25	{"type":"Utterance","sender":"speaker","contents":"top row purple, bright green, aqua greenish blue","time":1523925622637}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925688700	26	{"type":"Utterance","sender":"speaker","contents":"top row green grey green","time":1523925688700}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925723501	27	{"type":"Utterance","sender":"speaker","contents":"top row medium blue, grey, light orange","time":1523925723501}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925793175	28	{"type":"Utterance","sender":"speaker","contents":"top row has a yellow box in the middle","time":1523925793175}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925822798	29	{"type":"Utterance","sender":"speaker","contents":"top row kind of grey, green, purple","time":1523925822798}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925849940	30	{"type":"Utterance","sender":"speaker","contents":"top row burnt orange, blue, green","time":1523925849940}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925878364	31	{"type":"Utterance","sender":"speaker","contents":"top row 2 greens then burnt orange","time":1523925878364}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925937481	32	{"type":"Utterance","sender":"speaker","contents":"bottom row blue grey light blue","time":1523925937481}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523925964107	33	{"type":"Utterance","sender":"speaker","contents":"top row green green purple","time":1523925964107}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926029998	34	{"type":"Utterance","sender":"speaker","contents":"bottom row pink blue green","time":1523926029998}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926084156	35	{"type":"Utterance","sender":"speaker","contents":"bottom row light olive green, grey, a little darker olive green","time":1523926084156}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926123742	36	{"type":"Utterance","sender":"speaker","contents":"bottom row yellow blue purple","time":1523926123742}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926192489	37	{"type":"Utterance","sender":"speaker","contents":"middle row is darkest  purple, darkest grey, brightest green","time":1523926192489}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926257286	38	{"type":"Utterance","sender":"speaker","contents":"top row has a greenish brown sea foam blue and a brighter green","time":1523926257286}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926293414	39	{"type":"Utterance","sender":"speaker","contents":"2 broght greens in the top row","time":1523926293414}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926315969	40	{"type":"Utterance","sender":"speaker","contents":"top row ends with a bright red","time":1523926315969}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926354023	41	{"type":"Utterance","sender":"speaker","contents":"top row orange, pink, aqua blue","time":1523926354023}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926399514	42	{"type":"Utterance","sender":"speaker","contents":"top row turquoise, bright green, blue","time":1523926399514}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926458202	43	{"type":"Utterance","sender":"speaker","contents":"top row purple, dark green, yellowish","time":1523926458202}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926482593	44	{"type":"Utterance","sender":"speaker","contents":"top row yellow red purple","time":1523926482593}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926518215	45	{"type":"Utterance","sender":"speaker","contents":"bottom row green purple purple","time":1523926518215}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926560256	46	{"type":"Utterance","sender":"speaker","contents":"dark blue is center in middle row","time":1523926560256}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926606339	47	{"type":"Utterance","sender":"speaker","contents":"top row pink, blue, green","time":1523926606339}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926640757	48	{"type":"Utterance","sender":"speaker","contents":"bright orange center of middle row","time":1523926640757}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926684790	49	{"type":"Utterance","sender":"speaker","contents":"middle row starts brightest green, dark blue, the a purplish blue","time":1523926684790}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926726172	50	{"type":"Utterance","sender":"speaker","contents":"top row is brownish color blue and green","time":1523926726172}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926804012	51	{"type":"Utterance","sender":"speaker","contents":"middle row greyish brown, army green, blue","time":1523926804012}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926879392	52	{"type":"Utterance","sender":"speaker","contents":"top row is dull blue followed by two brownish colors","time":1523926879392}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926925751	53	{"type":"Utterance","sender":"speaker","contents":"top row gold, purple, brown","time":1523926925751}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926966378	54	{"type":"Utterance","sender":"speaker","contents":"bottom row light brown pink grey","time":1523926966378}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523926996979	55	{"type":"Utterance","sender":"speaker","contents":"top row pink, green, yellowgold","time":1523926996979}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927117725	56	{"type":"Utterance","sender":"speaker","contents":"bottom row light purplish pink lime green grey","time":1523927117725}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927159423	56	{"type":"Utterance","sender":"listener","contents":"does the top row start with a more red square or more purple","time":1523927159423}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927167111	56	{"type":"Utterance","sender":"speaker","contents":"more purple","time":1523927167111}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927209299	57	{"type":"Utterance","sender":"speaker","contents":"bottom row bright blue, greenish yellow, purple","time":1523927209299}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927313376	58	{"type":"Utterance","sender":"speaker","contents":"top row pistacho green, light purple, dark purple","time":1523927313376}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927407001	59	{"type":"Utterance","sender":"speaker","contents":"middle row grey, pink, grey","time":1523927407001}
+utterance	8190-0f2f16da-9551-40a7-ab02-f1282d283649	1523927509115	60	{"type":"Utterance","sender":"speaker","contents":"top row bright red soft pink and blue","time":1523927509115}

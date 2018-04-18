@@ -1,0 +1,19 @@
+eventType	gameid	time	roundNum	obj
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841034574	1	{"type":"Utterance","sender":"speaker","contents":"click on the box with the orange square on the bottom left corner","time":1523841034574}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841075298	2	{"type":"Utterance","sender":"speaker","contents":"top row middle square is most brown","time":1523841075298}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841134234	3	{"type":"Utterance","sender":"speaker","contents":"middle row on the left is brown","time":1523841134234}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841175281	3	{"type":"Utterance","sender":"listener","contents":"two of them look brown to me","time":1523841175281}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841186277	3	{"type":"Utterance","sender":"speaker","contents":"and upper right is a bright orange","time":1523841186277}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841210068	4	{"type":"Utterance","sender":"speaker","contents":"top row left and right squares are grey","time":1523841210068}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841301804	5	{"type":"Utterance","sender":"speaker","contents":"bottom middle is purple. upper left is pink and upper right is a pale purple","time":1523841301804}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841344226	6	{"type":"Utterance","sender":"speaker","contents":"left column is grey, dull purple, and bright purple","time":1523841344226}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841354697	6	{"type":"Utterance","sender":"speaker","contents":"from top to bottom","time":1523841354697}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841388032	6	{"type":"Utterance","sender":"speaker","contents":"bottom right is purple","time":1523841388032}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841391848	6	{"type":"Utterance","sender":"listener","contents":"on my screen it looks pale green, pale pink, and bright pink. but I think that has to be it?","time":1523841391848}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841398945	6	{"type":"Utterance","sender":"speaker","contents":"yeah that's it","time":1523841398945}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841435898	7	{"type":"Utterance","sender":"speaker","contents":"upper left is purple, then middle left is pale green and bottom left is orange","time":1523841435898}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841461784	8	{"type":"Utterance","sender":"speaker","contents":"middle row left square is red","time":1523841461784}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841527269	9	{"type":"Utterance","sender":"speaker","contents":"middle top - bright pink, middle center - pale purple/brown, middle bottom - deep bright blue","time":1523841527269}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841572799	9	{"type":"Utterance","sender":"speaker","contents":"upper right corner - deep bright purple","time":1523841572799}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841684704	9	{"type":"Utterance","sender":"speaker","contents":"the upper left, middle left, and middle center are all close shades of brown","time":1523841684704}
+utterance	4007-0feb7c2d-df2c-438d-8f2c-0d5438e7e6fb	1523841705598	9	{"type":"Utterance","sender":"speaker","contents":"oops never mind on the last part","time":1523841705598}
