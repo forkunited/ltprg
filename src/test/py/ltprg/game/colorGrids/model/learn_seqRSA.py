@@ -17,7 +17,7 @@ from mung.util.log import Logger
 from torch.nn import NLLLoss
 
 from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
-from ltprg.model.obs import ObservationModelIndexedSequential
+from ltprg.model.obs import ObservationModelReorderedSequential
 from ltprg.model.seq_heuristic import HeuristicL0
 from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn, MultiLayerIndexPriorFn
@@ -167,7 +167,7 @@ if obs_seq:
     observation_size = D_train["observation"].get_matrix(0).get_feature_set().get_token_count()
     seq_observation_model = SequenceModelNoInput("Observation", observation_size, #3, \
         embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, non_emb=True)
-    observation_fn = ObservationModelIndexedSequential(rnn_size, 3, seq_observation_model)
+    observation_fn = ObservationModelReorderedSequential(rnn_size, 3, seq_observation_model)
     world_input_size = rnn_size + 3
 else:
     world_input_size = D_train["observation"].get_feature_set().get_token_count() / 3
@@ -278,4 +278,3 @@ final_logger.log(results)
 final_logger.dump(file_path=final_output_results_path, record_prefix=record_prefix)
 
 best_meaning.save(output_meaning_model_path)
-
