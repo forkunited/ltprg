@@ -866,7 +866,7 @@ class SequenceModelNoInput(SequenceModel):
         self._rnn_type = rnn_type
         self._drop = nn.Dropout(dropout)
         if non_emb:
-            self._rnn = getattr(nn, rnn_type)(seq_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+            self._rnn = getattr(nn, rnn_type)(seq_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir) # FIXME embedding to seq_size
         else:
             self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
         self._decoder = nn.Linear(rnn_size*self._directions, seq_size)

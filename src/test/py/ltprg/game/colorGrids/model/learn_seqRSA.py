@@ -28,10 +28,10 @@ RNN_TYPE = RNNType.LSTM
 BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
-TRAINING_ITERATIONS=300000 #7000 #9000 #10000 #30000 #1000 #00
-DROP_OUT = 0.0 # BEST 0.5
+TRAINING_ITERATIONS=7000 #7000 #9000 #10000 #30000 #1000 #00
+DROP_OUT = 0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
-LOG_INTERVAL = 500 #100
+LOG_INTERVAL = 100 #100
 N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 8
 GRADIENT_CLIPPING = 5.0 #5.0 # 5.0
@@ -164,11 +164,14 @@ observation_fn = None
 world_input_size = None
 if obs_seq:
     # 3 Is for one-hot indicating the target  #Old InputEmbedded
+    world_input_size = rnn_size/2 # + 3 in indexed model
+    if BIDIRECTIONAL:
+        world_input_size *= 2
+
     observation_size = D_train["observation"].get_matrix(0).get_feature_set().get_token_count()
     seq_observation_model = SequenceModelNoInput("Observation", observation_size, #3, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, non_emb=True)
-    observation_fn = ObservationModelReorderedSequential(rnn_size, 3, seq_observation_model)
-    world_input_size = rnn_size + 3
+        embedding_size, rnn_size/2, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, non_emb=True)
+    observation_fn = ObservationModelReorderedSequential(world_input_size, 3, seq_observation_model)
 else:
     world_input_size = D_train["observation"].get_feature_set().get_token_count() / 3
 

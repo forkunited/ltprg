@@ -150,7 +150,7 @@ class ObservationModelReordered(ObservationModel):
         pass
 
     def forward(self, observation):
-        indices = torch.arange(0, self._num_indices).unsqueeze(0).expand(observation[0].size(0), self._num_indices)
+        indices = torch.arange(0, self._num_indices).unsqueeze(0).expand(observation[0].size(0), self._num_indices).long()
 
         if self.on_gpu():
             device = 0
@@ -197,18 +197,18 @@ class ObservationModelReorderedSequential(ObservationModelReordered):
     # indices (one-hots): batch x num_indices
     # return batch x num_indices x indexed_obs_size
     def _forward_for_indices(self, observation, indices):
-        num_indices = indices.size(2)
+        num_indices = indices.size(1)
         batch_size = indices.size(0)
         max_len = observation[0].size(1)
         obj_size = observation[0].size(2)
 
         reordered_obs = self._make_obs_reorderings(indices, observation)
-        seq = reordered_obs[0].view(batch_size*num_indices, max_len, obj_size).transpose(0,1)
-        seq_length = reordered_obs[1].view(batch_size*num_indices)
+        seq = reordered_obs[0].view(batch_size*num_indices, max_len, obj_size).transpose(0,1).float()
+        seq_length = reordered_obs[1].contiguous().view(batch_size*num_indices)
 
-        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=None, on_gpu=self.on_gpu())
+        sorted_seq, sorted_length, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=None, on_gpu=self.on_gpu())
 
-        output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+        output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=None)
         if isinstance(hidden, tuple): # Handle LSTM
             hidden = hidden[0]
         output = hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2))
@@ -226,20 +226,35 @@ class ObservationModelReorderedSequential(ObservationModelReordered):
         num_indices = indices.size(1)
         max_len = observation[0].size(1)
         obj_size = observation[0].size(2)
-        len = observation[1]
+        seq_len = observation[1]
 
-        indexed_objs = self._get_indexed_obs_obj(indices, observation), offset_indices
-        last_objs = self._get_last_obs_obj(num_indices, observation), offset_last_indices
+        indexed_objs = self._get_indexed_obs_obj(indices, observation)
+        last_objs = self._get_last_obs_obj(num_indices, observation)
 
-        seq = observation[0].unsqueeze(1).expand(batch_size, num_indices, max_len, obj_size).view(batch_size*num_indices, max_len, obj_size).transpose(0,1)
+        seq = observation[0].unsqueeze(1).expand(batch_size, num_indices, max_len, obj_size).contiguous().view(batch_size*num_indices*max_len, obj_size)
         seq_clone = seq.clone()
 
-        seq_clone[offset_indices] = seq[last_indices]
-        seq_clone[last_indices] = seq[offset_indices]
+        offset = Variable(torch.arange(0,batch_size*num_indices).long(), requires_grad=False)*max_len
+        last_indices = Variable(torch.ones(batch_size, num_indices).long()*(observation[1].unsqueeze(1).expand(batch_size,num_indices)-1), requires_grad=False).view(batch_size*num_indices)
+        if self.on_gpu():
+            device = observation[0].get_device()
+            offset = offset.cuda(device)
+            last_indices = last_indices.cuda(device)
+        offset_indices = offset+indices.view(batch_size*num_indices)
+        offset_last_indices = offset + last_indices
 
-        len = len.unsqueeze(1).expand(batch_size, num_indices)
+        seq_clone[offset_indices] = last_objs.view(batch_size*num_indices, obj_size)
+        seq_clone[offset_last_indices] = indexed_objs.view(batch_size*num_indices, obj_size)
 
-        return (seq_clone, len)
+        seq_clone = seq_clone.view(batch_size, num_indices, max_len, obj_size)
+        seq_len = seq_len.unsqueeze(1).expand(batch_size, num_indices)
+
+        #print "seq", seq_clone[0]
+        #print "obs", observation[0][0]
+        #print "last", last_objs[0]
+        #print "indexed", indexed_objs[0]
+
+        return (seq_clone, seq_len)
 
 
     # observation: batch x length x obj size
@@ -251,14 +266,23 @@ class ObservationModelReorderedSequential(ObservationModelReordered):
         obj_size = observation[0].size(2)
         num_indices = indices.size(1)
 
-        offset = torch.arange(0,batch_size).unsqueeze(0).expand(num_indices, batch_size).transpose(0,1).contiguous().view(num_indices*batch_size)
+        offset = Variable(torch.arange(0,batch_size).unsqueeze(0).expand(num_indices, batch_size).transpose(0,1).contiguous().view(num_indices*batch_size).long(), requires_grad=False)*num_indices
+        if self.on_gpu():
+            device = observation[0].get_device()
+            offset = offset.cuda(device)
+
         offset_indices = offset+indices.view(batch_size*num_indices)
 
-        indexed_obs = observation[0].view(batch_size*seq_length, obj_size)[offset_indices]
-        return indexed_obs.view(batch_size, num_indices, obj_size), offset_indices
+        indexed_obs = observation[0].contiguous().view(batch_size*seq_length, obj_size)[offset_indices]
+        return indexed_obs.view(batch_size, num_indices, obj_size)
 
     # observation: batch x length x obj size
     # return: batch x num_indices x obj size, num_indices*batch_size (indices)
     def _get_last_obs_obj(self, num_indices, observation):
-        indices = torch.ones(observation.size(0), num_indices).long()*observation[1]
+        batch_size = observation[0].size(0)
+        indices = Variable(torch.ones(batch_size, num_indices).long()*(observation[1].unsqueeze(1).expand(batch_size,num_indices)-1), requires_grad=False)
+        if self.on_gpu():
+            device = observation[0].get_device()
+            indices = indices.cuda(device)
         return self._get_indexed_obs_obj(indices, observation)
+
