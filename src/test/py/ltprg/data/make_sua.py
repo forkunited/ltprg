@@ -78,9 +78,11 @@ for i in range(game_data.get_size()):
         has_listener = False
         prev_utt_count = 0
         no_action = True
+        no_state = True
         for event in record["events"]:
             if event["type"].startswith("State"):
                 cur_state = event
+                no_state = False
             elif event["type"].startswith("Utterance"):
                 cur_utts.append(event)
                 if event["sender"] == "speaker":
@@ -94,7 +96,7 @@ for i in range(game_data.get_size()):
 
                 prev_utt_count = len(sua_properties["utterances"])
 
-                if (not exclude_missing_utts) or len(sua_properties["utterances"]) > 0:
+                if (not no_state) and ((not exclude_missing_utts) or len(sua_properties["utterances"]) > 0):
                     sua_datums.append(Datum(properties=sua_properties))
 
                 sua_index += 1
@@ -104,7 +106,7 @@ for i in range(game_data.get_size()):
                 has_speaker = False
                 has_listener = False
 
-        if len(cur_utts) > 0:
+        if len(cur_utts) > 0 and (not no_state):
             if no_action:
                 if not exclude_missing_actions:
                     sua_properties = make_sua_properties(game_id, roundNum, sua_index, cur_state, cur_utts, cur_action)

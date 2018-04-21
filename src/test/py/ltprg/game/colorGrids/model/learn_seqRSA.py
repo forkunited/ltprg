@@ -29,9 +29,9 @@ BIDIRECTIONAL=True
 INPUT_LAYERS = 1
 RNN_LAYERS = 1
 TRAINING_ITERATIONS=7000 #7000 #9000 #10000 #30000 #1000 #00
-DROP_OUT = 0.5 # BEST 0.5
+DROP_OUT = 0.0 #0.5 # BEST 0.5
 OPTIMIZER_TYPE = OptimizerType.ADAM #ADADELTA # BEST ADAM
-LOG_INTERVAL = 100 #100
+LOG_INTERVAL = 500 #100
 N_BEFORE_HEURISTIC=100
 SAMPLE_LENGTH = 8
 GRADIENT_CLIPPING = 5.0 #5.0 # 5.0
@@ -218,8 +218,8 @@ if gpu:
 dev_l0_sample_acc = RSADistributionAccuracy("Dev Sample L0 Accuracy", 0, DistributionType.L, D_dev_sample, data_parameters)
 dev_l1_sample_acc = RSADistributionAccuracy("Dev Sample L1 Accuracy", 1, DistributionType.L, D_dev_sample, data_parameters, trials=selection_eval_trials)
 
-evaluation = dev_l1_sample_acc # l1
-other_evaluations = [dev_l0_sample_acc]
+evaluation = dev_l0_sample_acc # l1
+other_evaluations = [] #[dev_l0_sample_acc]
 #if selection_model_type == "L_0":
 #    evaluation = dev_l0_sample_acc
 #    other_evaluations = [dev_l1_sample_acc]

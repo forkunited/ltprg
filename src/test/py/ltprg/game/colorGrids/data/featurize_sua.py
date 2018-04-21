@@ -20,7 +20,7 @@ del sys.argv[1]
 np.random.seed(1)
 
 class FeaturizeSUA(unittest.TestCase):
-    """
+
     # Constructs sequences of integer indices representing cleaned utterances
     def test_utterance_clean_indices(self):
         print "Featurizing utterance clean indices"
@@ -99,7 +99,7 @@ class FeaturizeSUA(unittest.TestCase):
                              seq_length,
                              color_dim*grid_dim*grid_dim,
                              init_data="train")
-    """
+ 
 
     def test_colors(self):
         print "Featurizing speaker objs colors (cielab)"
@@ -122,7 +122,7 @@ class FeaturizeSUA(unittest.TestCase):
             # "fc-6",
             "cielab")
 
-    """
+    
     # Constructs an index of the target color index (0, 1, or 2)
     def test_target_indices(self):
         print "Featurizing target indices"
@@ -133,6 +133,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "target_idx",
             ["state.state.target"])
-    """
+
 if __name__ == '__main__':
     unittest.main()
