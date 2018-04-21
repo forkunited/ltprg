@@ -4,6 +4,7 @@ from mung.data import DataSet, Datum
 
 data_dir = sys.argv[1]
 output_dir = sys.argv[2]
+grid_dimension = int(sys.arg[3])
 
 D = DataSet.load(data_dir, id_key="gameid")
 grid_data = []
@@ -23,22 +24,34 @@ for datum in D:
                 grid_event["eventType"] = "state"
                 grid_event["time"] = event["time"]
 
-                obj0 = { "gridDimension" : 1, "cellLength" : -1, \
-                         "shapes" : [ { "color" : \
-                         [ int(event["sH_0"]), int(event["sS_0"]), int(event["sL_0"])]}]}
-                obj1 = { "gridDimension" : 1, "cellLength" : -1, \
-                         "shapes" : [ { "color" : \
-                         [ int(event["sH_1"]), int(event["sS_1"]), int(event["sL_1"])]}]}
-                obj2 = { "gridDimension" : 1, "cellLength" : -1, \
-                         "shapes" : [ { "color" : \
-                         [ int(event["sH_2"]), int(event["sS_2"]), int(event["sL_2"])]}]}
+                obj0 = { "gridDimension" : grid_dimension, "cellLength" : -1, \
+                         "shapes" : \
+                            [ \
+                                { "color" : [ int(event["sH_0"]), int(event["sS_0"]), int(event["sL_0"])]} \
+                                for i in range(grid_dimension*grid_dimension) \
+                            ] \
+                        }
+                obj1 = { "gridDimension" : grid_dimension, "cellLength" : -1, \
+                         "shapes" : \
+                            [ \
+                                { "color" : [ int(event["sH_1"]), int(event["sS_1"]), int(event["sL_1"])]} \
+                                for i in range(grid_dimension*grid_dimension) \
+                            ] \
+                        }
+                obj2 = { "gridDimension" : grid_dimension, "cellLength" : -1, \
+                         "shapes" : \
+                            [ \
+                                { "color" : [ int(event["sH_2"]), int(event["sS_2"]), int(event["sL_2"])]} \
+                                for i in range(grid_dimension*grid_dimension) \
+                            ] \
+                        }
 
                 grid_event["state"] = dict()
                 grid_event["state"]["listenerOrder"] = [0,1,2]
                 grid_event["state"]["speakerOrder"] = [0,1,2]
                 grid_event["state"]["target"] = int(event["sTargetIndex"])
                 grid_event["state"]["objs"] = [obj0,obj1,obj2]
-                grid_event["state"]["condition"] = { "name" : event["condition"].upper() }
+                grid_event["state"]["condition"] = { "name" : event["condition"].upper(), "gridDimension" : grid_dimension }
 
                 if event["lStatus_0"] == event["sStatus_0"]:
                     grid_event["state"]["listenerOrder"][0] = 0
