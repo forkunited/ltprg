@@ -82,7 +82,7 @@ for datum in D:
                 grid_event["action"]["lClicked"] = int(event["lClickedIndex"])
                 grid_event["action"]["mouseX"] = -1
                 grid_event["action"]["mouseY"] = -1
-                grid_event["action"]["condition"] = { "name" : event["condition"].upper() }
+                grid_event["action"]["condition"] = { "name" : event["condition"].upper(), "gridDimension" : grid_dimension }
             elif event["type"] == "Utterance":
                 grid_event = event
                 grid_event["eventType"] = "utterance"
