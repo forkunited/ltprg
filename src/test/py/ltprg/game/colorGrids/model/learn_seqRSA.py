@@ -17,9 +17,9 @@ from mung.util.log import Logger
 from torch.nn import NLLLoss
 
 from ltprg.model.seq import RNNType, SequenceModel, SamplingMode, SequenceModelInputEmbedded, SequenceModelInputToHidden, SequenceModelNoInput
-from ltprg.model.obs import ObservationModelReorderedSequential
+from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
 from ltprg.model.seq_heuristic import HeuristicL0
-from ltprg.model.meaning import MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
+from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn, MultiLayerIndexPriorFn
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
 from ltprg.game.color.eval import ColorMeaningPlot
@@ -102,6 +102,9 @@ world_prior_depth = int(sys.argv[31])
 output_meaning_model_path = sys.argv[32]
 training_condition = sys.argv[33]
 obs_seq = bool(int(sys.argv[34]))
+existing_meaning_model_path = sys.argv[35]
+existing_obs_model_path = sys.argv[36]
+training_source = sys.argv[37]
 
 if training_data_size == "None":
     training_data_size = None
@@ -168,25 +171,30 @@ if obs_seq:
     if BIDIRECTIONAL:
         world_input_size *= 2
 
-    observation_size = D_train["observation"].get_matrix(0).get_feature_set().get_token_count()
-    seq_observation_model = SequenceModelNoInput("Observation", observation_size, #3, \
-        embedding_size, rnn_size/2, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, non_emb=True)
-    observation_fn = ObservationModelReorderedSequential(world_input_size, 3, seq_observation_model)
+    if existing_obs_model_path == "None":
+        observation_size = D_train["observation"].get_matrix(0).get_feature_set().get_token_count()
+        seq_observation_model = SequenceModelNoInput("Observation", observation_size, #3, \
+            embedding_size, rnn_size/2, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, non_emb=True)
+        observation_fn = ObservationModelReorderedSequential(world_input_size, 3, seq_observation_model)
+    else:
+        observation_fn = ObservationModel.load(existing_obs_model_path)
 else:
     world_input_size = D_train["observation"].get_feature_set().get_token_count() / 3
 
-seq_meaning_model = None
-soft_bottom = None
-if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
-    seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
-    soft_bottom = False
-else:
-    seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
-        embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
-    soft_bottom = True
+soft_bottom = (meaning_fn_input_type != SequentialUtteranceInputType.IN_SEQ)
 
-meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
+meaning_fn = None
+if existing_meaning_model_path == "None:"
+    seq_meaning_model = None
+    if meaning_fn_input_type == SequentialUtteranceInputType.IN_SEQ:
+        seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+            embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL, input_layers=INPUT_LAYERS)
+    else:
+        seq_meaning_model = SequenceModelNoInput("Meaning", utterance_size, \
+            embedding_size, rnn_size, RNN_LAYERS, dropout=DROP_OUT, rnn_type=RNN_TYPE, bidir=BIDIRECTIONAL)
+    meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, input_type=meaning_fn_input_type)
+else:
+    meaning_fn = MeaningModel.load(existing_meaning_model_path)
 
 world_prior_fn = UniformIndexPriorFn(3, on_gpu=gpu, unnorm=soft_bottom) # 3 objs per observation
 if world_prior_depth > 0:
