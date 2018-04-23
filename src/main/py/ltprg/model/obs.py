@@ -28,11 +28,13 @@ class ObservationModel(nn.Module):
         model_obj = torch.load(model_path)
         init_params = model_obj["init_params"]
         state_dict = model_obj["state_dict"]
-        meaning_type = model_obj["obs_type"]
+        obs_type = model_obj["obs_type"]
 
         model = None
-        if meaning_type == "ObservationModelIndexedSequential":
+        if obs_type == "ObservationModelIndexedSequential":
             model = ObservationModelIndexedSequential.make(init_params)
+        elif obs_type =="ObservationModelReorderedSequential":
+            model = ObservationModelReorderedSequential.make(init_params)
         model.load_state_dict(state_dict)
 
         return model
@@ -285,4 +287,3 @@ class ObservationModelReorderedSequential(ObservationModelReordered):
             device = observation[0].get_device()
             indices = indices.cuda(device)
         return self._get_indexed_obs_obj(indices, observation)
-
