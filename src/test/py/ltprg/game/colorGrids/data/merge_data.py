@@ -15,8 +15,9 @@ def add_datum(datums_list, d, d_source_name):
     d_props = d.to_dict()
     for record in d_props["records"]:
         for event in record["events"]:
-            if "condition" in event:
-                event["condition"]["source"] = d_source_name
+            for key in event:
+                if isinstance(event[key], dict) and "condition" in event[key]:
+                    event[key]["condition"]["source"] = d_source_name
     datums_list.append(Datum(properties=d_props, id_key="gameid"))
 
 D_1 = DataSet.load(data_dir_1, id_key="gameid")
