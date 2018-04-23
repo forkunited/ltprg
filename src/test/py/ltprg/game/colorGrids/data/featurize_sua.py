@@ -122,6 +122,25 @@ class FeaturizeSUA(unittest.TestCase):
             # "fc-6",
             "cielab")
 
+    def test_colors_first(self):
+        print "Featurizing speaker objs colors first (cielab)"
+        num_objs = 3
+        dims = []
+        for i in range(num_objs):
+            dims.append(["state.state.objs[" + str(i) + "].shapes[0].color[0]", \
+                             "state.state.objs[" + str(i) + "].shapes[0].color[1]", \
+                             "state.state.objs[" + str(i) + "].shapes[0].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_first"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors",
+            dims,
+            # "fc-6",
+            "cielab")
     
     # Constructs an index of the target color index (0, 1, or 2)
     def test_target_indices(self):
