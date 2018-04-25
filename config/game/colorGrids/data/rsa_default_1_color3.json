@@ -1,0 +1,289 @@
+{
+  "data_path" : "$!{data_path_colorgrids_1_color3}",
+  "mats" : {
+    "dfmat_paths" : {
+      "target" : "$!{data_feature_path_colorgrids_1_color3_target}",
+      "observation" : "$!{data_feature_path_colorgrids_1_color3_colors}"  },
+    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_clean}" },
+    "ordering_seq" : "utterance"
+  },
+
+  "subsets" : [
+    { "name" : "partition",
+      "type" : "PARTITION",
+      "file" : "$!{partition_file_colorgrids_1_color3}",
+      "key" : "gameid",
+      "parts" : { "train" : "train", "dev" : "dev", "test": "test" }
+    },
+
+
+    {
+      "name" : "train_src_color3",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_1",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "train_dist_close",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "close"
+      }
+    },
+    {
+      "name" : "train_dist_split",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "split"
+      }
+    },
+    {
+      "name" : "train_dist_far",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "far"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_close",
+      "superset" : "train_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_1_dist_close",
+      "superset" : "train_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_split",
+      "superset" : "train_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_1_dist_split",
+      "superset" : "train_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_far",
+      "superset" : "train_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_1_dist_far",
+      "superset" : "train_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+
+
+    {
+      "name" : "dev_src_color3",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_1",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "dev_dist_close",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "close"
+      }
+    },
+    {
+      "name" : "dev_dist_split",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "split"
+      }
+    },
+    {
+      "name" : "dev_dist_far",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "far"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_close",
+      "superset" : "dev_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_1_dist_close",
+      "superset" : "dev_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_split",
+      "superset" : "dev_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_1_dist_split",
+      "superset" : "dev_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_far",
+      "superset" : "dev_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_1_dist_far",
+      "superset" : "dev_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+
+
+    {
+      "name" : "test_src_color3",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_1",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "test_dist_close",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "close"
+      }
+    },
+    {
+      "name" : "test_dist_split",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "split"
+      }
+    },
+    {
+      "name" : "test_dist_far",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "far"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_close",
+      "superset" : "test_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_1_dist_close",
+      "superset" : "test_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_split",
+      "superset" : "test_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_1_dist_split",
+      "superset" : "test_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_far",
+      "superset" : "test_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_1_dist_far",
+      "superset" : "test_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "1"
+      }
+    }
+  ]
+}
