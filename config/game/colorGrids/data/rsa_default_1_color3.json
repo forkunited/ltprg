@@ -26,11 +26,11 @@
       }
     },
     {
-      "name" : "train_src_1",
+      "name" : "train_src_grid3",
       "superset" : "train",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -38,7 +38,7 @@
       "superset" : "train",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "close"
+        "state.state.condition.name" : "CLOSE"
       }
     },
     {
@@ -46,7 +46,7 @@
       "superset" : "train",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "split"
+        "state.state.condition.name" : "SPLIT"
       }
     },
     {
@@ -54,7 +54,7 @@
       "superset" : "train",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "far"
+        "state.state.condition.name" : "FAR"
       }
     },
     {
@@ -66,11 +66,11 @@
       }
     },
     {
-      "name" : "train_src_1_dist_close",
+      "name" : "train_src_grid3_dist_close",
       "superset" : "train_dist_close",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -82,11 +82,11 @@
       }
     },
     {
-      "name" : "train_src_1_dist_split",
+      "name" : "train_src_grid3_dist_split",
       "superset" : "train_dist_split",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -98,11 +98,11 @@
       }
     },
     {
-      "name" : "train_src_1_dist_far",
+      "name" : "train_src_grid3_dist_far",
       "superset" : "train_dist_far",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
 
@@ -116,11 +116,11 @@
       }
     },
     {
-      "name" : "dev_src_1",
+      "name" : "dev_src_grid3",
       "superset" : "dev",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -128,7 +128,7 @@
       "superset" : "dev",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "close"
+        "state.state.condition.name" : "CLOSE"
       }
     },
     {
@@ -136,7 +136,7 @@
       "superset" : "dev",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "split"
+        "state.state.condition.name" : "SPLIT"
       }
     },
     {
@@ -144,7 +144,7 @@
       "superset" : "dev",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "far"
+        "state.state.condition.name" : "FAR"
       }
     },
     {
@@ -156,11 +156,11 @@
       }
     },
     {
-      "name" : "dev_src_1_dist_close",
+      "name" : "dev_src_grid3_dist_close",
       "superset" : "dev_dist_close",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -172,11 +172,11 @@
       }
     },
     {
-      "name" : "dev_src_1_dist_split",
+      "name" : "dev_src_grid3_dist_split",
       "superset" : "dev_dist_split",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -188,11 +188,11 @@
       }
     },
     {
-      "name" : "dev_src_1_dist_far",
+      "name" : "dev_src_grid3_dist_far",
       "superset" : "dev_dist_far",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
 
@@ -206,11 +206,11 @@
       }
     },
     {
-      "name" : "test_src_1",
+      "name" : "test_src_grid3",
       "superset" : "test",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -218,7 +218,7 @@
       "superset" : "test",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "close"
+        "state.state.condition.name" : "CLOSE"
       }
     },
     {
@@ -226,7 +226,7 @@
       "superset" : "test",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "split"
+        "state.state.condition.name" : "SPLIT"
       }
     },
     {
@@ -234,7 +234,7 @@
       "superset" : "test",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.name" : "far"
+        "state.state.condition.name" : "FAR"
       }
     },
     {
@@ -246,11 +246,11 @@
       }
     },
     {
-      "name" : "test_src_1_dist_close",
+      "name" : "test_src_grid3_dist_close",
       "superset" : "test_dist_close",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -262,11 +262,11 @@
       }
     },
     {
-      "name" : "test_src_1_dist_split",
+      "name" : "test_src_grid3_dist_split",
       "superset" : "test_dist_split",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     },
     {
@@ -278,11 +278,11 @@
       }
     },
     {
-      "name" : "test_src_1_dist_far",
+      "name" : "test_src_grid3_dist_far",
       "superset" : "test_dist_far",
       "type" : "FILTER",
       "filter" : {
-        "state.state.condition.source" : "1"
+        "state.state.condition.source" : "grid3"
       }
     }
   ]
