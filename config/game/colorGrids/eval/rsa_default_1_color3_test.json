@@ -1,0 +1,165 @@
+{
+    "data_parameter" : {
+        "utterance" : "utterance", 
+        "L_world" : "target", 
+        "L_observation" : "observation",
+        "S_world" : "target", 
+        "S_observation" : "observation", 
+        "mode" : "L",
+        "utterance_seq" : true
+    },
+    "evaluations" : [
+        { "name" : "Test Color Loss",
+          "type" : "NLLLoss",
+          "data" : "test_src_color3"
+        },
+        { "name" : "Test Grid3 Loss",
+          "type" : "NLLLoss",
+          "data" : "test_src_grid3"
+        },
+        {  
+            "name" : "Test L1 Color Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color3",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Color Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color3",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Color Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color_dist_close",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Color Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color_dist_split",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Color Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color_dist_far",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Color Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color_dist_close",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Color Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color3_dist_split",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Color Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_color3_dist_far",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Grid3 Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Grid3 Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Grid3 Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_close",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Grid3 Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_split",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L1 Grid3 Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_far",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Grid3 Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_close",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Grid3 Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_split",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Test L0 Grid3 Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "test_src_grid3_dist_far",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        }
+    ]
+}
