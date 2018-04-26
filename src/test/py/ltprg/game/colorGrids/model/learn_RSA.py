@@ -4,11 +4,7 @@ import numpy as np
 import ltprg.data.feature
 import mung.config.feature as feature_config
 import ltprg.config.rsa as rsa_config
-
 from mung.util.config import Config
-from mung.feature import MultiviewDataSet, Symbol
-
-from ltprg.model.rsa import RSA, load_evaluations_from_config
 
 parser = argparse.ArgumentParser()
 parser.add_argument('env', action="store")

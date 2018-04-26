@@ -38,7 +38,7 @@
         {  
             "name" : "Test L1 Color Close Accuracy",
             "type" : "RSADistributionAccuracy",
-            "data" : "test_src_color_dist_close",
+            "data" : "test_src_color3_dist_close",
             "parameters" : {
                 "dist_level" : 1,
                 "dist_type" : "L"
@@ -47,7 +47,7 @@
         {  
             "name" : "Test L1 Color Split Accuracy",
             "type" : "RSADistributionAccuracy",
-            "data" : "test_src_color_dist_split",
+            "data" : "test_src_color3_dist_split",
             "parameters" : {
                 "dist_level" : 1,
                 "dist_type" : "L"
@@ -56,7 +56,7 @@
         {  
             "name" : "Test L1 Color Far Accuracy",
             "type" : "RSADistributionAccuracy",
-            "data" : "test_src_color_dist_far",
+            "data" : "test_src_color3_dist_far",
             "parameters" : {
                 "dist_level" : 1,
                 "dist_type" : "L"
@@ -65,7 +65,7 @@
         {  
             "name" : "Test L0 Color Close Accuracy",
             "type" : "RSADistributionAccuracy",
-            "data" : "test_src_color_dist_close",
+            "data" : "test_src_color3_dist_close",
             "parameters" : {
                 "dist_level" : 0,
                 "dist_type" : "L"

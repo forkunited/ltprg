@@ -112,10 +112,10 @@ def load_rsa_model(config, D, gpu=False):
     if config["utterance_prior"]["heuristic"] == "L0":
         heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=False)
 
-    seq_prior_model = SequenceModel.load(config["seq_model_path"])
+    seq_prior_model = SequenceModel.load(config["utterance_prior"]["seq_model_path"])
 
-    utterance_prior_params = config["utterance_prior"]
-    utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set.get_size()
+    utterance_prior_params = dict(config["utterance_prior"]["parameters"])
+    utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set().get_size()
     utterance_prior_params["heuristic"] = heuristic
     utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, **utterance_prior_params)
     
