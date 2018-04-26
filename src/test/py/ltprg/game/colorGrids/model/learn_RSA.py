@@ -2,6 +2,8 @@ import argparse
 import torch
 import numpy as np
 import ltprg.data.feature
+import mung.config.feature as feature_config
+import ltprg.config.rsa as rsa_config
 
 from mung.util.config import Config
 from mung.feature import MultiviewDataSet, Symbol
@@ -34,11 +36,11 @@ if gpu:
 torch.manual_seed(seed)
 np.random.seed(seed)
 
-_, data_sets = MultiviewDataSet.load_from_config(data_config)
-rsa = RSA.load_from_config(model_config, data_sets["train"], gpu=gpu)
+_, data_sets = feature_config.load_mvdata(data_config)
+rsa = rsa_config.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
 
-train_evals = load_evaluations_from_config(train_evals_config, data_sets, gpu=False)
-dev_evals = load_evaluations_from_config(dev_evals_config, data_sets, gpu=False)
-test_evals = load_evaluations_from_config(test_evals_config, data_sets, gpu=False)
+train_evals = rsa_config.load_evaluations(train_evals_config, data_sets, gpu=False)
+dev_evals = rsa_config.load_evaluations(dev_evals_config, data_sets, gpu=False)
+test_evals = rsa_config.load_evaluations(test_evals_config, data_sets, gpu=False)
 
 
