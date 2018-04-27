@@ -975,3 +975,16 @@ class SequenceModelPair(SequenceModel):
         in_model = SequenceModel.make(in_model_params, in_model_arch)
         out_model = SequenceModel.make(out_model_params, out_model_arch)
         return SequenceModelPair(name, in_model, out_model, hidden_size)
+
+
+# FIXME: This is a temporary helper method to deal
+# with the current messy representation of utterances.
+# The utterances should be refactored to render this method unnecessary
+def strs_for_scored_samples(samples, data):
+    strs = []
+    for i in range(len(samples)):
+        seqs, seq_lengths, _ = samples[i]
+        strs_for_i = [" ".join([data.get_feature_token(seqs[k][j]).get_value() \
+            for k in range(seq_lengths[j])]) for j in range(seqs.size(1))]
+        strs.append(strs_for_i)
+    return strs

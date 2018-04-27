@@ -1,0 +1,23 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "world"
+    },
+    "evaluations" : [
+        {  
+            "name" : "Dev Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev"
+        },
+        {  
+            "name" : "Dev Color Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_color3"
+        },
+        {  
+            "name" : "Dev Grid3 Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3"
+        }
+    ]
+}

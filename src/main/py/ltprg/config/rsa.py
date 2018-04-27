@@ -67,15 +67,15 @@ def load_rsa_model(config, D, gpu=False):
     observation_field = config["data_parameter"]["L_observation"]
     if config["data_parameter"]["mode"] == DistributionType.S:
         observation_field = config["data_parameter"]["S_observation"]
-    world_support_size = config["world_prior"]["support_size"]
+    world_support_size = int(config["world_prior"]["support_size"])
 
     # Optionally setup observation function if observation is sequential
     observation_fn = None
     world_input_size = None
     if "observation_fn" in config:
         obs_config = config["observation_fn"]["seq_model"]
-        world_input_size = obs_config["rnn_size"] * obs_config["rnn_layers"]
-        if obs_config["bidirectional"]:
+        world_input_size = int(obs_config["rnn_size"]) * int(obs_config["rnn_layers"])
+        if bool(int(obs_config["bidirectional"])):
             world_input_size *= 2
 
         if "model_path" in obs_config:
@@ -83,9 +83,9 @@ def load_rsa_model(config, D, gpu=False):
         else:
             observation_size = D[observation_field].get_matrix(0).get_feature_set().get_token_count()
             seq_observation_model = SequenceModelNoInput("Observation", observation_size,
-                obs_config["embedding_size"], obs_config["rnn_size"], obs_config["rnn_layers"], 
-                dropout=obs_config["dropout"], rnn_type=obs_config["rnn_type"], bidir=obs_config["bidirectional"], 
-                non_emb=obs_config["non_emb"])
+                int(obs_config["embedding_size"]), int(obs_config["rnn_size"]), int(obs_config["rnn_layers"]), 
+                dropout=float(obs_config["dropout"]), rnn_type=obs_config["rnn_type"], bidir=bool(int(obs_config["bidirectional"])), 
+                non_emb=bool(int(obs_config["non_emb"])))
             observation_fn = ObservationModelReorderedSequential(world_input_size, world_support_size, seq_observation_model)
     else:
         world_input_size = D[observation_field].get_feature_set().get_token_count() / world_support_size
@@ -98,9 +98,9 @@ def load_rsa_model(config, D, gpu=False):
     else:
         utterance_size = D[utterance_field].get_matrix(0).get_feature_set().get_token_count()
         seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        meaning_config["embedding_size"], meaning_config["rnn_size"], meaning_config["rnn_layers"], \
-        dropout=meaning_config["dropout"], rnn_type=meaning_config["rnn_type"], 
-        bidir=meaning_config["bidirectional"], input_layers=1)
+        int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
+        dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
+        bidir=bool(int(meaning_config["bidirectional"])), input_layers=1)
         meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
             input_type=SequentialUtteranceInputType.IN_SEQ)
 
@@ -126,7 +126,7 @@ def load_rsa_model(config, D, gpu=False):
     if gpu:
         rsa_model = rsa_model.cuda()
 
-    return rsa_model
+    return data_parameter, rsa_model
 
 # Expects config of the form:
 # {
@@ -161,13 +161,13 @@ def load_evaluations(config, D, gpu=False):
     for eval_config in config["evaluations"]:
         data = D[eval_config["data"]]
         if "data_size" in config:
-            data = data.get_random_subset(eval_config["data_size"])
+            data = data.get_random_subset(int(eval_config["data_size"]))
 
         if eval_config["type"] == "NLLLoss":
             loss = Loss(eval_config["name"], data, data_parameter, loss_criterion)
             evaluations.append(loss)
         elif eval_config["type"] == "RSADistributionAccuracy":
-            acc = RSADistributionAccuracy(eval_config["name"], eval_config["parameters"]["dist_level"], \
+            acc = RSADistributionAccuracy(eval_config["name"], int(eval_config["parameters"]["dist_level"]), \
                 eval_config["parameters"]["dist_type"], data, data_parameter)
             evaluations.append(acc)
         else:

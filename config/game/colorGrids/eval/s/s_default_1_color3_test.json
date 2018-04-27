@@ -1,0 +1,38 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "world"
+    },
+    "evaluations" : [
+        {  
+            "name" : "Test Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test"
+        },
+        {  
+            "name" : "Test Color Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_src_color3"
+        },
+        {  
+            "name" : "Test Grid3 Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_src_grid3"
+        },
+        {  
+            "name" : "Test Far Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_dist_far"
+        },
+        {  
+            "name" : "Test Split Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_dist_split"
+        },
+        {  
+            "name" : "Test Close Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_dist_close"
+        }
+    ]
+}
