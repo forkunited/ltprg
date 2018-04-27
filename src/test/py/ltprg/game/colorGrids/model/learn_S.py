@@ -1,4 +1,5 @@
 import os.path as path
+import datetime
 import argparse
 import torch
 import json
@@ -83,15 +84,16 @@ full_config = dict()
 full_config["id"] = id
 full_config["gpu"] = gpu
 full_config["seed"] = seed
+full_config["time"] = str(datetime.datetime.now())
 full_config["eval_test"] = eval_test
 full_config["output_dir"] = output_dir
-full_config["env"] = env
-full_config["data"] = data_config
-full_config["model"] = model_config
-full_config["learn"] = learn_config 
-full_config["train_evals"] = train_evals_config
-full_config["dev_evals"] = dev_evals_config
-full_config["test_evals"] = test_evals_config
+full_config["env"] = env.get_dict()
+full_config["data"] = data_config.get_dict()
+full_config["model"] = model_config.get_dict()
+full_config["learn"] = learn_config.get_dict()
+full_config["train_evals"] = train_evals_config.get_dict()
+full_config["dev_evals"] = dev_evals_config.get_dict()
+full_config["test_evals"] = test_evals_config.get_dict()
 with open(config_output_path, 'w') as fp:
     json.dump(full_config, fp)
 
@@ -108,20 +110,19 @@ if eval_test:
     results = Evaluation.run_all(test_evals, best_model)
     results["Iteration"] = best_iteration
     test_results_logger.log(results)
-    test_results_logger.dump(file_path=results_path)
+    test_results_logger.dump(file_path=test_results_path)
 
 # Get and output samples
 seq_data = data_sets["train"][data_parameter["seq"]]
 utterance_length = seq_data.get_feature_seq_set().get_size()
-samples = best_model.sample(n_per_input=20, max_length=utterance_length)[0]
+samples = best_model.sample(n_per_input=20, max_length=utterance_length)
 sample_strs = strs_for_scored_samples(samples, seq_data)
-beam = best_model.beam_search(n_per_input=20, max_length=utterance_length)[0]
-beam_strs = strs_for_scored_samples(samples, seq_data)
+beam = best_model.beam_search(beam_size=20, max_length=utterance_length)
+beam_strs = strs_for_scored_samples(beam, seq_data)
 samples_output = "Samples:\n"
-samples_output += "\n".join(sample_strs)
-samples_output += "Beam:\n"
-samples_output += "\n".join(beam_strs)
-samples_path
+samples_output += "\n".join(sample_strs[0])
+samples_output += "\n\nBeam:\n"
+samples_output += "\n".join(beam_strs[0])
 with open(samples_path, "w") as samples_file:
     samples_file.write(samples_output)
 
