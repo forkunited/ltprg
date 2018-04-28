@@ -34,6 +34,6 @@
             "rnn_type" : "LSTM"
         }
     },
-    "training_level" : 1,
+    "training_level" : 0,
     "alpha" : 8.0
 }

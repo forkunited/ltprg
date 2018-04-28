@@ -20,8 +20,8 @@ COLOR_IMG_HEIGHT=140
 gpu = True
 seed = 1
 data_color_dir = sys.argv[1]
-data_uterance_dir = sys.argv[2]
-model_s0_path = sys.argv[3]
+data_utterance_dir = sys.argv[2]
+model_s_path = sys.argv[3]
 model_meaning_path = sys.argv[4]
 output_path = sys.argv[5]
 n_samples = int(sys.argv[6])
@@ -34,14 +34,14 @@ np.random.seed(seed)
 
 # Load data and models
 D_color = MultiviewDataSet.load(data_color_dir, dfmatseq_paths={ "utterance" : data_utterance_dir })
-s = SequenceModel.load(model_color_s_path) # Language model for sampling utterances
-meaning_fn = MeaningModel.load(model_color_meaning_path) # Meaning function
+s = SequenceModel.load(model_s_path) # Language model for sampling utterances
+meaning_fn = MeaningModel.load(model_meaning_path) # Meaning function
 
 # Sample utterances
 utt_sample, utt_lens, _ = s.sample(n_per_input=n_samples, max_length=max_sample_length)[0]
 utt_sample = utt_sample.transpose(0,1) # Gives batch x seq length of utterances
 utt_sample_strs = [] # utterance strings
-for u in utt_sample.size(0):
+for u in range(utt_sample.size(0)):
     utt_str = " ".join([D_color["utterance"].get_feature_token(utt_sample[u][k]).get_value() \
                         for k in range(utt_lens[u])])
     utt_sample_strs.append(utt_str)
@@ -53,11 +53,13 @@ world_idx = torch.arange(0, colors.size(0)).long().unsqueeze(0)
 if gpu:
     world_idx = world_idx.cuda()
     colors = colors.cuda()
+    utt_sample = utt_sample.cuda()
+    meaning_fn = meaning_fn.cuda()
 
 # Compute meanings over color space
 # Gives tensor of dim utterance count x color count
-meanings = meaning_fn((Variable(utt_sample.unsqueeze(0)), utt_lens.unsqueeze(0)),
-                      Variable(world_idx)),
+meanings = meaning_fn((Variable(utt_sample.unsqueeze(0)), utt_lens.unsqueeze(0)), \
+                      Variable(world_idx), \
                       Variable(colors.view(1,colors.size(0)*colors.size(1)))).squeeze().data
 
 # Make image representations of meanings

@@ -1,4 +1,5 @@
 import os.path as path
+import datetime
 import argparse
 import torch
 import json
@@ -83,15 +84,16 @@ full_config = dict()
 full_config["id"] = id
 full_config["gpu"] = gpu
 full_config["seed"] = seed
+full_config["time"] = str(datetime.datetime.now())
 full_config["eval_test"] = eval_test
 full_config["output_dir"] = output_dir
-full_config["env"] = env
-full_config["data"] = data_config
-full_config["model"] = model_config
-full_config["learn"] = learn_config 
-full_config["train_evals"] = train_evals_config
-full_config["dev_evals"] = dev_evals_config
-full_config["test_evals"] = test_evals_config
+full_config["env"] = env.get_dict()
+full_config["data"] = data_config.get_dict()
+full_config["model"] = model_config.get_dict()
+full_config["learn"] = learn_config.get_dict()
+full_config["train_evals"] = train_evals_config.get_dict()
+full_config["dev_evals"] = dev_evals_config.get_dict()
+full_config["test_evals"] = test_evals_config.get_dict()
 with open(config_output_path, 'w') as fp:
     json.dump(full_config, fp)
 
@@ -108,7 +110,7 @@ if eval_test:
     results = Evaluation.run_all(test_evals, best_model)
     results["Iteration"] = best_iteration
     test_results_logger.log(results)
-    test_results_logger.dump(file_path=results_path)
+    test_results_logger.dump(file_path=test_results_path)
 
 # Output model
 best_meaning_fn = best_part[0]
