@@ -46,7 +46,7 @@ utt_sample_strs = strs_for_scored_samples(s_sample, D_color["utterance"])[0]
 # Construct some utterances by hand
 reverse_lookup = D_color["utterance"].get_feature_seq_set().get_feature_set().make_token_lookup()
 constructed_utts = [["#start#", "green", "-ish", "#end#"], \
-                    ["#start#", "blue", "banana", "#end"]]
+                    ["#start#", "blue", "yellow", "#end#"]] # Banana not in vocabulary
 constructed_indices = torch.zeros((len(constructed_utts), utt_sample.size(1))).long()
 constructed_lens = torch.zeros(len(constructed_utts)).long()
 for u in range(len(constructed_utts)):
@@ -58,7 +58,7 @@ for u in range(len(constructed_utts)):
 
 utt_sample = torch.cat((utt_sample, constructed_indices))
 utt_lens = torch.cat((utt_lens, constructed_lens))
-utt_sample_strs.extend(" ".join(constructed_utts[u] for u in range(len(constructed_utts))))
+utt_sample_strs.extend([" ".join(constructed_utts[u]) for u in range(len(constructed_utts))])
 
 # Make color space over which to compute meanings
 # This consists of colors with varying H and S dimensions of HSL
