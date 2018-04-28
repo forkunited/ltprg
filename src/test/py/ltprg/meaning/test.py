@@ -7,7 +7,7 @@ from torch.autograd import Variable
 from mung.data import DataSet
 from mung.feature import MultiviewDataSet
 from ltprg.model.meaning import MeaningModel
-from ltprg.model.seq import SequenceModel
+from ltprg.model.seq import SequenceModel, strs_for_scored_samples
 from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs, rgbs_to_labs
 from ltprg.game.color.eval import ColorMeaningPlot
 from ltprg.util.img import make_rgb_img, make_gray_img
@@ -38,13 +38,27 @@ s = SequenceModel.load(model_s_path) # Language model for sampling utterances
 meaning_fn = MeaningModel.load(model_meaning_path) # Meaning function
 
 # Sample utterances
-utt_sample, utt_lens, _ = s.sample(n_per_input=n_samples, max_length=max_sample_length)[0]
+s_sample = s.sample(n_per_input=n_samples, max_length=max_sample_length)
+utt_sample, utt_lens, _ = s_sample[0]
 utt_sample = utt_sample.transpose(0,1) # Gives batch x seq length of utterances
-utt_sample_strs = [] # utterance strings
-for u in range(utt_sample.size(0)):
-    utt_str = " ".join([D_color["utterance"].get_feature_token(utt_sample[u][k]).get_value() \
-                        for k in range(utt_lens[u])])
-    utt_sample_strs.append(utt_str)
+utt_sample_strs = strs_for_scored_samples(s_sample, D_color["utterance"])[0]
+
+# Construct some utterances by hand
+reverse_lookup = D_color["utterance"].get_feature_seq_set().get_feature_set().make_token_lookup()
+constructed_utts = [["#start#", "green", "-ish", "#end#"], \
+                    ["#start#", "blue", "banana", "#end"]]
+constructed_indices = torch.zeros((len(constructed_utts), utt_sample.size(1))).long()
+constructed_lens = torch.zeros(len(constructed_utts)).long()
+for u in range(len(constructed_utts)):
+    for i in range(len(constructed_utts[u])):
+        if constructed_utts[u][i] not in reverse_lookup:
+            raise ValueError(constructed_utts[u][i] + " not found in feature vocabulary.")
+        constructed_indices[u,i] = reverse_lookup[constructed_utts[u][i]]
+        constructed_lens[u] = len(constructed_utts[u])
+
+utt_sample = torch.cat((utt_sample, constructed_indices))
+utt_lens = torch.cat((utt_lens, constructed_lens))
+utt_sample_strs.extend(" ".join(constructed_utts[u] for u in range(len(constructed_utts))))
 
 # Make color space over which to compute meanings
 # This consists of colors with varying H and S dimensions of HSL
