@@ -564,47 +564,11 @@ class SequenceModel(nn.Module):
             model = SequenceModelNoInput.make(init_params)
         return model
 
-""" FIXME Put his back later maybe
-class EvaluationSequential(ltprg.model.eval.Evaluation):
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, name, data, data_parameters):
-        super(EvaluationSequential, self).__init__(name, data, data_parameters)
-
-        # Loading all the stuff on construction will be faster but hog
-        # memory.  If it's a problem, then move this into the run method.
-        batch = data.get_batch(0, data.get_size())
-        seq, length, mask = batch[seq_view_name]
-
-        self._name = name
-        self._input_view_name = data_parameters[DataParameter.INPUT]
-        self._seq_view_name = data_parameters[DataParameter.SEQ]
-        self._data_input = Variable(batch[data_parameters[DataParameter.INPUT]])
-        self._seq_length = length - 1
-        self._seq_in = Variable(seq[:seq.size(0)-1]).long() # Input remove final token
-        self._target_out = Variable(seq[1:seq.size(0)]).long() # Output (remove start token)
-        self._mask = mask
-
-    @abc.abstractmethod
-    def run_helper(self, model, model_out, hidden):
-        # Evaluates the model according to its output
-
-    def run(self, model):
-        model.eval()
-        model_out, hidden = self(seq_part=self._seq_in,
-                                 seq_length=self._seq_length,
-                                 input=self._data_input)
-
-        result = self._run_helper(model, model_out, hidden)
-
-        model.train()
-        return result
-"""
-
 class SequenceModelInputToHidden(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
-                 input_layers=1, embedding_init=None, freeze_embedding=False):
+                 input_layers=1, embedding_init=None, freeze_embedding=False,
+                 conv_input=False, conv_kernel=1, conv_stride=1):
         super(SequenceModelInputToHidden, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -619,6 +583,9 @@ class SequenceModelInputToHidden(SequenceModel):
         self._init_params["bidir"] = bidir
         self._init_params["input_layers"] = input_layers
         self._init_params["freeze_embedding"] = freeze_embedding
+        self._init_params["conv_input"] = conv_input
+        self._init_params["conv_kernel"] = conv_kernel
+        self._init_params["conv_stride"] = conv_stride
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -627,13 +594,22 @@ class SequenceModelInputToHidden(SequenceModel):
         self._input_layers = input_layers
         self._freeze_embedding = freeze_embedding
 
-        self._encoder = nn.Linear(input_size, rnn_size*rnn_layers*self._directions/(4**(input_layers-1)))
-        self._encoder_nl = nn.Tanh()
-        if self._input_layers == 2:
-            self._encoder_0 = nn.Linear(rnn_size*rnn_layers*self._directions/(4**(input_layers-1)), rnn_size*rnn_layers*self._directions)
-            self._encoder_0_nl = nn.Tanh()
-        elif self._input_layers != 1:
-            raise ValueError("Can only have 1 or 2 input layers")
+        self._conv_input = conv_input
+        encoded_size = rnn_size*rnn_layers*self._directions/(4**(input_layers-1))
+        if not self._conv_input:
+            self._encoder = nn.Linear(input_size, encoded_size)
+            self._encoder_nl = nn.Tanh()
+            if self._input_layers == 2:
+                self._encoder_0 = nn.Linear(encoded_size, rnn_size*rnn_layers*self._directions)
+                self._encoder_0_nl = nn.Tanh()
+            elif self._input_layers != 1:
+                raise ValueError("Can only have 1 or 2 input layers")
+        else:
+            if self._input_layers != 1:
+                raise ValueError("Input layers must be 1 when convolving input")
+            self._encoder = nn.Conv1d(1, encoded_size, conv_kernel, stride=conv_stride)
+            self._encoder_nl = nn.LeakyReLU()
+            self._encoder_pool = nn.MaxPool1d(conv_kernel)
 
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
@@ -649,11 +625,15 @@ class SequenceModelInputToHidden(SequenceModel):
     def _init_hidden(self, batch_size, input=None):
         weight = next(self.parameters()).data
 
-        hidden = self._encoder_nl(self._encoder(input))
-        if self._input_layers > 1:
-            hidden = self._encoder_0_nl(self._encoder_0(hidden))
+        hidden = None
+        if not self._conv_input:
+            hidden = self._encoder_nl(self._encoder(input))
+            if self._input_layers > 1:
+                hidden = self._encoder_0_nl(self._encoder_0(hidden))
 
-        hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
+            hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
+        else:
+            hidden = self._encoder_pool(self._encoder_nl(self._encoder(input)))
 
         if self._rnn_type == RNNType.GRU:
             return hidden
@@ -719,7 +699,18 @@ class SequenceModelInputToHidden(SequenceModel):
         if "freeze_embedding" in init_params:
             freeze_embedding = init_params["freeze_embedding"]
 
-        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, input_layers=input_layers, freeze_embedding=freeze_embedding)
+        conv_input = False
+        conv_kernel = 1
+        conv_stride = 1
+        if "conv_input" in init_params:
+            conv_input = init_params["conv_input"]
+            conv_kernel = init_params["conv_kernel"]
+            conv_stride = init_params["conv_stride"]
+
+        return SequenceModelInputToHidden(name, seq_size, input_size, embedding_size, \
+            rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, \
+            input_layers=input_layers, freeze_embedding=freeze_embedding,\
+            conv_input=conv_input, conv_kernel=conv_kernel, conv_stride=conv_stride)
 
 
 class SequenceModelInputEmbedded(SequenceModel):
@@ -775,7 +766,7 @@ class SequenceModelInputEmbedded(SequenceModel):
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         emb_pad = None
         if self._non_emb:
-            emb_pad = self._drop(self._emb(seq_part)) #self._drop(self._tanh(self._emb(seq_part)))
+            emb_pad = self._drop(self._tanh(self._emb(seq_part)))
         else:
             emb_pad = self._drop(self._emb(seq_part))
         input_seq = input.unsqueeze(0).expand(emb_pad.size(0),emb_pad.size(1),input.size(1))
@@ -856,6 +847,7 @@ class SequenceModelNoInput(SequenceModel):
         self._freeze_embedding = freeze_embedding
 
         if non_emb:
+            # FIXME This was for earlier version... can remove
             self._emb = nn.Linear(seq_size, embedding_size)
             self._tanh = nn.Tanh()
         else:
@@ -887,9 +879,7 @@ class SequenceModelNoInput(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         if self._non_emb:
-            #emb_pad = self._drop(self._tanh(self._emb(seq_part)))
             emb_pad = seq_part
-            #emb_pad = self._drop(self._emb(seq_part))
         else:
             emb_pad = self._drop(self._emb(seq_part)) 
 

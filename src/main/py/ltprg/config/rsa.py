@@ -43,7 +43,10 @@ from ltprg.model.seq_heuristic import HeuristicL0
 #       rnn_layers : [RNN_LAYERS]
 #       rnn_size : [SIZE OF RNN HIDDEN LAYER]
 #       embedding_size : [EMBEDDING_SIZE]
-#       rnn_type : [RNN TYPE]
+#       rnn_type : [RNN TYPE],
+#       conv_input : [INDICATOR OF WHETHER OR NOT TO CONVOLVE THE INPUT]
+#       conv_kernel : [KERNEL SIZE FOR CONVOLUTION]
+#       conv_stride : [STRIDE LENGTH FOR CONVOLUTION]
 #     }
 #   },
 #   (Optional) observation_fn : {
@@ -100,7 +103,9 @@ def load_rsa_model(config, D, gpu=False):
         seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
         int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
         dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
-        bidir=bool(int(meaning_config["bidirectional"])), input_layers=1)
+        bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
+        conv_input=bool(int(meaning_config["conv_input"])), conv_kernel=int(meaning_config["conv_kernel"],\
+        conv_stride=int(meaning_config["conv_stride"])))
         meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
             input_type=SequentialUtteranceInputType.IN_SEQ)
 
