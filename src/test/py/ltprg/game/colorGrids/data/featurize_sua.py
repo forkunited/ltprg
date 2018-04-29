@@ -122,6 +122,29 @@ class FeaturizeSUA(unittest.TestCase):
             # "fc-6",
             "cielab")
 
+    def test_colors_pos(self):
+            print "Featurizing speaker objs colors with positions (cielab)"
+            num_objs = 3
+            dims = []
+            for i in range(num_objs):
+                for j in range(grid_dim*grid_dim):
+                    dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[0]", \
+                                "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[1]", \
+                                "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[2]"])
+
+            ltprg.data.feature_helpers.featurize_embeddings(
+                input_data_dir,
+                join(output_feature_dir, "colors_pos"),
+                partition_file,
+                lambda d : d.get("gameid"),
+                # "context_fc_embedding",
+                "colors",
+                dims,
+                # "fc-6",
+                "cielab",
+                include_positions=True,
+                position_count=9)
+
     def test_colors_first(self):
         print "Featurizing speaker objs colors first (cielab)"
         num_objs = 3

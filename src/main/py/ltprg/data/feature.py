@@ -72,26 +72,37 @@ register_feature_type(FeatureVisualEmbeddingType)
 
 class FeatureCielabEmbeddingType(FeatureType):
     # stimulus embeddings in CIELAB color space (3 coordinates)
-    def __init__(self, name, paths):
+    def __init__(self, name, paths, include_positions=False, position_count=1):
         FeatureType.__init__(self)
         # paths is a list of lists of HSLs, e.g. [[H1, S1, L1], [H2, S2, L2]]
         self._name = name
         self._paths = paths # e.g. [["state.sH_0", "state.sS_0", "state.sL_0"]]
+        self._include_positions = include_positions
+        self._position_count = position_count
 
     def get_name(self):
         return self._name
 
     def compute(self, datum, vec, start_index):
         output = []
-        for color in self._paths:
+        for i, color in enumerate(self._paths):
             hsl = [datum.get(dim) for dim in color]
             rgb = np.array(hsls_to_rgbs([map(int, hsl)]))[0]
             lab = np.array(rgbs_to_labs([rgb]))[0]
             output.extend(lab)
+
+            if self._include_positions:
+                pos = np.zeros(shape=len(self._position_count))
+                pos[i % self._position_count] = 1.0
+                output.extend(pos)
+
         vec[start_index : len(vec)] = output[start_index : len(output)]
 
     def get_size(self):
-        return 3 * len(self._paths)
+        if self._include_positions:
+            return (3 + self._position_count) * len(self._paths)
+        else:
+            return 3 * len(self._paths)
 
     def get_token(self, index):
         return None
@@ -117,6 +128,9 @@ class FeatureCielabEmbeddingType(FeatureType):
         obj["type"] = "FeatureCielabEmbeddingType"
         obj["name"] = self._name
         obj["paths"] = self._paths
+        obj["include_positions"] = self._include_positions
+        obj["position_count"] = self._position_count
+
         with open(file_path, 'w') as fp:
             pickle.dump(obj, fp)
 
@@ -130,6 +144,13 @@ class FeatureCielabEmbeddingType(FeatureType):
     def from_dict(obj):
         name = obj["name"]
         paths = obj["paths"]
-        return FeatureCielabEmbeddingType(name, paths)
+        include_positions = False
+        position_count = 1
+        if "include_positions" in obj:
+            include_positions = obj["include_positions"]
+            position_count = obj["position_count"]
+
+        return FeatureCielabEmbeddingType(name, paths, include_positions=include_positions, \
+            position_count=position_count)
 
 register_feature_type(FeatureCielabEmbeddingType)
