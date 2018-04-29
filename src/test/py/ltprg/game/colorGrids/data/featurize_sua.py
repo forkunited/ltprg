@@ -142,6 +142,27 @@ class FeaturizeSUA(unittest.TestCase):
             # "fc-6",
             "cielab")
     
+    def test_colors_corner(self):
+        print "Featurizing speaker objs colors corner (cielab)"
+        num_objs = 3
+        dims = []
+        corner_idx = grid_dim*grid_dim - grid_dim
+        for i in range(num_objs):
+            dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(corner_idx) + "].color[0]", \
+                             "state.state.objs[" + str(i) + "].shapes[" + str(corner_idx) + "].color[1]", \
+                             "state.state.objs[" + str(i) + "].shapes[" + str(corner_idx) + "].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_corner"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors",
+            dims,
+            # "fc-6",
+            "cielab")
+
     # Constructs an index of the target color index (0, 1, or 2)
     def test_target_indices(self):
         print "Featurizing target indices"
@@ -152,6 +173,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "target_idx",
             ["state.state.target"])
-
+    
 if __name__ == '__main__':
     unittest.main()

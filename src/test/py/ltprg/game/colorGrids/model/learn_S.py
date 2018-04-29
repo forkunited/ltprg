@@ -25,16 +25,16 @@ parser.add_argument('dev_evals', action="store")
 parser.add_argument('test_evals', action="store")
 parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
-parser.add_argument('--gpu', action='store', dest='gpu', type=bool, default=True)
-parser.add_argument('--eval_test', action='store', dest='eval_test', type=bool, default=False)
+parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
+parser.add_argument('--eval_test', action='store', dest='eval_test', type=int, default=0)
 args, extra_env_args = parser.parse_known_args()
 extra_env = Config.load_from_list(extra_env_args)
 
 # Initalize current run parameters
 id = args.id
-gpu = args.gpu
+gpu = bool(args.gpu)
 seed = args.seed
-eval_test = args.eval_test
+eval_test = bool(args.eval_test)
 output_dir = args.output_dir
 
 # Load configuration files
