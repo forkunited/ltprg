@@ -12,6 +12,7 @@ from mung.util.config import Config
 from mung.util.log import Logger
 from mung.torch_ext.eval import Evaluation
 from ltprg.util.file import make_indexed_dir
+from ltprg.model.rsa import RSA
 
 parser = argparse.ArgumentParser()
 parser.add_argument('id', action="store")
@@ -85,7 +86,7 @@ utterance_prior_fn = last_model.get_utterance_prior_fn()
 alpha = last_model.get_alpha()
 
 best_model = RSA.make(dist_type + "_" + str(level), dist_type, level, \
-                      best_meaning, world_prior_fn, utterance_prior_fn, \
+                      best_meaning_fn, world_prior_fn, utterance_prior_fn, \
                       L_bottom=True, soft_bottom=False, alpha=alpha, \
                       observation_fn=best_observation_fn)
 
