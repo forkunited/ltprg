@@ -1,0 +1,22 @@
+{
+    "data_parameter" : {
+        "utterance" : "utterance", 
+        "L_world" : "target", 
+        "L_observation" : "observation",
+        "S_world" : "target", 
+        "S_observation" : "observation", 
+        "mode" : "L",
+        "utterance_seq" : true
+    },
+    "evaluations" : [
+        {  
+            "name" : "Dev L0 Grid3 Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        }
+    ]
+}

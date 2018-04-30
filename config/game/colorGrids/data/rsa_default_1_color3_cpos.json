@@ -1,0 +1,289 @@
+{
+  "data_path" : "$!{data_path_colorgrids_1_color3}",
+  "mats" : {
+    "dfmat_paths" : {
+      "target" : "$!{data_feature_path_colorgrids_1_color3_target}",
+      "observation" : "$!{data_feature_path_colorgrids_1_color3_color_pos}"  },
+    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_clean}" },
+    "ordering_seq" : "utterance"
+  },
+
+  "subsets" : [
+    { "name" : "partition",
+      "type" : "PARTITION",
+      "file" : "$!{partition_file_colorgrids_1_color3}",
+      "key" : "gameid",
+      "parts" : { "train" : "train", "dev" : "dev", "test": "test" }
+    },
+
+
+    {
+      "name" : "train_src_color3",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_grid3",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "train_dist_close",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "CLOSE"
+      }
+    },
+    {
+      "name" : "train_dist_split",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "SPLIT"
+      }
+    },
+    {
+      "name" : "train_dist_far",
+      "superset" : "train",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "FAR"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_close",
+      "superset" : "train_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_grid3_dist_close",
+      "superset" : "train_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_split",
+      "superset" : "train_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_grid3_dist_split",
+      "superset" : "train_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "train_src_color3_dist_far",
+      "superset" : "train_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "train_src_grid3_dist_far",
+      "superset" : "train_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+
+
+    {
+      "name" : "dev_src_color3",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_grid3",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "dev_dist_close",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "CLOSE"
+      }
+    },
+    {
+      "name" : "dev_dist_split",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "SPLIT"
+      }
+    },
+    {
+      "name" : "dev_dist_far",
+      "superset" : "dev",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "FAR"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_close",
+      "superset" : "dev_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_grid3_dist_close",
+      "superset" : "dev_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_split",
+      "superset" : "dev_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_grid3_dist_split",
+      "superset" : "dev_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "dev_src_color3_dist_far",
+      "superset" : "dev_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "dev_src_grid3_dist_far",
+      "superset" : "dev_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+
+
+    {
+      "name" : "test_src_color3",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_grid3",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "test_dist_close",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "CLOSE"
+      }
+    },
+    {
+      "name" : "test_dist_split",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "SPLIT"
+      }
+    },
+    {
+      "name" : "test_dist_far",
+      "superset" : "test",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.name" : "FAR"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_close",
+      "superset" : "test_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_grid3_dist_close",
+      "superset" : "test_dist_close",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_split",
+      "superset" : "test_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_grid3_dist_split",
+      "superset" : "test_dist_split",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "test_src_color3_dist_far",
+      "superset" : "test_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "color3"
+      }
+    },
+    {
+      "name" : "test_src_grid3_dist_far",
+      "superset" : "test_dist_far",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.source" : "grid3"
+      }
+    }
+  ]
+}
