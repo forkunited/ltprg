@@ -10,7 +10,7 @@ datums_out = []
 for d in D:
     d_props = d.to_dict()
     target_index = d.get("state.state.target")
-    target_obj = d.get("state.state.objs[" + target_index + "]")
+    target_obj = d.get("state.state.objs[" + str(target_index) + "]")
 
     d_props["state"]["state"]["targetObj"] = target_obj
 
