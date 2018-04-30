@@ -609,7 +609,7 @@ class SequenceModelInputToHidden(SequenceModel):
                 raise ValueError("Input layers must be 1 when convolving input")
             self._encoder = nn.Conv1d(1, encoded_size, conv_kernel, stride=conv_stride)
             self._encoder_nl = nn.LeakyReLU()
-            self._encoder_pool = nn.MaxPool1d(conv_kernel)
+            self._encoder_pool = nn.MaxPool1d(input_size/conv_kernel)
 
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
@@ -630,10 +630,11 @@ class SequenceModelInputToHidden(SequenceModel):
             hidden = self._encoder_nl(self._encoder(input))
             if self._input_layers > 1:
                 hidden = self._encoder_0_nl(self._encoder_0(hidden))
-
-            hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
         else:
+            input = input.unsqueeze(1)
             hidden = self._encoder_pool(self._encoder_nl(self._encoder(input)))
+      
+        hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
 
         if self._rnn_type == RNNType.GRU:
             return hidden

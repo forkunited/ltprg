@@ -100,12 +100,19 @@ def load_rsa_model(config, D, gpu=False):
         meaning_fn = MeaningModel.load(meaning_config["model_path"])
     else:
         utterance_size = D[utterance_field].get_matrix(0).get_feature_set().get_token_count()
+        conv_input = False
+        conv_kernel = 1
+        conv_stride = 1
+        if "conv_input" in meaning_config:
+            conv_input = bool(int(meaning_config["conv_input"]))
+            conv_kernel = int(meaning_config["conv_kernel"])
+            conv_stride = int(meaning_config["conv_stride"])
+
         seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
         int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
         dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
         bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
-        conv_input=bool(int(meaning_config["conv_input"])), conv_kernel=int(meaning_config["conv_kernel"],\
-        conv_stride=int(meaning_config["conv_stride"])))
+        conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
         meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
             input_type=SequentialUtteranceInputType.IN_SEQ)
 

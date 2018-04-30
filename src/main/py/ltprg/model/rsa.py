@@ -121,6 +121,12 @@ class RSA(nn.Module):
     def get_observation_fn(self):
         return self._observation_fn
 
+    def get_level(self):
+        return self._level
+
+    def get_alpha(self):
+        return self._alpha
+
     def to_level(self, dist_type, level, L_bottom=True, soft_bottom=False):
         model = None
         if dist_type == DistributionType.L:
@@ -202,6 +208,9 @@ class S(RSA):
             if L_bottom:
                 next_level = self._level - 1
             self._L = L(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+
+    def get_distribution_type(self):
+        return DistributionType.S
 
     def forward(self, world, observation=None, world_dist=False):
         """
@@ -360,6 +369,9 @@ class L(RSA):
             if not L_bottom:
                 next_level = self._level - 1
             self._S = S(name, next_level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha)
+
+    def get_distribution_type(self):
+        return DistributionType.L
 
     def forward(self, utterance, observation=None, utterance_dist=False):
         """

@@ -73,7 +73,7 @@ logger.set_file_path(log_path)
 
 # Run training 
 loss_criterion = VariableLengthNLLLoss()
-best_model, best_part, best_iteration = clearn.train_from_config(learn_config, \
+last_model, best_model, best_iteration = clearn.train_from_config(learn_config, \
     data_parameter, loss_criterion, logger, train_evals, seq_model, data_sets)
 
 # Output logs

@@ -92,7 +92,7 @@ class FeatureCielabEmbeddingType(FeatureType):
             output.extend(lab)
 
             if self._include_positions:
-                pos = np.zeros(shape=len(self._position_count))
+                pos = np.zeros(shape=self._position_count)
                 pos[i % self._position_count] = 1.0
                 output.extend(pos)
 

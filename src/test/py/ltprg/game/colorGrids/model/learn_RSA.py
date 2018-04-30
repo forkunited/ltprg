@@ -73,8 +73,21 @@ logger.set_file_path(log_path)
 # Run training 
 loss_criterion = torch.nn.NLLLoss()
 best_part_fn = lambda m : (m.get_meaning_fn(), m.get_observation_fn())
-best_model, best_part, best_iteration = clearn.train_from_config(learn_config, \
+last_model, best_part, best_iteration = clearn.train_from_config(learn_config, \
     data_parameter, loss_criterion, logger, train_evals, rsa_model, data_sets, best_part_fn=best_part_fn)
+
+best_meaning_fn = best_part[0]
+best_observation_fn = best_part[1]
+level = last_model.get_level()
+dist_type = last_model.get_distribution_type()
+world_prior_fn = last_model.get_world_prior_fn()
+utterance_prior_fn = last_model.get_utterance_prior_fn()
+alpha = last_model.get_alpha()
+
+best_model = RSA.make(dist_type + "_" + str(level), dist_type, level, \
+                      best_meaning, world_prior_fn, utterance_prior_fn, \
+                      L_bottom=True, soft_bottom=False, alpha=alpha, \
+                      observation_fn=best_observation_fn)
 
 # Output logs
 logger.dump(file_path=log_path)
@@ -113,8 +126,6 @@ if eval_test:
     test_results_logger.dump(file_path=test_results_path)
 
 # Output model
-best_meaning_fn = best_part[0]
-best_observation_fn = best_part[1]
 best_meaning_fn.save(meaning_model_path)
 if best_observation_fn is not None:
     best_observation_fn.save(observation_model_path)
