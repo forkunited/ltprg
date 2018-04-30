@@ -1,5 +1,5 @@
 from mung.torch_ext.eval import Loss
-from ltprg.model.seq import DataParameter, SequenceModelNoInput
+from ltprg.model.seq import DataParameter, SequenceModelNoInput, SequenceModelInputToHidden
 from ltprg.model.seq import VariableLengthNLLLoss
 
 # Expects config of the form:
@@ -9,12 +9,15 @@ from ltprg.model.seq import VariableLengthNLLLoss
 #     input : [INPUT PARAMETER NAME]
 #   }
 #   name : [ID FOR MODEL]
-#   arch_type : [SequenceModelNoInput]
+#   arch_type : [SequenceModelNoInput|SequenceModelInputToHidden]
 #   dropout : [DROPOUT]
 #   rnn_layers : [RNN_LAYERS]
 #   rnn_size : [SIZE OF RNN HIDDEN LAYER]
 #   embedding_size : [EMBEDDING_SIZE]
 #   rnn_type : [RNN TYPE]
+#   (SequenceModelInputToHidden) conv_input : [INDICATOR OF WHETHER OR NOT TO CONVOLVE THE INPUT]
+#   (SequenceModelInputToHidden) conv_kernel : [KERNEL SIZE FOR CONVOLUTION]
+#   (SequenceModelInputToHidden) conv_stride : [STRIDE LENGTH FOR CONVOLUTION]
 # }
 def load_seq_model(config, D, gpu=False):
     data_parameter = DataParameter.make(**config["data_parameter"])
@@ -27,8 +30,22 @@ def load_seq_model(config, D, gpu=False):
     embedding_size = int(config["embedding_size"])
     rnn_type = config["rnn_type"]
 
-    model = SequenceModelNoInput(config["name"], utterance_size, \
+    if config["arch_type"] == "SequenceModelNoInput":
+        model = SequenceModelNoInput(config["name"], utterance_size, \
         embedding_size, rnn_size, rnn_layers, dropout=dropout, rnn_type=rnn_type)
+    else:
+        input_field = data_parameter["input"]
+        input_size = D[input_field].get_feature_set().get_token_count()
+        conv_input = False
+        conv_kernel = 1
+        conv_stride = 1
+        if "conv_input" in config:
+            conv_input = bool(int(config["conv_input"]))
+            conv_kernel = int(config["conv_kernel"])
+            conv_stride = int(config["conv_stride"])
+        model = SequenceModelInputToHidden(config["name"], utterance_size, input_size, \
+        embedding_size, rnn_size, rnn_layers, dropout=dropout, rnn_type=rnn_type, \
+        conv_input=conv_input, conv_kernel=conv_kernel, conv_stride=conv_stride)
 
     return data_parameter, model
 
