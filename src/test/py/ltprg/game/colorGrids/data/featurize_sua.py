@@ -121,7 +121,7 @@ class FeaturizeSUA(unittest.TestCase):
             dims,
             # "fc-6",
             "cielab")
-    
+    """
     def test_colors_pos(self):
             print "Featurizing speaker objs colors with positions (cielab)"
             num_objs = 3
@@ -144,7 +144,7 @@ class FeaturizeSUA(unittest.TestCase):
                 "cielab",
                 include_positions=True,
                 position_count=9)
-    """
+
     def test_target_color_pos(self):
             print "Featurizing speaker obj target color with position (cielab)"
             dims = []

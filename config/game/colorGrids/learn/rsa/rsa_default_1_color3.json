@@ -1,7 +1,7 @@
 {
     "max_evaluation" : true,
     "data" : "train",
-    "iterations" : 7000,
+    "iterations" : 15000,
     "batch_size" : 128,
     "optimizer_type" : "ADAM",
     "learning_rate" : 0.005,

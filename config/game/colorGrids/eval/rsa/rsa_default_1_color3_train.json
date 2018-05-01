@@ -9,6 +9,26 @@
         "utterance_seq" : true
     },
     "evaluations" : [
+        {
+            "name" : "Dev L1 Sample Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev",
+            "data_size" : 5000,
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {
+            "name" : "Dev L0 Sample Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev",
+            "data_size" : 5000,
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
         {  
             "name" : "Dev L1 Color Sample Accuracy",
             "type" : "RSADistributionAccuracy",

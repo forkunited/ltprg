@@ -16,8 +16,8 @@
             "eval_mode" : "FORWARD",
             "samples_per_input" : 10,
             "uniform" : true,
-            "training_input_mode" : "IGNORE_TRUE_WORLD",
-            "sample_length" : 8,
+            "training_input_mode" : "None",
+            "sample_length" : 16,
             "n_before_heuristic" : 100
         }
     },
@@ -37,6 +37,6 @@
             "conv_stride" : 12
         }
     },
-    "training_level" : 1,
+    "training_level" : 0,
     "alpha" : 8.0
 }
