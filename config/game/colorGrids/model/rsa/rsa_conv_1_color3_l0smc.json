@@ -17,7 +17,7 @@
             "samples_per_input" : 10,
             "uniform" : true,
             "training_input_mode" : "None",
-            "sample_length" : 8,
+            "sample_length" : 16,
             "n_before_heuristic" : 100
         }
     },
