@@ -1,7 +1,7 @@
 {
     "data_parameter" : {
         "seq" : "utterance",
-        "input" : "world"
+        "input" : "target_obj"
     },
     "evaluations" : [
         {  

@@ -10,7 +10,7 @@
     },
     "utterance_prior" : {
         "seq_model_path" : "$!{s_model_colorgrids_1_color3}",
-        "heuristic" : "None",
+        "heuristic" : "L0",
         "parameters" : {
             "training_mode" : "SMC",
             "eval_mode" : "SMC",
