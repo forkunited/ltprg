@@ -1,0 +1,34 @@
+{
+    "data_parameter" : {
+        "utterance" : "utterance", 
+        "L_world" : "target", 
+        "L_observation" : "observation",
+        "S_world" : "target", 
+        "S_observation" : "observation", 
+        "mode" : "L",
+        "utterance_seq" : true
+    },
+    "utterance_prior" : {
+        "seq_model_path" : "$!{s0_model_colorgrids_1_color3}",
+        "heuristic" : "None",
+        "parameters" : {
+            "training_mode" : "FORWARD",
+            "eval_mode" : "FORWARD",
+            "samples_per_input" : 10,
+            "uniform" : true,
+            "training_input_mode" : "IGNORE_TRUE_WORLD",
+            "sample_length" : 8,
+            "n_before_heuristic" : 100
+        }
+    },
+    "world_prior" : {
+        "support_size" : 3
+    },
+    "meaning_fn" : {
+        "seq_model" : {
+            "model_path" : "$!{meaning_model_l0_colorgrids_1_color3}"            
+        }
+    },
+    "training_level" : 1,
+    "alpha" : 8.0
+}
