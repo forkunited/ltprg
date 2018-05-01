@@ -172,7 +172,7 @@ def load_evaluations(config, D, gpu=False):
 
     for eval_config in config["evaluations"]:
         data = D[eval_config["data"]]
-        if "data_size" in config:
+        if "data_size" in eval_config:
             data = data.get_random_subset(int(eval_config["data_size"]))
 
         if eval_config["type"] == "NLLLoss":
