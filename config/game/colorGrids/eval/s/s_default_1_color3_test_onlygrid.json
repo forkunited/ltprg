@@ -7,7 +7,7 @@
         {  
             "name" : "Test Grid3 Loss",
             "type" : "VariableLengthNLLLoss",
-            "data" : "dev_src_grid3"
+            "data" : "test_src_grid3"
         }
     ]
 }
