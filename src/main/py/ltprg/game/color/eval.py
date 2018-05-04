@@ -2,6 +2,8 @@ import torch
 import colorsys
 import numpy as np
 import math
+import os
+import os.path
 from torch.autograd import Variable
 from mung.torch_ext.eval import Evaluation
 from ltprg.model.seq import SamplingMode
@@ -112,3 +114,6 @@ class ColorMeaningPlot(Evaluation):
             caption_imgs.append(self._make_text_img(utt_str, width=CAPTION_IMG_WIDTH, height=CAPTION_IMG_HEIGHT))
             color_imgs.append(make_gray_img(meanings[u].contiguous().view(COLORS_PER_DIM,COLORS_PER_DIM).cpu().numpy(), width=COLOR_IMG_WIDTH,height=COLOR_IMG_HEIGHT))
         self._save_plot(output_path, caption_imgs, color_imgs, caption_width=CAPTION_IMG_WIDTH, caption_height=CAPTION_IMG_HEIGHT, color_width=COLOR_IMG_WIDTH, color_height=COLOR_IMG_HEIGHT)
+
+
+

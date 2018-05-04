@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 import mung.torch_ext.eval
+import os.path
 from torch.autograd import Variable
 from ltprg.model.dist import Categorical
-from mung.torch_ext.eval import DistributionAccuracy
+from mung.torch_ext.eval import Evaluation, DistributionAccuracy
 
 EPSILON=1e-9 # Note, was 1e-6 on color, and not in normalize_rows back then
 
@@ -516,3 +517,83 @@ class RSADistributionAccuracy(DistributionAccuracy):
         self._distribution_type = distribution_type
         self._L_bottom = L_bottom
         self._data_parameters = data_parameters.to_mode(self._distribution_type)
+
+
+
+# At each evaluation, outputs a json file containing priors for each round
+# represented by a data point
+class PriorView(Evaluation):
+    def __init__(self, name, data, data_parameters, output_dir):
+        super(PriorView, self).__init__(name, data, data_parameters)
+
+        self._directory_path = os.path.join(output_dir, name)
+        if not os.path.exists(self._directory_path):
+            os.makedirs(self._directory_path)
+
+        self._iteration = 0
+
+    def _run_batch(self, model, batch):
+        batch_result = []
+
+        l0 = model.to_level(DistributionType.L, 0, L_bottom=True, soft_bottom=model._soft_bottom)
+        p_0 = l0.forward_batch(batch, self._data_parameters.to_mode(DistributionType.L)).p()
+
+        utterance_prior_fn = model.get_utterance_prior_fn()
+        observation = Variable(batch[self._data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
+        if model.on_gpu():
+            observation = observation.cuda()
+        utterance_prior_fn.set_data_batch(batch, self._data_parameters)
+        prior_utts, prior_lens = utterance_prior_fn(observation).support()
+
+        t = 0
+        for i in range(batch.size(0)):
+            round_i = { "roundNum" : i, "events" : [] }
+            dist_str = "(" + " ".join([val for val in p_0[i]]) + " "
+
+            support_i = prior_utts[i]
+            support_lens_i = prior_lens[i]
+            for j in support_i.size(0):
+                utt_tokens = [self._data[self._data_parameters[DataParameter.UTTERANCE]].get_feature_token(support_i[j,k]).get_value() \
+                    for k in range(len(support_lens_i[j]))]
+                utt_str = " ".join(utt_tokens) + " " + dist_str
+                utt_event = { "eventType": "utterance", "type": "Utterance",
+                    "sender": "speaker", "contents": utt_str,"time": t }
+                round_i["events"].append(utt_event)
+                t += 1
+
+            batch_result.append(round_i)
+
+        return batch_result
+
+    def _aggregate_batch(self, agg, batch_result):
+        data_round_index = len(agg["records"])
+        for i in range(len(batch_result)):
+            # For each new round
+
+            round_events = batch_result[i]["events"]
+            t = round_events[len(round_events) - 1]["time"] + 1
+
+            state = self._data.get_data().get(data_round_index + i).get("state.state")
+            round_events.append({ "eventType" : "state", "state" : state , "type" : "State", "time" : t })
+            t += 1
+
+            round_events.append({ "eventType": "action", "time": t, "mouseY": -1,
+                                    "mouseX": -1, "lClicked": state["target"], "type": "Action",
+                                    "condition": state["condition"] })
+        
+        agg["records"].extend(batch_result)
+        return agg
+
+    def _initialize_result(self):
+        agg = { "records" : [], "gameid" : self._name + " (" + str(self._iteration) + ")" }
+        return agg
+
+    def _finalize_result(self, result):
+        output_file = os.path.join(self._directory_path, \
+            self._output_file_prefix + "_" + str(self._iteration) + ".json")
+ 
+        with open(output_file, mode="w") as fp:
+            fp.write(result) 
+
+        self._iteration += 1
+        return 0.0

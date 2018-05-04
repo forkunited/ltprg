@@ -1,6 +1,6 @@
 from torch.nn import NLLLoss
 from mung.torch_ext.eval import Loss
-from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy
+from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy, PriorView
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
@@ -153,12 +153,14 @@ def load_rsa_model(config, D, gpu=False):
 #   },
 #   evaluations : [
 #    name : [NAME FOR EVALUATION]
-#    type : (NLLLoss, RSADistributionAccuracy)
+#    type : (NLLLoss, RSADistributionAccuracy, PriorView)
 #    data : [NAME OF DATA SUBSET]
 #    (Optional) data_size : [SIZE OF RANDOM SUBET OF DATA TO TAKE]
 #    parameters : {
 #      (RSADistributionAccuracy) dist_level : [RSA DISTRIBUTION LEVEL TO EVALUATE]
 #      (RSADistributionAccuracy) dist_type : [TYPE OF RSA DISTRIBUTION (L|S)]
+#
+#      (PriorView) output_dir : [DIRECTORY IN WHICH OUTPUT FOR CURRENT JOB IS STORED]
 #    }
 #   ]
 # }
@@ -182,6 +184,9 @@ def load_evaluations(config, D, gpu=False):
             acc = RSADistributionAccuracy(eval_config["name"], int(eval_config["parameters"]["dist_level"]), \
                 eval_config["parameters"]["dist_type"], data, data_parameter)
             evaluations.append(acc)
+        elif eval_config["type"] == "PriorView":
+            priorv = PriorView(eval_config["name"], data, data_parameter, eval_config["output_dir"])
+            evaluations.append(priorv)
         else:
             raise ValueError("Invalid RSA evaluation type in config (" + str(eval_config["type"]))
     return evaluations
