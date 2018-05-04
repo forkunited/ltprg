@@ -66,6 +66,15 @@
                 "dist_level" : 0,
                 "dist_type" : "L"
             }
+        },
+        {
+            "name" : "Prior",
+            "type" : "PriorView",
+            "data" : "dev",
+            "data_size" : 64,
+            "parameters" : {
+                "output_dir" : "$!{output_path}"
+            }
         }
     ]
 }

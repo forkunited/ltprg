@@ -185,7 +185,7 @@ def load_evaluations(config, D, gpu=False):
                 eval_config["parameters"]["dist_type"], data, data_parameter)
             evaluations.append(acc)
         elif eval_config["type"] == "PriorView":
-            priorv = PriorView(eval_config["name"], data, data_parameter, eval_config["output_dir"])
+            priorv = PriorView(eval_config["name"], data, data_parameter, eval_config["parameters"]["output_dir"])
             evaluations.append(priorv)
         else:
             raise ValueError("Invalid RSA evaluation type in config (" + str(eval_config["type"]))

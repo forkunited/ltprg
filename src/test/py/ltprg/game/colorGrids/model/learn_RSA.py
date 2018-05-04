@@ -35,8 +35,9 @@ gpu = bool(args.gpu)
 seed = args.seed
 eval_test = bool(args.eval_test)
 output_dir = args.output_dir
+output_path = make_indexed_dir(path.join(output_dir, str(id) + "_seed" + str(seed)))
 
-extra_env = Config.load_from_dict({ "arg_output_dir" : output_dir })
+extra_env = Config.load_from_dict({ "output_path" : output_path })
 extra_env = Config.load_from_list(extra_env_args).merge(extra_env)
 
 # Load configuration files
@@ -62,7 +63,6 @@ dev_evals = crsa.load_evaluations(dev_evals_config, data_sets, gpu=gpu)
 test_evals = crsa.load_evaluations(test_evals_config, data_sets, gpu=gpu)
 
 # Setup output files
-output_path = make_indexed_dir(path.join(output_dir, str(id) + "_seed" + str(seed)))
 log_path = path.join(output_path, "log")
 results_path = path.join(output_path, "results")
 test_results_path = path.join(output_path, "test_results")
