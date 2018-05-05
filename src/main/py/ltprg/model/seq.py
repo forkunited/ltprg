@@ -217,7 +217,7 @@ class SequenceModel(nn.Module):
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
-                if next_token[j][0] == end_idx:
+                if next_token[j][0] == end_idx and ended[j] != 1:
                     ended[j] = 1
                     ended_count += 1
 
@@ -293,7 +293,7 @@ class SequenceModel(nn.Module):
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
-                if next_token[j][0] == end_idx:
+                if next_token[j][0] == end_idx and ended[j] != 1:
                     ended[j] = 1
                     ended_count += 1
 
@@ -303,6 +303,8 @@ class SequenceModel(nn.Module):
                     w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
                     sample_indices = j*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
                     sample[:,(j*samples_per_input):((j+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
+                    seq_length[(j*samples_per_input):((j+1)*samples_per_input)] = seq_length[sample_indices.data.cpu()]
+                    ended[(j*samples_per_input):((j+1)*samples_per_input)] = ended[sample_indices.data.cpu()]
                     next_token[(j*samples_per_input):((j+1)*samples_per_input)] = next_token[sample_indices.data]
                     if isinstance(hidden, tuple):
                         hidden[0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][:,sample_indices.data]
@@ -326,7 +328,6 @@ class SequenceModel(nn.Module):
                 input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
             sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
             seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
-
             # FIXME Add score at some point
             ret_samples.append((sample_in, seq_length_in, 0.0))
         return ret_samples

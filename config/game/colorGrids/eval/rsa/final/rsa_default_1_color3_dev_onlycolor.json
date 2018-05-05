@@ -1,0 +1,93 @@
+{
+    "data_parameter" : {
+        "utterance" : "utterance", 
+        "L_world" : "target", 
+        "L_observation" : "observation",
+        "S_world" : "target", 
+        "S_observation" : "observation", 
+        "mode" : "L",
+        "utterance_seq" : true
+    },
+    "evaluations" : [
+        { "name" : "Train Color Loss",
+            "type" : "NLLLoss",
+            "data" : "train_src_color3"
+        },
+        { "name" : "Dev Color Loss",
+          "type" : "NLLLoss",
+          "data" : "dev_src_color3"
+        },
+        {  
+            "name" : "Dev L1 Color Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L0 Color Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L1 Color Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_close",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L1 Color Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_split",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L1 Color Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_far",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L0 Color Close Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_close",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L0 Color Split Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_split",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {  
+            "name" : "Dev L0 Color Far Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_color3_dist_far",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        }
+    ]
+}

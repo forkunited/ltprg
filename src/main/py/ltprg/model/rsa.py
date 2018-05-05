@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import mung.torch_ext.eval
 import os.path
+import json
 from torch.autograd import Variable
 from ltprg.model.dist import Categorical
 from mung.torch_ext.eval import Evaluation, DistributionAccuracy
@@ -535,9 +536,6 @@ class PriorView(Evaluation):
     def _run_batch(self, model, batch):
         batch_result = []
 
-        l0 = model.to_level(DistributionType.L, 0, L_bottom=True, soft_bottom=model._soft_bottom)
-        p_0 = l0.forward_batch(batch, self._data_parameters.to_mode(DistributionType.L)).p()
-
         utterance_prior_fn = model.get_utterance_prior_fn()
         observation = Variable(batch[self._data_parameters[DataParameter.OBSERVATION]], requires_grad=False)
         if model.on_gpu():
@@ -545,17 +543,30 @@ class PriorView(Evaluation):
         utterance_prior_fn.set_data_batch(batch, self._data_parameters)
         prior_utts, prior_lens = utterance_prior_fn(observation).support()
 
-        t = 0
-        for i in range(batch.size(0)):
-            round_i = { "roundNum" : i, "events" : [] }
-            dist_str = "(" + " ".join([val for val in p_0[i]]) + " "
+        # Run l0 overall all utterance prior utterances paired with contexts
+        obs = batch[self._data_parameters[DataParameter.OBSERVATION]]
+        batch_size = obs.size(0)
+        support_size = prior_utts.size(1)
+        l0_batch = dict()
+        l0_batch[self._data_parameters[DataParameter.OBSERVATION]] = obs.unsqueeze(1).expand(batch_size, support_size, obs.size(1)).contiguous().view(batch_size*support_size, obs.size(1))
+        l0_batch[self._data_parameters[DataParameter.UTTERANCE]] = (prior_utts.contiguous().view(batch_size*support_size,prior_utts.size(2)).data.transpose(0,1), \
+                                                                   prior_lens.contiguous().view(batch_size*support_size), None)
+        l0 = model.to_level(DistributionType.L, 0, L_bottom=True, soft_bottom=model._soft_bottom)
+        p_0 = l0.forward_batch(l0_batch, self._data_parameters.to_mode(DistributionType.L)).p().data
+        p_0 = p_0.contiguous().view(batch_size, support_size, p_0.size(1))
 
+        H = torch.sum(-p_0*torch.log(p_0))
+
+        t = 0
+        for i in range(observation.size(0)):
+            round_i = { "roundNum" : i, "events" : [] }
             support_i = prior_utts[i]
             support_lens_i = prior_lens[i]
-            for j in support_i.size(0):
-                utt_tokens = [self._data[self._data_parameters[DataParameter.UTTERANCE]].get_feature_token(support_i[j,k]).get_value() \
-                    for k in range(len(support_lens_i[j]))]
-                utt_str = " ".join(utt_tokens) + " " + dist_str
+            for j in range(support_i.size(0)):
+                dist_str = "(" + " ".join([str(round(val, 2)) for val in p_0[i,j]])  + ") "
+                utt_tokens = [self._data[self._data_parameters[DataParameter.UTTERANCE]].get_feature_token(support_i.data[j,k]).get_value() \
+                    for k in range(support_lens_i[j])]
+                utt_str = dist_str + " ".join(utt_tokens)
                 utt_event = { "eventType": "utterance", "type": "Utterance",
                     "sender": "speaker", "contents": utt_str,"time": t }
                 round_i["events"].append(utt_event)
@@ -563,14 +574,14 @@ class PriorView(Evaluation):
 
             batch_result.append(round_i)
 
-        return batch_result
+        return (batch_result, H)
 
     def _aggregate_batch(self, agg, batch_result):
-        data_round_index = len(agg["records"])
-        for i in range(len(batch_result)):
+        data_round_index = len(agg[0]["records"])
+        for i in range(len(batch_result[0])):
             # For each new round
 
-            round_events = batch_result[i]["events"]
+            round_events = batch_result[0][i]["events"]
             t = round_events[len(round_events) - 1]["time"] + 1
 
             state = self._data.get_data().get(data_round_index + i).get("state.state")
@@ -578,22 +589,23 @@ class PriorView(Evaluation):
             t += 1
 
             round_events.append({ "eventType": "action", "time": t, "mouseY": -1,
-                                    "mouseX": -1, "lClicked": state["target"], "type": "Action",
+                                    "mouseX": -1, "lClicked": state["listenerOrder"].index(state["target"]), "type": "Action",
                                     "condition": state["condition"] })
         
-        agg["records"].extend(batch_result)
-        return agg
+        agg[0]["records"].extend(batch_result[0])
+        return (agg[0], agg[1] + batch_result[1])
 
     def _initialize_result(self):
-        agg = { "records" : [], "gameid" : self._name + " (" + str(self._iteration) + ")" }
+        agg = ({ "records" : [], "gameid" : self._name + " (" + str(self._iteration) + ")" }, 0.0)
         return agg
 
     def _finalize_result(self, result):
         output_file = os.path.join(self._directory_path, \
-            self._output_file_prefix + "_" + str(self._iteration) + ".json")
+            str(self._iteration) + ".json")
  
         with open(output_file, mode="w") as fp:
-            fp.write(result) 
+            json.dump(result[0], fp) 
 
         self._iteration += 1
-        return 0.0
+        return result[1]/self._data.get_size()
+
