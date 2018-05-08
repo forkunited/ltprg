@@ -1,5 +1,5 @@
 from mung.torch_ext.eval import Loss
-from ltprg.model.seq import DataParameter, SequenceModelNoInput, SequenceModelInputToHidden
+from ltprg.model.seq import DataParameter, SequenceModelNoInput, SequenceModelInputToHidden, SequenceModelAttendedInput
 from ltprg.model.seq import VariableLengthNLLLoss
 
 # Expects config of the form:
@@ -33,6 +33,14 @@ def load_seq_model(config, D, gpu=False):
     if config["arch_type"] == "SequenceModelNoInput":
         model = SequenceModelNoInput(config["name"], utterance_size, \
         embedding_size, rnn_size, rnn_layers, dropout=dropout, rnn_type=rnn_type)
+    elif config["arch_type"] == "SequenceModelAttendedInput":
+        input_field = data_parameter["input"]
+        input_size = D[input_field].get_feature_set().get_token_count()
+        conv_kernel = int(config["conv_kernel"])
+        conv_stride = int(config["conv_stride"])
+        model = SequenceModelAttendedInput(config["name"], utterance_size, input_size, \
+        embedding_size, rnn_size, rnn_layers, dropout=dropout, rnn_type=rnn_type, \
+        conv_kernel=conv_kernel, conv_stride=conv_stride)
     else:
         input_field = data_parameter["input"]
         input_size = D[input_field].get_feature_set().get_token_count()

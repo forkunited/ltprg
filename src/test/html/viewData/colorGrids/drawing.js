@@ -78,10 +78,10 @@ var drawTargetBox = function(game) {
   drawBox(game, objIndex, "rgba(255, 0, 0, 0.8)")
 }
 
-var drawClickedCorrectBox = function(game, mouseX, mouseY) {
+var drawClickedCorrectBox = function(game, mouseX, mouseY, lClicked) {
   var numObjs = game.currStim.objs.length;
   var objWidth = game.world.width / numObjs;
-  var clickedObj = Math.floor(mouseX/objWidth);
+  var clickedObj = (lClicked !== undefined) ? lClicked : Math.floor(mouseX/objWidth);
   if (game.my_role !== game.playerRoleNames.role1) { // Listener
     var targetIndex = game.currStim.listenerOrder.indexOf(game.currStim.target);
     if (targetIndex == clickedObj) {
@@ -121,18 +121,21 @@ var drawObjects = function(game) {
     var objShiftX = objWidth * i;
     var obj = trial.objs[order[i]];
 
-    var gridLength = obj.cellLength*obj.gridDimension;
+    var cellLength = obj.cellLength;
+    if (cellLength < 0)
+      cellLength = 40;
+    var gridLength = cellLength*obj.gridDimension;
     var gridLeft = objShiftX + objWidth / 2.0 - gridLength / 2.0;
     var gridTop = game.world.height / 2.0 - gridLength / 2.0;
 
     for (var j = 0; j < obj.gridDimension; j++) {
       for (var k = 0; k < obj.gridDimension; k++) {
-        var cellX = gridLeft + k*obj.cellLength;
-        var cellY = gridTop + j*obj.cellLength;
+        var cellX = gridLeft + k*cellLength;
+        var cellY = gridTop + j*cellLength;
         var shape = obj.shapes[j*obj.gridDimension + k];
         game.ctx.fillStyle = ('hsl(' + shape.color[0] + ',' + shape.color[1] + '%, ' + shape.color[2] + '%)');
         game.ctx.beginPath();
-        game.ctx.rect(cellX, cellY, obj.cellLength, obj.cellLength);
+        game.ctx.rect(cellX, cellY, cellLength, cellLength);
         game.ctx.closePath();
         game.ctx.fill();
       }

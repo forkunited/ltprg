@@ -563,6 +563,8 @@ class SequenceModel(nn.Module):
             model = SequenceModelInputToHidden.make(init_params)
         elif arch_type == "SequenceModelNoInput":
             model = SequenceModelNoInput.make(init_params)
+        elif arch_type == "SequenceModelAttendedInput":
+            model = SequenceModelAttendedInput.make(init_params)
         return model
 
 class SequenceModelInputToHidden(SequenceModel):
@@ -980,3 +982,116 @@ def strs_for_scored_samples(samples, data):
             for k in range(seq_lengths[j])]) for j in range(seqs.size(1))]
         strs.append(strs_for_i)
     return strs
+
+class SequenceModelAttendedInput(SequenceModel):
+    def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
+                 rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
+                 embedding_init=None, freeze_embedding=False, conv_kernel=1, conv_stride=1):
+        super(SequenceModelAttendedInput, self).__init__(name, rnn_size, bidir)
+
+        self._init_params = dict()
+        self._init_params["name"] = name
+        self._init_params["seq_size"] = seq_size
+        self._init_params["input_size"] = input_size
+        self._init_params["embedding_size"] = embedding_size
+        self._init_params["rnn_size"] = rnn_size
+        self._init_params["rnn_layers"] = rnn_layers
+        self._init_params["rnn_type"] = rnn_type
+        self._init_params["dropout"] = dropout
+        self._init_params["bidir"] = bidir
+        self._init_params["freeze_embedding"] = freeze_embedding
+        self._init_params["conv_kernel"] = conv_kernel
+        self._init_params["conv_stride"] = conv_stride
+
+        if (rnn_size != embedding_size):
+            raise ValueError("Currently rnn and embedding sizes must be equal")
+
+        self._rnn_layers = rnn_layers
+        self._rnn_type = rnn_type
+        self._seq_size = seq_size
+
+        self._freeze_embedding = freeze_embedding
+
+        encoded_size = rnn_size*rnn_layers*self._directions
+        self._encoder = nn.Conv1d(1, encoded_size, conv_kernel, stride=conv_stride)
+        self._encoder_nl = nn.LeakyReLU()
+        self._encoder_pool = nn.MaxPool1d(input_size/conv_kernel)
+
+        self._drop = nn.Dropout(dropout)
+        self._emb = nn.Embedding(seq_size, embedding_size)
+        self._rnn = getattr(nn, rnn_type)(embedding_size+rnn_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
+        self._softmax = nn.LogSoftmax(dim=1)
+
+        self._init_weights(embedding_init=embedding_init, freeze_embedding=freeze_embedding)
+
+    def _get_init_params(self):
+        return self._init_params
+
+    def _init_hidden(self, batch_size, input=None):
+        weight = next(self.parameters()).data
+
+        input = input.unsqueeze(1)
+        encoded = self._encoder_nl(self._encoder(input))
+        hidden = self._encoder_pool(encoded)
+      
+        hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
+
+        if self._rnn_type == RNNType.GRU:
+            return (hidden, encoded)
+        else:
+            return ((hidden, \
+                    Variable(weight.new(self._rnn_layers*self._directions, batch_size, self._hidden_size).zero_())), \
+                    encoded)
+
+    def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
+        hidden, encoded_input = hidden
+        emb_pad = self._drop(self._emb(seq_part)).transpose(0, 1)
+
+        alpha = torch.exp(self._softmax(torch.bmm(emb_pad, encoded_input.transpose(0,1))))
+        attn = torch.bmm(alpha, encoded_input)
+        emb_pad = torch.cat(emb_pad, attn, dim=2)
+        emb_pad = emb_pad.tranpose(0,1)
+
+        emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
+
+
+        self._rnn.flatten_parameters()
+        output, hidden = self._rnn(emb, hidden)
+
+        output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
+        rnn_out_size = output.size()
+
+        output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
+        output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
+
+        return output, hidden
+
+    def _init_weights(self, embedding_init=None, freeze_embedding=False):
+        if embedding_init is None:
+            init_range = 0.01
+            init.normal(self._emb.weight.data, mean=0.0, std=init_range)
+        else:
+            self._emb.weight.data = embedding_init
+            if freeze_embedding:
+                self._emb.weight.requires_grad = False
+
+    @staticmethod
+    def make(init_params):
+        name = init_params["name"]
+        seq_size = init_params["seq_size"]
+        input_size = init_params["input_size"]
+        embedding_size = init_params["embedding_size"]
+        rnn_size = init_params["rnn_size"]
+        rnn_layers = init_params["rnn_layers"]
+        rnn_type = init_params["rnn_type"]
+        dropout = init_params["dropout"]
+        bidir = init_params["bidir"]
+        freeze_embedding = init_params["freeze_embedding"]
+        conv_kernel = init_params["conv_kernel"]
+        conv_stride = init_params["conv_stride"]
+
+        return SequenceModelAttendedInput(name, seq_size, input_size, embedding_size, \
+            rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, \
+            freeze_embedding=freeze_embedding,\
+            conv_kernel=conv_kernel, conv_stride=conv_stride)
