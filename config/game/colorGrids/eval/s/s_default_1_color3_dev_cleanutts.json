@@ -1,0 +1,23 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "target_obj"
+    },
+    "evaluations" : [
+        {  
+            "name" : "Dev Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_cleanutts"
+        },
+        {
+            "name" : "Dev Color Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_color3_cleanutts"
+        },
+        {
+            "name" : "Dev Grid3 Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3_cleanutts"
+        }
+    ]
+}

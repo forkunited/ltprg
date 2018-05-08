@@ -10,6 +10,15 @@
     },
     "evaluations" : [
         {
+            "name" : "Prior",
+            "type" : "PriorView",
+            "data" : "dev_src_color3",
+            "data_size" : 16,
+            "parameters" : {
+                "output_dir" : "$!{output_path}"
+            }
+        },
+        {
             "name" : "Dev L1 Color Accuracy",
             "type" : "RSADistributionAccuracy",
             "data" : "dev_src_color3",
@@ -25,15 +34,6 @@
             "parameters" : {
                 "dist_level" : 0,
                 "dist_type" : "L"
-            }
-        },
-        {
-            "name" : "Prior",
-            "type" : "PriorView",
-            "data" : "dev_src_color3",
-            "data_size" : 16,
-            "parameters" : {
-                "output_dir" : "$!{output_path}"
             }
         }
     ]

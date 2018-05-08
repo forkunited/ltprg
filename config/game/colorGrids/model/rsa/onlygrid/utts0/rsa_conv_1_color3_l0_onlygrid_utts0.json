@@ -9,11 +9,11 @@
         "utterance_seq" : true
     },
     "utterance_prior" : {
-        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_onlygrid3}",
+        "seq_model_path" : "$!{s0_model_colorgrids_1_color3}",
         "heuristic" : "None",
         "parameters" : {
-            "training_mode" : "FORWARD",
-            "eval_mode" : "FORWARD",
+            "training_mode" : "SMC",
+            "eval_mode" : "SMC",
             "samples_per_input" : 10,
             "uniform" : true,
             "training_input_mode" : "None",

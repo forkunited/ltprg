@@ -9,7 +9,7 @@
         "utterance_seq" : true
     },
     "utterance_prior" : {
-        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_onlygrid3}",
+        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_cleanutts}",
         "heuristic" : "None",
         "parameters" : {
             "training_mode" : "SMC",
@@ -37,6 +37,6 @@
             "conv_stride" : 12
         }
     },
-    "training_level" : 1,
+    "training_level" : 0,
     "alpha" : 8.0
 }

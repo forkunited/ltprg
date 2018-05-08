@@ -9,8 +9,8 @@
         "utterance_seq" : true
     },
     "utterance_prior" : {
-        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_onlygrid3}",
-        "heuristic" : "None",
+        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_onlycolor_linear}",
+        "heuristic" : "L0",
         "parameters" : {
             "training_mode" : "SMC",
             "eval_mode" : "SMC",
@@ -27,14 +27,11 @@
     "meaning_fn" : {
         "seq_model" : {
             "bidirectional" : true,
-            "dropout" : 0.0,
+            "dropout" : 0.5,
             "rnn_layers" : 1,
             "rnn_size" : 100,
             "embedding_size" : 100,
-            "rnn_type" : "LSTM",
-            "conv_input" : 1,
-            "conv_kernel" : 12,
-            "conv_stride" : 12
+            "rnn_type" : "LSTM"
         }
     },
     "training_level" : 1,

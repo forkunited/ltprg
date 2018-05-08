@@ -460,7 +460,7 @@ class L(RSA):
                 seq = seq.cuda()
             utterance = (seq.transpose(0,1), length)
         else:
-            utterance = Variable(batch[data_parameters[DataParameter.WORLD]], requires_grad=False)
+            utterance = Variable(batch[data_parameters[DataParameter.UTTERANCE]], requires_grad=False)
             if self.on_gpu():
                 utterance = utterance.cuda()
 
@@ -525,7 +525,7 @@ class RSADistributionAccuracy(DistributionAccuracy):
 # represented by a data point
 class PriorView(Evaluation):
     def __init__(self, name, data, data_parameters, output_dir):
-        super(PriorView, self).__init__(name, data, data_parameters)
+        super(PriorView, self).__init__(name, data, data_parameters, batch_indices=True)
 
         self._directory_path = os.path.join(output_dir, name)
         if not os.path.exists(self._directory_path):
@@ -534,6 +534,7 @@ class PriorView(Evaluation):
         self._iteration = 0
 
     def _run_batch(self, model, batch):
+        batch, indices = batch
         batch_result = []
 
         utterance_prior_fn = model.get_utterance_prior_fn()
@@ -559,11 +560,25 @@ class PriorView(Evaluation):
 
         t = 0
         for i in range(observation.size(0)):
-            round_i = { "roundNum" : i, "events" : [] }
+            round_i = { "roundNum" : indices[i], "events" : [] }
+            obj_order = self._data.get_data().get(indices[i]).get("state.state")["listenerOrder"]
+
+            # Add true utt
+            true_utt = (batch[self._data_parameters[DataParameter.UTTERANCE]][0][:,i], batch[self._data_parameters[DataParameter.UTTERANCE]][1][i])
+            dist_str = "True: "
+            utt_tokens = [self._data[self._data_parameters[DataParameter.UTTERANCE]].get_feature_token(true_utt[0][k]).get_value() \
+                    for k in range(true_utt[1])]
+            utt_str = dist_str + " ".join(utt_tokens)
+            utt_event = { "eventType": "utterance", "type": "Utterance",
+                    "sender": "speaker", "contents": utt_str,"time": t }
+            round_i["events"].append(utt_event)
+            t += 1            
+
             support_i = prior_utts[i]
             support_lens_i = prior_lens[i]
             for j in range(support_i.size(0)):
-                dist_str = "(" + " ".join([str(round(val, 2)) for val in p_0[i,j]])  + ") "
+                ps = p_0[i,j]
+                dist_str = "(" + " ".join([str(round(ps[obj_order[k]], 2)) for k in range(len(obj_order))])  + ") "
                 utt_tokens = [self._data[self._data_parameters[DataParameter.UTTERANCE]].get_feature_token(support_i.data[j,k]).get_value() \
                     for k in range(support_lens_i[j])]
                 utt_str = dist_str + " ".join(utt_tokens)
@@ -577,20 +592,19 @@ class PriorView(Evaluation):
         return (batch_result, H)
 
     def _aggregate_batch(self, agg, batch_result):
-        data_round_index = len(agg[0]["records"])
         for i in range(len(batch_result[0])):
             # For each new round
 
             round_events = batch_result[0][i]["events"]
             t = round_events[len(round_events) - 1]["time"] + 1
 
-            state = self._data.get_data().get(data_round_index + i).get("state.state")
+            state = self._data.get_data().get(batch_result[0][i]["roundNum"]).get("state.state")
             round_events.append({ "eventType" : "state", "state" : state , "type" : "State", "time" : t })
             t += 1
 
             round_events.append({ "eventType": "action", "time": t, "mouseY": -1,
-                                    "mouseX": -1, "lClicked": state["listenerOrder"].index(state["target"]), "type": "Action",
-                                    "condition": state["condition"] })
+                                  "mouseX": -1, "lClicked": state["listenerOrder"].index(state["target"]), "type": "Action",
+                                  "condition": state["condition"] })
         
         agg[0]["records"].extend(batch_result[0])
         return (agg[0], agg[1] + batch_result[1])

@@ -54,6 +54,13 @@ np.random.seed(seed)
 
 # Setup data, model, and evaluations
 _, data_sets = cfeature.load_mvdata(data_config)
+keys = set(data_sets.keys())
+for key in keys:
+    if key.startswith("train") or key.startswith("dev") or key.startswith("test"):
+        new_key = key + "_cleanutts"
+        data_sets[new_key] = data_sets[key].filter(lambda d : len(d.get("utterances")) == 1 and len(d.get("utterances[0].nlp.clean_strs.strs")) <= 12)
+        print "Created extra data set " + new_key + " of size " + str(data_sets[new_key].get_size()) + " from " + str(data_sets[key].get_size())
+
 data_parameter, seq_model = cseq.load_seq_model(model_config, data_sets["train"], gpu=gpu)
 train_evals = cseq.load_evaluations(train_evals_config, data_sets, gpu=gpu)
 dev_evals = cseq.load_evaluations(dev_evals_config, data_sets, gpu=gpu)

@@ -1,0 +1,18 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "target_obj"
+    },
+    "evaluations" : [
+        {
+            "name" : "Train Grid3 Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "train_src_grid3_cleanutts"
+        },
+        {  
+            "name" : "Dev Grid3 Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3_cleanutts"
+        }
+    ]
+}
