@@ -121,72 +121,118 @@ class FeaturizeSUA(unittest.TestCase):
             dims,
             # "fc-6",
             "cielab")
-    """
 
     def test_target_colors(self):
-            print "Featurizing speaker obj target colors (cielab)"
-            dims = []
-            for j in range(grid_dim*grid_dim):
-               dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
-                                "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
-                                "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
+        print "Featurizing speaker obj target colors (cielab)"
+        dims = []
+        for j in range(grid_dim*grid_dim):
+            dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
 
-            ltprg.data.feature_helpers.featurize_embeddings(
-                input_data_dir,
-                join(output_feature_dir, "target_colors"),
-                partition_file,
-                lambda d : d.get("gameid"),
-                # "context_fc_embedding",
-                "target_color_pos",
-                dims,
-                # "fc-6",
-                "cielab")
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "target_colors"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "target_color_pos",
+            dims,
+            # "fc-6",
+            "cielab")
 
-    """
     def test_colors_pos(self):
-            print "Featurizing speaker objs colors with positions (cielab)"
-            num_objs = 3
-            dims = []
-            for i in range(num_objs):
-                for j in range(grid_dim*grid_dim):
-                    dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[0]", \
-                                "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[1]", \
-                                "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[2]"])
+        print "Featurizing speaker objs colors with positions (cielab)"
+        num_objs = 3
+        dims = []
+        for i in range(num_objs):
+            for j in range(grid_dim*grid_dim):
+                dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[0]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[1]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[2]"])
 
-            ltprg.data.feature_helpers.featurize_embeddings(
-                input_data_dir,
-                join(output_feature_dir, "colors_pos"),
-                partition_file,
-                lambda d : d.get("gameid"),
-                # "context_fc_embedding",
-                "colors_pos",
-                dims,
-                # "fc-6",
-                "cielab",
-                include_positions=True,
-                position_count=9)
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_pos"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors_pos",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9)
 
     def test_target_color_pos(self):
-            print "Featurizing speaker obj target color with position (cielab)"
-            dims = []
-            for j in range(grid_dim*grid_dim):
-               dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
-                                "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
-                                "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
+        print "Featurizing speaker obj target color with position (cielab)"
+        dims = []
+        for j in range(grid_dim*grid_dim):
+            dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
 
-            ltprg.data.feature_helpers.featurize_embeddings(
-                input_data_dir,
-                join(output_feature_dir, "target_color_pos"),
-                partition_file,
-                lambda d : d.get("gameid"),
-                # "context_fc_embedding",
-                "target_color_pos",
-                dims,
-                # "fc-6",
-                "cielab",
-                include_positions=True,
-                position_count=9)
-                
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "target_color_pos"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "target_color_pos",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9)
+    """
+
+    def test_colors_coords(self):
+        print "Featurizing speaker objs colors with coords (cielab)"
+        num_objs = 3
+        dims = []
+        for i in range(num_objs):
+            for j in range(grid_dim*grid_dim):
+                dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[0]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[1]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_coords"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors_coords",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9,
+            row_count=3)
+
+    def test_target_color_coords(self):
+        print "Featurizing speaker obj target color with coords (cielab)"
+        dims = []
+        for j in range(grid_dim*grid_dim):
+            dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "target_color_coords"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "target_color_coords",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9,
+            row_count=3)
+
+    """                
 
     def test_colors_first(self):
         print "Featurizing speaker objs colors first (cielab)"

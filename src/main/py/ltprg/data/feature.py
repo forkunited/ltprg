@@ -72,13 +72,14 @@ register_feature_type(FeatureVisualEmbeddingType)
 
 class FeatureCielabEmbeddingType(FeatureType):
     # stimulus embeddings in CIELAB color space (3 coordinates)
-    def __init__(self, name, paths, include_positions=False, position_count=1):
+    def __init__(self, name, paths, include_positions=False, position_count=1, row_count=1):
         FeatureType.__init__(self)
         # paths is a list of lists of HSLs, e.g. [[H1, S1, L1], [H2, S2, L2]]
         self._name = name
         self._paths = paths # e.g. [["state.sH_0", "state.sS_0", "state.sL_0"]]
         self._include_positions = include_positions
         self._position_count = position_count
+        self._row_count = row_count
 
     def get_name(self):
         return self._name
@@ -92,15 +93,30 @@ class FeatureCielabEmbeddingType(FeatureType):
             output.extend(lab)
 
             if self._include_positions:
-                pos = np.zeros(shape=self._position_count)
-                pos[i % self._position_count] = 1.0
-                output.extend(pos)
+                if self._row_count == 1:
+                    pos = np.zeros(shape=self._position_count)
+                    pos[i % self._position_count] = 1.0
+                    output.extend(pos)
+                else:
+                    pos_index = i % self._position_count
+                    col_count = self._position_count / self._row_count
+                    col_index = pos_index % col_count
+                    row_index = int(pos_index / col_count)
+                    row_pos = np.zeros(shape=self._row_count)
+                    col_pos = np.zeros(shape=col_count)
+                    row_pos[row_index] = 1.0
+                    col_pos[col_index] = 1.0
+                    output.extend(row_pos)
+                    output.extend(col_pos)
 
         vec[start_index : len(vec)] = output[start_index : len(output)]
 
     def get_size(self):
         if self._include_positions:
-            return (3 + self._position_count) * len(self._paths)
+            if self._row_count == 1:
+                return (3 + self._position_count) * len(self._paths)
+            else:
+                return (3 + self._row_count + self._position_count/self._row_count) * len(self._paths)
         else:
             return 3 * len(self._paths)
 
@@ -130,6 +146,7 @@ class FeatureCielabEmbeddingType(FeatureType):
         obj["paths"] = self._paths
         obj["include_positions"] = self._include_positions
         obj["position_count"] = self._position_count
+        obj["row_count"] = self._row_count
 
         with open(file_path, 'w') as fp:
             pickle.dump(obj, fp)
@@ -146,11 +163,14 @@ class FeatureCielabEmbeddingType(FeatureType):
         paths = obj["paths"]
         include_positions = False
         position_count = 1
+        row_count = 1
         if "include_positions" in obj:
             include_positions = obj["include_positions"]
             position_count = obj["position_count"]
+            if "row_count" in obj:
+                row_count = obj["row_count"]
 
         return FeatureCielabEmbeddingType(name, paths, include_positions=include_positions, \
-            position_count=position_count)
+            position_count=position_count, row_count=row_count)
 
 register_feature_type(FeatureCielabEmbeddingType)
