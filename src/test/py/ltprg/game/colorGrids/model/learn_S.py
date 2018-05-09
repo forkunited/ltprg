@@ -75,17 +75,6 @@ model_path = path.join(output_path, "model")
 samples_path = path.join(output_path, "samples")
 config_output_path = path.join(output_path, "config.json")
 
-logger = Logger()
-logger.set_file_path(log_path)
-
-# Run training 
-loss_criterion = VariableLengthNLLLoss()
-last_model, best_model, best_iteration = clearn.train_from_config(learn_config, \
-    data_parameter, loss_criterion, logger, train_evals, seq_model, data_sets)
-
-# Output logs
-logger.dump(file_path=log_path)
-
 # Output config
 full_config = dict()
 full_config["id"] = id
@@ -103,6 +92,17 @@ full_config["dev_evals"] = dev_evals_config.get_dict()
 full_config["test_evals"] = test_evals_config.get_dict()
 with open(config_output_path, 'w') as fp:
     json.dump(full_config, fp)
+
+logger = Logger()
+logger.set_file_path(log_path)
+
+# Run training 
+loss_criterion = VariableLengthNLLLoss()
+last_model, best_model, best_iteration = clearn.train_from_config(learn_config, \
+    data_parameter, loss_criterion, logger, train_evals, seq_model, data_sets)
+
+# Output logs
+logger.dump(file_path=log_path)
 
 # Output results
 results_logger = Logger()

@@ -4,7 +4,7 @@ from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributio
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
 from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
-from ltprg.model.seq import SequenceModel, SequenceModelNoInput, SequenceModelInputToHidden
+from ltprg.model.seq import SequenceModel, SequenceModelNoInput, SequenceModelAttendedInput, SequenceModelInputToHidden
 from ltprg.model.seq_heuristic import HeuristicL0
 
 
@@ -38,6 +38,7 @@ from ltprg.model.seq_heuristic import HeuristicL0
 #   meaning_fn : {
 #     seq_model : {
 #       (Optional) model_path : [PATH TO EXISTING MEANING MODEL]
+#       (Optional) arch_type : [SequenceModelInputToHidden (default)|SequenceModelAttendedInput]
 #       bidirectional : [INDICATES WHETHER SEQUENCE MDOEL IS BIDIRECTIONAL]
 #       dropout : [DROPOUT]
 #       rnn_layers : [RNN_LAYERS]
@@ -100,19 +101,36 @@ def load_rsa_model(config, D, gpu=False):
         meaning_fn = MeaningModel.load(meaning_config["model_path"])
     else:
         utterance_size = D[utterance_field].get_matrix(0).get_feature_set().get_token_count()
-        conv_input = False
-        conv_kernel = 1
-        conv_stride = 1
-        if "conv_input" in meaning_config:
-            conv_input = bool(int(meaning_config["conv_input"]))
+
+        arch_type = "SequenceModelInputToHidden"
+        if "arch_type" in meaning_config:
+            arch_type = meaning_config["arch_type"]
+
+        seq_meaning_model = None
+        if arch_type == "SequenceModelAttendedInput":
             conv_kernel = int(meaning_config["conv_kernel"])
             conv_stride = int(meaning_config["conv_stride"])
 
-        seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-        int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
-        dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
-        bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
-        conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
+            seq_meaning_model = SequenceModelAttendedInput("Meaning", utterance_size, world_input_size, \
+                int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
+                dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"],
+                bidir=bool(int(meaning_config["bidirectional"])),\
+                conv_kernel=conv_kernel,conv_stride=conv_stride)
+        else:
+            conv_input = False
+            conv_kernel = 1
+            conv_stride = 1
+            if "conv_input" in meaning_config:
+                conv_input = bool(int(meaning_config["conv_input"]))
+                conv_kernel = int(meaning_config["conv_kernel"])
+                conv_stride = int(meaning_config["conv_stride"])
+
+            seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+                int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
+                dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
+                bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
+                conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
+
         meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
             input_type=SequentialUtteranceInputType.IN_SEQ)
 

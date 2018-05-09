@@ -70,6 +70,24 @@ meaning_model_path = path.join(output_path, "model_meaning")
 observation_model_path = path.join(output_path, "model_observation")
 config_output_path = path.join(output_path, "config.json")
 
+# Output config
+full_config = dict()
+full_config["id"] = id
+full_config["gpu"] = gpu
+full_config["seed"] = seed
+full_config["time"] = str(datetime.datetime.now())
+full_config["eval_test"] = eval_test
+full_config["output_dir"] = output_dir
+full_config["env"] = env.get_dict()
+full_config["data"] = data_config.get_dict()
+full_config["model"] = model_config.get_dict()
+full_config["learn"] = learn_config.get_dict()
+full_config["train_evals"] = train_evals_config.get_dict()
+full_config["dev_evals"] = dev_evals_config.get_dict()
+full_config["test_evals"] = test_evals_config.get_dict()
+with open(config_output_path, 'w') as fp:
+    json.dump(full_config, fp)
+
 logger = Logger()
 logger.set_file_path(log_path)
 
@@ -94,24 +112,6 @@ best_model = RSA.make(dist_type + "_" + str(level), dist_type, level, \
 
 # Output logs
 logger.dump(file_path=log_path)
-
-# Output config
-full_config = dict()
-full_config["id"] = id
-full_config["gpu"] = gpu
-full_config["seed"] = seed
-full_config["time"] = str(datetime.datetime.now())
-full_config["eval_test"] = eval_test
-full_config["output_dir"] = output_dir
-full_config["env"] = env.get_dict()
-full_config["data"] = data_config.get_dict()
-full_config["model"] = model_config.get_dict()
-full_config["learn"] = learn_config.get_dict()
-full_config["train_evals"] = train_evals_config.get_dict()
-full_config["dev_evals"] = dev_evals_config.get_dict()
-full_config["test_evals"] = test_evals_config.get_dict()
-with open(config_output_path, 'w') as fp:
-    json.dump(full_config, fp)
 
 # Output results
 results_logger = Logger()

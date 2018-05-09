@@ -612,7 +612,7 @@ class SequenceModelInputToHidden(SequenceModel):
                 raise ValueError("Input layers must be 1 when convolving input")
             self._encoder = nn.Conv1d(1, encoded_size, conv_kernel, stride=conv_stride)
             self._encoder_nl = nn.LeakyReLU()
-            self._encoder_pool = nn.MaxPool1d(input_size/conv_kernel)
+            self._encoder_pool = nn.AvgPool1d(input_size/conv_kernel)
 
         self._drop = nn.Dropout(dropout)
         self._emb = nn.Embedding(seq_size, embedding_size)
@@ -986,7 +986,7 @@ def strs_for_scored_samples(samples, data):
 class SequenceModelAttendedInput(SequenceModel):
     def __init__(self, name, seq_size, input_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
-                 embedding_init=None, freeze_embedding=False, conv_kernel=1, conv_stride=1):
+                 embedding_init=None, freeze_embedding=False, conv_kernel=1, conv_stride=1, attn_type="EMBEDDING"):
         super(SequenceModelAttendedInput, self).__init__(name, rnn_size, bidir)
 
         self._init_params = dict()
@@ -1002,9 +1002,10 @@ class SequenceModelAttendedInput(SequenceModel):
         self._init_params["freeze_embedding"] = freeze_embedding
         self._init_params["conv_kernel"] = conv_kernel
         self._init_params["conv_stride"] = conv_stride
+        self._init_params["attn_type"] = attn_type
 
-        if (rnn_size != embedding_size):
-            raise ValueError("Currently rnn and embedding sizes must be equal")
+        #if rnn_size != embedding_size:
+        #    raise ValueError("Currently rnn and embedding sizes must be equal for embedding attn")
 
         self._rnn_layers = rnn_layers
         self._rnn_type = rnn_type
@@ -1018,10 +1019,20 @@ class SequenceModelAttendedInput(SequenceModel):
         self._encoder_pool = nn.MaxPool1d(input_size/conv_kernel)
 
         self._drop = nn.Dropout(dropout)
-        self._emb = nn.Embedding(seq_size, embedding_size)
-        self._rnn = getattr(nn, rnn_type)(embedding_size+rnn_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
-        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
-        self._softmax = nn.LogSoftmax(dim=1)
+        if attn_type == "EMBEDDING":
+            self._emb = nn.Embedding(seq_size, embedding_size*self._directions)
+            self._rnn = getattr(nn, rnn_type)(embedding_size*self._directions+rnn_size*self._directions, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+            self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
+            self._attn_w = nn.Parameter(torch.FloatTensor(rnn_size, embedding_size))
+        else:
+            self._emb = nn.Embedding(seq_size, embedding_size)
+            self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, rnn_layers, dropout=dropout, bidirectional=bidir)
+            self._decoder = nn.Linear(rnn_size*self._directions*2, seq_size)
+            self._attn_w = nn.Parameter(torch.FloatTensor(rnn_size, rnn_size))
+        self._softmax1 = nn.LogSoftmax(dim=1)
+        self._softmax2 = nn.LogSoftmax(dim=2)
+
+        self._attn_type = attn_type
 
         self._init_weights(embedding_init=embedding_init, freeze_embedding=freeze_embedding)
 
@@ -1046,15 +1057,20 @@ class SequenceModelAttendedInput(SequenceModel):
 
     def _forward_from_hidden(self, hidden, seq_part, seq_length, input=None):
         hidden, encoded_input = hidden
-        emb_pad = self._drop(self._emb(seq_part)).transpose(0, 1)
+        emb_pad = self._drop(self._emb(seq_part))
 
-        alpha = torch.exp(self._softmax(torch.bmm(emb_pad, encoded_input.transpose(0,1))))
-        attn = torch.bmm(alpha, encoded_input)
-        emb_pad = torch.cat(emb_pad, attn, dim=2)
-        emb_pad = emb_pad.tranpose(0,1)
+        if self._attn_type == "EMBEDDING":
+            emb_pad = emb_pad.transpose(0,1)
+            alpha = torch.exp(self._softmax(torch.bmm(\
+                                            torch.bmm(emb_pad,self._attn_w.unsqueeze(0).expand(emb_pad.size(0), self._attn_w.size(0), self._attn_w.size(1)))\
+                                            , encoded_input)))
+ 
+            #alpha = torch.exp(self._softmax2(torch.bmm(emb_pad, encoded_input)))
+            attn = torch.bmm(alpha, encoded_input.transpose(1, 2))
+            emb_pad = torch.cat((emb_pad, attn), dim=2)
+            emb_pad = emb_pad.transpose(0,1)
 
         emb = nn.utils.rnn.pack_padded_sequence(emb_pad, seq_length.numpy(), batch_first=False)
-
 
         self._rnn.flatten_parameters()
         output, hidden = self._rnn(emb, hidden)
@@ -1062,10 +1078,21 @@ class SequenceModelAttendedInput(SequenceModel):
         output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
         rnn_out_size = output.size()
 
-        output = self._softmax(self._decoder(output.view(-1, rnn_out_size[2])))
+        if self._attn_type != "EMBEDDING":
+            output = output.transpose(0, 1)
+            alpha = torch.exp(self._softmax2(torch.bmm(\
+                                            torch.bmm(output,self._attn_w.unsqueeze(0).expand(output.size(0), self._attn_w.size(0), self._attn_w.size(1)))\
+                                            , encoded_input)))
+
+            #alpha = torch.exp(self._softmax2(torch.bmm(output, encoded_input)))
+            attn = torch.bmm(alpha, encoded_input.transpose(1,2))
+            output = torch.cat((output, attn), dim=2)
+            output = output.transpose(0,1).contiguous()
+
+        output = self._softmax1(self._decoder(output.view(-1, output.size(2))))
         output = output.view(rnn_out_size[0], rnn_out_size[1], output.size(1))
 
-        return output, hidden
+        return output, (hidden, encoded_input)
 
     def _init_weights(self, embedding_init=None, freeze_embedding=False):
         if embedding_init is None:
@@ -1091,7 +1118,11 @@ class SequenceModelAttendedInput(SequenceModel):
         conv_kernel = init_params["conv_kernel"]
         conv_stride = init_params["conv_stride"]
 
+        attn_type = "EMBEDDING"
+        if "attn_type" in init_params:
+            attn_type = init_params["attn_type"]
+
         return SequenceModelAttendedInput(name, seq_size, input_size, embedding_size, \
             rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, \
             freeze_embedding=freeze_embedding,\
-            conv_kernel=conv_kernel, conv_stride=conv_stride)
+            conv_kernel=conv_kernel, conv_stride=conv_stride, attn_type=attn_type)

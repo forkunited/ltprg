@@ -15,9 +15,10 @@ from ltprg.model.seq import VariableLengthNLLLoss
 #   rnn_size : [SIZE OF RNN HIDDEN LAYER]
 #   embedding_size : [EMBEDDING_SIZE]
 #   rnn_type : [RNN TYPE]
+#   (SequenceModelAttendedInput) attn_type : [EMBEDDING|OUTPUT]
 #   (SequenceModelInputToHidden) conv_input : [INDICATOR OF WHETHER OR NOT TO CONVOLVE THE INPUT]
-#   (SequenceModelInputToHidden) conv_kernel : [KERNEL SIZE FOR CONVOLUTION]
-#   (SequenceModelInputToHidden) conv_stride : [STRIDE LENGTH FOR CONVOLUTION]
+#   (SequenceModelInputToHidden|SequenceModelAttendedInput) conv_kernel : [KERNEL SIZE FOR CONVOLUTION]
+#   (SequenceModelInputToHidden|SequenceModelAttendedInput) conv_stride : [STRIDE LENGTH FOR CONVOLUTION]
 # }
 def load_seq_model(config, D, gpu=False):
     data_parameter = DataParameter.make(**config["data_parameter"])
@@ -38,9 +39,12 @@ def load_seq_model(config, D, gpu=False):
         input_size = D[input_field].get_feature_set().get_token_count()
         conv_kernel = int(config["conv_kernel"])
         conv_stride = int(config["conv_stride"])
+        attn_type = "EMBEDDING"
+        if "attn_type" in config:
+            attn_type = config["attn_type"]
         model = SequenceModelAttendedInput(config["name"], utterance_size, input_size, \
         embedding_size, rnn_size, rnn_layers, dropout=dropout, rnn_type=rnn_type, \
-        conv_kernel=conv_kernel, conv_stride=conv_stride)
+        conv_kernel=conv_kernel, conv_stride=conv_stride, attn_type=attn_type)
     else:
         input_field = data_parameter["input"]
         input_size = D[input_field].get_feature_set().get_token_count()

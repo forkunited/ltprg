@@ -157,7 +157,7 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
         output = None
         if self._input_type == SequentialUtteranceInputType.IN_SEQ:
             output, hidden = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
-            if isinstance(hidden, tuple): # Handle LSTM
+            while isinstance(hidden, tuple): # Handle LSTM
                 hidden = hidden[0]
             decoded = self._decoder(hidden.transpose(0,1).contiguous().view(-1, hidden.size(0)*hidden.size(2)))
             output = self._decoder_nl(decoded)
