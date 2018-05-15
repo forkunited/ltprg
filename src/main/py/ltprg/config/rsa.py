@@ -2,7 +2,7 @@ from torch.nn import NLLLoss
 from mung.torch_ext.eval import Loss
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy, PriorView
 from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
-from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, SequentialUtteranceInputType
+from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, MeaningModelIndexedWorldSpeaker, SequentialUtteranceInputType
 from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
 from ltprg.model.seq import SequenceModel, SequenceModelNoInput, SequenceModelAttendedInput, SequenceModelInputToHidden
 from ltprg.model.seq_heuristic import HeuristicL0
@@ -20,22 +20,23 @@ from ltprg.model.seq_heuristic import HeuristicL0
 #     utterance_seq :[INDICATOR OF WHETHER UTTERANCE IS SEQUENTIAL]
 #   },
 #   utterance_prior : {
-#     seq_model_path : [PATH TO STORED UTTERANCE PRIOR SEQUENCE MODEL]
+#     (Optional) seq_model_path : [PATH TO STORED UTTERANCE PRIOR SEQUENCE MODEL (meaning_fn.seq_model used if not provided)]
 #     heuristic : [NAME OF HEURISTIC FOR GUIDING UTTERANCE SAMPLING (L0|None)]
 #     parameters : {
 #       training_mode : [SAMPLING MODE DURING TRAINING (FORWARD|BEAM|SMC)] 
 #       eval_mode : [SAMPLING MODE DURING EVALUATION (FORWARD|BEAM|SMC)]
 #       samples_per_input : [SAMPLES PER INPUT WITHIN OBSERVATION]
 #       uniform : [INDICATOR OF WHETHER SAMPLES ARE UNIFORM OR WEIGHTED]
-#       training_input_mode : [Mode for sampling during training (IGNORE_TRUE_WORLD|ONLY_TRUE_WORLD|None)]                                  
-#       sample_length : [Length of samples to take]
-#       n_before_heuristic : [Samples prior to applying heuristic in forward sampling]
+#       training_input_mode : [MODE FOR SAMPLING DURING TRAINING (IGNORE_TRUE_WORLD|ONLY_TRUE_WORLD|None)]                                  
+#       sample_length : [LENGTH OF SAMPLES TO TAKE]
+#       n_before_heuristic : [SAMPLES PRIOR TO APPLYING HEURISTIC IN FORWARD SAMPLING]
 #     }
 #   },
 #   world_prior : {
 #     support_size : [NUMBER OF WORLDS IN SUPPORT]
 #   },
 #   meaning_fn : {
+#     (Optional) arch_type : [MeaningModelIndexedWorldSequentialUtterance (default)|MeaningModelIndexedWorldSpeaker]
 #     seq_model : {
 #       (Optional) model_path : [PATH TO EXISTING MEANING MODEL]
 #       (Optional) arch_type : [SequenceModelInputToHidden (default)|SequenceModelAttendedInput]
@@ -130,9 +131,13 @@ def load_rsa_model(config, D, gpu=False):
                 dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
                 bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
                 conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
-
-        meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
-            input_type=SequentialUtteranceInputType.IN_SEQ)
+        
+        meaning_fn = None
+        if "arch_type" not in config["meaning_fn"] or config["meaning_fn"]["arch_type"] == "MeaningModelIndexedWorldSequentialUtterance":
+            meaning_fn = MeaningModelIndexedWorldSequentialUtterance(world_input_size, seq_meaning_model, \
+                input_type=SequentialUtteranceInputType.IN_SEQ)
+        else:
+            meaning_fn =  MeaningModelIndexedWorldSpeaker(world_input_size, seq_meaning_model)
 
     # Setup world prior
     world_prior_fn = UniformIndexPriorFn(world_support_size, on_gpu=gpu, unnorm=False)
@@ -142,7 +147,9 @@ def load_rsa_model(config, D, gpu=False):
     if config["utterance_prior"]["heuristic"] == "L0":
         heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=False)
 
-    seq_prior_model = SequenceModel.load(config["utterance_prior"]["seq_model_path"])
+    seq_prior_model = meaning_fn.get_seq_model()
+    if "seq_model_path" in config["utterance_prior"]:
+        seq_prior_model = SequenceModel.load(config["utterance_prior"]["seq_model_path"])
 
     utterance_prior_params = dict(config["utterance_prior"]["parameters"])
     utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set().get_size()

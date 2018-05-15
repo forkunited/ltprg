@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors, SequenceModel
+from ltprg.model.seq import sort_seq_tensors, unsort_seq_tensors, SequenceModel, VariableLengthNLLLoss
 from torch.autograd import Variable
 
 class MeaningModel(nn.Module):
@@ -184,5 +184,59 @@ class MeaningModelIndexedWorldSequentialUtterance(MeaningModelIndexedWorld):
             Sigma = Sigma_flat.view(-1, self._enc_size, self._enc_size)
             score = - Delta.unsqueeze(1).bmm(Sigma).bmm(Delta.unsqueeze(1).transpose(1,2)).squeeze()
             output = score
+
+        return unsort_seq_tensors(sorted_indices, [output])[0]
+
+class MeaningModelIndexedWorldSpeaker(MeaningModelIndexedWorld):
+    def __init__(self, world_input_size, seq_model):
+        super(MeaningModelIndexedWorldSpeaker, self).__init__(world_input_size)
+
+        self._init_params = dict()
+        self._init_params["world_input_size"] = world_input_size
+        self._init_params["arch_type"] = type(seq_model).__name__
+        self._init_params["seq_model"] = seq_model._get_init_params()
+
+        self._seq_model = seq_model
+
+        self._decoder = VariableLengthNLLLoss()
+        self._decoder_nl = nn.Sigmoid()
+
+    def _get_init_params(self):
+        return self._init_params
+
+    @staticmethod
+    def make(init_params):
+        world_input_size = init_params["world_input_size"]
+        seq_model = SequenceModel.make(init_params["seq_model"], init_params["arch_type"])
+        
+        return MeaningModelIndexedWorldSpeaker(world_input_size, seq_model)
+
+    def get_seq_model(self):
+        return self._seq_model
+
+    def _make_seq_masks(self, mask_size, lengths):
+        mask = torch.zeros(lengths.size(0), mask_size)
+        cur_len = lengths[0]
+        len_block_start = 0
+        for i in range(lengths.size(0)):
+            if cur_len != lengths[i]:
+                mask[len_block_start:i] = torch.ones(i-len_block_start, cur_len)
+                len_block_start = i
+            cur_len = lengths[i]
+        mask[len_block_start:lengths.size(0)] = torch.ones(lengths.size(0)-len_block_start, cur_len)
+
+        return Variable(mask)
+
+    def _meaning(self, utterance, input):
+        seq = utterance[0].transpose(0,1)
+        seq_length = utterance[1]
+        sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input], on_gpu=self.on_gpu())
+
+        # Output is seq length x batch x vocab
+        output, _ = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+        
+        mask = self._make_seq_masks(sorted_seq.size(0), sorted_length)
+        decoded = -self._decoder(output, sorted_seq[1:sorted_seq.size(0)], mask[:,1:sorted_seq.size(0)])
+        output = self._decoder_nl(decoded)
 
         return unsort_seq_tensors(sorted_indices, [output])[0]
