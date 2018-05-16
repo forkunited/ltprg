@@ -96,41 +96,45 @@ def load_rsa_model(config, D, gpu=False):
         world_input_size = D[observation_field].get_feature_set().get_token_count() / world_support_size
 
     # Setup meaning function
-    meaning_config = config["meaning_fn"]["seq_model"]
+    meaning_config = config["meaning_fn"]
     meaning_fn = None
     if "model_path" in meaning_config:
         meaning_fn = MeaningModel.load(meaning_config["model_path"])
     else:
-        utterance_size = D[utterance_field].get_matrix(0).get_feature_set().get_token_count()
-
-        arch_type = "SequenceModelInputToHidden"
-        if "arch_type" in meaning_config:
-            arch_type = meaning_config["arch_type"]
-
+        meaning_config = config["meaning_fn"]["seq_model"]
         seq_meaning_model = None
-        if arch_type == "SequenceModelAttendedInput":
-            conv_kernel = int(meaning_config["conv_kernel"])
-            conv_stride = int(meaning_config["conv_stride"])
+        if "model_path" in meaning_config:
+            seq_meaning_model = SequenceModel.load(meaning_config["model_path"])
+        else: 
+            utterance_size = D[utterance_field].get_matrix(0).get_feature_set().get_token_count()
 
-            seq_meaning_model = SequenceModelAttendedInput("Meaning", utterance_size, world_input_size, \
-                int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
-                dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"],
-                bidir=bool(int(meaning_config["bidirectional"])),\
-                conv_kernel=conv_kernel,conv_stride=conv_stride)
-        else:
-            conv_input = False
-            conv_kernel = 1
-            conv_stride = 1
-            if "conv_input" in meaning_config:
-                conv_input = bool(int(meaning_config["conv_input"]))
+            arch_type = "SequenceModelInputToHidden"
+            if "arch_type" in meaning_config:
+                arch_type = meaning_config["arch_type"]
+
+            if arch_type == "SequenceModelAttendedInput":
                 conv_kernel = int(meaning_config["conv_kernel"])
                 conv_stride = int(meaning_config["conv_stride"])
 
-            seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
-                int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
-                dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
-                bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
-                conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
+                seq_meaning_model = SequenceModelAttendedInput("Meaning", utterance_size, world_input_size, \
+                    int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
+                    dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"],
+                    bidir=bool(int(meaning_config["bidirectional"])), attn_type="OUTPUT",\
+                    conv_kernel=conv_kernel,conv_stride=conv_stride)
+            else:
+                conv_input = False
+                conv_kernel = 1
+                conv_stride = 1
+                if "conv_input" in meaning_config:
+                    conv_input = bool(int(meaning_config["conv_input"]))
+                    conv_kernel = int(meaning_config["conv_kernel"])
+                    conv_stride = int(meaning_config["conv_stride"])
+
+                seq_meaning_model = SequenceModelInputToHidden("Meaning", utterance_size, world_input_size, \
+                    int(meaning_config["embedding_size"]), int(meaning_config["rnn_size"]), int(meaning_config["rnn_layers"]), \
+                    dropout=float(meaning_config["dropout"]), rnn_type=meaning_config["rnn_type"], 
+                    bidir=bool(int(meaning_config["bidirectional"])), input_layers=1,\
+                    conv_input=conv_input, conv_kernel=conv_kernel,conv_stride=conv_stride)
         
         meaning_fn = None
         if "arch_type" not in config["meaning_fn"] or config["meaning_fn"]["arch_type"] == "MeaningModelIndexedWorldSequentialUtterance":

@@ -233,10 +233,10 @@ class MeaningModelIndexedWorldSpeaker(MeaningModelIndexedWorld):
         sorted_seq, sorted_length, sorted_inputs, sorted_indices = sort_seq_tensors(seq, seq_length, inputs=[input], on_gpu=self.on_gpu())
 
         # Output is seq length x batch x vocab
-        output, _ = self._seq_model(seq_part=sorted_seq, seq_length=sorted_length, input=sorted_inputs[0])
+        output, _ = self._seq_model(seq_part=sorted_seq[0:(sorted_seq.size(0)-1)], seq_length=sorted_length-1, input=sorted_inputs[0])
         
         mask = self._make_seq_masks(sorted_seq.size(0), sorted_length)
-        decoded = -self._decoder(output, sorted_seq[1:sorted_seq.size(0)], mask[:,1:sorted_seq.size(0)])
-        output = self._decoder_nl(decoded)
+        decoded = torch.exp(-self._decoder(output, sorted_seq[1:sorted_seq.size(0)], mask[:,1:sorted_seq.size(0)]))
+        output = decoded #self._decoder_nl(decoded)
 
         return unsort_seq_tensors(sorted_indices, [output])[0]
