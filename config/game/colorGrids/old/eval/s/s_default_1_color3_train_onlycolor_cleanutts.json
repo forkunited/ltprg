@@ -1,0 +1,13 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "target_obj"
+    },
+    "evaluations" : [
+        {  
+            "name" : "Dev Color Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_color3_cleanutts"
+        }
+    ]
+}

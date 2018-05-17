@@ -44,7 +44,7 @@ class Categorical(Distribution):
             if unnorm:
                 self._ps = Variable(self._ps)
             else:
-                self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).repeat(1,self._ps.size(1)))
+                self._ps = Variable(self._ps/torch.sum(self._ps, dim=1).unsqueeze(1).repeat(1,self._ps.size(1)))
         if on_gpu:
             self._ps = self._ps.cuda()
 

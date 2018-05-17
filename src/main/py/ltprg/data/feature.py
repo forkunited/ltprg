@@ -2,9 +2,10 @@ from mung.feature import FeatureType, register_feature_type
 import dill as pickle
 import numpy as np
 import time
-from ltprg.game.color.properties.alexnet import PartialAlexnet, rgb_to_alexnet_input
+#from ltprg.game.color.properties.alexnet import PartialAlexnet, rgb_to_alexnet_input
 from ltprg.game.color.properties.colorspace_conversions import hsls_to_rgbs, rgbs_to_labs
 
+"""
 class FeatureVisualEmbeddingType(FeatureType):
     # AlexNet layer fc-6 activations
     def __init__(self, name, paths):
@@ -69,6 +70,7 @@ class FeatureVisualEmbeddingType(FeatureType):
         return FeatureVisualEmbeddingType(name, paths)
 
 register_feature_type(FeatureVisualEmbeddingType)
+"""
 
 class FeatureCielabEmbeddingType(FeatureType):
     # stimulus embeddings in CIELAB color space (3 coordinates)

@@ -288,7 +288,7 @@ class SequenceModel(nn.Module):
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1].exp()
-            next_token = torch.multinomial(output_dist).data
+            next_token = torch.multinomial(output_dist, num_samples=1).data
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
 
             for j in range(next_token.size(0)):

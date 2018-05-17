@@ -1,10 +1,10 @@
 {
-    "max_evaluation" : false,
-    "data" : "train_cleanutts",
-    "iterations" : 7000,
+    "max_evaluation" : true,
+    "data" : "train_src_grid3",
+    "iterations" : 15000,
     "batch_size" : 128,
     "optimizer_type" : "ADAM",
-    "learning_rate" : 0.004,
+    "learning_rate" : 0.001,
     "weight_decay" : 0.0,
     "gradient_clipping" : 5.0,
     "log_interval" : 500
