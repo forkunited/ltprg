@@ -1,0 +1,67 @@
+eventType	gameid	time	roundNum	obj
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509019070	1	{"type":"Utterance","sender":"listener","contents":"hi","time":1526509019070}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509032395	1	{"type":"Utterance","sender":"speaker","contents":"The target is in the middle one.","time":1526509032395}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509055805	2	{"type":"Utterance","sender":"speaker","contents":"The positions aren't the same for both of us. That was in the instructions~~~","time":1526509055805}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509127406	3	{"type":"Utterance","sender":"listener","contents":".~~~~~~","time":1526509127406}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509129448	3	{"type":"Utterance","sender":"speaker","contents":"The target is including a big square of green color.","time":1526509129448}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509189947	4	{"type":"Utterance","sender":"speaker","contents":"The big green square is telling you what the target is. The other person can't see that~~~ Pick the one with two orange at bottom~~~","time":1526509189947}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509276589	5	{"type":"Utterance","sender":"speaker","contents":"The target is blue on the middle of the left side.","time":1526509276589}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509276826	5	{"type":"Utterance","sender":"listener","contents":"I'm numbering the squares 1 through 9 going horizontally and left to right. Just give the number and the color of the square that is different~~~","time":1526509276826}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509291033	6	{"type":"Utterance","sender":"speaker","contents":"2 grey","time":1526509291033}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509405349	7	{"type":"Utterance","sender":"speaker","contents":"The dark blue on the left bottom.","time":1526509405349}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509418930	7	{"type":"Utterance","sender":"listener","contents":"If you did my method this would take a few seconds. ","time":1526509418930}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509430160	8	{"type":"Utterance","sender":"speaker","contents":"1 dark blue","time":1526509430160}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509472902	9	{"type":"Utterance","sender":"speaker","contents":"one dark green","time":1526509472902}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509519986	10	{"type":"Utterance","sender":"speaker","contents":"squares numbered 1 2 3 top row, 4 5 6 middle row, 7 8 9 bottom row.  7 red","time":1526509519986}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509558889	11	{"type":"Utterance","sender":"speaker","contents":"3 light yellow","time":1526509558889}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509578334	12	{"type":"Utterance","sender":"speaker","contents":"2 dark blue","time":1526509578334}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509620574	13	{"type":"Utterance","sender":"speaker","contents":"7 green","time":1526509620574}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509650798	14	{"type":"Utterance","sender":"speaker","contents":"5 grey","time":1526509650798}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509725407	15	{"type":"Utterance","sender":"listener","contents":"My timer is going to run out if you don't pick up the pace. Sorry to rush you!","time":1526509725407}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509727415	15	{"type":"Utterance","sender":"speaker","contents":"1 blue and 2 gray","time":1526509727415}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509767224	16	{"type":"Utterance","sender":"speaker","contents":"5 bright pink ","time":1526509767224}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509787999	17	{"type":"Utterance","sender":"speaker","contents":"5 green","time":1526509787999}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509802364	18	{"type":"Utterance","sender":"speaker","contents":"1 red","time":1526509802364}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509831588	19	{"type":"Utterance","sender":"speaker","contents":"7 bright purple","time":1526509831588}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509844999	20	{"type":"Utterance","sender":"speaker","contents":"4 pink","time":1526509844999}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509867526	21	{"type":"Utterance","sender":"speaker","contents":"6 blue","time":1526509867526}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509896870	22	{"type":"Utterance","sender":"speaker","contents":"3 yellow","time":1526509896870}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509912503	23	{"type":"Utterance","sender":"speaker","contents":"5 yellow","time":1526509912503}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509959426	24	{"type":"Utterance","sender":"speaker","contents":"4 dark yellow","time":1526509959426}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509982647	25	{"type":"Utterance","sender":"speaker","contents":"4 pink","time":1526509982647}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526509996162	26	{"type":"Utterance","sender":"speaker","contents":"2 grey","time":1526509996162}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510027231	27	{"type":"Utterance","sender":"speaker","contents":"2 bright blue","time":1526510027231}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510053609	28	{"type":"Utterance","sender":"speaker","contents":"7 bright green","time":1526510053609}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510072326	29	{"type":"Utterance","sender":"speaker","contents":"3 pink","time":1526510072326}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510116569	30	{"type":"Utterance","sender":"speaker","contents":"5 lighter green color 6 lighter blue color","time":1526510116569}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510155427	31	{"type":"Utterance","sender":"speaker","contents":"2 bright green","time":1526510155427}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510166744	32	{"type":"Utterance","sender":"speaker","contents":"3 dark blue","time":1526510166744}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510188452	33	{"type":"Utterance","sender":"speaker","contents":"2 gray","time":1526510188452}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510212159	34	{"type":"Utterance","sender":"speaker","contents":"7 darkest blue","time":1526510212159}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510283014	35	{"type":"Utterance","sender":"listener","contents":"this one is tough","time":1526510283014}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510289557	35	{"type":"Utterance","sender":"speaker","contents":"7 & 9 the darkest green","time":1526510289557}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510306126	36	{"type":"Utterance","sender":"speaker","contents":"good job!     1 purple","time":1526510306126}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510336242	37	{"type":"Utterance","sender":"speaker","contents":"9 bright blue","time":1526510336242}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510348806	38	{"type":"Utterance","sender":"speaker","contents":"3 blue","time":1526510348806}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510369463	39	{"type":"Utterance","sender":"speaker","contents":"4 green","time":1526510369463}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510382140	40	{"type":"Utterance","sender":"speaker","contents":"1 purple","time":1526510382140}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510428481	41	{"type":"Utterance","sender":"speaker","contents":"1 dark blue","time":1526510428481}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510447021	42	{"type":"Utterance","sender":"speaker","contents":"6 orange","time":1526510447021}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510474335	43	{"type":"Utterance","sender":"speaker","contents":"7 bright yellow","time":1526510474335}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510492486	44	{"type":"Utterance","sender":"speaker","contents":"1 blue","time":1526510492486}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510509535	45	{"type":"Utterance","sender":"speaker","contents":"1 green","time":1526510509535}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510530363	46	{"type":"Utterance","sender":"speaker","contents":"1 bright pink","time":1526510530363}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510553183	47	{"type":"Utterance","sender":"speaker","contents":"2 bright purple","time":1526510553183}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510569150	48	{"type":"Utterance","sender":"speaker","contents":"2 bright orange","time":1526510569150}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510584995	49	{"type":"Utterance","sender":"speaker","contents":"1 orange","time":1526510584995}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510613867	50	{"type":"Utterance","sender":"speaker","contents":"7 intense blue","time":1526510613867}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510648670	51	{"type":"Utterance","sender":"speaker","contents":"1 purple","time":1526510648670}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510690012	52	{"type":"Utterance","sender":"speaker","contents":"9 darkest grey 2 darkest blue","time":1526510690012}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510751238	53	{"type":"Utterance","sender":"speaker","contents":"7 blue 8 brightest red","time":1526510751238}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510777762	54	{"type":"Utterance","sender":"speaker","contents":"5 orange","time":1526510777762}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510840238	55	{"type":"Utterance","sender":"speaker","contents":"4 dark red 6 darket green","time":1526510840238}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510859432	56	{"type":"Utterance","sender":"speaker","contents":"3 purple","time":1526510859432}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510890748	57	{"type":"Utterance","sender":"speaker","contents":"1 bright blue 2 bright orange","time":1526510890748}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510907360	58	{"type":"Utterance","sender":"speaker","contents":"2 dark blue","time":1526510907360}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510930645	59	{"type":"Utterance","sender":"speaker","contents":"2 red","time":1526510930645}
+utterance	2006-30a4b375-6559-417a-bd27-4162d9961186	1526510963551	60	{"type":"Utterance","sender":"speaker","contents":"5 dark purple","time":1526510963551}

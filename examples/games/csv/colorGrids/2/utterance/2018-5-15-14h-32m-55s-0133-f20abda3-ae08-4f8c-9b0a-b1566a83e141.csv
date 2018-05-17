@@ -1,0 +1,82 @@
+eventType	gameid	time	roundNum	obj
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526419975069	1	{"type":"Utterance","sender":"speaker","contents":"this one has a ugly green on it","time":1526419975069}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420012750	2	{"type":"Utterance","sender":"speaker","contents":"this one has a purpleish box in the top left","time":1526420012750}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420039966	3	{"type":"Utterance","sender":"speaker","contents":"this one has the leawswt patterns","time":1526420039966}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420063512	4	{"type":"Utterance","sender":"speaker","contents":"this one has a brown one on the top row","time":1526420063512}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420117916	4	{"type":"Utterance","sender":"speaker","contents":"if this takes really long I am going to leave and it won't be finished. ","time":1526420117916}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420142412	5	{"type":"Utterance","sender":"speaker","contents":"the dark green","time":1526420142412}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420156202	6	{"type":"Utterance","sender":"speaker","contents":"blue box top left corner","time":1526420156202}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420169659	7	{"type":"Utterance","sender":"speaker","contents":"ugly green left corner","time":1526420169659}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420181866	8	{"type":"Utterance","sender":"speaker","contents":"orange in middle","time":1526420181866}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420194299	9	{"type":"Utterance","sender":"speaker","contents":"pink in the middle bright","time":1526420194299}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420204843	10	{"type":"Utterance","sender":"speaker","contents":"green top left corner","time":1526420204843}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420231755	11	{"type":"Utterance","sender":"speaker","contents":"light blue","time":1526420231755}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420232379	11	{"type":"Utterance","sender":"speaker","contents":"left","time":1526420232379}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420256571	12	{"type":"Utterance","sender":"speaker","contents":"brownish orange center top","time":1526420256571}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420278074	13	{"type":"Utterance","sender":"speaker","contents":"ugly orange","time":1526420278074}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420303660	14	{"type":"Utterance","sender":"speaker","contents":"yellow left center, magenta top right","time":1526420303660}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420328075	15	{"type":"Utterance","sender":"speaker","contents":"bright color right top","time":1526420328075}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420344733	16	{"type":"Utterance","sender":"speaker","contents":"purple is next to brown on bottom row","time":1526420344733}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420378218	17	{"type":"Utterance","sender":"speaker","contents":"two purples","time":1526420378218}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420396877	18	{"type":"Utterance","sender":"speaker","contents":"two bright blues right side ","time":1526420396877}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420416186	19	{"type":"Utterance","sender":"speaker","contents":"red","time":1526420416186}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420440110	20	{"type":"Utterance","sender":"speaker","contents":"left green left side. lightest green","time":1526420440110}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420474188	21	{"type":"Utterance","sender":"speaker","contents":"red","time":1526420474188}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420487598	22	{"type":"Utterance","sender":"speaker","contents":"brightest shade of red bottom row","time":1526420487598}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420508080	23	{"type":"Utterance","sender":"speaker","contents":"pink left","time":1526420508080}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420533022	24	{"type":"Utterance","sender":"speaker","contents":"brightest shade of red","time":1526420533022}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420560473	25	{"type":"Utterance","sender":"speaker","contents":"ugh. purple left center","time":1526420560473}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420577087	26	{"type":"Utterance","sender":"speaker","contents":"lol. blue top left","time":1526420577087}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420588989	27	{"type":"Utterance","sender":"speaker","contents":"bright green top left","time":1526420588989}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420599596	28	{"type":"Utterance","sender":"listener","contents":"man this stinks. ","time":1526420599596}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420605887	28	{"type":"Utterance","sender":"speaker","contents":"yeah this is longer than I was hoping lol","time":1526420605887}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420614225	28	{"type":"Utterance","sender":"listener","contents":"grind it out","time":1526420614225}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420614671	28	{"type":"Utterance","sender":"speaker","contents":"bright pinkish bottom left","time":1526420614671}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420630248	29	{"type":"Utterance","sender":"speaker","contents":"grey center bottom","time":1526420630248}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420639727	30	{"type":"Utterance","sender":"speaker","contents":"green bottom right","time":1526420639727}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420678312	31	{"type":"Utterance","sender":"speaker","contents":"pink right bottom","time":1526420678312}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420692896	32	{"type":"Utterance","sender":"speaker","contents":"bright green center","time":1526420692896}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420713112	33	{"type":"Utterance","sender":"speaker","contents":"ugly color center bottom","time":1526420713112}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420737937	34	{"type":"Utterance","sender":"speaker","contents":"magenta top left","time":1526420737937}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420792376	35	{"type":"Utterance","sender":"speaker","contents":"light blue left corner","time":1526420792376}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420810306	36	{"type":"Utterance","sender":"speaker","contents":"dark blue bottom left","time":1526420810306}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420821515	37	{"type":"Utterance","sender":"speaker","contents":"can we take a quick break at 40","time":1526420821515}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420825526	37	{"type":"Utterance","sender":"speaker","contents":"3 minutes","time":1526420825526}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420826946	37	{"type":"Utterance","sender":"listener","contents":"yeah ","time":1526420826946}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420837448	37	{"type":"Utterance","sender":"speaker","contents":"ugly bottom center","time":1526420837448}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420848770	38	{"type":"Utterance","sender":"speaker","contents":"that green was pretty ugly lol","time":1526420848770}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420855491	38	{"type":"Utterance","sender":"speaker","contents":"brightest blue/green bottom left","time":1526420855491}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420870695	39	{"type":"Utterance","sender":"speaker","contents":"ugly yellow bottom center","time":1526420870695}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420883230	40	{"type":"Utterance","sender":"speaker","contents":"damn lol. alright~~~ do this one","time":1526420883230}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420887107	40	{"type":"Utterance","sender":"speaker","contents":"then just type when you ready","time":1526420887107}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420892355	40	{"type":"Utterance","sender":"speaker","contents":"blue center left","time":1526420892355}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420911427	40	{"type":"Utterance","sender":"speaker","contents":"don't bail on me","time":1526420911427}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420945304	40	{"type":"Utterance","sender":"listener","contents":"nah","time":1526420945304}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420956039	40	{"type":"Utterance","sender":"listener","contents":"this three dollars can buy me a beer at the bar. just need a quick break","time":1526420956039}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526420977556	40	{"type":"Utterance","sender":"speaker","contents":"no worries man","time":1526420977556}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421210013	40	{"type":"Utterance","sender":"listener","contents":"k","time":1526421210013}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421211009	40	{"type":"Utterance","sender":"listener","contents":"let's go","time":1526421211009}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421221159	40	{"type":"Utterance","sender":"speaker","contents":"okay, two seconds","time":1526421221159}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421255270	41	{"type":"Utterance","sender":"speaker","contents":"not the pink or grey one","time":1526421255270}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421303289	42	{"type":"Utterance","sender":"speaker","contents":"cyan blue on bottom","time":1526421303289}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421313382	43	{"type":"Utterance","sender":"speaker","contents":"ugly left","time":1526421313382}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421348312	44	{"type":"Utterance","sender":"speaker","contents":"most green middle row","time":1526421348312}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421360581	45	{"type":"Utterance","sender":"speaker","contents":"pink center","time":1526421360581}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421374921	46	{"type":"Utterance","sender":"speaker","contents":"bottom left bright green","time":1526421374921}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421390309	47	{"type":"Utterance","sender":"speaker","contents":"light pink center","time":1526421390309}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421421529	48	{"type":"Utterance","sender":"speaker","contents":"purple ","time":1526421421529}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421430356	49	{"type":"Utterance","sender":"speaker","contents":"gree n center","time":1526421430356}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421439402	50	{"type":"Utterance","sender":"speaker","contents":"brown center","time":1526421439402}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421468660	51	{"type":"Utterance","sender":"speaker","contents":"green","time":1526421468660}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421482218	52	{"type":"Utterance","sender":"speaker","contents":"purple left side","time":1526421482218}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421507492	53	{"type":"Utterance","sender":"speaker","contents":"orange","time":1526421507492}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421519690	54	{"type":"Utterance","sender":"speaker","contents":"bright green middle","time":1526421519690}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421564015	55	{"type":"Utterance","sender":"speaker","contents":"purple","time":1526421564015}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421576235	56	{"type":"Utterance","sender":"speaker","contents":"two blue pieces left side","time":1526421576235}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421590830	57	{"type":"Utterance","sender":"speaker","contents":"ugly green right","time":1526421590830}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421601516	58	{"type":"Utterance","sender":"speaker","contents":"purple top","time":1526421601516}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421641772	59	{"type":"Utterance","sender":"listener","contents":"thanks for hanging in there. ive had people leave on me before~~~ really sucks, or people that do other surveys and make you wait 10-20 minutes before they respond","time":1526421641772}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421642550	59	{"type":"Utterance","sender":"speaker","contents":"grene center","time":1526421642550}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421653350	59	{"type":"Utterance","sender":"speaker","contents":"do you blame thiem this is boring as hell","time":1526421653350}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421664755	60	{"type":"Utterance","sender":"listener","contents":"orange right","time":1526421664755}
+utterance	0133-f20abda3-ae08-4f8c-9b0a-b1566a83e141	1526421672436	60	{"type":"Utterance","sender":"listener","contents":"thank you as well. ","time":1526421672436}

@@ -1,0 +1,3 @@
+eventType	type	gameid	time	roundNum	action
+action	ActionColorGrid	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346416470	1	{"lClicked":2,"mouseX":847,"mouseY":170,"condition":{"name":"CLOSE","numDiffs":2}}
+action	ActionColorGrid	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346455796	2	{"lClicked":0,"mouseX":109,"mouseY":180,"condition":{"name":"SPLIT","numDiffs":6}}

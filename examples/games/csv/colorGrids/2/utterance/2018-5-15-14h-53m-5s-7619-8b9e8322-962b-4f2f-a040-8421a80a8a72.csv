@@ -1,0 +1,5 @@
+eventType	gameid	time	roundNum	obj
+utterance	7619-8b9e8322-962b-4f2f-a040-8421a80a8a72	1526421185142	1	{"type":"Utterance","sender":"listener","contents":"What is the color in the top left corner?","time":1526421185142}
+utterance	7619-8b9e8322-962b-4f2f-a040-8421a80a8a72	1526421383018	1	{"type":"Utterance","sender":"listener","contents":"Top right?","time":1526421383018}
+utterance	7619-8b9e8322-962b-4f2f-a040-8421a80a8a72	1526421561576	1	{"type":"Utterance","sender":"speaker","contents":"orange","time":1526421561576}
+utterance	7619-8b9e8322-962b-4f2f-a040-8421a80a8a72	1526421627385	1	{"type":"Utterance","sender":"speaker","contents":"top right is orange","time":1526421627385}

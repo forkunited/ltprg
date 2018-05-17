@@ -1,0 +1,6 @@
+eventType	gameid	time	roundNum	obj
+utterance	6015-97d353e8-0235-43ca-8f3c-110324222e4a	1526508736606	1	{"type":"Utterance","sender":"speaker","contents":"tan upper right corner ","time":1526508736606}
+utterance	6015-97d353e8-0235-43ca-8f3c-110324222e4a	1526508815151	2	{"type":"Utterance","sender":"listener","contents":"Is the upper left corner red?","time":1526508815151}
+utterance	6015-97d353e8-0235-43ca-8f3c-110324222e4a	1526508871692	2	{"type":"Utterance","sender":"listener","contents":"What color is the upper right corner?","time":1526508871692}
+utterance	6015-97d353e8-0235-43ca-8f3c-110324222e4a	1526508925831	2	{"type":"Utterance","sender":"listener","contents":"I can't click until you give a hint.","time":1526508925831}
+utterance	6015-97d353e8-0235-43ca-8f3c-110324222e4a	1526509430038	2	{"type":"Utterance","sender":"listener","contents":"Is anyone there?","time":1526509430038}

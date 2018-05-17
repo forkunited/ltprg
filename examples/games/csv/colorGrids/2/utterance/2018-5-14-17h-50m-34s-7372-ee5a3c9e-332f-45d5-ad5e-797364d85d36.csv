@@ -1,0 +1,7 @@
+eventType	gameid	time	roundNum	obj
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345434716	1	{"type":"Utterance","sender":"speaker","contents":"The square has a red square in the top right corner and a light blue square in the bottom right corner","time":1526345434716}
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345561978	2	{"type":"Utterance","sender":"listener","contents":"we have 60 of these :)","time":1526345561978}
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345577325	2	{"type":"Utterance","sender":"listener","contents":"just tell me what color is in the upper left corner","time":1526345577325}
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345598362	2	{"type":"Utterance","sender":"listener","contents":"if it is green, bright turquoise or medium turquoise","time":1526345598362}
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345633317	2	{"type":"Utterance","sender":"listener","contents":"are you there?","time":1526345633317}
+utterance	7372-ee5a3c9e-332f-45d5-ad5e-797364d85d36	1526345713441	2	{"type":"Utterance","sender":"listener","contents":"hello?","time":1526345713441}

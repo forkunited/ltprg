@@ -1,0 +1,111 @@
+eventType	gameid	time	roundNum	obj
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431714175	1	{"type":"Utterance","sender":"listener","contents":"hello what grid are we looking for","time":1526431714175}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431720646	1	{"type":"Utterance","sender":"speaker","contents":"first cubicle with dark blue","time":1526431720646}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431728382	1	{"type":"Utterance","sender":"speaker","contents":"not the light blue one","time":1526431728382}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431787621	2	{"type":"Utterance","sender":"speaker","contents":"all the cubicles look the same to me.~~~~~~do they for you too?","time":1526431787621}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431801876	2	{"type":"Utterance","sender":"listener","contents":"yes,.~~~there are slightly color difference","time":1526431801876}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431910919	2	{"type":"Utterance","sender":"speaker","contents":"the one we're looking for has the limest green in the first row of the middle column","time":1526431910919}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431947359	3	{"type":"Utterance","sender":"speaker","contents":"include a red cube at bottom row","time":1526431947359}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526431987345	4	{"type":"Utterance","sender":"speaker","contents":"has the lightest red cubicle on the bottom row","time":1526431987345}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432014854	5	{"type":"Utterance","sender":"speaker","contents":"last cube at second row is green","time":1526432014854}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432026749	5	{"type":"Utterance","sender":"speaker","contents":"nonono","time":1526432026749}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432029044	5	{"type":"Utterance","sender":"speaker","contents":"grey","time":1526432029044}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432031068	5	{"type":"Utterance","sender":"speaker","contents":"sorry","time":1526432031068}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432132421	6	{"type":"Utterance","sender":"speaker","contents":"well it's one of the ones where the second cubicle in the first row is teal","time":1526432132421}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432156471	6	{"type":"Utterance","sender":"speaker","contents":"the darker of the two","time":1526432156471}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432163632	6	{"type":"Utterance","sender":"listener","contents":"cool i was gonna ask","time":1526432163632}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432180448	7	{"type":"Utterance","sender":"speaker","contents":"sorry!","time":1526432180448}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432186024	7	{"type":"Utterance","sender":"speaker","contents":"first cube is purple","time":1526432186024}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432210786	7	{"type":"Utterance","sender":"listener","contents":"is that purple? it looks kind of dull blue","time":1526432210786}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432222478	7	{"type":"Utterance","sender":"speaker","contents":"dark purple i guess.","time":1526432222478}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432239484	8	{"type":"Utterance","sender":"speaker","contents":"the third cubicle in the first row is sky blue","time":1526432239484}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432311764	9	{"type":"Utterance","sender":"speaker","contents":"the second cube is more green and a bit brown","time":1526432311764}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432345009	9	{"type":"Utterance","sender":"listener","contents":"is it more green than the one that's similar to it","time":1526432345009}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432370316	9	{"type":"Utterance","sender":"listener","contents":"lighter or darker I guess","time":1526432370316}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432374282	9	{"type":"Utterance","sender":"speaker","contents":"lighter!","time":1526432374282}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432396310	10	{"type":"Utterance","sender":"speaker","contents":"the first cube is the pinkest pink","time":1526432396310}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432400284	10	{"type":"Utterance","sender":"speaker","contents":"not purple like the other one","time":1526432400284}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432420944	11	{"type":"Utterance","sender":"speaker","contents":"light green in the first cube","time":1526432420944}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432441014	12	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the first row is lime lime green","time":1526432441014}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432446021	12	{"type":"Utterance","sender":"speaker","contents":"most limey","time":1526432446021}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432479599	13	{"type":"Utterance","sender":"speaker","contents":"last cubicle in third row is a bit green","time":1526432479599}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432486087	13	{"type":"Utterance","sender":"speaker","contents":"the other two are more grey","time":1526432486087}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432514335	14	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the first row is lime lime green","time":1526432514335}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432516024	14	{"type":"Utterance","sender":"speaker","contents":"most limey","time":1526432516024}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432539045	15	{"type":"Utterance","sender":"speaker","contents":"last cubicle in first row is green","time":1526432539045}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432560215	16	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is green shade not blue ","time":1526432560215}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432593660	17	{"type":"Utterance","sender":"speaker","contents":"the first cube in third row is most red one","time":1526432593660}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432613205	17	{"type":"Utterance","sender":"listener","contents":"darkest you mean?","time":1526432613205}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432638665	17	{"type":"Utterance","sender":"listener","contents":"or lightest","time":1526432638665}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432656745	17	{"type":"Utterance","sender":"speaker","contents":"or the third cube in first row is most pinky one","time":1526432656745}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432667916	17	{"type":"Utterance","sender":"speaker","contents":"bright pink","time":1526432667916}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432686952	18	{"type":"Utterance","sender":"speaker","contents":"the first cubicle in the first row is lime green","time":1526432686952}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432710608	19	{"type":"Utterance","sender":"speaker","contents":"second cube in first row is red","time":1526432710608}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432714383	19	{"type":"Utterance","sender":"speaker","contents":"light red","time":1526432714383}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432728450	20	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is brownn","time":1526432728450}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432756715	21	{"type":"Utterance","sender":"listener","contents":"the last cubicle in the first row is tan","time":1526432756715}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432761352	21	{"type":"Utterance","sender":"speaker","contents":"second cube in first row is grey","time":1526432761352}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432765958	21	{"type":"Utterance","sender":"listener","contents":"oh i'm the listener lol","time":1526432765958}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432771210	21	{"type":"Utterance","sender":"speaker","contents":"lol","time":1526432771210}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432796286	22	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the first row is  brown","time":1526432796286}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432800479	22	{"type":"Utterance","sender":"speaker","contents":"not grey like the similar one","time":1526432800479}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432830964	23	{"type":"Utterance","sender":"speaker","contents":"third cube in first row is bright red/pink","time":1526432830964}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432840563	23	{"type":"Utterance","sender":"speaker","contents":"the other two are purples","time":1526432840563}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432928358	24	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the 2nd row is the greenest green","time":1526432928358}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432936674	24	{"type":"Utterance","sender":"speaker","contents":"not yellow or brown tinted but just green","time":1526432936674}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526432955279	24	{"type":"Utterance","sender":"listener","contents":"not the lime one?","time":1526432955279}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433002357	25	{"type":"Utterance","sender":"speaker","contents":"first cube is grey","time":1526433002357}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433050414	26	{"type":"Utterance","sender":"speaker","contents":"the first cubicle is the lightest blue","time":1526433050414}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433074563	27	{"type":"Utterance","sender":"speaker","contents":"first cube in second row is dark green","time":1526433074563}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433101784	28	{"type":"Utterance","sender":"speaker","contents":"the first cubicle is the darkest blue","time":1526433101784}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433122801	29	{"type":"Utterance","sender":"speaker","contents":"first cube in second row is bright pink","time":1526433122801}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433155355	30	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the very middle is dull green","time":1526433155355}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433158704	30	{"type":"Utterance","sender":"speaker","contents":"not brown or lime green","time":1526433158704}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433175351	31	{"type":"Utterance","sender":"speaker","contents":"first cube in second row is green","time":1526433175351}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433218873	32	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is dark green","time":1526433218873}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433222823	32	{"type":"Utterance","sender":"speaker","contents":"wait","time":1526433222823}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433223647	32	{"type":"Utterance","sender":"speaker","contents":"no","time":1526433223647}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433239048	32	{"type":"Utterance","sender":"speaker","contents":"it's green but it's not the darker one","time":1526433239048}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433258149	33	{"type":"Utterance","sender":"speaker","contents":"last cube in first row is lime green","time":1526433258149}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433276218	34	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is yellow","time":1526433276218}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433307307	35	{"type":"Utterance","sender":"speaker","contents":"the last cube in last row is blue, darker blue","time":1526433307307}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433345255	36	{"type":"Utterance","sender":"speaker","contents":"the second cubicle in the last row is green","time":1526433345255}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433358482	36	{"type":"Utterance","sender":"speaker","contents":"wait","time":1526433358482}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433359103	36	{"type":"Utterance","sender":"speaker","contents":"no","time":1526433359103}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433361253	36	{"type":"Utterance","sender":"speaker","contents":"wait wait wait","time":1526433361253}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433364949	36	{"type":"Utterance","sender":"speaker","contents":"it's purple","time":1526433364949}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433394120	37	{"type":"Utterance","sender":"speaker","contents":"the middle cube in middle row is green","time":1526433394120}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433404519	37	{"type":"Utterance","sender":"speaker","contents":"no","time":1526433404519}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433408936	37	{"type":"Utterance","sender":"speaker","contents":"purple!!","time":1526433408936}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433413815	37	{"type":"Utterance","sender":"speaker","contents":"lol","time":1526433413815}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433436613	38	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is the darker green","time":1526433436613}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433440536	38	{"type":"Utterance","sender":"speaker","contents":"not lime","time":1526433440536}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433463279	39	{"type":"Utterance","sender":"speaker","contents":"the last cube in second row is bright green","time":1526433463279}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433485012	40	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the first row is lime green","time":1526433485012}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433498624	40	{"type":"Utterance","sender":"speaker","contents":"the limest of them, brightest, lightest","time":1526433498624}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433529724	41	{"type":"Utterance","sender":"speaker","contents":"the middle cube in middle row is yellow","time":1526433529724}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433583553	42	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle in the middle row is the lighest punk","time":1526433583553}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433590761	42	{"type":"Utterance","sender":"speaker","contents":"not purple or red like the similar ones","time":1526433590761}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433593476	42	{"type":"Utterance","sender":"speaker","contents":"pink*","time":1526433593476}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433624280	43	{"type":"Utterance","sender":"speaker","contents":"the last cube in first row is bright green","time":1526433624280}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433658306	44	{"type":"Utterance","sender":"speaker","contents":"the first cubicle is yellow orange","time":1526433658306}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433676697	45	{"type":"Utterance","sender":"speaker","contents":"first cube is purple","time":1526433676697}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433699203	46	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle of the first row is yellow green","time":1526433699203}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433730797	47	{"type":"Utterance","sender":"speaker","contents":"the second cube in last row is grey green","time":1526433730797}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433795893	48	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle of the first row is light green","time":1526433795893}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433818163	49	{"type":"Utterance","sender":"speaker","contents":"first cube is dark purple","time":1526433818163}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433869147	50	{"type":"Utterance","sender":"speaker","contents":"the first cubicle is a lighter shade of purple and the second cubicle is a darker shade of pink-purple and the third cubicle is a darker shade of green","time":1526433869147}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433902416	51	{"type":"Utterance","sender":"speaker","contents":"the last cube in second row is blue","time":1526433902416}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433908543	51	{"type":"Utterance","sender":"speaker","contents":"not grey or purple","time":1526433908543}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433948912	52	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is yellow","time":1526433948912}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433952298	52	{"type":"Utterance","sender":"speaker","contents":"not tan or green ","time":1526433952298}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526433989622	53	{"type":"Utterance","sender":"speaker","contents":"second cube in first row is green, not lime","time":1526433989622}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434033712	54	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle of the first row is green","time":1526434033712}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434070714	55	{"type":"Utterance","sender":"speaker","contents":"the middle row is: grey, purple and dark green","time":1526434070714}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434137021	56	{"type":"Utterance","sender":"speaker","contents":"the first cubicle in the second row is purple","time":1526434137021}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434139244	56	{"type":"Utterance","sender":"speaker","contents":"not red or brown","time":1526434139244}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434175655	57	{"type":"Utterance","sender":"speaker","contents":"first cube is pure grey, ","time":1526434175655}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434230487	58	{"type":"Utterance","sender":"speaker","contents":"the middle cubicle of the first row is light green","time":1526434230487}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434247877	59	{"type":"Utterance","sender":"speaker","contents":"middle cube in first row is red","time":1526434247877}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434299734	60	{"type":"Utterance","sender":"speaker","contents":"the last cubicle in the first row is dark blue","time":1526434299734}
+utterance	5578-244673da-3dcc-436f-a742-d754537ed590	1526434306721	60	{"type":"Utterance","sender":"speaker","contents":"first cubicle is green","time":1526434306721}

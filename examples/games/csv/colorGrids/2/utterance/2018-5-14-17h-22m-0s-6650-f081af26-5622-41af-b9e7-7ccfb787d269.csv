@@ -1,0 +1,14 @@
+eventType	gameid	time	roundNum	obj
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343720884	1	{"type":"Utterance","sender":"speaker","contents":"pick the one with yellow in the middle row","time":1526343720884}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343743822	2	{"type":"Utterance","sender":"speaker","contents":"Yellow-brown in top right.","time":1526343743822}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343772855	3	{"type":"Utterance","sender":"speaker","contents":"two blues","time":1526343772855}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343794428	4	{"type":"Utterance","sender":"speaker","contents":"Two greens, two purples","time":1526343794428}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343809265	4	{"type":"Utterance","sender":"speaker","contents":"Both connected.","time":1526343809265}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343835535	5	{"type":"Utterance","sender":"speaker","contents":"blue and bright green in corners","time":1526343835535}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343851626	6	{"type":"Utterance","sender":"speaker","contents":"Two blues connected to each ot her.","time":1526343851626}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343880321	7	{"type":"Utterance","sender":"speaker","contents":"bright green in opposite corners","time":1526343880321}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343902391	8	{"type":"Utterance","sender":"speaker","contents":"Teal blue in right middle.","time":1526343902391}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343917301	8	{"type":"Utterance","sender":"listener","contents":"purple below","time":1526343917301}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343922901	8	{"type":"Utterance","sender":"speaker","contents":"Right.","time":1526343922901}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526343966250	9	{"type":"Utterance","sender":"speaker","contents":"darker blue in corner top right","time":1526343966250}
+utterance	6650-f081af26-5622-41af-b9e7-7ccfb787d269	1526345080036	10	{"type":"Utterance","sender":"listener","contents":"hello.  are you there?","time":1526345080036}

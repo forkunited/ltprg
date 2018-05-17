@@ -1,0 +1,74 @@
+eventType	gameid	time	roundNum	obj
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526408827285	1	{"type":"Utterance","sender":"listener","contents":"I'm ready","time":1526408827285}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409175707	1	{"type":"Utterance","sender":"speaker","contents":"A sea green square in the bottom right corner.","time":1526409175707}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409225105	2	{"type":"Utterance","sender":"listener","contents":"Top left square is bright aqua, bottom left square is medium aqua.","time":1526409225105}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409271599	2	{"type":"Utterance","sender":"speaker","contents":"To me, all middle colors appear grey. This is the one that doesn't have a brighter blue or green color bottom left","time":1526409271599}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409332330	2	{"type":"Utterance","sender":"listener","contents":"The only way to differentiate them is the bottom left square. The selected one is a medium version of the top left square instead of the olive colors~~~","time":1526409332330}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409381281	2	{"type":"Utterance","sender":"speaker","contents":"I'm the one with the selected square, as the speaker. The bottom left square is the most muted, dull color","time":1526409381281}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409443480	3	{"type":"Utterance","sender":"speaker","contents":"Okay, the middle bottom square is a burnt orange, the darkest of the three.","time":1526409443480}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409507917	4	{"type":"Utterance","sender":"speaker","contents":"Middle is almost brown, top right is a darker sea green","time":1526409507917}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409529138	5	{"type":"Utterance","sender":"speaker","contents":"Middle center square is blue.","time":1526409529138}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409542189	6	{"type":"Utterance","sender":"speaker","contents":"Middle square is purple","time":1526409542189}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409568338	7	{"type":"Utterance","sender":"speaker","contents":"Middle right square is lime green.","time":1526409568338}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409625444	8	{"type":"Utterance","sender":"speaker","contents":"middle right is a bright magenta","time":1526409625444}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409658380	9	{"type":"Utterance","sender":"speaker","contents":"Bottom right square is royal blue","time":1526409658380}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409678716	10	{"type":"Utterance","sender":"speaker","contents":"top middle is red","time":1526409678716}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409711189	11	{"type":"Utterance","sender":"speaker","contents":"Top right square is magenta","time":1526409711189}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409826810	12	{"type":"Utterance","sender":"speaker","contents":"middle is a dark purple","time":1526409826810}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409876447	13	{"type":"Utterance","sender":"speaker","contents":"Middle square is the dullest green","time":1526409876447}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526409929008	14	{"type":"Utterance","sender":"speaker","contents":"middle is a baby blue, bottom right a bright sea green","time":1526409929008}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410005343	15	{"type":"Utterance","sender":"speaker","contents":"Middle square is a medium red violet, just below it is a medium mauve","time":1526410005343}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410051675	16	{"type":"Utterance","sender":"speaker","contents":"Middle left is a true yellow, top right is a neon green","time":1526410051675}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410082489	17	{"type":"Utterance","sender":"speaker","contents":"Top left square is a bright yellow green","time":1526410082489}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410107379	18	{"type":"Utterance","sender":"speaker","contents":"Top left is brown, top middle is purple","time":1526410107379}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410133498	19	{"type":"Utterance","sender":"speaker","contents":"Top left square is a bright red violet","time":1526410133498}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410172570	20	{"type":"Utterance","sender":"speaker","contents":"Apologizes on that one. Top left is red, top middle is a red brown","time":1526410172570}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410213678	21	{"type":"Utterance","sender":"speaker","contents":"Top left square is mauve next to a medium sea green","time":1526410213678}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410253842	22	{"type":"Utterance","sender":"speaker","contents":"Middle is a duller purple, bottom right is a darker pink","time":1526410253842}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410287646	23	{"type":"Utterance","sender":"speaker","contents":"Top left is rust next to bright yellow-green","time":1526410287646}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410315931	24	{"type":"Utterance","sender":"speaker","contents":"Middle left is a neon green","time":1526410315931}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410372506	25	{"type":"Utterance","sender":"speaker","contents":"Middle right is a blue-violet, the more vibrant one","time":1526410372506}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410420276	26	{"type":"Utterance","sender":"speaker","contents":"Top left is the lighter green, with a top right purple square","time":1526410420276}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410483208	27	{"type":"Utterance","sender":"speaker","contents":"Top left is cerulean next to fuchsia ","time":1526410483208}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410532063	28	{"type":"Utterance","sender":"speaker","contents":"Middle right is a bright blue, top middle is the dull pink","time":1526410532063}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410575788	29	{"type":"Utterance","sender":"speaker","contents":"Bottom center is a bright fuchsia, with yellow to the right of it ","time":1526410575788}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410612010	30	{"type":"Utterance","sender":"speaker","contents":"Middle is a dull yellow-green, bottom middle is a orange color","time":1526410612010}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410721181	31	{"type":"Utterance","sender":"speaker","contents":"Top left is a bright lime next to warm gray","time":1526410721181}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410795410	32	{"type":"Utterance","sender":"speaker","contents":"Top middle is a neon pink, bottom right is a slightly dark purple","time":1526410795410}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410878757	33	{"type":"Utterance","sender":"speaker","contents":"Top left is a bright red orange and top right is a medium sage","time":1526410878757}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410916867	34	{"type":"Utterance","sender":"speaker","contents":"Top left and right are a brighter green, middle right is a almost true orange ","time":1526410916867}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526410988124	35	{"type":"Utterance","sender":"speaker","contents":"Top right is a dark magenta, fuchsia just below it","time":1526410988124}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411042057	36	{"type":"Utterance","sender":"speaker","contents":"Top left is a lighter blue, bottom middle is a yellow-green","time":1526411042057}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411071400	37	{"type":"Utterance","sender":"speaker","contents":"Both top left and right are shades of yellow green","time":1526411071400}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411110879	38	{"type":"Utterance","sender":"speaker","contents":"Top left is a royal blue, middle right is a red-pink flower color ","time":1526411110879}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411150980	39	{"type":"Utterance","sender":"speaker","contents":"Middle left is a dull yellow","time":1526411150980}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411196270	40	{"type":"Utterance","sender":"speaker","contents":"Top right is a darker blue, middle left is a vibrant red","time":1526411196270}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411260876	41	{"type":"Utterance","sender":"speaker","contents":"Sorry about that. Top left square is bright red, top middle is dull fuchsia, and top right square is rust","time":1526411260876}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411374309	42	{"type":"Utterance","sender":"speaker","contents":"Top middle is a darker blue compared to the other square, middle right is a dull purple","time":1526411374309}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411489634	43	{"type":"Utterance","sender":"speaker","contents":"Top left is a medium blue violet, top middle is a dark blue violet","time":1526411489634}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411533311	44	{"type":"Utterance","sender":"speaker","contents":"Top right is a grey, middle right is a blue grey","time":1526411533311}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411566515	45	{"type":"Utterance","sender":"speaker","contents":"Top right is blue violet","time":1526411566515}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411603074	46	{"type":"Utterance","sender":"speaker","contents":"Bottom left is red","time":1526411603074}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411634263	47	{"type":"Utterance","sender":"speaker","contents":"Bottom center is green","time":1526411634263}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411647585	48	{"type":"Utterance","sender":"speaker","contents":"Middle right is blue","time":1526411647585}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411665813	49	{"type":"Utterance","sender":"speaker","contents":"Top right is red orange","time":1526411665813}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411702341	50	{"type":"Utterance","sender":"speaker","contents":"Bottom middle is dull red, NOT pink","time":1526411702341}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411734015	50	{"type":"Utterance","sender":"listener","contents":"Does it still look red or does it look more brown?","time":1526411734015}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411765850	50	{"type":"Utterance","sender":"speaker","contents":"Still looks red to me.","time":1526411765850}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411782652	51	{"type":"Utterance","sender":"speaker","contents":"Top right is brown","time":1526411782652}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411816764	52	{"type":"Utterance","sender":"speaker","contents":"Middle left is bright pink, bottom right is also a brighter pink","time":1526411816764}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411862878	53	{"type":"Utterance","sender":"speaker","contents":"Top middle is the brightest yellow-green, with yellow-orange below it","time":1526411862878}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411927803	54	{"type":"Utterance","sender":"speaker","contents":"Bottom left is a sage-blue? Top middle is a royal blue","time":1526411927803}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411981151	55	{"type":"Utterance","sender":"speaker","contents":"Top middle is a medium magenta, middle center is a bright red-orange, bottom right is olive","time":1526411981151}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526411999205	55	{"type":"Utterance","sender":"speaker","contents":"Sorry, bottom left is olive","time":1526411999205}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412078543	56	{"type":"Utterance","sender":"speaker","contents":"Bottom middle is magenta, middle is more royal blue, top right is more brown than grey","time":1526412078543}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412119785	57	{"type":"Utterance","sender":"speaker","contents":"Bottom right is yellow-orange","time":1526412119785}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412215735	58	{"type":"Utterance","sender":"speaker","contents":"Top left is a bright, pale green, middle is the most orange of the three, middle right is a dull pink.  Also wanted to say thanks for sticking through this~~~ Was pretty much not worth the money, but almost $3 is still $3 in my world lol","time":1526412215735}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412324462	58	{"type":"Utterance","sender":"listener","contents":"Is the middle, the top middle and more of a red-orange? Thank you. And same, lol~~~","time":1526412324462}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412417511	58	{"type":"Utterance","sender":"speaker","contents":"Yeah, top middle. Not very redish in my books~~~NOT the square with a middle right purple","time":1526412417511}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412490962	58	{"type":"Utterance","sender":"listener","contents":"Hmm, the middle top squares look brown to me except for one. How about the middle right square?","time":1526412490962}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412514187	58	{"type":"Utterance","sender":"speaker","contents":"Middle right is pale pink. Not magenta","time":1526412514187}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412566450	58	{"type":"Utterance","sender":"listener","contents":"Is the top left square the brightest of the greens?","time":1526412566450}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412571632	58	{"type":"Utterance","sender":"speaker","contents":"yes","time":1526412571632}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412628944	59	{"type":"Utterance","sender":"speaker","contents":"Top right square is medium red-violet. Middle right is bright magenta~~~","time":1526412628944}
+utterance	8727-45f86bb2-5254-4329-860e-26afb17e1631	1526412653027	60	{"type":"Utterance","sender":"speaker","contents":"Middle square is baby blue","time":1526412653027}

@@ -1,0 +1,15 @@
+eventType	type	gameid	time	roundNum	action
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510453159	1	{"lClicked":1,"mouseX":464,"mouseY":168,"condition":{"name":"CLOSE","numDiffs":3}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510509149	2	{"lClicked":0,"mouseX":226,"mouseY":142,"condition":{"name":"FAR","numDiffs":3}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510534910	3	{"lClicked":1,"mouseX":373,"mouseY":98,"condition":{"name":"FAR","numDiffs":7}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510557027	4	{"lClicked":0,"mouseX":205,"mouseY":230,"condition":{"name":"SPLIT","numDiffs":3}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510573697	5	{"lClicked":2,"mouseX":706,"mouseY":169,"condition":{"name":"FAR","numDiffs":2}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510596521	6	{"lClicked":0,"mouseX":55,"mouseY":167,"condition":{"name":"FAR","numDiffs":2}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510635234	7	{"lClicked":0,"mouseX":182,"mouseY":114,"condition":{"name":"SPLIT","numDiffs":8}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510674977	8	{"lClicked":2,"mouseX":774,"mouseY":158,"condition":{"name":"CLOSE","numDiffs":3}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510693789	9	{"lClicked":1,"mouseX":442,"mouseY":142,"condition":{"name":"FAR","numDiffs":1}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510748440	10	{"lClicked":1,"mouseX":522,"mouseY":155,"condition":{"name":"CLOSE","numDiffs":3}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510827818	11	{"lClicked":0,"mouseX":178,"mouseY":148,"condition":{"name":"SPLIT","numDiffs":5}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510865607	12	{"lClicked":2,"mouseX":688,"mouseY":99,"condition":{"name":"CLOSE","numDiffs":7}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510880042	13	{"lClicked":1,"mouseX":466,"mouseY":121,"condition":{"name":"SPLIT","numDiffs":6}}
+action	ActionColorGrid	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510912850	14	{"lClicked":1,"mouseX":480,"mouseY":142,"condition":{"name":"FAR","numDiffs":4}}

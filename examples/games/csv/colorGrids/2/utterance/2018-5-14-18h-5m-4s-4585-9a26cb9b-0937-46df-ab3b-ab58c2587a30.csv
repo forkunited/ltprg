@@ -1,0 +1,7 @@
+eventType	gameid	time	roundNum	obj
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346304373	1	{"type":"Utterance","sender":"speaker","contents":"The two bottom corners are different shades of red and the left hand middle square is gray","time":1526346304373}
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346378676	1	{"type":"Utterance","sender":"listener","contents":"is the bottom right corner a bright pink? (the bottom corners are pinkish rather than red for me)","time":1526346378676}
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346409327	1	{"type":"Utterance","sender":"speaker","contents":"No, the bottom right corner is a mauve color","time":1526346409327}
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346443369	2	{"type":"Utterance","sender":"speaker","contents":"bottom left corner - blue, bottom middle - blue","time":1526346443369}
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526346514017	3	{"type":"Utterance","sender":"speaker","contents":"The middle square is more of a gray color","time":1526346514017}
+utterance	4585-9a26cb9b-0937-46df-ab3b-ab58c2587a30	1526347359073	3	{"type":"Utterance","sender":"speaker","contents":"hello?","time":1526347359073}

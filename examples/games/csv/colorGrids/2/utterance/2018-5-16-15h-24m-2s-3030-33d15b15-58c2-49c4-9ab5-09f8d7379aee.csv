@@ -1,0 +1,12 @@
+eventType	gameid	time	roundNum	obj
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509442024	1	{"type":"Utterance","sender":"speaker","contents":"the left middle square is the brightest pink","time":1526509442024}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509482311	2	{"type":"Utterance","sender":"speaker","contents":"two purple squares diagnally on the left side","time":1526509482311}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509541495	3	{"type":"Utterance","sender":"speaker","contents":"the top right square is the most muted teal (like the darkest/greyest)","time":1526509541495}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509570105	4	{"type":"Utterance","sender":"speaker","contents":"left bottom corner is purple","time":1526509570105}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509593023	5	{"type":"Utterance","sender":"speaker","contents":"the bottom row is blue, greenish-yellow, grey","time":1526509593023}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509618196	6	{"type":"Utterance","sender":"speaker","contents":"left corner is brightest green","time":1526509618196}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509675054	7	{"type":"Utterance","sender":"speaker","contents":"the bottom row is indigo, blue, dark orange","time":1526509675054}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509716235	8	{"type":"Utterance","sender":"speaker","contents":"the one with a blue square","time":1526509716235}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509738317	9	{"type":"Utterance","sender":"speaker","contents":"the bottom right square is grey","time":1526509738317}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509882356	10	{"type":"Utterance","sender":"listener","contents":"from where I'm looking, these are the same except for the middle right square, which is either grey, green or an olive-grey green","time":1526509882356}
+utterance	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509956480	10	{"type":"Utterance","sender":"listener","contents":"are you there?","time":1526509956480}

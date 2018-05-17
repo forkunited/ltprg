@@ -1,0 +1,10 @@
+eventType	type	gameid	time	roundNum	action
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509449080	1	{"lClicked":0,"mouseX":182,"mouseY":152,"condition":{"name":"CLOSE","numDiffs":3}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509486362	2	{"lClicked":0,"mouseX":107,"mouseY":220,"condition":{"name":"SPLIT","numDiffs":8}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509555351	3	{"lClicked":2,"mouseX":793,"mouseY":143,"condition":{"name":"CLOSE","numDiffs":2}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509573901	4	{"lClicked":1,"mouseX":413,"mouseY":164,"condition":{"name":"FAR","numDiffs":4}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509600527	5	{"lClicked":0,"mouseX":189,"mouseY":180,"condition":{"name":"FAR","numDiffs":7}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509622508	6	{"lClicked":0,"mouseX":212,"mouseY":118,"condition":{"name":"CLOSE","numDiffs":5}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509684150	7	{"lClicked":2,"mouseX":717,"mouseY":131,"condition":{"name":"SPLIT","numDiffs":2}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509719417	8	{"lClicked":2,"mouseX":682,"mouseY":120,"condition":{"name":"SPLIT","numDiffs":4}}
+action	ActionColorGrid	3030-33d15b15-58c2-49c4-9ab5-09f8d7379aee	1526509744126	9	{"lClicked":0,"mouseX":192,"mouseY":172,"condition":{"name":"SPLIT","numDiffs":2}}

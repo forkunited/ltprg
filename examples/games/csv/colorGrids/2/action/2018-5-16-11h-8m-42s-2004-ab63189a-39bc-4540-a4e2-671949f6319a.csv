@@ -1,0 +1,4 @@
+eventType	type	gameid	time	roundNum	action
+action	ActionColorGrid	2004-ab63189a-39bc-4540-a4e2-671949f6319a	1526494122213	1	{"lClicked":0,"mouseX":195,"mouseY":150,"condition":{"name":"SPLIT","numDiffs":5}}
+action	ActionColorGrid	2004-ab63189a-39bc-4540-a4e2-671949f6319a	1526494183009	2	{"lClicked":1,"mouseX":531,"mouseY":99,"condition":{"name":"CLOSE","numDiffs":5}}
+action	ActionColorGrid	2004-ab63189a-39bc-4540-a4e2-671949f6319a	1526494209845	3	{"lClicked":0,"mouseX":178,"mouseY":139,"condition":{"name":"CLOSE","numDiffs":1}}

@@ -1,0 +1,21 @@
+eventType	gameid	time	roundNum	obj
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510401585	1	{"type":"Utterance","sender":"listener","contents":"hello                                                                                                                          ","time":1526510401585}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510423615	1	{"type":"Utterance","sender":"speaker","contents":"hello","time":1526510423615}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510448344	1	{"type":"Utterance","sender":"speaker","contents":"the target has a pink square in the upper left","time":1526510448344}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510504090	2	{"type":"Utterance","sender":"speaker","contents":"brown-bottom-left","time":1526510504090}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510532260	3	{"type":"Utterance","sender":"speaker","contents":"red bottom right","time":1526510532260}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510554313	4	{"type":"Utterance","sender":"speaker","contents":"pink-bottom-left","time":1526510554313}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510571110	5	{"type":"Utterance","sender":"speaker","contents":"grey bottom left","time":1526510571110}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510593824	6	{"type":"Utterance","sender":"speaker","contents":"purple-topp-left","time":1526510593824}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510631117	7	{"type":"Utterance","sender":"speaker","contents":"Red top left","time":1526510631117}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510660339	8	{"type":"Utterance","sender":"speaker","contents":"brown-bottom-middle","time":1526510660339}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510691132	9	{"type":"Utterance","sender":"speaker","contents":"bright red middle left","time":1526510691132}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510732297	10	{"type":"Utterance","sender":"speaker","contents":"top-left-2-square-identical-green-almost                                                                            ","time":1526510732297}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510824394	11	{"type":"Utterance","sender":"speaker","contents":"green upper left, red bottom right","time":1526510824394}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510861851	12	{"type":"Utterance","sender":"speaker","contents":"yellow-middle-left                                                                                             ","time":1526510861851}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510877424	13	{"type":"Utterance","sender":"speaker","contents":"Bright green middle square","time":1526510877424}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510910425	14	{"type":"Utterance","sender":"speaker","contents":"blueish-gray-middle","time":1526510910425}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526510921756	15	{"type":"Utterance","sender":"speaker","contents":"red bottom left ","time":1526510921756}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526511023547	15	{"type":"Utterance","sender":"speaker","contents":"two close color blocks in the upper left ","time":1526511023547}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526511235750	15	{"type":"Utterance","sender":"speaker","contents":"hello","time":1526511235750}
+utterance	0356-2f7908fb-0dcc-4e43-81d9-412057901ca8	1526511457351	15	{"type":"Utterance","sender":"speaker","contents":"forget you then","time":1526511457351}
