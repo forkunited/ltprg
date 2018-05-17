@@ -4,7 +4,7 @@ from mung.data import DataSet, Partition
 
 np.random.seed(1)
 
-SPLIT_SIZES = [0.7,0.2,0.1]
+SPLIT_SIZES = [0.8,0.1,0.1]
 PART_NAMES = ["train", "dev", "test"]
 
 data_dir = sys.argv[1]
