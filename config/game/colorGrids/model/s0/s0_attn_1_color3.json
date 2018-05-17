@@ -1,0 +1,17 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "target_obj"
+    },
+    "name" : "S0",
+    "arch_type" : "SequenceModelAttendedInput",
+    "dropout" : 0.5,
+    "rnn_layers" : 1,
+    "rnn_size" : 50,
+    "embedding_size" : 50,
+    "rnn_type" : "LSTM",
+    "conv_kernel" : 12,
+    "conv_stride" : 12,
+    "attn_type" : "OUTPUT"
+}
+
