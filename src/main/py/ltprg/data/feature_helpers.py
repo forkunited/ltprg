@@ -4,7 +4,7 @@ import numpy as np
 from os.path import join
 from mung.data import DataSet, Datum, Partition
 from mung.feature import FeatureSet, DataFeatureMatrix
-from feature import FeatureVisualEmbeddingType, FeatureCielabEmbeddingType
+from feature import FeatureCielabEmbeddingType #, FeatureVisualEmbeddingType
 
 def featurize_embeddings(input_data_dir, output_feature_dir, partition_file,
                          partition_fn, feature_name, paths, embedding_type,
@@ -13,9 +13,10 @@ def featurize_embeddings(input_data_dir, output_feature_dir, partition_file,
 	partition = Partition.load(partition_file)
 	data_full = DataSet.load(input_data_dir)
 	data_parts = data_full.partition(partition, partition_fn)
-	if embedding_type == 'fc-6':
-		feat = FeatureVisualEmbeddingType(feature_name, paths)
-	elif embedding_type == 'cielab':
+	#if embedding_type == 'fc-6':
+	#	feat = FeatureVisualEmbeddingType(feature_name, paths)
+	#elif 
+        if embedding_type == 'cielab':
 		feat = FeatureCielabEmbeddingType(feature_name, paths, \
 			include_positions=include_positions, position_count=position_count, row_count=row_count)
 	feat_set = FeatureSet(feature_types=[feat])

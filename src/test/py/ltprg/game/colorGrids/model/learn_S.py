@@ -27,6 +27,7 @@ parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
 parser.add_argument('--eval_test', action='store', dest='eval_test', type=int, default=0)
+parser.add_argument('--clean_length', action='store', dest='clean_length', type=int, default=12)
 args, extra_env_args = parser.parse_known_args()
 extra_env = Config.load_from_list(extra_env_args)
 
@@ -58,7 +59,7 @@ keys = set(data_sets.keys())
 for key in keys:
     if key.startswith("train") or key.startswith("dev") or key.startswith("test"):
         new_key = key + "_cleanutts"
-        data_sets[new_key] = data_sets[key].filter(lambda d : len(d.get("utterances")) == 1 and len(d.get("utterances[0].nlp.clean_strs.strs")) <= 12)
+        data_sets[new_key] = data_sets[key].filter(lambda d : len(d.get("utterances")) == 1 and len(d.get("utterances[0].nlp.clean_strs.strs")) <= args.clean_length)
         print "Created extra data set " + new_key + " of size " + str(data_sets[new_key].get_size()) + " from " + str(data_sets[key].get_size())
 
 data_parameter, seq_model = cseq.load_seq_model(model_config, data_sets["train"], gpu=gpu)
