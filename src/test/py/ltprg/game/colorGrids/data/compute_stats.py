@@ -4,9 +4,16 @@ from mung.data import DataSet
 input_sua_dir = sys.argv[1]
 
 S = dict()
-S["full"] = DataSet.load(input_sua_dir)
+D_full = DataSet.load(input_sua_dir)
 
-S["grid"] = S["full"].filter(lambda d : d.get("state.state.condition.source") == "grid3")
+S["full"] = D_full
+
+S["color"] = D_full.filter(lambda d : d.get("state.state.condition.source") == "color3")
+S["color_close"] = S["color"].filter(lambda d : d.get("state.state.condition.name") == "CLOSE")
+S["color_split"] = S["color"].filter(lambda d : d.get("state.state.condition.name") == "SPLIT")
+S["color_far"] = S["color"].filter(lambda d : d.get("state.state.condition.name") == "FAR")
+
+S["grid"] = D_full.filter(lambda d : d.get("state.state.condition.source") == "grid3")
 S["grid_close"] = S["grid"].filter(lambda d : d.get("state.state.condition.name") == "CLOSE")
 S["grid_split"] = S["grid"].filter(lambda d : d.get("state.state.condition.name") == "SPLIT")
 S["grid_far"] = S["grid"].filter(lambda d : d.get("state.state.condition.name") == "FAR")
@@ -36,8 +43,11 @@ for key, D in S.iteritems():
     total_correct = 0.0
     missing_action = 0.0
     for d in D:
-        print d.get("state.state.condition.numDiffs")
-        lClicked = d.get("action.lClicked")
+        lClicked = d.get("action.action.lClicked")
+        if lClicked is None:
+            missing_action += 1.0
+            continue
+
         target = d.get("state.state.target")
         selected = d.get("state.state.listenerOrder")[lClicked]
 
@@ -47,6 +57,4 @@ for key, D in S.iteritems():
 
         total_correct += correct
         total_count += 1.0
-    print D.get_size()
-    print key
     print key + ": " + str(total_correct/total_count) + "(" + str(total_correct) + "/" + str(total_count) + ") [" + str(missing_action) + "]"

@@ -14,7 +14,7 @@
         "parameters" : {
             "training_mode" : "SMC",
             "eval_mode" : "SMC",
-            "samples_per_input" : 10,
+            "samples_per_input" : 16,
             "uniform" : true,
             "training_input_mode" : "None",
             "sample_length" : 12,
