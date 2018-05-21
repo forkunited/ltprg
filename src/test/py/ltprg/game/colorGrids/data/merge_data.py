@@ -21,7 +21,7 @@ def add_datum(datums_list, d, d_source_name):
             for key in event:
                 if isinstance(event[key], dict) and "condition" in event[key]:
                     event[key]["condition"]["source"] = d_source_name
-                    if "diffs" not in event[key]["condition"]:
+                    if "numDiffs" not in event[key]["condition"]:
                         event[key]["condition"]["numDiffs"] = 9
     datums_list.append(Datum(properties=d_props, id_key="gameid"))
 

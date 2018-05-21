@@ -28,6 +28,7 @@ parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
 parser.add_argument('--eval_test', action='store', dest='eval_test', type=int, default=0)
 parser.add_argument('--clean_length', action='store', dest='clean_length', type=int, default=12)
+parser.add_argument('--only_correct_clean_train', action='store', dest='only_correct_clean_train', type=bool, default=True)
 args, extra_env_args = parser.parse_known_args()
 extra_env = Config.load_from_list(extra_env_args)
 
@@ -61,6 +62,10 @@ for key in keys:
         new_key = key + "_cleanutts"
         data_sets[new_key] = data_sets[key].filter(lambda d : len(d.get("utterances")) == 1 and len(d.get("utterances[0].nlp.clean_strs.strs")) <= args.clean_length)
         print "Created extra data set " + new_key + " of size " + str(data_sets[new_key].get_size()) + " from " + str(data_sets[key].get_size())
+
+        if args.only_correct_clean_train and key.startswith("train"):
+            data_sets[new_key] = data_sets[new_key].filter(lambda d : d.get("state.state.target") == d.get("state.state.listenerOrder")[d.get("action.action.lClicked")] )
+            print "Filtered clean train data to only listener correct examples (" + str(data_sets[new_key].get_size()) + ")"
 
 data_parameter, seq_model = cseq.load_seq_model(model_config, data_sets["train"], gpu=gpu)
 train_evals = cseq.load_evaluations(train_evals_config, data_sets, gpu=gpu)

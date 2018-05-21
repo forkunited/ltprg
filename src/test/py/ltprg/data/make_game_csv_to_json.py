@@ -136,7 +136,7 @@ def process_record(record, D, record_type):
                 sub_record[key] = int(record[key])
             elif (record[key].startswith("[") and record[key].endswith("]")) or (record[key].startswith("{") and record[key].endswith("}")):
                 obj = json.loads(record[key])
-                if key == "action" or key == "utterance" or key == "obj":
+                if key == "utterance" or key == "obj":
                     for k in obj:
                         sub_record[k] = obj[k]
                 else:
