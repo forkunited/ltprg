@@ -19,6 +19,7 @@ parser.add_argument('config_file_prefix', action="store")
 parser.add_argument('output_file_path', action="store")
 parser.add_argument('--config_fields', nargs='+')
 parser.add_argument('--results_fields', nargs='+')
+parser.add_argument('--config_defaults', nargs='+')
 args = parser.parse_args()
 
 def process_result(result_file_path, config_file_path):
@@ -27,10 +28,16 @@ def process_result(result_file_path, config_file_path):
         config = json.load(fp)
 
     config_field_values = dict()
+    i = 0
     for field in args.config_fields:
         path_values = [(field, match.value) for match in parse(field).find(config)]
-        for key, value in path_values:
-            config_field_values[key] = value
+        if len(path_values) == 0:
+            config_field_values[field] = args.config_defaults[i]
+        else:
+            for key, value in path_values:
+                config_field_values[key] = value
+
+        i += 1
 
     f = open(result_file_path, 'rt')
     rows = []
@@ -56,7 +63,13 @@ def output_tsv(file_path, rows):
         for rem in to_rem:
             del row[rem]
 
-    fields = OrderedDict([(k, None) for k in rows[0].keys()])
+    config_set = set(args.config_fields)
+    fields = [(k, None) for k in config_set]
+    for field in rows[0].keys():
+        if field not in config_set:
+            fields.append((field, None))
+
+    fields = OrderedDict(fields)
     f = open(file_path, 'wb')
     try:
         writer = csv.DictWriter(f, delimiter='\t', fieldnames=fields)
@@ -71,19 +84,19 @@ def group_rows(rows):
     for row in rows:
         cur_agg = agg
         for field in args.config_fields:
-            if field not in cur_agg:
-                cur_agg[field] = dict()
-            cur_agg = cur_agg[field]
+            if row[field] not in cur_agg:
+                cur_agg[row[field]] = dict()
+            cur_agg = cur_agg[row[field]]
 
         for field in args.results_fields:
             if field not in cur_agg:
                 cur_agg[field] = []
             cur_agg[field].append(row[field])
-
     return make_grouped_rows(agg, 0, dict(), [])
 
 def make_grouped_rows(agg, field_index, cur_row, grouped_rows):
     if field_index == len(args.config_fields):
+        cur_row = dict(cur_row)
         for field in args.results_fields:
             grouped_results = agg[field]
             grouped_results = np.array([float(grouped_results[i]) for i in range(len(grouped_results))])
@@ -93,9 +106,9 @@ def make_grouped_rows(agg, field_index, cur_row, grouped_rows):
             grouped_rows.append(cur_row)
     else:
         for key in agg.keys():
-            cur_row = dict(cur_row)
-            cur_row[args.config_fields[field_index]] = key
-            make_grouped_rows(agg[key], field_index+1, cur_row, grouped_rows)
+            updated_row = dict(cur_row)
+            updated_row[args.config_fields[field_index]] = key
+            make_grouped_rows(agg[key], field_index+1, updated_row, grouped_rows)
     return grouped_rows
 
 def aggregate_directory(dir_path):
@@ -103,12 +116,20 @@ def aggregate_directory(dir_path):
     result_files = []
     config_files = []
     for d in dirs:
+        has_config = False
+        has_result = False
         for f in listdir(d):
             file_path = join(d, f)
             if isfile(file_path) and f.startswith(args.result_file_prefix):
                 result_files.append(file_path)
+                has_result = True
             elif isfile(file_path) and f.startswith(args.config_file_prefix):
                 config_files.append(file_path)
+                has_config = True
+        if not has_config:
+            raise ValueError("Missing config in " + d)
+        if not has_result:
+            raise ValueError("Missing result in " + d)
 
     rows = []
     for i in range(len(result_files)):
