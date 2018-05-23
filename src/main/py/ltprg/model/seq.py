@@ -307,8 +307,13 @@ class SequenceModel(nn.Module):
                     ended[(j*samples_per_input):((j+1)*samples_per_input)] = ended[sample_indices.data.cpu()]
                     next_token[(j*samples_per_input):((j+1)*samples_per_input)] = next_token[sample_indices.data]
                     if isinstance(hidden, tuple):
-                        hidden[0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][:,sample_indices.data]
-                        hidden[1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][:,sample_indices.data]
+                        if isinstance(hidden[0], tuple):
+                            hidden[0][0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][0][:,sample_indices.data]
+                            hidden[0][1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][1][:,sample_indices.data]
+                            hidden[1][(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][sample_indices.data]
+                        else:
+                            hidden[0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][:,sample_indices.data]
+                            hidden[1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][:,sample_indices.data]
                     else:
                         hidden[:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[:,sample_indices.data]
 

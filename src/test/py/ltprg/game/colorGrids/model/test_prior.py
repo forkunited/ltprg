@@ -5,6 +5,7 @@ import torch
 import json
 import numpy as np
 import time
+import ltprg.data.feature
 import ltprg.config.rsa as crsa
 import mung.config.feature as cfeature
 from mung.util.config import Config
@@ -16,6 +17,7 @@ parser.add_argument('id', action="store")
 parser.add_argument('env', action="store")
 parser.add_argument('data', action="store")
 parser.add_argument('model', action="store")
+parser.add_argument('prior_data', action="store")
 parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
@@ -46,7 +48,7 @@ np.random.seed(seed)
 _, data_sets = cfeature.load_mvdata(data_config)
 
 data_parameter, rsa_model = crsa.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
-priorv = PriorView("Prior", data_sets["train"].get_random_subset(0,30), data_parameter, output_path)
+priorv = PriorView("Prior", data_sets[args.prior_data].get_random_subset(30), data_parameter, output_path)
 start_time = time.time()
 result = priorv.run(rsa_model)
 duration = time.time() - start_time
