@@ -324,7 +324,9 @@ class SequenceModel(nn.Module):
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False)) #**8.0
+                    #print "Heur: ", heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)]
+                    #print "Dist: ", w_normalized
                     indices = torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
                     self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
@@ -389,7 +391,7 @@ class SequenceModel(nn.Module):
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1].exp()
-            next_token = torch.multinomial(output_dist, num_samples=n_before_heuristic, replacement=False).data
+            next_token = torch.multinomial(output_dist, num_samples=n_before_heuristic, replacement=True).data
             
             # Extend sample to contain n_before_heuristic*seq_sample_count samples extended with one token 
             # to be evaluated by heuristic
@@ -419,7 +421,7 @@ class SequenceModel(nn.Module):
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
                     # Sort the sample based on the heuristic                    
-                    _, indices = torch.sort(heuristic_output[(j*next_per_input):((j+1)*next_per_input)],0, True)
+                    _, indices = torch.sort(Variable(heuristic_output[(j*next_per_input):((j+1)*next_per_input)], requires_grad=False),0, True)
                     self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
             # Cut the sample back down so there are just n_samples_per_input samples per input

@@ -10,7 +10,7 @@
     },
     "utterance_prior" : {
         "seq_model_path" : "$!{s0_model}",
-        "heuristic" : "L0",
+        "heuristic" : "L0H",
         "parameters" : {
             "training_mode" : "SMC",
             "eval_mode" : "SMC",

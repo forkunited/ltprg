@@ -27,4 +27,4 @@ class HeuristicL0H(nn.Module):
         ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning, softmax=False)
         ps = torch.squeeze(ps, 1)
         neg_H = torch.sum(ps*torch.log(ps), 1)
-        return neg_H, heuristic_state
+        return neg_H.data, heuristic_state
