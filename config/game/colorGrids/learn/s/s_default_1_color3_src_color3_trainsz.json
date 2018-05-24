@@ -1,0 +1,12 @@
+{
+    "max_evaluation" : false,
+    "data" : "train_src_color3_cleanutts",
+    "data_size" : "$!{train_data_size}",
+    "iterations" : 7000,
+    "batch_size" : 128,
+    "optimizer_type" : "ADAM",
+    "learning_rate" : 0.004,
+    "weight_decay" : 0.0,
+    "gradient_clipping" : 5.0,
+    "log_interval" : 100
+}

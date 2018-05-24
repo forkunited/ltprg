@@ -324,9 +324,7 @@ class SequenceModel(nn.Module):
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False)) #**8.0
-                    #print "Heur: ", heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)]
-                    #print "Dist: ", w_normalized
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
                     indices = torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
                     self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
