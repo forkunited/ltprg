@@ -13,6 +13,7 @@ from mung.util.log import Logger
 from mung.torch_ext.eval import Evaluation
 from ltprg.util.file import make_indexed_dir
 from ltprg.model.rsa import RSA
+from ltprg.data.curriculum import make_sua_datum_token_frequency_fn
 
 parser = argparse.ArgumentParser()
 parser.add_argument('id', action="store")
@@ -99,38 +100,12 @@ with open(config_output_path, 'w') as fp:
 logger = Logger()
 logger.set_file_path(log_path)
 
-# For curriculum
-def distance_key_fn(datum):
-    #objs = datum.get("state.state.objs")
-    #target = datum.get("state.state.target")
-    #target_obj = objs[target]
-    #target_colors = [target_obj["shapes"][i]["color"] for i in range(len(target_obj["shapes"]))]
-    #distractor_objs = [objs[i] for i in range(len(objs)) if i != target]
-    #dist = 0.0
-    #for obj in distractor_objs:
-    #    cur_dist = 0.0
-    #    for i in range(len(target_colors)):
-    #        distract_color = obj["shapes"][i]["color"]
-
-    #        cur_dist += (target_colors[i][0] - distract_color[0])**2 + \
-    #                (target_colors[i][1] - distract_color[1])**2 + \
-    #                (target_colors[i][2] - distract_color[2])**2
-    #    cur_dist = np.sqrt(cur_dist)
-    #    dist += cur_dist
-    #return -dist
-    l = 0
-    utterances = datum.get("utterances")
-    for u in utterances:
-        l += len(u["nlp"]["clean_strs"]["strs"])
-    return l
-
-
 # Run training 
 loss_criterion = torch.nn.NLLLoss()
 best_part_fn = lambda m : (m.get_meaning_fn(), m.get_observation_fn())
 last_model, best_part, best_iteration = clearn.train_from_config(learn_config, \
     data_parameter, loss_criterion, logger, train_evals, rsa_model, data_sets, best_part_fn=best_part_fn, \
-    curriculum_key_fn=distance_key_fn)
+    curriculum_key_fn_constructor=make_sua_datum_token_frequency_fn)
 
 best_meaning_fn = best_part[0]
 best_observation_fn = best_part[1]

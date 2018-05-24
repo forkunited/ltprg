@@ -13,6 +13,7 @@ from mung.util.log import Logger
 from mung.torch_ext.eval import Evaluation
 from ltprg.util.file import make_indexed_dir
 from ltprg.model.seq import VariableLengthNLLLoss, strs_for_scored_samples
+from ltprg.data.curriculum import make_sua_datum_token_frequency_fn
 
 parser = argparse.ArgumentParser()
 parser.add_argument('id', action="store")
@@ -105,7 +106,8 @@ logger.set_file_path(log_path)
 # Run training 
 loss_criterion = VariableLengthNLLLoss()
 last_model, best_model, best_iteration = clearn.train_from_config(learn_config, \
-    data_parameter, loss_criterion, logger, train_evals, seq_model, data_sets)
+    data_parameter, loss_criterion, logger, train_evals, seq_model, data_sets,\
+    curriculum_key_fn_constructor=make_sua_datum_token_frequency_fn)
 
 # Output logs
 logger.dump(file_path=log_path)
