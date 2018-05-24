@@ -179,6 +179,9 @@ class SequenceSamplingPriorFn(nn.Module):
         elif (self.training and self._training_mode == SamplingMode.SMC) or ((not self.training) and self._eval_mode == SamplingMode.SMC):
             samples = self._model.smc(n_per_input=self._samples_per_input, max_length=self._sample_length, input=all_inputs, heuristic=self._heuristic, \
                                          context=(all_contexts, all_input_indices))
+        elif (self.training and self._training_mode == SamplingMode.BEAM_SAMPLE) or ((not self.training) and self._eval_mode == SamplingMode.BEAM_SAMPLE):
+            samples = self._model.beam_sample(n_per_input=self._samples_per_input, max_length=self._sample_length, input=all_inputs, heuristic=self._heuristic, \
+                                         context=(all_contexts, all_input_indices), n_before_heuristic=self._n_before_heuristic)
 
         has_fixed = 0
         if self._fixed_seq is not None:

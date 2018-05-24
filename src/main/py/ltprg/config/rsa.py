@@ -5,7 +5,7 @@ from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
 from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, MeaningModelIndexedWorldSpeaker, SequentialUtteranceInputType
 from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
 from ltprg.model.seq import SequenceModel, SequenceModelNoInput, SequenceModelAttendedInput, SequenceModelInputToHidden
-from ltprg.model.seq_heuristic import HeuristicL0
+from ltprg.model.seq_heuristic import HeuristicL0, HeuristicL0H
 
 
 # Expects config of the form:
@@ -21,7 +21,7 @@ from ltprg.model.seq_heuristic import HeuristicL0
 #   },
 #   utterance_prior : {
 #     (Optional) seq_model_path : [PATH TO STORED UTTERANCE PRIOR SEQUENCE MODEL (meaning_fn.seq_model used if not provided)]
-#     heuristic : [NAME OF HEURISTIC FOR GUIDING UTTERANCE SAMPLING (L0|None)]
+#     heuristic : [NAME OF HEURISTIC FOR GUIDING UTTERANCE SAMPLING (L0|L0H|None)]
 #     parameters : {
 #       training_mode : [SAMPLING MODE DURING TRAINING (FORWARD|BEAM|SMC)] 
 #       eval_mode : [SAMPLING MODE DURING EVALUATION (FORWARD|BEAM|SMC)]
@@ -150,6 +150,8 @@ def load_rsa_model(config, D, gpu=False):
     heuristic = None
     if config["utterance_prior"]["heuristic"] == "L0":
         heuristic = HeuristicL0(world_prior_fn, meaning_fn, soft_bottom=False)
+    elif config["utterance_prior"]["heuristic"] == "L0H":
+        heuristic = HeuristicL0H(world_prior_fn, meaning_fn)
 
     seq_prior_model = meaning_fn.get_seq_model()
     if "seq_model_path" in config["utterance_prior"]:

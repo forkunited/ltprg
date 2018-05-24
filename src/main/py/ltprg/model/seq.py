@@ -45,6 +45,7 @@ class SamplingMode:
     FORWARD = "FORWARD"
     BEAM = "BEAM"
     SMC = "SMC"
+    BEAM_SAMPLE = "BEAM_SAMPLE"
 
 class VariableLengthNLLLoss(nn.Module):
     def __init__(self, norm_dim=False):
@@ -244,6 +245,29 @@ class SequenceModel(nn.Module):
             ret_samples.append((sample_in, seq_length_in, 0.0))
         return ret_samples
 
+    def _rearrange_sample(self, sample, seq_length, ended, next_token, hidden, range_index, indices):
+        range_size = indices.size(0)
+        range_start = range_index*range_size
+        range_end = (range_index+1)*range_size
+        sample_indices = (range_start + indices).data
+        
+        sample[:,range_start:range_end] = sample.transpose(0,1)[sample_indices].transpose(0,1)
+        seq_length[range_start:range_end] = seq_length[sample_indices.cpu()]
+        ended[range_start:range_end] = ended[sample_indices.cpu()]
+        next_token[range_start:range_end] = next_token[sample_indices]
+
+        # FIXME Clean up this slop
+        if isinstance(hidden, tuple):
+            if isinstance(hidden[0], tuple):
+                hidden[0][0][:,range_start:range_end] = hidden[0][0][:,sample_indices]
+                hidden[0][1][:,range_start:range_end] = hidden[0][1][:,sample_indices]
+                hidden[1][range_start:range_end] = hidden[1][sample_indices]
+            else:
+                hidden[0][:,range_start:range_end] = hidden[0][:,sample_indices]
+                hidden[1][:,range_start:range_end] = hidden[1][:,sample_indices]
+        else:
+            hidden[:,range_start:range_end] = hidden[:,sample_indices]
+
     # NOTE: Assumes seq_part does not contain end tokens
     def smc(self, n_per_input=1, seq_part=None, max_length=15, input=None, heuristic=None, context=None):
         n = 1
@@ -301,21 +325,8 @@ class SequenceModel(nn.Module):
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
                     w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
-                    sample_indices = j*samples_per_input + torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
-                    sample[:,(j*samples_per_input):((j+1)*samples_per_input)] = sample.transpose(0,1)[sample_indices.data].transpose(0,1)
-                    seq_length[(j*samples_per_input):((j+1)*samples_per_input)] = seq_length[sample_indices.data.cpu()]
-                    ended[(j*samples_per_input):((j+1)*samples_per_input)] = ended[sample_indices.data.cpu()]
-                    next_token[(j*samples_per_input):((j+1)*samples_per_input)] = next_token[sample_indices.data]
-                    if isinstance(hidden, tuple):
-                        if isinstance(hidden[0], tuple):
-                            hidden[0][0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][0][:,sample_indices.data]
-                            hidden[0][1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][1][:,sample_indices.data]
-                            hidden[1][(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][sample_indices.data]
-                        else:
-                            hidden[0][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[0][:,sample_indices.data]
-                            hidden[1][:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[1][:,sample_indices.data]
-                    else:
-                        hidden[:,(j*samples_per_input):((j+1)*samples_per_input)] = hidden[:,sample_indices.data]
+                    indices = torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
+                    self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
             if ended_count == n:
                 break
@@ -328,9 +339,125 @@ class SequenceModel(nn.Module):
         # Return a list... like beam search...
         ret_samples = []
         for i in range(input_count):
-            input_in = None
-            if input is not None:
-                input_in = input[(i*samples_per_input):((i+1)*samples_per_input)]
+            sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
+            seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
+            # FIXME Add score at some point
+            ret_samples.append((sample_in, seq_length_in, 0.0))
+        return ret_samples
+
+    # NOTE: Assumes seq_part does not contain end tokens
+    def beam_sample(self, n_per_input=1, seq_part=None, max_length=15, input=None, heuristic=None, context=None, n_before_heuristic=10):
+        n = 1
+        input_count = 1
+        samples_per_input = n_per_input
+
+        if input is not None:
+            if isinstance(input, Variable):
+                input = input.data
+            input_count = input.size(0)
+            n = input.size(0) * samples_per_input
+            input = input.repeat(1, samples_per_input).view(n, input.size(1))
+            if self.on_gpu():
+                input = input.cuda()
+
+        if seq_part is not None:
+            input_count = seq_part.size(1)
+            n = seq_part.size(1) * samples_per_input
+            seq_part = seq_part.repeat(samples_per_input, 1).view(seq_part.size(0), n)
+            if isinstance(seq_part, Variable):
+                seq_part = seq_part.data
+        else:
+            if input is None:
+                n = samples_per_input
+            seq_part = torch.Tensor([Symbol.index(Symbol.SEQ_START)]) \
+                .repeat(n).long().view(1,n)
+
+        if heuristic is not None:
+            context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).transpose(0,1).contiguous().view(n, context[0].size(1)),
+                       context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).transpose(0,1).contiguous().view(n, 1))
+
+        if self.on_gpu():
+            seq_part = seq_part.cuda()
+
+        end_idx = Symbol.index(Symbol.SEQ_END)
+        ended = torch.zeros(n).long()
+        ended_count = 0
+        unit_length = torch.ones(n).long()
+        seq_length = unit_length*seq_part.size(0)
+        sample = copy.deepcopy(seq_part)
+        seq_sample_count = sample.size(1)
+        output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
+        for i in range(seq_part.size(0), max_length):
+            output_dist = output[output.size(0)-1].exp()
+            next_token = torch.multinomial(output_dist, num_samples=n_before_heuristic, replacement=True).data
+            
+            # Extend sample to contain n_before_heuristic*seq_sample_count samples extended with one token 
+            # to be evaluated by heuristic
+            next_token = next_token.view(seq_sample_count*n_before_heuristic, 1)
+            sample = sample.unsqueeze(2).expand(sample.size(0), sample.size(1), n_before_heuristic).view(sample.size(0), -1)
+            if isinstance(hidden, tuple):
+                if isinstance(hidden[0], tuple):
+                    hidden_0 = hidden[0][0].unsqueeze(2).expand(hidden[0][0].size(0),hidden[0][0].size(1), n_before_heuristic).view(hidden[0][0].size(0),hidden[0][0].size(1)*n_before_heuristic,hidden[0][0].size(2))
+                    hidden_1 = hidden[0][1].unsqueeze(2).expand(hidden[0][1].size(0),hidden[0][1].size(1), n_before_heuristic).view(hidden[0][1].size(0),hidden[0][1].size(1)*n_before_heuristic,hidden[0][1].size(2))
+                    hidden_1_0 = hidden[1].unsqueeze(1).expand(hidden[1].size(0),n_before_heuristic,hidden[1].size(1)).view(hidden[1].size(0)*n_before_heuristic, hidden[1].size(1))
+                    hidden = ((hidden_0, hidden_1), hidden_1_0)
+                else:
+                    hidden_0 = hidden[0].unsqueeze(2).expand(hidden[0].size(0),hidden[0].size(1), n_before_heuristic).view(hidden[0].size(0),hidden[0].size(1)*n_before_heuristic,hidden[0].size(2))
+                    hidden_1 = hidden[1].unsqueeze(2).expand(hidden[1].size(0),hidden[1].size(1), n_before_heuristic).view(hidden[1].size(0),hidden[1].size(1)*n_before_heuristic,hidden[1].size(2))
+                    hidden = (hidden_0, hidden_1)
+            else:
+                hidden = hidden.unsqueeze(2).expand(hidden.size(0),hidden.size(1), n_before_heuristic).view(hidden.size(0),hidden.size(1)*n_before_heuristic,hidden.size(2)) 
+            ended = ended.unsqueeze(1).expand(ended.size(0), n_before_heuristic).view(-1)
+            seq_length = seq_length.unsqueeze(1).expand(seq_length.size(0), n_before_heuristic).view(-1)
+            
+            sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
+            next_per_input = samples_per_input*n_before_heuristic
+
+            for j in range(next_token.size(0)):
+                seq_length[j] += 1 - ended[j]
+
+            if heuristic is not None:
+                heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
+                for j in range(input_count):
+                    # Sort the sample based on the heuristic                    
+                    _, indices = torch.sort(Variable(heuristic_output[(j*next_per_input):((j+1)*next_per_input)], requires_grad=False),0, True)
+                    self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
+
+            # Cut the sample back down so there are just n_samples_per_input samples per input
+            # from all the possible sampled extensions
+            next_token = next_token.view(input_count, -1)[:,0:samples_per_input].view(-1)
+            sample = sample.view(-1, input_count, next_per_input)[:,:,0:samples_per_input].view(-1,input_count*samples_per_input)
+            if isinstance(hidden, tuple):
+                if isinstance(hidden[0], tuple):
+                    hidden_0 = hidden[0][0].view(-1,input_count, next_per_input,hidden[0][0].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0][0].size(2))
+                    hidden_1 = hidden[0][1].view(-1,input_count, next_per_input,hidden[0][1].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0][1].size(2))
+                    hidden_1_0 = hidden[1].view(input_count, next_per_input, hidden[1].size(1))[:,0:samples_per_input].view(-1, input_count*samples_per_input,hidden[1].size(1))
+                    hidden = ((hidden_0, hidden_1), hidden_1_0)
+                else:
+                    hidden_0 = hidden[0].view(-1,input_count, next_per_input,hidden[0].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0].size(2))
+                    hidden_1 = hidden[1].view(-1,input_count, next_per_input,hidden[1].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[1].size(2))
+                    hidden = (hidden_0, hidden_1)
+            else:
+                hidden = hidden.view(-1,input_count, next_per_input,hidden.size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden.size(2))
+            ended = ended.view(input_count, -1)[:,0:samples_per_input].view(-1)
+            seq_length = seq_length.view(input_count, -1)[:,0:samples_per_input].view(-1)
+            
+            for j in range(next_token.size(0)):
+                if next_token[j][0] == end_idx and ended[j] != 1:
+                    ended[j] = 1
+                    ended_count += 1
+
+            if ended_count == n:
+                break
+
+            output, hidden = self._forward_from_hidden(hidden,
+                                                       Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
+                                                       unit_length,
+                                                       input=Variable(input, requires_grad=False))
+
+        # Return a list... like beam search...
+        ret_samples = []
+        for i in range(input_count):
             sample_in = sample[:,(i*samples_per_input):((i+1)*samples_per_input)]
             seq_length_in = seq_length[(i*samples_per_input):((i+1)*samples_per_input)]
             # FIXME Add score at some point
