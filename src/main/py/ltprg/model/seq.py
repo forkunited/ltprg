@@ -373,8 +373,8 @@ class SequenceModel(nn.Module):
                 .repeat(n).long().view(1,n)
 
         if heuristic is not None:
-            context = (context[0].unsqueeze(0).expand(samples_per_input, context[0].size(0), context[0].size(1)).transpose(0,1).contiguous().view(n, context[0].size(1)),
-                       context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).transpose(0,1).contiguous().view(n, 1))
+            context = (context[0].unsqueeze(0).expand(samples_per_input*n_before_heuristic, context[0].size(0), context[0].size(1)).transpose(0,1).contiguous().view(-1, context[0].size(1)),
+                       context[1].unsqueeze(0).expand(samples_per_input*n_before_heuristic, context[1].size(0)).transpose(0,1).contiguous().view(-1, 1))
 
         if self.on_gpu():
             seq_part = seq_part.cuda()
@@ -389,61 +389,60 @@ class SequenceModel(nn.Module):
         output, hidden = self(seq_part=Variable(seq_part), seq_length=seq_length, input=Variable(input))
         for i in range(seq_part.size(0), max_length):
             output_dist = output[output.size(0)-1].exp()
-            next_token = torch.multinomial(output_dist, num_samples=n_before_heuristic, replacement=True).data
+            next_token = torch.multinomial(output_dist, num_samples=n_before_heuristic, replacement=False).data
             
             # Extend sample to contain n_before_heuristic*seq_sample_count samples extended with one token 
             # to be evaluated by heuristic
             next_token = next_token.view(seq_sample_count*n_before_heuristic, 1)
-            sample = sample.unsqueeze(2).expand(sample.size(0), sample.size(1), n_before_heuristic).view(sample.size(0), -1)
+            sample = sample.unsqueeze(2).expand(sample.size(0), sample.size(1), n_before_heuristic).contiguous().view(sample.size(0), -1)
             if isinstance(hidden, tuple):
                 if isinstance(hidden[0], tuple):
-                    hidden_0 = hidden[0][0].unsqueeze(2).expand(hidden[0][0].size(0),hidden[0][0].size(1), n_before_heuristic).view(hidden[0][0].size(0),hidden[0][0].size(1)*n_before_heuristic,hidden[0][0].size(2))
-                    hidden_1 = hidden[0][1].unsqueeze(2).expand(hidden[0][1].size(0),hidden[0][1].size(1), n_before_heuristic).view(hidden[0][1].size(0),hidden[0][1].size(1)*n_before_heuristic,hidden[0][1].size(2))
-                    hidden_1_0 = hidden[1].unsqueeze(1).expand(hidden[1].size(0),n_before_heuristic,hidden[1].size(1)).view(hidden[1].size(0)*n_before_heuristic, hidden[1].size(1))
+                    hidden_0 = hidden[0][0].unsqueeze(2).expand(hidden[0][0].size(0),hidden[0][0].size(1), n_before_heuristic, hidden[0][0].size(2)).contiguous().view(hidden[0][0].size(0),hidden[0][0].size(1)*n_before_heuristic,hidden[0][0].size(2))
+                    hidden_1 = hidden[0][1].unsqueeze(2).expand(hidden[0][1].size(0),hidden[0][1].size(1), n_before_heuristic, hidden[0][1].size(2)).contiguous().view(hidden[0][1].size(0),hidden[0][1].size(1)*n_before_heuristic,hidden[0][1].size(2))
+                    hidden_1_0 = hidden[1].unsqueeze(1).expand(hidden[1].size(0),n_before_heuristic,hidden[1].size(1), hidden[1].size(2)).contiguous().view(hidden[1].size(0)*n_before_heuristic, hidden[1].size(1),hidden[1].size(2))
                     hidden = ((hidden_0, hidden_1), hidden_1_0)
                 else:
-                    hidden_0 = hidden[0].unsqueeze(2).expand(hidden[0].size(0),hidden[0].size(1), n_before_heuristic).view(hidden[0].size(0),hidden[0].size(1)*n_before_heuristic,hidden[0].size(2))
-                    hidden_1 = hidden[1].unsqueeze(2).expand(hidden[1].size(0),hidden[1].size(1), n_before_heuristic).view(hidden[1].size(0),hidden[1].size(1)*n_before_heuristic,hidden[1].size(2))
+                    hidden_0 = hidden[0].unsqueeze(2).expand(hidden[0].size(0),hidden[0].size(1), n_before_heuristic, hidden[0].size(2)).contiguous().view(hidden[0].size(0),hidden[0].size(1)*n_before_heuristic,hidden[0].size(2))
+                    hidden_1 = hidden[1].unsqueeze(2).expand(hidden[1].size(0),hidden[1].size(1), n_before_heuristic, hidden[0].size(2)).contiguous().view(hidden[1].size(0),hidden[1].size(1)*n_before_heuristic,hidden[1].size(2))
                     hidden = (hidden_0, hidden_1)
             else:
-                hidden = hidden.unsqueeze(2).expand(hidden.size(0),hidden.size(1), n_before_heuristic).view(hidden.size(0),hidden.size(1)*n_before_heuristic,hidden.size(2)) 
-            ended = ended.unsqueeze(1).expand(ended.size(0), n_before_heuristic).view(-1)
-            seq_length = seq_length.unsqueeze(1).expand(seq_length.size(0), n_before_heuristic).view(-1)
+                hidden = hidden.unsqueeze(2).expand(hidden.size(0),hidden.size(1), n_before_heuristic, hidden.size(2)).contiguous().view(hidden.size(0),hidden.size(1)*n_before_heuristic,hidden.size(2)) 
+            ended = ended.unsqueeze(1).expand(ended.size(0), n_before_heuristic).contiguous().view(-1)
+            seq_length = seq_length.unsqueeze(1).expand(seq_length.size(0), n_before_heuristic).contiguous().view(-1)
             
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
             next_per_input = samples_per_input*n_before_heuristic
 
             for j in range(next_token.size(0)):
                 seq_length[j] += 1 - ended[j]
-
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
                     # Sort the sample based on the heuristic                    
-                    _, indices = torch.sort(Variable(heuristic_output[(j*next_per_input):((j+1)*next_per_input)], requires_grad=False),0, True)
+                    _, indices = torch.sort(heuristic_output[(j*next_per_input):((j+1)*next_per_input)],0, True)
                     self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
             # Cut the sample back down so there are just n_samples_per_input samples per input
             # from all the possible sampled extensions
-            next_token = next_token.view(input_count, -1)[:,0:samples_per_input].view(-1)
-            sample = sample.view(-1, input_count, next_per_input)[:,:,0:samples_per_input].view(-1,input_count*samples_per_input)
+            next_token = next_token.contiguous().view(input_count, -1)[:,0:samples_per_input].contiguous().view(-1)
+            sample = sample.contiguous().view(-1, input_count, next_per_input)[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input)
             if isinstance(hidden, tuple):
                 if isinstance(hidden[0], tuple):
-                    hidden_0 = hidden[0][0].view(-1,input_count, next_per_input,hidden[0][0].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0][0].size(2))
-                    hidden_1 = hidden[0][1].view(-1,input_count, next_per_input,hidden[0][1].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0][1].size(2))
-                    hidden_1_0 = hidden[1].view(input_count, next_per_input, hidden[1].size(1))[:,0:samples_per_input].view(-1, input_count*samples_per_input,hidden[1].size(1))
+                    hidden_0 = hidden[0][0].contiguous().view(-1,input_count, next_per_input,hidden[0][0].size(2))[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input,hidden[0][0].size(2))
+                    hidden_1 = hidden[0][1].contiguous().view(-1,input_count, next_per_input,hidden[0][1].size(2))[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input,hidden[0][1].size(2))
+                    hidden_1_0 = hidden[1].contiguous().view(input_count, next_per_input, hidden[1].size(1), hidden[1].size(2))[:,0:samples_per_input].contiguous().view(input_count*samples_per_input, hidden[1].size(1),hidden[1].size(2))
                     hidden = ((hidden_0, hidden_1), hidden_1_0)
                 else:
-                    hidden_0 = hidden[0].view(-1,input_count, next_per_input,hidden[0].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[0].size(2))
-                    hidden_1 = hidden[1].view(-1,input_count, next_per_input,hidden[1].size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden[1].size(2))
+                    hidden_0 = hidden[0].contiguous().view(-1,input_count, next_per_input,hidden[0].size(2))[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input,hidden[0].size(2))
+                    hidden_1 = hidden[1].contiguous().view(-1,input_count, next_per_input,hidden[1].size(2))[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input,hidden[1].size(2))
                     hidden = (hidden_0, hidden_1)
             else:
-                hidden = hidden.view(-1,input_count, next_per_input,hidden.size(2))[:,:,0:samples_per_input].view(-1,input_count*samples_per_input,hidden.size(2))
-            ended = ended.view(input_count, -1)[:,0:samples_per_input].view(-1)
-            seq_length = seq_length.view(input_count, -1)[:,0:samples_per_input].view(-1)
+                hidden = hidden.contiguous().view(-1,input_count, next_per_input,hidden.size(2))[:,:,0:samples_per_input].contiguous().view(-1,input_count*samples_per_input,hidden.size(2))
+            ended = ended.contiguous().view(input_count, -1)[:,0:samples_per_input].contiguous().view(-1)
+            seq_length = seq_length.contiguous().view(input_count, -1)[:,0:samples_per_input].contiguous().view(-1)
             
             for j in range(next_token.size(0)):
-                if next_token[j][0] == end_idx and ended[j] != 1:
+                if next_token[j] == end_idx and ended[j] != 1:
                     ended[j] = 1
                     ended_count += 1
 
