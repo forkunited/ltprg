@@ -1,0 +1,13 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "world"
+    },
+    "name" : "S",
+    "arch_type" : "SequenceModelNoInput",
+    "dropout" : 0.5,
+    "rnn_layers" : 1,
+    "rnn_size" : 100,
+    "embedding_size" : 100,
+    "rnn_type" : "LSTM"
+}

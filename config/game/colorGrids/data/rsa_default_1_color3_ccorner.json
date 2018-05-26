@@ -4,7 +4,7 @@
     "dfmat_paths" : {
       "target" : "$!{data_feature_path_colorgrids_1_color3_target}",
       "observation" : "$!{data_feature_path_colorgrids_1_color3_color_corner}"  },
-    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_clean}" },
+    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_unclean_short}" },
     "ordering_seq" : "utterance"
   },
 

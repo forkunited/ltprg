@@ -316,20 +316,43 @@ class SequenceModel(nn.Module):
             sample = torch.cat((sample, next_token.transpose(1,0)), dim=0)
 
             for j in range(next_token.size(0)):
-                seq_length[j] += 1 - ended[j]
-                if next_token[j][0] == end_idx and ended[j] != 1:
-                    ended[j] = 1
-                    ended_count += 1
+                 seq_length[j] += 1 - ended[j]
+                 if next_token[j][0] == end_idx and ended[j] != 1:
+                     ended[j] = 1
+                     ended_count += 1
+
+            if ended_count == n:
+                break
 
             if heuristic is not None:
                 heuristic_output, _ = heuristic((sample, seq_length), Variable(input, requires_grad=False), None, context=context)
                 for j in range(input_count):
-                    w_normalized = nn.functional.softmax(Variable(heuristic_output[(j*samples_per_input):((j+1)*samples_per_input)], requires_grad=False))
-                    indices = torch.multinomial(w_normalized, num_samples=samples_per_input,replacement=True)
+                    # Move ended samples to front
+                    indices = Variable(torch.arange(0, samples_per_input), requires_grad=False).long()
+                    if self.on_gpu():
+                        indices = indices.cuda()
+                    input_ended_count = 0
+                    for k in range(j*samples_per_input, (j+1)*samples_per_input):
+                        if ended[k] == 1:
+                            indices[input_ended_count] = k - j*samples_per_input
+                            indices[k- j*samples_per_input] = input_ended_count
+                            input_ended_count += 1
+
                     self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
-            if ended_count == n:
-                break
+                    # Resample based on heuristic amongst non-ended samples if there is more than one non-ended
+                    first_non_ended = j*samples_per_input + input_ended_count
+                    if first_non_ended >= (j+1)*samples_per_input-1: # At most one non-ended input, so don't bother resampling
+                        continue
+ 
+                    indices = Variable(torch.arange(0, samples_per_input), requires_grad=False).long()
+                    if self.on_gpu():
+                        indices= indices.cuda()
+                    w_normalized = nn.functional.softmax(Variable(heuristic_output[first_non_ended:((j+1)*samples_per_input)], requires_grad=False))
+                    
+                    input_ended_count = first_non_ended-j*samples_per_input
+                    indices[input_ended_count:samples_per_input] = input_ended_count + torch.multinomial(w_normalized, num_samples=samples_per_input-input_ended_count,replacement=True)
+                    self._rearrange_sample(sample, seq_length, ended, next_token, hidden, j, indices)
 
             output, hidden = self._forward_from_hidden(hidden,
                                                        Variable(next_token.view(1, next_token.size(0)), requires_grad=False),
