@@ -10,6 +10,6 @@
     "log_interval" : 100,
     "curriculum" : {
         "steps" : 7,
-        "final_iterations" : 3000
+        "final_iterations" : 4000
     }
 }

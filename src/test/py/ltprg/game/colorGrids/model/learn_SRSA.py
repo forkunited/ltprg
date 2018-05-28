@@ -14,7 +14,7 @@ from mung.util.log import Logger
 from mung.torch_ext.eval import Evaluation
 from ltprg.util.file import make_indexed_dir
 from ltprg.model.rsa import RSA
-from ltprg.model.seq import VariableLengthNLLLoss
+from ltprg.model.seq import VariableLengthNLLLoss, DataParameter
 from ltprg.data.curriculum import make_sua_datum_token_frequency_fn
 
 parser = argparse.ArgumentParser()
@@ -33,6 +33,7 @@ parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
 parser.add_argument('--eval_test', action='store', dest='eval_test', type=int, default=0)
+parser.add_argument('--clean_length', action='store', dest='clean_length', type=int, default=12)
 parser.add_argument('--only_correct_clean_train', action='store', dest='only_correct_clean_train', type=bool, default=True)
 args, extra_env_args = parser.parse_known_args()
 
@@ -70,11 +71,18 @@ _, data_sets = cfeature.load_mvdata(data_config)
 
 keys = set(data_sets.keys())
 for key in keys:
-    if args.only_correct_clean_train and key.startswith("train"):
-        data_sets[key] = data_sets[key].filter(lambda d : d.get("state.state.target") == d.get("state.state.listenerOrder")[d.get("action.action.lClicked")] )
-        print "Filtered clean train data to only listener correct examples (" + str(data_sets[key].get_size()) + ")"
+    if key.startswith("train") or key.startswith("dev") or key.startswith("test"):
+        new_key = key + "_cleanutts"
+        data_sets[new_key] = data_sets[key].filter(lambda d : len(d.get("utterances")) == 1 and len(d.get("utterances[0].nlp.clean_strs.strs")) <= args.clean_length)
+        print "Created extra data set " + new_key + " of size " + str(data_sets[new_key].get_size()) + " from " + str(data_sets[key].get_size())
 
-data_parameter, rsa_model = crsa.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
+        if args.only_correct_clean_train and key.startswith("train"):
+            data_sets[new_key] = data_sets[new_key].filter(lambda d : d.get("state.state.target") == d.get("state.state.listenerOrder")[d.get("action.action.lClicked")] )
+            print "Filtered clean train data to only listener correct examples (" + str(data_sets[new_key].get_size()) + ")"
+
+
+rsa_data_parameter, rsa_model = crsa.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
+seq_data_parameter = DataParameter.make(**model_config["seq_data_parameter"])
 rsa_train_evals = crsa.load_evaluations(rsa_train_evals_config, data_sets, gpu=gpu)
 rsa_dev_evals = crsa.load_evaluations(rsa_dev_evals_config, data_sets, gpu=gpu)
 rsa_test_evals = crsa.load_evaluations(rsa_test_evals_config, data_sets, gpu=gpu)
@@ -112,16 +120,18 @@ full_config["s_test_evals"] = s_test_evals_config.get_dict()
 with open(config_output_path, 'w') as fp:
     json.dump(full_config, fp)
 
-logger = Logger()
-logger.set_file_path(log_path)
+rsa_logger = Logger()
+rsa_logger.set_file_path(log_path + "_rsa")
+s_logger = Logger()
+s_logger.set_file_path(log_path + "_s")
 
 # Run training 
 rsa_loss_criterion = torch.nn.NLLLoss()
 s_loss_criterion = VariableLengthNLLLoss()
 best_part_fn = lambda m : (m.get_meaning_fn(), m.get_observation_fn())
 last_model, best_part, best_iteration = clearn.cotrain_from_config(learn_config, \
-    data_parameter, [rsa_loss_criterion, s_loss_criterion], logger, [rsa_train_evals, s_train_evals], \
-    [rsa_model,rsa_model.get_meaning_fn().get_seq_model()], data_sets, best_part_fn=[best_part_fn,None], \
+    [seq_data_parameter, rsa_data_parameter], [s_loss_criterion, rsa_loss_criterion], [s_logger, rsa_logger], [s_train_evals, rsa_train_evals], \
+    [rsa_model.get_meaning_fn().get_seq_model(),rsa_model], data_sets, best_part_fns=[(lambda m : m), best_part_fn], \
     curriculum_key_fn_constructor=make_sua_datum_token_frequency_fn)
 
 best_meaning_fn = best_part[0]
@@ -138,7 +148,8 @@ best_model = RSA.make(dist_type + "_" + str(level), dist_type, level, \
                       observation_fn=best_observation_fn)
 
 # Output logs
-logger.dump(file_path=log_path)
+rsa_logger.dump(file_path=log_path + "_rsa")
+s_logger.dump(file_path=log_path + "_s")
 
 # Output results
 rsa_results_logger = Logger()
@@ -171,5 +182,4 @@ if eval_test:
 best_meaning_fn.save(meaning_model_path)
 if best_observation_fn is not None:
     best_observation_fn.save(observation_model_path)
-
 best_meaning_fn.get_seq_model().save(s_model_path)
