@@ -22,7 +22,7 @@ np.random.seed(1)
 class FeaturizeSUA(unittest.TestCase):
 
     # Constructs sequences of integer indices representing uncleaned utterances
-    def test_utterance_clean_indices_short(self):
+    def test_utterance_unclean_indices_short(self):
         print "Featurizing utterance unclean indices (short)"
         mung.feature_helpers.featurize_path_enum_seqs(
             input_data_dir, # Source data set
@@ -34,7 +34,22 @@ class FeaturizeSUA(unittest.TestCase):
             40, # Maximum utterance length
             indices=True, # Indicates that indices will be computed instead of one-hot vectors
             token_fn=lambda x : x.lower()) # Function applied to tokens to construct the vocabulary
-    
+
+    # Constructs sequences of integer indices representing uncleaned utterances
+    def test_utterance_unclean_indices(self):
+        print "Featurizing utterance unclean indices"
+        mung.feature_helpers.featurize_path_enum_seqs(
+            input_data_dir, # Source data set
+            join(output_feature_dir, "utterance_unclean_idx"), # Output directory
+            partition_file, # Data partition
+            lambda d : d.get("gameid"), # Function that partitions the data
+            "utterance_unclean_idx", # Name of the feature
+            ["utterances[*].nlp.token_strs.strs"], # JSON path into data examples
+            50, # Maximum utterance length
+            indices=True, # Indicates that indices will be computed instead of one-hot vectors
+            token_fn=lambda x : x.lower()) # Function applied to tokens to construct the vocabulary
+   
+ 
     """
     # Constructs sequences of integer indices representing cleaned utterances
     def test_utterance_clean_indices_short(self):

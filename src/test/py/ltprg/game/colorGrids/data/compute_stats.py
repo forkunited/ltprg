@@ -20,22 +20,22 @@ S["grid_far"] = S["grid"].filter(lambda d : d.get("state.state.condition.name") 
 
 S["grid_alld"] = S["grid"].filter(lambda d : d.get("state.state.condition.numDiffs") == 9)
 S["grid_larged"] = S["grid"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 7 and d.get("state.state.condition.numDiffs") <= 8)
-S["grid_mediumed"] = S["grid"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
+S["grid_mediumd"] = S["grid"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
 S["grid_smalld"] = S["grid"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 1 and d.get("state.state.condition.numDiffs") <= 2)
 
 S["grid_close_alld"] = S["grid_close"].filter(lambda d : d.get("state.state.condition.numDiffs") == 9)
 S["grid_close_larged"] = S["grid_close"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 7 and d.get("state.state.condition.numDiffs") <= 8)
-S["grid_close_mediumed"] = S["grid_close"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
+S["grid_close_mediumd"] = S["grid_close"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
 S["grid_close_smalld"] = S["grid_close"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 1 and d.get("state.state.condition.numDiffs") <= 2)
 
 S["grid_split_alld"] = S["grid_split"].filter(lambda d : d.get("state.state.condition.numDiffs") == 9)
 S["grid_split_larged"] = S["grid_split"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 7 and d.get("state.state.condition.numDiffs") <= 8)
-S["grid_split_mediumed"] = S["grid_split"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
+S["grid_split_mediumd"] = S["grid_split"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
 S["grid_split_smalld"] = S["grid_split"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 1 and d.get("state.state.condition.numDiffs") <= 2)
 
 S["grid_far_alld"] = S["grid_far"].filter(lambda d : d.get("state.state.condition.numDiffs") == 9)
 S["grid_far_larged"] = S["grid_far"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 7 and d.get("state.state.condition.numDiffs") <= 8)
-S["grid_far_mediumed"] = S["grid_far"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
+S["grid_far_mediumd"] = S["grid_far"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 3 and d.get("state.state.condition.numDiffs") <= 6)
 S["grid_far_smalld"] = S["grid_far"].filter(lambda d : d.get("state.state.condition.numDiffs") >= 1 and d.get("state.state.condition.numDiffs") <= 2)
 
 for key, D in S.iteritems():
