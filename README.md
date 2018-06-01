@@ -1,16 +1,252 @@
 # ltprg
 
-This repository contains code for learning to play reference games.  The
-repository is organized into an *examples* directory containing data examples,
-a *src/main* directory containing classes and functions for training and
-evaluating models, and a *src/test* directory containing tests, experiments,
-and scripts that run the model training and evaluation functions.
+This repository contains code for learning to play reference games.  
+The code relies on the [mungpy](https://github.com/forkunited/mungpy)
+repository for generic utilities to munge the reference game data into a JSON 
+format, vectorize this JSON into several tensor views of the data, and run 
+training/evaluations of the learning models using this tensor data.   
 
-The library relies on the [mungpy](https://github.com/forkunited/mungpy)
-repository at for munging the reference game data into a common format that
-can be featurized for use by the learning models.  Some
-instructions for how to push reference game data through this pipeline are
-given below.  The main steps in this pipeline described below include:
+The remainder of this README is organized into the following sections:
+
+* [A summary of the contents of this repository](#summary-of-repository-content)
+* [Details of how to setup the code environment](#setup)
+* [Instructions for pre-processing reference game data](#how-to-preprocess-reference-game-data-for-modeling)
+* [Instructions for training and evaluating models](#how-to-train-and-evaluate-models)
+
+## Summary of repository contents
+
+The repository is organized into a *config* directory containing configuration
+files for modeling experiments, an *examples* directory containing data examples,
+a *src/main* directory containing a library of classes and functions for 
+training and evaluating models, and a *src/test* directory containing tests, 
+experiments, and scripts that run the model training and evaluation functions.
+This separation between the main libraries and the scripts/tests was inspired by
+previous Java Maven projects, and might seem annoyingly over-complicated in leading
+to unnecessarily deep directory structures that aren't very typical of 
+Python projects.  This is a good point, but the structure has had the benefit of keeping 
+the one-off scripty type things out of the main library code in *src/main*. 
+
+### Data subdirectories
+
+The data in *examples* is organized into the following directories:
+
+* *games/csv/* - Source csv files from mturk containing reference game data for various games
+
+* *games/json/* - Games converted to the JSON format described in the section below on
+preprocessing the game data.  This is the form of the data used by the rest of the 
+featurization/modeling code.
+
+* *games/misc/* - Miscellaneous, relatively unimportant junk
+
+* *games/splits/* - Files describing partitions of the data sets into train/dev/test 
+partitions.
+
+Note that the *colorGrids* sub-directories contain most of the relevant game data 
+as of May 2018.  These contain the recently collected color grids from mturk, and also
+merged with the colors data set from Monroe et al (2017).  In *games/json/colorGrids*,
+*1* is the first batch of color grid data collected from mturk, *2* is a second batch,
+and *color3* is the Monroe et al (2017) color data pushed into the same format as the
+colorGrids.  Directories ending in *sua_speaker* contain the state-utterance-action 
+format of the data described in the pre-processing sections of the README below.  The
+full merged data set used by the models as of May 2018 is 
+in *games/json/colorGrids/12_color3_sua_speaker* (but this mess of stuff will probably 
+be re-organized after the data set is finalized).
+The split for all this data is in *games/splits/colorGrids_12_color_merged_34_80_33_10_33_10*
+(which represents a 34/33/33 train/dev/test split of the original colors data and an 
+80/10/10 train/dev/test split of the color grid data)
+
+### Python modules
+
+The Python libraries in *src/main/py/ltprg* are organized into the following modules:
+
+#### Experiment configuration parsing 
+
+* *ltprg.config.rsa* - Functions for parsing configuration files (in *config*) into 
+PyTorch RSA modules and evaluations (from *ltprg.model.rsa*)
+
+* *ltprg.config.seq* - Functions for parsing configuration files (in *config*) into
+PyTorch sequence model modules (from *ltprg.model.seq*)
+
+#### Data manipulation and pre-processing
+
+* *ltprg.data.curriculum* - Functions for re-ordering data sets according to 
+training curricula (e.g. ordering of game rounds according to the lengths of speaker 
+utterances)
+
+* *ltprg.data.feature_helpers* - Helper functions for computing vectorized views
+of the reference game JSON data.  These vectorized views are used as inputs to the 
+learning models.
+
+* *ltprg.data.feature* - Feature classes used by *ltprg.data.feature_helpers* to compute
+vectorized views of the reference game JSON data.
+
+#### Modules specific to particular reference games
+
+* *ltprg.game.color.properties* - Some helper functions for manipulating data from the
+color reference game (this was imported from another library, and was never fully 
+integrated into this one, but a few of the functions here are used by the data 
+preprocessing code). 
+
+* *ltprg.game.color.eval* - Model evaluations specific to the color reference game 
+(e.g. for outputting visualizations of learned meaning functions computed over 
+*Hue x Saturation* color space)
+
+* *ltprg.game.color.util* - Utilities specific to color games
+
+#### Model components
+
+* *ltprg.model.dist* - Represenations of probability distributions
+
+* *ltprg.model.meaning* - Modules for computing RSA meaning functions
+
+* *ltprg.model.obs* - Modules to compute over observations within RSA
+when prior to conditioning the world and utterance priors (these are used within
+*ltprg.model.rsa* as *observation_fns*, especially for SNLI RSA models and others
+that condition the priors on embeddings from observed sequences)
+
+* *ltprg.model.prior* - Modules for computing utterance and world priors within
+RSA models
+
+* *ltprg.model.rsa* - RSA modeling and evaluation modules
+
+* *ltprg.model.seq_heuristic* - Heuristics to guide sequence model sampling and 
+search procedures (e.g. used for sampling utterance prior supports that contain 
+utterances which score highly according to literal listeners)
+
+* *ltprg.model.seq* - Sequence model modules
+
+#### Miscellaneous utilities
+
+* *ltprg.util.file* - Utilities for managing file I/O
+
+* *ltprg.util.img* - Utitilities for manipulating images
+
+### Python scripts
+
+Some scripts in *src/test/py* are:
+
+#### Data manipulation and pre-processing
+
+* *ltprg/data/make_game_csv_to_json.py* - Take games from mturk in csv 
+format and convert them to JSON objects (see *examples/games/csv* and 
+*examples/games/json* for examples)
+
+* *ltprg/data/annotate_json_nlp.py* - Process utterances from
+games (in JSON format) to produce annotations with NLP tools (e.g. tokenize, 
+lemmatize, etc), and output new annotated games in JSON format
+
+* *ltprg/data/make_sua.py* - Transform reference games in JSON format (with
+one JSON object per game) into a data set with one state-utterance-action JSON 
+object per round (representing single training examples for learning models)
+
+* *ltprg/data/compute_utt_length_distribution.py* - Compute distribution
+of utterance lengths across games
+
+* *ltprg/data/make_wv_feature_lookup.py* - Builds and save a numpy matrix from 
+word vectors stored in a feature set (this was useful for initializing sequence 
+models with GLoVe embeddings for SNLI)
+
+#### Scripts specific to color grid (and merged colors) reference games
+
+The *ltprg/game/colorGrids* directory contains scripts particular to the 
+color grids data set (and also the colors data set that has been converted
+and merged into this same format).  There are older scripts specific to other 
+reference games in other subdirectories of *ltprg/game*, but currently 
+(as of May 2018), the only actively used scripts are the *colorGrids* ones.
+They are as follows:
+
+##### Data pre-processing
+
+* *ltprg/game/colorGrids/data/annotate_with_targets.py* - Annotate the data 
+with explicit representations of the target objects for each round that can
+be easily featurized (this script is a bit of a hack).  Data that has been
+run through this script contains *targetObj* fields containing representations
+of the target objects.
+
+* *ltprg/game/colorGrids/data/compute_stats.py* - Compute various statistics
+over the data (e.g. human listener accuracy)
+
+* *ltprg/game/colorGrids/data/convert_from_color.py* - Convert the Monroe et
+al (2017) color data set into the same format as the color grid data.
+
+* *ltprg/game/colorGrids/data/featurize_sua.py* - Compute vectorized 
+representations of the data for use within learning models.
+
+* *ltprg/game/colorGrids/data/make_syn_split.py* - Make train/dev/test 
+partitions of the data
+
+* *ltprg/game/colorGrids/data/merge_data.py* - Merge various data sets into a
+single data set (e.g. merge the Monroe et al. (2017) color data with the
+newer color grids data)
+
+##### Modeling
+
+* *ltprg/game/colorGrids/model/learn_RSA.py* - Train RSA models
+
+* *ltprg/game/colorGrids/model/learn_SRSA.py* - Train RSA models that use
+the same sequence model for both their meaning functions and utterance 
+priors (this was an idea pursued briefly, and may be worthwhile to look
+at again in the future)
+
+* *ltprg/game/colorGrids/model/learn_S.py* - Train sequence models (i.e.
+vanilla language models and S0 models)
+
+* *ltprg/game/colorGrids/model/test_prior.py* - Compute examples of 
+utterance priors under various settings to visualized and evaluate 
+qualitatively
+
+#### Results post-processing
+
+* *ltprg/results/aggregate.py* - Take result files output by several 
+training/evaluation jobs (e.g. under different seeds and hyper-parameter 
+settings with a script like *ltprg/game/colorGrids/model/learn_RSA.py*), 
+and merge them into a single tsv file.
+
+#### Visualization and investigation of learned meaning functions
+
+* *ltprg/meaning/* - This directory will eventually contain several 
+scripts and tools for investigating learned meanings
+
+#### Tests
+
+* *ltprg/model/test_rsa.py* - Contains a test for the RSA PyTorch module
+
+### Other stuff (e.g. game visualization)
+
+The directory *src/html/viewData/* contains web pages used to visualize the 
+data set.  Specifically, the color and colorGrids data, and also utterance 
+priors output by *ltprg/game/colorGrids/model/test_prior.py* can be visualized 
+using *src/html/viewData/colorGrids/view.html* (by just opening this file in a
+browser, and using the form to select a JSON file representing a game or 
+the utterance prior output)
+
+## Setup instructions
+
+To setup, first clone the repository:
+
+    git clone https://github.com/forkunited/ltprg
+
+You will also need to clone the mungpy repository that contains several data
+munging and experiment utilities upon which ltprg relies:
+
+    git clone https://github.com/forkunited/mungpy
+
+Next, set your PYTHONPATH environment variable to include the paths to the
+Python libraries within these cloned repositories:
+
+    export PYTHONPATH=$PYTHONPATH:/path/to/ltprg/src/main/py/:/path/to/mungpy/src/main/py/
+
+The code generally relies on PyTorch for training models, so install 
+that if it is not already installed.  Currently, PyTorch version 0.3.0.post4 
+is used.  You can download it at https://pytorch.org/previous-versions/.
+
+## How to preprocess reference game data for modeling
+
+##### FIXME Note about other data munging specific to color grids
+
+Some
+instructions for how to push reference game data through this featurization
+pipeline are given below.  The main steps in this pipeline described below include:
 
 1. [Converting game data to the JSON format](#converting-game-data-to-the-json-format)
 2. [Extracting a state-utterance-action data set](#extracting-a-state-utterance-action-data-set)
@@ -281,7 +517,8 @@ representing where the listener clicked (as computed in the previous
 
 See the unit tests at
 [test/py/ltprg/game/color/data/validate_data.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/color/data/validate_data.py)
-for more examples of how to access the data.  The code for the
-[S0](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/model/s0.py)
-model also shows some more examples of how to use the methods provided by the
-library.
+for more examples of how to access the data.  
+
+## How to train and evaluate models
+
+### FIXME

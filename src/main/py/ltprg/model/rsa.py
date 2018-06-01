@@ -1,3 +1,13 @@
+"""
+rsa.py contains the RSA PyTorch modules for computing listener
+and speaker distributions according to some supplied meaning 
+functions, world priors, and utterance priors.  This file also 
+contains several evaluations that are specific to RSA modules 
+(e.g. for inspecting utterance priors qualitatively and evaluating
+the accuracy of RSA distributions at different levels of pragmatic
+reasoning (L0, L1, etc))
+"""
+
 import torch
 import torch.nn as nn
 import mung.torch_ext.eval
@@ -10,15 +20,36 @@ from mung.torch_ext.eval import Evaluation, DistributionAccuracy
 EPSILON=1e-9 # Note, was 1e-6 on color, and not in normalize_rows back then
 
 class DistributionType:
+    """
+    Represents listener (L) and speaker (S) RSA disributions
+    """
     L = "L"
     S = "S"
 
-class DataParameter:
+class DataParameter:    
     UTTERANCE = "utterance"
     WORLD = "world"
     OBSERVATION = "observation"
 
     def __init__(self, utterance, L_world, L_observation, S_world, S_observation, mode=DistributionType.L, utterance_seq=False):
+        """
+        Constructs an object holding the names of featurized views within a 
+        multi-view data set (i.e. of type mung.feature.MultiviewDataSet) that
+        represent various inputs for RSA modules.  This object is used by RSA
+        modules to find the world, utterance, etc inputs by their names within a 
+        data set
+
+        Args:
+            utterance (str): Name of the utterance view in the input data
+            L_world (str): Name of the world view in the input data
+            L_observation (str): Name of the observation view in the input data
+            S_world (str): Name of the speaker's world view in the input data
+            S_observation (str): Name of the speaker's observation view in the input data
+            mode (DistributionType, opitonal): Indicates whether this data 
+                parameter returns listener or speaker views.  Defaults to L (listener).
+            utterance_seq (bool, optional): Indicates whether utterance inputs are 
+                sequential. Defaults to False.
+        """
         self._utterance = utterance
         self._L_world = L_world
         self._L_observation = L_observation
@@ -62,7 +93,18 @@ class DataParameter:
         return DataParameter(utterance, L_world, L_observation, S_world, S_observation, mode=mode, utterance_seq=utterance_seq)
 
 def _normalize_rows(t, softmax=False):
+    """
+    Normalizes the rows of a tensor either using
+    a softmax or just plain division by row sums
+
+    Args:
+        t (:obj:`batch_like`)
+    Returns:
+        Normalized version of t where rows sum to 1
+    """
+
     if not softmax:
+        # EPSILON hack avoids occasional NaNs
         row_sums = torch.sum(t, len(t.size())-1, keepdim=True) + EPSILON
         #return torch.exp(torch.log(t)-torch.log(row_sums+EPSILON).expand_as(t))
         return torch.div(t, row_sums.expand_as(t))
@@ -70,7 +112,10 @@ def _normalize_rows(t, softmax=False):
         s = nn.Softmax()
         return s(t.view(-1, t.size(len(t.size())-1))).view(t.size())
 
-
+# NOTE: This was originally intended to make the code more
+# legible before I (Bill) had a good idea about pytorch
+# abstractions. It can be removed along with _size_down_tensor
+# since it's a pretty useless function
 def _size_up_tensor(t):
     """
     Reshapes the tensor to have an extra dimension.  This is necessary for
@@ -97,6 +142,12 @@ def _size_down_tensor(t):
 
 class RSA(nn.Module):
     def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
+        """
+        Constructs an abstract RSA module.  See the S and L class initializers
+        in the classes below for particular uses of this to construct speaker
+        and listener modules (details on the uses of the argument are shown there)
+        """
+        
         super(RSA, self).__init__()
         self._name = name
         self._level = level
@@ -164,7 +215,7 @@ class S(RSA):
     def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         """
         Constructs an RSA speaker module.  This module assumes world priors and
-        utterance priors have finite discrete support.
+        utterance priors have finite support.
 
         The speaker computes utterance distributions given worlds and
         observations.  Observations are aspects of the world that have no
@@ -200,6 +251,20 @@ class S(RSA):
 
             L_bottom (bool, optional): Indicates whether the model bottoms out at
                 a literal listener or a literal speaker.  Defaults to True.
+
+            soft_bottom (bool, optional): Indicates whether the model computes a softmax over
+            the meanings output at the bottom layer, or just normalizes them.  Defaults to False.
+
+            alpha (float, optional): Speaker rationality
+
+            observation_fn(:obj:`observation input batch_like` -> :obj:observation batch_line, optional):
+                Args:
+                    (Batch size) x (Observation) array of observations
+                Returns:
+                    A set of observations that have been transformed in some pay before
+                    use in the utterance and world prior functions.  (This is useful for 
+                    transforming sequential observations into an embedded representation
+                    for use in the world and utterance priors)
         """
 
         super(S, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
@@ -234,12 +299,18 @@ class S(RSA):
                 speaker utterance distributions
         """
 
-        if not world_dist:
+        if not world_dist: 
+            # World tensors need to be the right dimension when
+            # representing single worlds rather than supports of worlds
             world = _size_up_tensor(world)
 
         if observation is None:
             observation = torch.zeros(world.size(0))
 
+        # Apply the observation function to the input observation
+        # if the function is given.  The result is given
+        # to the utterance and world prior functions  
+        # when constructing the priors
         if self._observation_fn is not None:
             if torch.cuda.device_count() > 1:
                 if isinstance(observation, tuple):
@@ -253,27 +324,37 @@ class S(RSA):
                 else:
                     observation = observation.cuda()
 
+        # Construct the utterance prior (batch) given an observation (batch)
         utterance_prior = self._utterance_prior_fn(observation)
+
         world_support = None
         ps = None
         if self._level == 0:
+            # If at level 0, apply the meaning function to compute a batch of meaning matrices,
+            # and multiply the result by the utterance priors
             meaning = self._meaning_fn(utterance_prior.support(), world, observation).transpose(2,1)
             ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(meaning) * meaning, softmax=self._soft_bottom)
         else:
+            # If above level 0, apply the listener at the next level down to compute a batch of
+            # world distribution, and multiply the results by the utterance priors
             l = self._L(utterance_prior.support(), observation, utterance_dist=True)
             world_support = l.support()
             l_dist = l.p().transpose(2,1)
             ps = _normalize_rows(utterance_prior.p().unsqueeze(1).expand_as(l_dist) * (l_dist ** self._alpha))
 
-        if not world_dist:
+        if not world_dist: # If input is a batch of worlds (not world distribution supports)
             if self._level > 0:
+                # ps contains distributions over utterances for every world in the
+                # support of the world prior function, so need to just pull out the
+                # distributions for the given worlds that S is conditioned on
+                
                 world = _size_down_tensor(world)
                 world_index, has_missing, mask  = self._world_prior_fn.get_index(world, observation, world_support)
 
-                # world_index contains a list of world indices into worldxutterance
+                # world_index contains a list of world indices into world x utterance
                 # matrices.  So the offsets below will take the ith world index into
                 # the ith matrix.
-                # Note that there is a separate worldxutterance matrix for each observation.
+                # Note that there is a separate world x utterance matrix for each observation.
                 world_index_offset = torch.arange(0, ps.size(0)).long()*ps.size(1)
                 if self.on_gpu():
                     world_index_offset = world_index_offset.cuda() + world_index
@@ -326,7 +407,7 @@ class L(RSA):
     def __init__(self, name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=True, soft_bottom=False, alpha=1.0, observation_fn=None):
         """
         Constructs an RSA listener module.  This module assumes world priors and
-        utterance priors have finite discrete support.
+        utterance priors have finite support.
 
         The listener computes world distributions given utterances and
         observations.  Observations are aspects of the world that have no
@@ -362,6 +443,20 @@ class L(RSA):
 
             L_bottom (bool, optional): Indicates whether the model bottoms out at
                 a literal listener or a literal speaker.  Defaults to True.
+
+            soft_bottom (bool, optional): Indicates whether the model computes a softmax over
+            the meanings output at the bottom layer, or just normalizes them.  Defaults to False.
+
+            alpha (float, optional): Speaker rationality
+
+            observation_fn(:obj:`observation input batch_like` -> :obj:observation batch_line, optional):
+                Args:
+                    (Batch size) x (Observation) array of observations
+                Returns:
+                    A set of observations that have been transformed in some pay before
+                    use in the utterance and world prior functions.  (This is useful for 
+                    transforming sequential observations into an embedded representation
+                    for use in the world and utterance priors)
         """
         super(L, self).__init__(name, level, meaning_fn, world_prior_fn, utterance_prior_fn, L_bottom=L_bottom, soft_bottom=soft_bottom, alpha=alpha, observation_fn=observation_fn)
 
@@ -397,6 +492,9 @@ class L(RSA):
             categorical listener world distributions
         """
         if not utterance_dist:
+            # Utterance tensors need to be the right dimension when
+            # representing single utterances rather than supports of worlds
+
             if isinstance(utterance, tuple):
                 utterance = (_size_up_tensor(utterance[0]), _size_up_tensor(utterance[1]))
             else:
@@ -408,6 +506,10 @@ class L(RSA):
             else:
                 observation = torch.zeros(utterance.size(0))
 
+        # Apply the observation function to the input observation
+        # if the function is given.  The result is given
+        # to the utterance and world prior functions  
+        # when constructing the priors
         if self._observation_fn is not None:
             if torch.cuda.device_count() > 1:
                 if isinstance(observation, tuple):
@@ -421,20 +523,30 @@ class L(RSA):
                 else:
                     observation = observation.cuda()
 
+        # Construct the world prior (batch) given an observation (batch)
         world_prior = self._world_prior_fn(observation)
+        
         utterance_support = None
         ps = None
         if self._level == 0:
+            # If at level 0, apply the meaning function to compute a batch of meaning matrices,
+            # and multiply the result by the world priors
             meaning = self._meaning_fn(utterance, world_prior.support(), observation)
             ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(meaning) * meaning, softmax=self._soft_bottom)
         else:
+            # If above level 0, apply the speaker at the next level down to compute a batch of
+            # utterance distribution, and multiply the results by the world priors
             s = self._S(world_prior.support(), observation=observation, world_dist=True)
             utterance_support = s.support()
             s_dist = s.p().transpose(2,1)  # Batch size x world size x utterance size
             ps = _normalize_rows(world_prior.p().unsqueeze(1).expand_as(s_dist) * s_dist)
 
-        if not utterance_dist:
+        if not utterance_dist: # If input is a batch of utterances (not utterance distribution supports)
             if self._level > 0:
+                # ps contains distributions over world for every utterance in the
+                # support of the utterance prior function, so need to just pull out the
+                # distributions for the given utterances that L is conditioned on
+
                 if isinstance(utterance, tuple):
                     utterance = (_size_down_tensor(utterance[0]), _size_down_tensor(utterance[1]))
                 else:
@@ -465,7 +577,7 @@ class L(RSA):
                 utterance = utterance.cuda()
 
         # FIXME This should be checked in a nicer way
-        # Also need to add it to the speaker
+        # Also need to add it to the speaker at some point
         if self._observation_fn is not None:
             seq, length, _ = batch[data_parameters[DataParameter.OBSERVATION]]
             seq = Variable(seq.long())
@@ -477,6 +589,9 @@ class L(RSA):
             if self.on_gpu():
                 observation = observation.cuda()
 
+        # This is necessary to adjust the state of the priors during the 
+        # forward computation.  For example, to include the observed utterance
+        # in the prior.
         self._utterance_prior_fn.set_data_batch(batch, data_parameters)
         self._world_prior_fn.set_data_batch(batch, data_parameters)
 
@@ -507,6 +622,27 @@ class L(RSA):
 
 class RSADistributionAccuracy(DistributionAccuracy):
     def __init__(self, name, level, distribution_type, data, data_parameters, target_indexed = False, L_bottom = True, trials=1):
+        """
+        Constructs an accuracy evaluation for RSA modules.  This is useful
+        for evaluating an RSA module at levels that differ from its training
+        level (e.g. evaluated L1 after training L0)
+
+        Args:
+            name (str): Name by which to refer to the evaluation (e.g. for logging)
+            level (int): RSA distribution level to evaluate
+            distribution_type (:obj:`DistributionType`): RSA distribution type to evaluated (L or S)
+            data (:obj:`mung.feature.MultiviewDataSet`): Data on which to evaluate accuracy
+            data_parameters (:obj:`DataParameter`): Parameter object that tells RSA 
+                module names of views in data set for input
+            target_indexed (bool, optional): Indicates whether targets in data are indices or values within
+                the support of the RSA distribution. Defaults to False.
+            L_bottom (bool, optional): Indicates to evaluate with RSA that has a listener at the bottom
+                level. Defaults to True.
+            trials (int, optional): Number of times to recompute model predictions to produce
+             an average accuracy (when predictions are non-deterministic e.g. when utterance priors
+             are randomly sampled). Defaults to 1.
+        """
+        
         super(RSADistributionAccuracy, self).__init__(name, data, data_parameters, model_fn=None, target_indexed = target_indexed, trials=trials)
 
         def _mfn(batch, model, data_parameters):
@@ -521,10 +657,28 @@ class RSADistributionAccuracy(DistributionAccuracy):
 
 
 
-# At each evaluation, outputs a json file containing priors for each round
-# represented by a data point
 class PriorView(Evaluation):
     def __init__(self, name, data, data_parameters, output_dir):
+        """
+        Constructs an evaluation for RSA utterance priors.  The evaluation 
+        outputs utterance priors for a random subset of round contexts from the 
+        data.  The output utterance priors are stored in JSON files that are the
+        same format as the input game data, so that they can be visualized using
+        the game visualizer in src/test/html/viewData/./view.html.  The evaluation
+        also returns a number giving the entropy of the output priors according
+        to L0.
+
+        Args:
+            name (str): Name by which to refer to the evaluation (e.g. for logging)
+            data (:obj:`mung.feature.MultiviewDataSet`): Data on which to construct
+                example priors
+            data_parameters (:obj:`DataParameter`): Parameter object that tells RSA 
+                module names of views in data set for input
+            output_dir (str): Directory in which to store the output files.  If it 
+                does not exist, it will be created.  At each evaluation, a JSON file
+                will be stored in this directory giving sampled utterance priors on the
+                data.
+        """
         super(PriorView, self).__init__(name, data, data_parameters, batch_indices=True)
 
         self._directory_path = os.path.join(output_dir, name)
