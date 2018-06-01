@@ -23,8 +23,9 @@ experiments, and scripts that run the model training and evaluation functions.
 This separation between the main libraries and the scripts/tests was inspired by
 previous Java Maven projects, and might seem annoyingly over-complicated in leading
 to unnecessarily deep directory structures that aren't very typical of 
-Python projects.  This is a good point, but the structure has had the benefit of keeping 
-the one-off scripty type things out of the main library code in *src/main*. 
+Python projects.  It is true that this is annoying, but the structure has had the 
+benefit of keeping the one-off scripty type things separated away from 
+the main library code in *src/main*. 
 
 ### Data subdirectories
 
