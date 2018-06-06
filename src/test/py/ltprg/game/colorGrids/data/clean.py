@@ -20,8 +20,8 @@ def filter_rounds(datum, to_remove):
         if (not has_speaker) or (not has_listener) or rounds[i]["roundNum"] in remove_rounds:
             remove_indices.append(i)
 
-    for index in remove_indices:
-        del rounds[index]
+    for i in range(len(remove_indices)):
+        del rounds[remove_indices[len(remove_indices)-i-1]]
 
     return datum
 
