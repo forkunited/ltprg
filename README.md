@@ -274,8 +274,8 @@ the steps given here should be at least nearly sufficient for pre-processing.)
 
 ### Converting game data to the JSON format
 
-Pushing the data from all the reference games into a standard format will
-allow for easy re-use of featurization and modeling code.  Currently, we use
+Pushing the data from all the reference games into a standard format 
+allows for easy re-use of featurization and modeling code.  Currently, we use
 the format shown in the JSON schema below.  There are 
 more examples of this format from the color data set in
 [examples/games/json/color](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color).
@@ -320,26 +320,41 @@ determined by the dimensions of the events of a particular game.
 
 There are two options for converting reference game data into this format.  The
 first is to write a custom script to convert from your source format to the JSON
-format.  The second option is to put your data into an alternative CSV
-representation, and then use
+format.  Alternatively, if you have a CSV representation of your data, then you
+can use
 [test/py/ltprg/data/make_game_csv_to_json.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_game_csv_to_json.py)
 to convert to the JSON format.  See the documentation at the top of that script
-for details about the CSV format.
+for details about the CSV format that this script expects.
 
 ### Producing NLP annotations for JSON game data
 
 When the reference game data is in JSON format, the utterances from the game can
 be pushed through the Stanford CoreNLP pipeline using the script at
 [test/py/ltprg/data/annotate_json_nlp.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/annotate_json_nlp.py).
-See the documentation at the top of that script for details.
+See the documentation at the top of that script for details.  Also, there are 
+examples of NLP annotated JSON color data in
+[examples/games/json/color_nlp](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color_nlp)
+(each line of each file contains a JSON object representing a game).
 
 ### Extracting state-utterance-action data sets
 
+Several reference game learning models depend on training from examples
+that consist of a single round represented by a game state, utterances, and 
+an action.  For example, training
+the RSA listener models to play the color reference game depends on having
+one example per game round---with a state of three colors, 
+the speaker utterances, and the target color referred to by the speaker.  The 
+script at
+[test/py/ltprg/data/make_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_sua.py)
+constructs state-utterance-action examples like this from the game data.  Also, there
+are examples of state-utterance-action data for the color data set in
+[examples/games/json/color_sua_speaker](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color_sua_speaker).
+
 ### Partitioning data for training and evaluation
 
-When training and evaluate models, it's useful to partition the data into train/test
-sets, or other splits.  For this purpose, the
-[mung.data.Partition](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/data.py#L227)
+When training and evaluating models, it's useful to partition the data into 
+train/dev/test sets---or other splits.  For this purpose, the
+[mung.data.Partition](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/data.py)
 class is useful for loading partitions of the data into memory, and splitting
 data sets and feature matrices according to these partitions.  The class assumes
 that the partitions are stored in the following JSON format:
@@ -354,8 +369,10 @@ that the partitions are stored in the following JSON format:
   }
 }
 ```
+
 The *"size"* field specifies the number of elements across all parts of the
-partition, and the *"parts"* field contains the parts.  Each part contains all
+partition, and the *"parts"* field contains the parts of the partition.  
+Each part contains all
 of the keys representing objects in the partition.  In the example shown above,
 each key is a game ID.  The *mung.data.Partition*
 can *split* a data set according to this partition and a "key function" that
@@ -363,16 +380,11 @@ maps datums from a data set to the keys in the partition.  Since the keys are
 game IDs in the above example, the "key function" would need to map datums to
 their game IDs to split a data set.
 
-### Extracting a state-utterance-action data set
-
-Several reference game learning models depend on training from examples
-that consist of a game state, utterances, and an action.  For example, training
-the RSA listener models to play the color reference game depends on having
-one example per game round, consisting of a state of three colors, 
-the speaker utterances, and the color that the listener clicked after
-hearing the utterances.  The script at
-[test/py/ltprg/data/make_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_sua.py)
-constructs state-utterance-action examples like this from the game data.
+The script at 
+[test/py/ltprg/data/make_split.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_split.py)
+takes a path to a set of JSON game data, and uses mung.data.Partition to create a 
+split based on game ID. There are many examples of data splits in
+[examples/games/splits](https://github.com/forkunited/ltprg/tree/master/examples/games/splits).
 
 ### Computing and saving feature matrices from the data
 

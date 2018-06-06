@@ -1,0 +1,80 @@
+eventType	gameid	time	roundNum	obj
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147111225	1	{"type":"Utterance","sender":"speaker","contents":"hello!","time":1528147111225}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147114448	1	{"type":"Utterance","sender":"listener","contents":"hi","time":1528147114448}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147142354	1	{"type":"Utterance","sender":"speaker","contents":"the 6th square is gray, similar to the 3rd","time":1528147142354}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147189185	2	{"type":"Utterance","sender":"speaker","contents":"There are two bottom squares that are the exact same green","time":1528147189185}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147221309	3	{"type":"Utterance","sender":"speaker","contents":"the central square is a light blue","time":1528147221309}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147256151	4	{"type":"Utterance","sender":"speaker","contents":"The is a light blue square on the bottom row.","time":1528147256151}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147275065	5	{"type":"Utterance","sender":"speaker","contents":"3rd square is violet","time":1528147275065}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147323054	6	{"type":"Utterance","sender":"speaker","contents":"There is a bright teal square in the bottom row.","time":1528147323054}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147338380	7	{"type":"Utterance","sender":"speaker","contents":"8th vivid green","time":1528147338380}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147364855	8	{"type":"Utterance","sender":"speaker","contents":"Bright red square in the top row.","time":1528147364855}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147377807	9	{"type":"Utterance","sender":"speaker","contents":"6th yellowish","time":1528147377807}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147408095	10	{"type":"Utterance","sender":"speaker","contents":"brown, orange, then purple on bottom row","time":1528147408095}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147449994	11	{"type":"Utterance","sender":"speaker","contents":"6th is pale blue, 8th pale green","time":1528147449994}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147498523	12	{"type":"Utterance","sender":"speaker","contents":"green, grey-blue, brown top row","time":1528147498523}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147520987	13	{"type":"Utterance","sender":"speaker","contents":"all shades of green in the central row","time":1528147520987}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147569677	14	{"type":"Utterance","sender":"speaker","contents":"3rd square is purple. ","time":1528147569677}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147582999	15	{"type":"Utterance","sender":"speaker","contents":"3rd is light green","time":1528147582999}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147600666	16	{"type":"Utterance","sender":"speaker","contents":"third square is lime green","time":1528147600666}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147621623	17	{"type":"Utterance","sender":"speaker","contents":"bottom row is brown, orange, yellowish","time":1528147621623}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147661008	18	{"type":"Utterance","sender":"speaker","contents":"first square is brown","time":1528147661008}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147674364	19	{"type":"Utterance","sender":"speaker","contents":"central is green","time":1528147674364}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147746726	20	{"type":"Utterance","sender":"speaker","contents":"fourth and 7th squares are same blue","time":1528147746726}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147766599	21	{"type":"Utterance","sender":"speaker","contents":"4th square is violet, bright","time":1528147766599}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147815437	22	{"type":"Utterance","sender":"speaker","contents":"2nd square is light blue","time":1528147815437}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147865087	23	{"type":"Utterance","sender":"speaker","contents":"among the two with all the same colors but the center, pick the one with pale blue (on the center)","time":1528147865087}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147900942	24	{"type":"Utterance","sender":"speaker","contents":"Third square is yellow-green","time":1528147900942}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147926792	25	{"type":"Utterance","sender":"speaker","contents":"central is vivid green","time":1528147926792}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147943887	26	{"type":"Utterance","sender":"speaker","contents":"last square is bright green","time":1528147943887}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147965770	27	{"type":"Utterance","sender":"speaker","contents":"the 2nd one is violet, vivid color","time":1528147965770}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528147998475	28	{"type":"Utterance","sender":"speaker","contents":"first row has two purples","time":1528147998475}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148015817	29	{"type":"Utterance","sender":"speaker","contents":"3rd one is vivid green","time":1528148015817}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148033105	30	{"type":"Utterance","sender":"speaker","contents":"first square is pink","time":1528148033105}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148050898	31	{"type":"Utterance","sender":"speaker","contents":"last square is #ccc","time":1528148050898}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148062609	31	{"type":"Utterance","sender":"speaker","contents":"gray ^_^","time":1528148062609}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148111861	32	{"type":"Utterance","sender":"speaker","contents":"squares 5 and 8 are the same exact grey","time":1528148111861}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148132753	33	{"type":"Utterance","sender":"speaker","contents":"central is grey","time":1528148132753}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148171980	34	{"type":"Utterance","sender":"speaker","contents":"first square is grey","time":1528148171980}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148180372	34	{"type":"Utterance","sender":"listener","contents":"8th orange?","time":1528148180372}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148186993	34	{"type":"Utterance","sender":"speaker","contents":"yes","time":1528148186993}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148204485	35	{"type":"Utterance","sender":"speaker","contents":"there is plenty of violet and pink","time":1528148204485}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148250898	36	{"type":"Utterance","sender":"speaker","contents":"for all three rows, the last squares are grey","time":1528148250898}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148271710	37	{"type":"Utterance","sender":"speaker","contents":"8th vivid red","time":1528148271710}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148286204	38	{"type":"Utterance","sender":"speaker","contents":"middle is bright red","time":1528148286204}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148319493	39	{"type":"Utterance","sender":"speaker","contents":"8th yellowish (pale), 9th green (dark)","time":1528148319493}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148337078	40	{"type":"Utterance","sender":"speaker","contents":"first square is purple","time":1528148337078}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148375509	41	{"type":"Utterance","sender":"speaker","contents":"last row is violet beige purple (or something like that) ","time":1528148375509}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148408763	42	{"type":"Utterance","sender":"speaker","contents":"8th is a brighter purple","time":1528148408763}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148436457	43	{"type":"Utterance","sender":"speaker","contents":"7th is cyan","time":1528148436457}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148464952	44	{"type":"Utterance","sender":"speaker","contents":"8th is blue","time":1528148464952}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148476899	45	{"type":"Utterance","sender":"speaker","contents":"central red","time":1528148476899}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148507268	46	{"type":"Utterance","sender":"listener","contents":"there are two that are the same, i'll go for the other","time":1528148507268}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148527410	46	{"type":"Utterance","sender":"speaker","contents":"no","time":1528148527410}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148542202	47	{"type":"Utterance","sender":"speaker","contents":"ouch, sorry, i was ready with the click","time":1528148542202}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148545574	47	{"type":"Utterance","sender":"listener","contents":"lol","time":1528148545574}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148590348	47	{"type":"Utterance","sender":"speaker","contents":"between the two with 4th different, pick the one with the darker color (grenish, 4th)","time":1528148590348}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148612612	48	{"type":"Utterance","sender":"speaker","contents":"the 6th is a pink","time":1528148612612}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148631090	49	{"type":"Utterance","sender":"speaker","contents":"7th is orangish","time":1528148631090}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148661634	50	{"type":"Utterance","sender":"speaker","contents":"the third is more of a minty green","time":1528148661634}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148676599	50	{"type":"Utterance","sender":"listener","contents":"I need help, I suck with colors, lol :D","time":1528148676599}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148685946	50	{"type":"Utterance","sender":"listener","contents":"it's the darker one?","time":1528148685946}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148687651	50	{"type":"Utterance","sender":"speaker","contents":"its the green that is not as bright","time":1528148687651}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148698565	51	{"type":"Utterance","sender":"speaker","contents":"my bad  :(","time":1528148698565}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148707734	51	{"type":"Utterance","sender":"speaker","contents":"the 7th is orangish","time":1528148707734}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148718259	51	{"type":"Utterance","sender":"listener","contents":"oh well, they get difficult","time":1528148718259}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148733019	52	{"type":"Utterance","sender":"listener","contents":"I see them almost the same, lol ^_^","time":1528148733019}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148739496	52	{"type":"Utterance","sender":"speaker","contents":"second is green","time":1528148739496}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148804309	53	{"type":"Utterance","sender":"speaker","contents":"I don't see the difference among those two: the first 8 colors look alike, the last is maybe slightly different, maybe darker, but I really see them the same","time":1528148804309}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148866286	54	{"type":"Utterance","sender":"speaker","contents":"the first square is green.  the second is blue","time":1528148866286}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148884541	55	{"type":"Utterance","sender":"speaker","contents":"2nd is brown","time":1528148884541}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148917604	56	{"type":"Utterance","sender":"speaker","contents":"the first and seventh square are the same shade of purple","time":1528148917604}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148933719	57	{"type":"Utterance","sender":"speaker","contents":"6th is orange","time":1528148933719}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148951187	58	{"type":"Utterance","sender":"speaker","contents":"second is pink","time":1528148951187}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148963849	58	{"type":"Utterance","sender":"listener","contents":"dark or vivid color?","time":1528148963849}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528148967508	58	{"type":"Utterance","sender":"speaker","contents":"vivid","time":1528148967508}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528149013522	59	{"type":"Utterance","sender":"speaker","contents":"8th is not as red as the other 8th, it looks violet/purple","time":1528149013522}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528149044006	60	{"type":"Utterance","sender":"listener","contents":"this HIT has been hard, you did a great job, thank you! :)","time":1528149044006}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528149053469	60	{"type":"Utterance","sender":"speaker","contents":"the 6th is the most purple ","time":1528149053469}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528149059476	60	{"type":"Utterance","sender":"speaker","contents":"thank you too!","time":1528149059476}
+utterance	6165-643f06f5-c772-4d31-ab7e-fc8b47126e03	1528149066472	60	{"type":"Utterance","sender":"listener","contents":"have a good one! :)","time":1528149066472}

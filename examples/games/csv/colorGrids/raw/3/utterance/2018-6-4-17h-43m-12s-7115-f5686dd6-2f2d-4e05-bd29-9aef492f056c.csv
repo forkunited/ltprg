@@ -1,0 +1,73 @@
+eventType	gameid	time	roundNum	obj
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159392641	1	{"type":"Utterance","sender":"speaker","contents":"the box with two grey boxes","time":1528159392641}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159467072	2	{"type":"Utterance","sender":"speaker","contents":"the box with the medium color blue on the 2nd color down on the right","time":1528159467072}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159503154	3	{"type":"Utterance","sender":"speaker","contents":"red right bottom","time":1528159503154}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159529243	4	{"type":"Utterance","sender":"speaker","contents":"purple, green, blue are the top 3 boxes","time":1528159529243}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159556977	5	{"type":"Utterance","sender":"speaker","contents":"purple green orange top three","time":1528159556977}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159581905	6	{"type":"Utterance","sender":"speaker","contents":"green, purple, teal are the top 3","time":1528159581905}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159614475	7	{"type":"Utterance","sender":"speaker","contents":"red, grey, blue top three","time":1528159614475}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159636135	8	{"type":"Utterance","sender":"speaker","contents":"red, green, purple are top 3","time":1528159636135}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159675418	9	{"type":"Utterance","sender":"speaker","contents":"GREAT JOB!!  teal,pink, green top three","time":1528159675418}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159707723	10	{"type":"Utterance","sender":"speaker","contents":"Thanks! you too! purple, green, teal are top 3","time":1528159707723}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159759298	11	{"type":"Utterance","sender":"speaker","contents":"yellow bottom left","time":1528159759298}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159817337	12	{"type":"Utterance","sender":"speaker","contents":"I don't see a difference in any of these! ","time":1528159817337}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159838678	12	{"type":"Utterance","sender":"speaker","contents":"the box in the middle right is slightly lighter than the others","time":1528159838678}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159875033	13	{"type":"Utterance","sender":"speaker","contents":"purple bottom left","time":1528159875033}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159898381	14	{"type":"Utterance","sender":"speaker","contents":"yellow bottom left","time":1528159898381}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159931490	15	{"type":"Utterance","sender":"speaker","contents":"blue top left","time":1528159931490}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528159972523	16	{"type":"Utterance","sender":"speaker","contents":"light blue, dark blue, green are top 3","time":1528159972523}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160011274	17	{"type":"Utterance","sender":"speaker","contents":"royal blue left middle","time":1528160011274}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160047521	18	{"type":"Utterance","sender":"speaker","contents":"orange bottom left","time":1528160047521}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160077322	19	{"type":"Utterance","sender":"speaker","contents":"brown right top ","time":1528160077322}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160102659	20	{"type":"Utterance","sender":"speaker","contents":"red bottom left","time":1528160102659}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160152408	21	{"type":"Utterance","sender":"speaker","contents":"geez.~~~~~~they all look the same~~~~~~~~~give me a second to find a slight difference~~~~~~~~~","time":1528160152408}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160157614	21	{"type":"Utterance","sender":"listener","contents":"ok","time":1528160157614}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160163231	21	{"type":"Utterance","sender":"listener","contents":"this one looks hard","time":1528160163231}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160215573	21	{"type":"Utterance","sender":"speaker","contents":"bottom middle is more purple than brown.~~~~~~that's the best I can find~~~~~~~~~sorry","time":1528160215573}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160270800	22	{"type":"Utterance","sender":"speaker","contents":"top middle is a turquoise color","time":1528160270800}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160307170	23	{"type":"Utterance","sender":"speaker","contents":"bottom left is brown","time":1528160307170}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160337990	24	{"type":"Utterance","sender":"speaker","contents":"top is brown, teal, light purple","time":1528160337990}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160373362	25	{"type":"Utterance","sender":"speaker","contents":"top middle is purple","time":1528160373362}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160396799	26	{"type":"Utterance","sender":"speaker","contents":"orange, yellow, blue is top 3","time":1528160396799}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160433429	26	{"type":"Utterance","sender":"listener","contents":"two of them look like orange yellow blue.  what color is the bottom right?","time":1528160433429}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160447017	26	{"type":"Utterance","sender":"speaker","contents":"the bottom right is a bright green","time":1528160447017}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160501390	27	{"type":"Utterance","sender":"speaker","contents":"top middle is bright green","time":1528160501390}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160528364	28	{"type":"Utterance","sender":"speaker","contents":"top middle is purple","time":1528160528364}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160548868	29	{"type":"Utterance","sender":"speaker","contents":"top middle is purple","time":1528160548868}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160564763	30	{"type":"Utterance","sender":"speaker","contents":"top middle is red","time":1528160564763}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160592234	31	{"type":"Utterance","sender":"speaker","contents":"top middle is dark purple","time":1528160592234}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160637670	32	{"type":"Utterance","sender":"speaker","contents":"the top left is more of an orange color than the others","time":1528160637670}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160656992	33	{"type":"Utterance","sender":"speaker","contents":"top left is grey","time":1528160656992}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160702646	34	{"type":"Utterance","sender":"speaker","contents":"the middle box is more pink than the others","time":1528160702646}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160735516	35	{"type":"Utterance","sender":"speaker","contents":"green middle right","time":1528160735516}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160762225	36	{"type":"Utterance","sender":"speaker","contents":"bright yellow top right","time":1528160762225}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160794721	37	{"type":"Utterance","sender":"speaker","contents":"teal middle right","time":1528160794721}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160832250	38	{"type":"Utterance","sender":"speaker","contents":"middle box and left bottom are blue","time":1528160832250}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160864807	39	{"type":"Utterance","sender":"speaker","contents":"bottom left is bright green","time":1528160864807}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160887188	40	{"type":"Utterance","sender":"speaker","contents":"bottom right is bright green","time":1528160887188}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160920388	41	{"type":"Utterance","sender":"speaker","contents":"middle left is pink","time":1528160920388}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160943653	42	{"type":"Utterance","sender":"speaker","contents":"bottom right is red","time":1528160943653}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160967892	43	{"type":"Utterance","sender":"speaker","contents":"bottom middle is blue","time":1528160967892}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528160984235	44	{"type":"Utterance","sender":"speaker","contents":"bottom right is green","time":1528160984235}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161038204	45	{"type":"Utterance","sender":"speaker","contents":"middle box and middle bottom are both grey","time":1528161038204}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161063004	46	{"type":"Utterance","sender":"speaker","contents":"yellow, red, teal are top 3","time":1528161063004}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161111286	47	{"type":"Utterance","sender":"speaker","contents":"bottom middle is lighter blue","time":1528161111286}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161138922	48	{"type":"Utterance","sender":"speaker","contents":"middle is dark purple","time":1528161138922}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161169264	49	{"type":"Utterance","sender":"speaker","contents":"top middle is pink","time":1528161169264}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161194402	50	{"type":"Utterance","sender":"speaker","contents":"top middle is green","time":1528161194402}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161224454	51	{"type":"Utterance","sender":"speaker","contents":"middle left is grey","time":1528161224454}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161262938	52	{"type":"Utterance","sender":"speaker","contents":"green, light red, purple are top 3","time":1528161262938}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161298757	53	{"type":"Utterance","sender":"speaker","contents":"sorry, I missed that one.~~~","time":1528161298757}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161304587	53	{"type":"Utterance","sender":"listener","contents":"It's ok","time":1528161304587}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161347890	53	{"type":"Utterance","sender":"speaker","contents":"bright teal-blue and then purple top left","time":1528161347890}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161378483	54	{"type":"Utterance","sender":"speaker","contents":"I'm sorry!","time":1528161378483}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161389557	54	{"type":"Utterance","sender":"listener","contents":"It's ok.~~~~~~they're getting tough","time":1528161389557}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161412351	54	{"type":"Utterance","sender":"speaker","contents":"middle right and bottom right are the same color green","time":1528161412351}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161476577	55	{"type":"Utterance","sender":"speaker","contents":"bottom left and middle bottom look almost the same.~~~~~~very similar","time":1528161476577}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161528231	56	{"type":"Utterance","sender":"speaker","contents":"left middle and right middle are red with the right middle a slightly lighter red","time":1528161528231}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161584662	57	{"type":"Utterance","sender":"speaker","contents":"grey top middle and bottom middle","time":1528161584662}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161637120	58	{"type":"Utterance","sender":"speaker","contents":"pink top right and middle, also purple middle right and bottom middle","time":1528161637120}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161649022	58	{"type":"Utterance","sender":"listener","contents":"Almost done!!  Great work!!","time":1528161649022}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161656034	58	{"type":"Utterance","sender":"speaker","contents":"Thanks, same to you!","time":1528161656034}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161686188	59	{"type":"Utterance","sender":"speaker","contents":"grey left top","time":1528161686188}
+utterance	7115-f5686dd6-2f2d-4e05-bd29-9aef492f056c	1528161711303	60	{"type":"Utterance","sender":"speaker","contents":"teal middle right","time":1528161711303}

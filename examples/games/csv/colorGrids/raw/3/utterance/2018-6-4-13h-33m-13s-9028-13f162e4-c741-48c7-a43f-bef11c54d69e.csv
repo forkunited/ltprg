@@ -1,0 +1,49 @@
+eventType	gameid	time	roundNum	obj
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144393456	1	{"type":"Utterance","sender":"speaker","contents":"The top left corner is pink, center is gray, the upper middle is green","time":1528144393456}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144495102	2	{"type":"Utterance","sender":"speaker","contents":"Hmm, ","time":1528144495102}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144503771	2	{"type":"Utterance","sender":"listener","contents":"they all look the same!","time":1528144503771}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144522897	2	{"type":"Utterance","sender":"speaker","contents":"Its like the middle shade of green on the top left square. there is very little difference~~~ lol","time":1528144522897}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144584495	3	{"type":"Utterance","sender":"speaker","contents":"The top middle is purple","time":1528144584495}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144624939	4	{"type":"Utterance","sender":"speaker","contents":"Top middle is dark purple","time":1528144624939}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144656160	4	{"type":"Utterance","sender":"listener","contents":"my top middles are two shades of blue and a brownish/tan","time":1528144656160}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144669070	4	{"type":"Utterance","sender":"speaker","contents":"The one with the bottom middle orange","time":1528144669070}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144728987	5	{"type":"Utterance","sender":"speaker","contents":"The middle right side is pink and the middle is a dull green.","time":1528144728987}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144772637	6	{"type":"Utterance","sender":"speaker","contents":"Top right is bright pink. bottom right purple","time":1528144772637}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144815789	7	{"type":"Utterance","sender":"speaker","contents":"Top left is purplish, middle top is a blue, and top right is another shade of purple","time":1528144815789}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144853440	8	{"type":"Utterance","sender":"speaker","contents":"Top goes Dark blue. Gray, Greenish","time":1528144853440}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144884493	9	{"type":"Utterance","sender":"speaker","contents":"Left side top to bottom are shades of orange","time":1528144884493}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144892137	9	{"type":"Utterance","sender":"speaker","contents":"middle is blue","time":1528144892137}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528144942154	10	{"type":"Utterance","sender":"speaker","contents":"The most purple center square.","time":1528144942154}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145060313	11	{"type":"Utterance","sender":"speaker","contents":"Of the two that have the same bottom 2 rows, the one with a top row that has a sponge green, not the one that's like neon","time":1528145060313}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145088359	11	{"type":"Utterance","sender":"speaker","contents":"The middle and right colors in the top row are almost the same","time":1528145088359}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145108929	12	{"type":"Utterance","sender":"speaker","contents":"Sorry","time":1528145108929}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145115141	12	{"type":"Utterance","sender":"listener","contents":"that's ok!","time":1528145115141}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145118974	12	{"type":"Utterance","sender":"speaker","contents":"The top row. Orange, Reddish, Purple","time":1528145118974}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145170220	13	{"type":"Utterance","sender":"speaker","contents":"Top row is dull blue, purple, blue","time":1528145170220}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145228689	14	{"type":"Utterance","sender":"speaker","contents":"The lime green, dull yellow, green top row. ","time":1528145228689}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145264267	14	{"type":"Utterance","sender":"listener","contents":"Is the yellow the darker or lighter yellow?","time":1528145264267}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145274014	14	{"type":"Utterance","sender":"speaker","contents":"lighter","time":1528145274014}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145313676	15	{"type":"Utterance","sender":"speaker","contents":"Top row is blue, gray, purple. Middle right is dark pinkish","time":1528145313676}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145347300	16	{"type":"Utterance","sender":"speaker","contents":"the BRIGHT green top right","time":1528145347300}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145381279	16	{"type":"Utterance","sender":"listener","contents":"Is the middle right NOT orange? ","time":1528145381279}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145392270	16	{"type":"Utterance","sender":"speaker","contents":"correct","time":1528145392270}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145471460	17	{"type":"Utterance","sender":"speaker","contents":"Top left is bright green and the lower left and middle are exactly the same. The other 2 pictures are similar with those 2 shades, but you can barely see they are different~~~","time":1528145471460}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145559486	18	{"type":"Utterance","sender":"speaker","contents":"top left yellow, orange, dark blue going down the left","time":1528145559486}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145617050	19	{"type":"Utterance","sender":"speaker","contents":"Top left is yellow. Middle is tan~~~ Middle right is dark blue","time":1528145617050}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145666679	20	{"type":"Utterance","sender":"speaker","contents":"Top right is dark purple. top middle is like brownish","time":1528145666679}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145700902	20	{"type":"Utterance","sender":"listener","contents":"Is the bottom right more purple than pink?","time":1528145700902}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145719518	20	{"type":"Utterance","sender":"speaker","contents":"yes, with the dark purple left middle.","time":1528145719518}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145760121	21	{"type":"Utterance","sender":"speaker","contents":"Top row is blue, purple, orange","time":1528145760121}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145805044	22	{"type":"Utterance","sender":"speaker","contents":"top right sky blue, with the darkest purple center","time":1528145805044}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528145915551	23	{"type":"Utterance","sender":"speaker","contents":"Bottom right is aqua. There is another box that looks nearly identical, but the bottom right in that one is more of a green than blue shade~~~","time":1528145915551}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146013358	24	{"type":"Utterance","sender":"speaker","contents":"The bottom right is a dull purple with the brightest of the top right greens.","time":1528146013358}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146050757	24	{"type":"Utterance","sender":"listener","contents":"Is the bottom middle a lighter shade of pink/purple than the similar box?","time":1528146050757}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146056651	24	{"type":"Utterance","sender":"speaker","contents":"With the dull pale orange right","time":1528146056651}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146120171	25	{"type":"Utterance","sender":"speaker","contents":"Left middle is a dull green, bottom middle is pink","time":1528146120171}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146150126	26	{"type":"Utterance","sender":"speaker","contents":"the two pink bottoms","time":1528146150126}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146187508	27	{"type":"Utterance","sender":"speaker","contents":"Middle right is orange","time":1528146187508}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146228718	28	{"type":"Utterance","sender":"speaker","contents":"top left are shades of pink with the blue middle left.","time":1528146228718}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146325989	29	{"type":"Utterance","sender":"speaker","contents":"Top left is a lighter purple, bottom right is a darker, duller green. Top right is a dark tan or light brown~~~","time":1528146325989}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146417904	29	{"type":"Utterance","sender":"speaker","contents":"Middle left is like a gray","time":1528146417904}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528146441659	29	{"type":"Utterance","sender":"speaker","contents":"The top left could be considered pink","time":1528146441659}
+utterance	9028-13f162e4-c741-48c7-a43f-bef11c54d69e	1528147263061	29	{"type":"Utterance","sender":"speaker","contents":"It seems my partner dropped out here. I've been sitting here over 15 minutes now with no reply from them","time":1528147263061}

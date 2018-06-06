@@ -58,9 +58,9 @@
                     }
                     roundMessagesElement.appendChild(messageElement);
                 } else if (eventJson.eventType == "action") {
-                    lClicked = parseInt(eventJson.lClicked);
-                    mouseX = parseInt(eventJson.mouseX);
-                    mouseY = parseInt(eventJson.mouseY);
+                    lClicked = parseInt(eventJson.action.lClicked);
+                    mouseX = parseInt(eventJson.action.mouseX);
+                    mouseY = parseInt(eventJson.action.mouseY);
                 } else {
                     game.currStim = eventJson.state;
                 }
