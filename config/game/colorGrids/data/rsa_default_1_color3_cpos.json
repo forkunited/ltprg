@@ -285,6 +285,58 @@
       "filter" : {
         "state.state.condition.source" : "grid3"
       }
+    },
+    {
+      "name" : "train_src_grid3_diffs_all",
+      "superset" : "train_src_grid3",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "train_src_grid3_diffs_some",
+      "superset" : "train_src_grid3",
+      "type" : "FILTER",
+      "filter_type" : "NOT_EQUAL",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "train_src_grid3_diffs_many",
+      "superset" : "train_src_grid3_diffs_some",
+      "type" : "FILTER",
+      "filter_type" : "GREATER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 4 
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_all",
+      "superset" : "dev_src_grid3",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_some",
+      "superset" : "dev_src_grid3",
+      "type" : "FILTER",
+      "filter_type" : "NOT_EQUAL",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_many",
+      "superset" : "dev_src_grid3_diffs_some",
+      "type" : "FILTER",
+      "filter_type" : "GREATER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 4
+      }
     }
   ]
 }

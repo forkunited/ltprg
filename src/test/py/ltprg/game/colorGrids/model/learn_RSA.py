@@ -64,7 +64,7 @@ keys = set(data_sets.keys())
 for key in keys:
     if args.only_correct_clean_train and key.startswith("train"):
         data_sets[key] = data_sets[key].filter(lambda d : d.get("state.state.target") == d.get("state.state.listenerOrder")[d.get("action.action.lClicked")] )
-        print "Filtered clean train data to only listener correct examples (" + str(data_sets[key].get_size()) + ")"
+        print "Filtered clean train data (" + key + ") to only listener correct examples (" + str(data_sets[key].get_size()) + ")"
 
 data_parameter, rsa_model = crsa.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
 train_evals = crsa.load_evaluations(train_evals_config, data_sets, gpu=gpu)

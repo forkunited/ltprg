@@ -88,6 +88,60 @@
                 "dist_level" : 0,
                 "dist_type" : "L"
             }
+        },
+        {
+            "name" : "Dev L1 Grid3 Some Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_some",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {
+            "name" : "Dev L1 Grid3 All Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_all",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+        {
+            "name" : "Dev L1 Grid3 Many Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_many",
+            "parameters" : {
+                "dist_level" : 1,
+                "dist_type" : "L"
+            }
+        },
+{
+            "name" : "Dev L0 Grid3 Some Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_some",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {
+            "name" : "Dev L0 Grid3 All Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_all",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
+        },
+        {
+            "name" : "Dev L0 Grid3 Many Diffs Accuracy",
+            "type" : "RSADistributionAccuracy",
+            "data" : "dev_src_grid3_diffs_many",
+            "parameters" : {
+                "dist_level" : 0,
+                "dist_type" : "L"
+            }
         }
     ]
 }
