@@ -27,5 +27,5 @@ if args.maintain_partition_file is not None:
     maintain_part = Partition.load(args.maintain_partition_file)
 
 D_all = DataSet.load(data_dir, id_key="gameid")
-partition = Partition.make(D_all, part_sizes, PART_NAMES, lambda d : d.get_id(), maintain_part=maintain_part)
+partition = Partition.make(D_all, part_sizes, PART_NAMES, lambda d : d.get_id(), maintain_partition=maintain_part)
 partition.save(split_output_file)
