@@ -29,4 +29,4 @@ for d in D_grid:
     add_datum(datums_out, d, grid_data_name)
 D_out = DataSet(data=datums_out, id_key="gameid")
 
-D_out.save(output_dir)
+D_out.save(output_dir,batch=500)
