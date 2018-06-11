@@ -9,7 +9,7 @@
         "utterance_seq" : true
     },
     "utterance_prior" : {
-        "seq_model_path" : "$!{s_model_colorgrids_1_color3}",
+        "seq_model_path" : "$!{s0_model_colorgrids_1_color3_onlygrid3}",
         "heuristic" : "L0",
         "parameters" : {
             "training_mode" : "SMC",
@@ -27,7 +27,7 @@
     "meaning_fn" : {
         "seq_model" : {
             "bidirectional" : true,
-            "dropout" : 0.5,
+            "dropout" : 0.0,
             "rnn_layers" : 1,
             "rnn_size" : 100,
             "embedding_size" : 100,
