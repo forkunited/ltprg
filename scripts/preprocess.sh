@@ -5,19 +5,19 @@ ROOT_DIR=[PATH_TO_LTPRG_ROOT]
 # e.g. src/test/py/ltprg/game/colorGrids/data/featurize_sua.py
 FEATURIZE_SUA_SCRIPT=[PATH_TO_GAME_SPECIFIC_SUA_FEATURIZATION_SCRIPT]
 
-# e.g. examples/games/csv/colorGrids/2
+# e.g. examples/games/csv/colorGrids/1
 CSV_DATA_DIR=[PATH_TO_INPUT_CSV_GAME_DATA]
 
-# e.g. examples/games/json/colorGrids/2
+# e.g. examples/games/json/colorGrids/clean
 JSON_DATA_DIR=[PATH_TO_OUTPUT_JSON_GAME_DATA]
 
-# e.g. examples/games/json/colorGrids/2_nlp
+# e.g. examples/games/json/colorGrids/merged/nlp
 JSON_WITH_NLP_DATA_DIR=[PATH_TO_OUTPUT_JSON_NLP_GAME_DATA]
 
-# e.g. examples/games/json/colorGrids/12_color3_sua_speaker
+# e.g. examples/games/json/colorGrids/merged/sua_speaker
 SUA_DATA_DIR=[PATH_TO_OUTPUT_JSON_STATE_UTTERANCE_ACTION_DATA]
 
-# e.g. examples/splits/colorGrids_12_color_merged_34_80_33_10_33_10
+# e.g. examples/games/splits/colorGrids_merged
 PARTITION_FILE=[PATH_TO_OUTPUT_PARTITION_FILE]
 
 FEATURE_DIR=[PATH_TO_OUTPUT_FEATURIZED_DATA_DIRECTORY]
