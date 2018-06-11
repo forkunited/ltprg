@@ -49,8 +49,6 @@ class FeaturizeSUA(unittest.TestCase):
             indices=True, # Indicates that indices will be computed instead of one-hot vectors
             token_fn=lambda x : x.lower()) # Function applied to tokens to construct the vocabulary
    
- 
-    """
     # Constructs sequences of integer indices representing cleaned utterances
     def test_utterance_clean_indices_short(self):
         print "Featurizing utterance clean indices (short)"
@@ -346,7 +344,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "target_idx",
             ["state.state.target"])
-    """
 
 if __name__ == '__main__':
     unittest.main()

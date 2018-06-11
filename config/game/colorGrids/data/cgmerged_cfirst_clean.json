@@ -1,18 +1,18 @@
 {
-  "data_path" : "$!{data_path_colorgrids_1_color3}",
+  "data_path" : "$!{data_path_cgmerged}",
   "mats" : {
     "dfmat_paths" : {
-      "target_obj" : "$!{data_feature_path_colorgrids_1_color3_target_color_first}",
-      "target" : "$!{data_feature_path_colorgrids_1_color3_target}",
-      "observation" : "$!{data_feature_path_colorgrids_1_color3_color_first}"  },
-    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_unclean_short}" },
+      "target_obj" : "$!{data_feature_path_cgmerged_target_color_first}",
+      "target" : "$!{data_feature_path_cgmerged_target}",
+      "observation" : "$!{data_feature_path_cgmerged_color_first}"  },
+    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_cgmerged_utterance_clean}" },
     "ordering_seq" : "utterance"
   },
 
   "subsets" : [
     { "name" : "partition",
       "type" : "PARTITION",
-      "file" : "$!{partition_file_colorgrids_1_color3}",
+      "file" : "$!{partition_file_cgmerged}",
       "key" : "gameid",
       "parts" : { "train" : "train", "dev" : "dev", "test": "test" }
     },

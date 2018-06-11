@@ -1,17 +1,18 @@
 {
-  "data_path" : "$!{data_path_colorgrids_1_color3}",
+  "data_path" : "$!{data_path_cgmerged}",
   "mats" : {
     "dfmat_paths" : {
-      "target" : "$!{data_feature_path_colorgrids_1_color3_target}",
-      "observation" : "$!{data_feature_path_colorgrids_1_color3_color_corner}"  },
-    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_colorgrids_1_color3_utterance_unclean_short}" },
+      "target_obj" : "$!{data_feature_path_cgmerged_target_color_pos}",
+      "target" : "$!{data_feature_path_cgmerged_target}",
+      "observation" : "$!{data_feature_path_cgmerged_color_pos}"  },
+    "dfmatseq_paths" : { "utterance" : "$!{data_feature_path_cgmerged_utterance_unclean_short}" },
     "ordering_seq" : "utterance"
   },
 
   "subsets" : [
     { "name" : "partition",
       "type" : "PARTITION",
-      "file" : "$!{partition_file_colorgrids_1_color3}",
+      "file" : "$!{partition_file_cgmerged}",
       "key" : "gameid",
       "parts" : { "train" : "train", "dev" : "dev", "test": "test" }
     },
@@ -283,6 +284,58 @@
       "type" : "FILTER",
       "filter" : {
         "state.state.condition.source" : "grid3"
+      }
+    },
+    {
+      "name" : "train_src_grid3_diffs_all",
+      "superset" : "train_src_grid3",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "train_src_grid3_diffs_some",
+      "superset" : "train_src_grid3",
+      "type" : "FILTER",
+      "filter_type" : "NOT_EQUAL",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "train_src_grid3_diffs_many",
+      "superset" : "train_src_grid3_diffs_some",
+      "type" : "FILTER",
+      "filter_type" : "GREATER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 4 
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_all",
+      "superset" : "dev_src_grid3",
+      "type" : "FILTER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_some",
+      "superset" : "dev_src_grid3",
+      "type" : "FILTER",
+      "filter_type" : "NOT_EQUAL",
+      "filter" : {
+        "state.state.condition.numDiffs" : 9
+      }
+    },
+    {
+      "name" : "dev_src_grid3_diffs_many",
+      "superset" : "dev_src_grid3_diffs_some",
+      "type" : "FILTER",
+      "filter_type" : "GREATER",
+      "filter" : {
+        "state.state.condition.numDiffs" : 4
       }
     }
   ]

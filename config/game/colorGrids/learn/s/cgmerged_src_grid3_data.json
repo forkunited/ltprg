@@ -1,6 +1,6 @@
 {
     "max_evaluation" : false,
-    "data" : "train_src_color3_cleanutts",
+    "data" : "$!{train_data}",
     "data_size" : "$!{train_data_size}",
     "iterations" : 7000,
     "batch_size" : 128,
