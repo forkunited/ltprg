@@ -596,4 +596,55 @@ for more examples of how to access the data.
 
 ## How to train and evaluate models
 
-### FIXME
+After the data has been preprocessed according to the steps described
+above (and given in the script template *scripts/preprocess.sh*), we can
+train and evaluate models on the resulting vectorized data sets.  This 
+training/evaluation can be run using scripts based on the templates in
+*scripts*, which train RSA listeners and language models based on the 
+color and color grid subsets of the merged data in 
+*examples/games/json/colorGrids/merged/sua_speaker*.  These shell script 
+templates call the Python scripts in 
+*src/test/py/ltprg/game/colorGrids/model/*.  Each Python script takes a 
+set of configuration files from *config*, and trains/evaluates a single model,
+logging the results to some directory.  The first three subsections below give 
+the high level details of this process.  
+
+1. [Configuring experiments](#configuring-experiments)
+2. [Training and evaluating models](#model-training-and-evaluation)
+3. [Understanding evaluation output](#training-and-evaluation-output) 
+
+The fourth and fifth sections give
+lower level details of the design for training RSA and sequence models:
+
+4. [Design for RSA models](#rsa-models)
+5. [Design for sequence models](#sequence-models)
+
+### Configuring experiments
+
+FIXME
+% Configurations assume that local paths to the data have been set in the environment
+% file (a local copy of env.json to env_local.json).
+
+### Model training and evaluation
+
+FIXME
+%	- When documenting models/modules, make note about how forward_batch and loss work
+%	  in the context of mungpy
+
+### Training and evaluation output
+
+FIXME
+
+### Design for RSA models
+
+FIXME
+%	- Note at top of RSA about how the recursion makes things a bit complicated, in that
+%	  S and L work both in cases where given world/utt supports and just single worlds or
+%	  utterances
+%	- Hacks
+%		- In rsa, observation_fn sort of tacked on.  May be incomplete in some cases
+%			- Especially when calling with top-level speaker
+
+### Design for sequence models
+
+FIXME
