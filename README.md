@@ -17,16 +17,51 @@ The remainder of this README is organized into the following sections:
 
 The repository is organized into a *config* directory containing configuration
 files for modeling experiments, a *scripts* directory containing templates for 
-shell scripts for running various tasks, an *examples* directory containing data 
-examples, a *src/main* directory containing a library of classes and functions for 
-training and evaluating models, and a *src/test* directory containing tests, 
-experiments, and scripts that run the model training and evaluation functions.
-This separation between the main libraries and the scripts/tests was inspired by
-previous Java Maven projects, and might seem annoyingly over-complicated in leading
+shell scripts for running the tasks in *src/test*, an *examples* directory 
+containing data examples, a *src/main* directory containing a library of classes 
+and functions for training and evaluating models, and a *src/test* directory containing tests, 
+experiments, and scripts that call model training and evaluation functions.
+This separation between the main libraries in *src/main* and the 
+scripts/tests in *src/test* was inspired by the layout used in Java 
+Maven projects, and might seem annoyingly over-complicated---leading
 to unnecessarily deep directory structures that aren't very typical of 
-Python projects.  It is true that this is annoying, but the structure has had the 
+Python projects.  It is true that this is annoying, but the structure has also had the 
 benefit of keeping the one-off scripty type things separated away from 
 the main library code in *src/main*. 
+
+### Script templates
+
+After being filled in with local paths, the shell script templates in *scripts*
+can be run to call various Python scripts in *src/test* with the configurations in
+*config* to preprocess the data and train various models.  The details of the steps for
+the pre-processing scripts are given in the the [data preprocessing](#how-to-preprocess-reference-game-data-for-modeling)
+section, and the details on the model training and evaluation are given in the
+[modeling](#how-to-train-and-evaluate-models) section.
+
+### Configuration files
+
+The *config* directory contains configuration files stored in JSON format which are used 
+for setting hyper-parameters within the Python model training and evaluation 
+scripts (e.g. in *src/test/py/ltprg/game/colorGrids/model/learn_RSA.py*).  These configurations
+are currently (as of May 2018) split into the following subdirectories of *config*:
+
+* *game/colorGrids/data* - Specifications for feature sets, data, and subsets of the
+data to use within experiments.
+
+* *game/colorGrids/eval* - Specifications for evaluations (log-likelihood, accuracy, etc) to use
+in evaluating models.
+
+* *game/colorGrids/learn* - Specifications for hyper-parameters of the learning algorithm (learning rate,
+batch size, etc) to use during training
+
+* *game/colorGrids/model* - Specifications for model hyper-parameters (e.g. RSA speaker 
+rationality, number of units in hidden layers, etc)
+
+* *game/colorGrids/old* - Old specifications that are no longer used, but kept around in case
+they might be helpful for reference in the future
+
+See the section below on [modeling](#how-to-train-and-evaluate-models) for details on how these 
+are used.
 
 ### Data subdirectories
 
@@ -43,19 +78,20 @@ featurization/modeling code.
 * *games/splits/* - Files describing partitions of the data sets into train/dev/test 
 partitions.
 
-Note that the *colorGrids* sub-directories contain most of the relevant game data that
+Note that the *colorGrids* sub-directories under the above (csv, json, etc) contain most 
+of the relevant game data that
 is used as of May 2018.  These contain the recently collected color grids from mturk, and also
-merged with the colors data set from Monroe et al (2017).  In *games/json/colorGrids*,
-*1* is the first batch of color grid data collected from mturk, *2* is a second batch,
-and *color3* is the Monroe et al (2017) color data pushed into the same format as the
-colorGrids.  Directories ending in *sua_speaker* contain the state-utterance-action 
-format of the data described in the pre-processing sections of the README below.  The
-full merged data set used by the models as of May 2018 is 
-in *games/json/colorGrids/12_color3_sua_speaker* (but this mess of stuff will probably 
-be re-organized after the data set is finalized).
-The split for all this data is in *games/splits/colorGrids_12_color_merged_34_80_33_10_33_10*
-(which represents a 34/33/33 train/dev/test split of the original colors data and an 
-80/10/10 train/dev/test split of the color grid data)
+merged with the colors data set from Monroe et al (2017).  
+In *games/json/colorGrids*, there are json versions of the color grid data collected from mturk 
+(sanitized and annotated under *clean_nlp*), and also merged with
+the color data from Monroe et al (2017) color data (under *merged*).  
+Directories named *sua_speaker* contain the state-utterance-action 
+format of the data described in the [data pre-processing](#how-to-preprocess-reference-game-data-for-modeling) sections of the README below.  
+The full merged data set used for training all color grid and color RSA models 
+(as of May 2018) is in *games/json/colorGrids/merged/sua_speaker*.
+The split for all this data is in *games/splits/colorGrids_merged*
+(which represents a 34/33/33 train/dev/test split of the original colors data merged with a  
+80/10/10 train/dev/test split of the color grid data).
 
 ### Python modules
 
@@ -150,7 +186,7 @@ models with GLoVe embeddings for SNLI)
 
 #### Scripts specific to color grid (and merged colors) reference games
 
-The *ltprg/game/colorGrids* directory contains scripts particular to the 
+The *ltprg/game/colorGrids* directory contains Python scripts particular to the 
 color grids data set (and also the colors data set that has been converted
 and merged into this same format).  There are older scripts specific to other 
 reference games in other subdirectories of *ltprg/game*, but currently 
@@ -247,7 +283,7 @@ is used.  You can download it at https://pytorch.org/previous-versions/.
 Before running modeling experiments, it's useful to push all the reference
 game data into a standard format that can be manipuated by models through a
 common set of data structures.  This section describes how to push CSV
-data generated by reference games into a more easily manipulable JSON format,
+data generated by mturk experiments into a more easily manipulable JSON format,
 and then generate vectorized views of this data that are used by the learning
 models.  The main steps in pipeline include:
 
@@ -268,9 +304,13 @@ steps is described in some detail below.
 
 (Note that the color and color grids data sets under *examples/games/json/colorGrids* have been
 generated through additional steps to the pipeline described here.  These additional
-steps were necessary for merging the color and color grids data into a single format. 
-But in general, when new reference game data comes through a single CSV format, it's likely that
-the steps given here should be at least nearly sufficient for pre-processing.)
+steps were necessary for merging the color and color grids data into a single format,
+and they can be pefromed using the color-grid preprocessing script template at 
+[scripts/preprocess_cg.sh](https://github.com/forkunited/ltprg/blob/master/scripts/preprocess_cg.sh)
+In general, when new reference game data comes through a single CSV format, it's likely that
+the steps described below, and performed by 
+[scripts/preprocess.sh](https://github.com/forkunited/ltprg/blob/master/scripts/preprocess.sh)
+should be at least nearly sufficient for pre-processing.)
 
 ### Converting game data to the JSON format
 
@@ -339,14 +379,14 @@ examples of NLP annotated JSON color data in
 ### Extracting state-utterance-action data sets
 
 Several reference game learning models depend on training from examples
-that consist of a single round represented by a game state, utterances, and 
-an action.  For example, training
+that consist of a single round represented by a game state, speaker utterances, 
+and a listener action.  For example, training
 the RSA listener models to play the color reference game depends on having
 one example per game round---with a state of three colors, 
-the speaker utterances, and the target color referred to by the speaker.  The 
-script at
+the speaker utterances, and either the target color referred to by the speaker or the
+color clicked on by the listener.  The script at
 [test/py/ltprg/data/make_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/data/make_sua.py)
-constructs state-utterance-action examples like this from the game data.  Also, there
+constructs state-utterance-action examples like this from the JSON game data.  Also, there
 are examples of state-utterance-action data for the color data set in
 [examples/games/json/color_sua_speaker](https://github.com/forkunited/ltprg/tree/master/examples/games/json/color_sua_speaker).
 
@@ -394,7 +434,7 @@ data sets in the JSON format described above.  In particular, the
 module (from
 [mungpy](https://github.com/forkunited/mungpy)) contains functions for
 constructing feature matrices and sequences of feature
-matrices (e.g. representing  utterances).   The features in the matrices can
+matrices (e.g. representing utterances).   The features in the matrices can
 represent values stored in the JSON data examples.  These values can be either
 numerical values stored directly in properties of the JSON objects, or tokens from an
 enumerable vocabulary (e.g. of utterance words/lemmas).  The following
@@ -506,7 +546,9 @@ tokens for each datum.
 See
 [test/py/ltprg/game/color/data/feature_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/color/data/featurize_sua.py)
 for some further examples of how feature matrices are constructed from the color
-reference game data.
+reference game data. Also see 
+[test/py/ltprg/game/colorGrids/data/feature_sua.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/data/featurize_sua.py)
+for a similar script that featurizes the more recent merged color/color-grid data. 
 
 ### Reloading saved feature matrices into memory
 
