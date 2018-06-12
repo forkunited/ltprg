@@ -662,11 +662,11 @@ Notice that the *data* and *data_size* fields in this object contain
 *$!{train_data}* and *$!{train_data_size}* placeholders for the name of 
 the data and the size of the subset to train on.  These placeholders are defined
 through the local environment, which is specified either through 
-command-line options (i.e. giving ``--train_data_size 1000'' 
+command-line options (i.e. giving *--train_data_size 1000*
 when calling the script) or through a local environment configuration file which
 specifies local paths to data and other resources.   The file
 [env.json](https://github.com/forkunited/ltprg/blob/master/env.json) gives a template
-for this local environment configuration, and it should be copied to a local ``env_local.json'', 
+for this local environment configuration, and it should be copied to a local *env_local.json*, 
 and filled in with paths specific to the local machine.  This separation between
 the local environment and the configuration gives (1) a means by which to keep local 
 information out of the repository, and (2) a way to re-use parameter settings that 
@@ -693,9 +693,49 @@ modules are responsible for parsing various types of configurations:
 
 ### Model training and evaluation
 
-FIXME
-%	- When documenting models/modules, make note about how forward_batch and loss work
-%	  in the context of mungpy
+The Python training scripts (like 
+[learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py) 
+and [learn_S.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_S.py))
+configure the main training loop through the [training configuration module](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/config/torch_ext/learn.py).  
+This module constructs a *Trainer* class from [learn.py](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/torch_ext/learn.py).
+Among other arguments, the *Trainer* takes a "data parameter", loss criterion, evaluation metrics,
+a model, and some data.  The trainer runs some SGD variant to train the model for a specified 
+number of iterations while logging the evaluation results to a log file at regular intervals.
+The trainer keeps track of the best evaluation of the model, and returns both the final model
+from the full set of iterations, and the best model according to the main evaluation.
+
+The trainer assumes that the model is a Python class that extends PyTorch's nn.Module,
+and also has a *forward_batch* and *loss* methods.  The purpose of these methods is that 
+they give a consistent signature that the *Trainer* can use across
+many model types with different kinds of inputs and outputs. The *forward_batch* method should take
+a data batch and a "data parameter", and compute a forward pass of the module on the batch,
+indexing into it using the "data parameter".  The *loss* method should take a data batch,
+a "data parameter", and a loss criterion, compute the forward pass, and then use the modules 
+output to compute the loss according to the loss criterion.  Example implementations of
+ *forward_batch* and *loss* methods are given in [seq.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq.py) 
+ for sequence models and [rsa.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py) 
+ for RSA models.
+
+The "data parameter" argument to *forward_batch* and *loss* specifies names of views within
+the data batch that should be used by the model.  This gives a mapping between the types of
+data that the model expects (e.g. sequences for sequence models) and their names within the 
+given data set (e.g. utterances within reference games).  For example, there is a *DataParameter*
+class specific to sequence models at the top of [seq.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq.py).
+This class stores the name of the sequence view within the data, and the name of the non-sequential
+input view within the data.  In the [model configuration file](https://github.com/forkunited/ltprg/blob/master/config/game/colorGrids/model/s0/attn_cgmerged.json) 
+for specifying an S0 sequence model, these view names are given as "utterance" and "target_obj".  These
+view names refer to the data views specified at the top of the 
+[data configuration file](https://github.com/forkunited/ltprg/blob/master/config/game/colorGrids/data/cgmerged_cpos_unclean.json).
+Every batch of data fed into *forward_batch* or *loss* by trainer will contain these vectorized views of the
+data, indexed by the names "utterance" and "target_obj".
+
+The *Trainer* class assumes that the given evaluations implement the *Evaluation* class in
+[eval.py](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/torch_ext/eval.py).  An
+evaluation should take a model, and output a number.  Several examples of existing 
+evaluations (e.g. accuracy, loss according to some criterion, etc) are also given in 
+[eval.py](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/torch_ext/eval.py).  There
+also several RSA specific evaluations at the end of 
+[rsa.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py).
 
 ### Training and evaluation output
 
