@@ -616,14 +616,80 @@ the high level details of this process.
 The fourth and fifth sections give
 lower level details of the design for training RSA and sequence models:
 
-4. [Design for RSA models](#rsa-models)
-5. [Design for sequence models](#sequence-models)
+4. [Design for RSA models](#design-for-rsa-models)
+5. [Design for sequence models](#design-for-sequence-models)
 
 ### Configuring experiments
 
-FIXME
-% Configurations assume that local paths to the data have been set in the environment
-% file (a local copy of env.json to env_local.json).
+The Python training and evaluation scripts (e.g. for training RSA models in
+[learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py))
+are configured through the JSON configuration files in the *config* directory.
+These configuration files contain hyper-parameter settings and specifications for architectural 
+details of the model.  As a concrete example, the [learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py)
+script loads data, model, learning, and evaluation 
+configurations through the following lines:
+
+```python
+data_config = Config.load(args.data, environment=env)
+model_config = Config.load(args.model, environment=env)
+learn_config = Config.load(args.learn, environment=env)
+train_evals_config = Config.load(args.train_evals, environment=env)
+dev_evals_config = Config.load(args.dev_evals, environment=env)
+test_evals_config = Config.load(args.test_evals, environment=env)
+```
+
+An example of a configuration that can be loaded into the *learn_config* line 
+above is given in [cgmerged_src_color3_data.json](https://github.com/forkunited/ltprg/blob/master/config/game/colorGrids/learn/rsa/cgmerged_src_color3_data.json).  
+This file contains the following JSON object, which specifies the parameters
+for the training algorithm:
+
+```json
+{
+    "max_evaluation" : true,
+    "data" : "$!{train_data}",
+    "data_size" : "$!{train_data_size}",
+    "iterations" : 10000,
+    "batch_size" : 128,
+    "optimizer_type" : "ADAM",
+    "learning_rate" : 0.005,
+    "weight_decay" : 0.0,
+    "gradient_clipping" : 5.0,
+    "log_interval" : 100
+}
+```
+
+Notice that the *data* and *data_size* fields in this object contain
+*$!{train_data}* and *$!{train_data_size}* placeholders for the name of 
+the data and the size of the subset to train on.  These placeholders are defined
+through the local environment, which is specified either through 
+command-line options (i.e. giving ``--train_data_size 1000'' 
+when calling the script) or through a local environment configuration file which
+specifies local paths to data and other resources.   The file
+[env.json](https://github.com/forkunited/ltprg/blob/master/env.json) gives a template
+for this local environment configuration, and it should be copied to a local ``env_local.json'', 
+and filled in with paths specific to the local machine.  This separation between
+the local environment and the configuration gives (1) a means by which to keep local 
+information out of the repository, and (2) a way to re-use parameter settings that 
+tend to stay the same while also offering the flexibility of specifying other 
+parameters through the command line.  
+
+The *data* field in the above configuration gives the name of the data subset to 
+train on, where this data is defined through a data configuration file (e.g. see 
+[here for example data configurations](https://github.com/forkunited/ltprg/blob/master/config/game/colorGrids/data)).
+In general, the data configurations take some initial featurized data set, and 
+split it into named subsets representing conditions that are useful for training 
+and evaluation (e.g. *close*, *split*, and *far* conditions in the color data).
+
+When setting up new experiments, you can get an idea of what configurations are 
+necessary by looking through some of the examples in the [config](https://github.com/forkunited/ltprg/blob/master/config) 
+directory, but there is also some documentation on what configuration fields are required
+in the Python modules responsible for parsing the configurations.  The following
+modules are responsible for parsing various types of configurations:
+
+* [Data subsets](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/config/feature.py)
+* [Learning algorithms](https://github.com/forkunited/mungpy/blob/master/src/main/py/mung/config/torch_ext/learn.py)
+* [RSA models and evaluations](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/rsa.py)
+* [Sequence models and evaluations](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/seq.py)
 
 ### Model training and evaluation
 
