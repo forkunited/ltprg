@@ -9,55 +9,87 @@ training/evaluations of the learning models using this tensor data.
 The remainder of this README is organized into the following sections:
 
 * [A summary of the contents of this repository](#summary-of-repository-content)
-* [Details of how to setup the code environment](#setup-instructions)
+* [Details on how to setup the code environment](#setup-instructions)
 * [Instructions for pre-processing reference game data](#how-to-preprocess-reference-game-data-for-modeling)
 * [Instructions for training and evaluating models](#how-to-train-and-evaluate-models)
 
 ## Summary of repository contents
 
-The repository is organized into a *config* directory containing configuration
-files for modeling experiments, a *scripts* directory containing templates for 
-shell scripts for running the tasks in *src/test*, an *examples* directory 
-containing data examples, a *src/main* directory containing a library of classes 
-and functions for training and evaluating models, and a *src/test* directory containing tests, 
+The repository is organized into a 
+[config](https://github.com/forkunited/ltprg/tree/master/config) 
+directory containing configuration files for modeling experiments, a 
+[scripts](https://github.com/forkunited/ltprg/tree/master/scripts) directory 
+containing templates for 
+shell scripts for running the tasks in 
+[src/test](https://github.com/forkunited/ltprg/tree/master/src/test), an 
+[examples](https://github.com/forkunited/ltprg/tree/master/examples) directory 
+containing data examples, a 
+[src/main](https://github.com/forkunited/ltprg/tree/master/src/main) directory 
+containing a library of classes 
+and functions for training and evaluating models, and a 
+[src/test](https://github.com/forkunited/ltprg/tree/master/src/test) directory 
+containing tests, 
 experiments, and scripts that call model training and evaluation functions.
-This separation between the main libraries in *src/main* and the 
-scripts/tests in *src/test* was inspired by the layout used in Java 
+This separation between the main libraries in 
+[src/main](https://github.com/forkunited/ltprg/tree/master/src/main) and the 
+scripts/tests in 
+[src/test](https://github.com/forkunited/ltprg/tree/master/src/test) was inspired 
+by the layout used in Java 
 Maven projects, and might seem annoyingly over-complicated---leading
 to unnecessarily deep directory structures that aren't very typical of 
-Python projects.  It is true that this is annoying, but the structure has also had the 
+Python projects.  It is true that this is annoying, 
+but the structure has also had the 
 benefit of keeping the one-off scripty type things separated away from 
-the main library code in *src/main*. 
+the main library code in 
+[src/main](https://github.com/forkunited/ltprg/tree/master/src/main). 
+
+The following sub-sections give more details about what can be found in 
+each of these sub-directories.
 
 ### Script templates
 
-After being filled in with local paths, the shell script templates in *scripts*
-can be run to call various Python scripts in *src/test* with the configurations in
-*config* to preprocess the data and train various models.  The details of the steps for
-the pre-processing scripts are given in the the [data preprocessing](#how-to-preprocess-reference-game-data-for-modeling)
+After being filled in with local paths, the shell script templates in 
+[scripts](https://github.com/forkunited/ltprg/tree/master/scripts)
+can be run to call various Python scripts in 
+[src/test](https://github.com/forkunited/ltprg/tree/master/src/test) with the 
+configurations in
+[config](https://github.com/forkunited/ltprg/tree/master/config)  
+to preprocess the data and train various models.  The details of the steps for
+the pre-processing scripts are given in the the 
+[data preprocessing](#how-to-preprocess-reference-game-data-for-modeling)
 section, and the details on the model training and evaluation are given in the
 [modeling](#how-to-train-and-evaluate-models) section.
 
 ### Configuration files
 
-The *config* directory contains configuration files stored in JSON format which are used 
-for setting hyper-parameters within the Python model training and evaluation 
-scripts (e.g. in *src/test/py/ltprg/game/colorGrids/model/learn_RSA.py*).  These configurations
-are currently (as of May 2018) split into the following subdirectories of *config*:
+The [config](https://github.com/forkunited/ltprg/tree/master/config) 
+directory contains configuration files stored in JSON 
+format which are used for setting hyper-parameters within the 
+Python model training and evaluation 
+scripts (e.g. 
+[learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py)).  
+These configuration files 
+are currently (as of May 2018) split into the following subdirectories of 
+[config](https://github.com/forkunited/ltprg/tree/master/config):
 
-* *game/colorGrids/data* - Specifications for feature sets, data, and subsets of the
+* [game/colorGrids/data](https://github.com/forkunited/ltprg/tree/master/config/game/colorGrids/data) - 
+Specifications for feature sets, data, and subsets of the
 data to use within experiments.
 
-* *game/colorGrids/eval* - Specifications for evaluations (log-likelihood, accuracy, etc) to use
+* [game/colorGrids/eval](https://github.com/forkunited/ltprg/tree/master/config/game/colorGrids/eval) - 
+Specifications for evaluations (log-likelihood, accuracy, etc) to use
 in evaluating models.
 
-* *game/colorGrids/learn* - Specifications for hyper-parameters of the learning algorithm (learning rate,
+* [game/colorGrids/learn](https://github.com/forkunited/ltprg/tree/master/config/game/colorGrids/learn) - 
+Specifications for hyper-parameters of the learning algorithm (learning rate,
 batch size, etc) to use during training
 
-* *game/colorGrids/model* - Specifications for model hyper-parameters (e.g. RSA speaker 
+* [game/colorGrids/model](https://github.com/forkunited/ltprg/tree/master/config/game/colorGrids/model) - 
+Specifications for model hyper-parameters (e.g. RSA speaker 
 rationality, number of units in hidden layers, etc)
 
-* *game/colorGrids/old* - Old specifications that are no longer used, but kept around in case
+* [game/colorGrids/old](https://github.com/forkunited/ltprg/tree/master/config/game/colorGrids/old) - 
+Old specifications that are no longer used, but kept around in case
 they might be helpful for reference in the future
 
 See the section below on [modeling](#how-to-train-and-evaluate-models) for details on how these 
@@ -65,196 +97,274 @@ are used.
 
 ### Data subdirectories
 
-The data in *examples* is organized into the following directories:
+The data in [examples](https://github.com/forkunited/ltprg/tree/master/examples)
+ is organized into the following directories:
 
-* *games/csv/* - Source csv files from mturk containing reference game data for various games
+* [games/csv/](https://github.com/forkunited/ltprg/tree/master/examples/games/csv) - 
+Source csv files from mturk containing reference game data for various games
 
-* *games/json/* - Games converted to the JSON format described in the section below on
+* [games/json/](https://github.com/forkunited/ltprg/tree/master/examples/games/json) - 
+Games converted to the JSON format described in the section below on 
 preprocessing the game data.  This is the form of the data used by the rest of the 
 featurization/modeling code.
 
-* *games/misc/* - Miscellaneous, relatively unimportant junk
+* [games/misc/](https://github.com/forkunited/ltprg/tree/master/examples/games/misc) - 
+Miscellaneous, relatively unimportant junk
 
-* *games/splits/* - Files describing partitions of the data sets into train/dev/test 
+* [games/splits/](https://github.com/forkunited/ltprg/tree/master/examples/games/splits) - 
+Files describing partitions of the data sets into train/dev/test 
 partitions.
 
-Note that the *colorGrids* sub-directories under the above (csv, json, etc) contain most 
+Note that the *colorGrids* sub-directories under the 
+above (csv, json, etc) contain most 
 of the relevant game data that
-is used as of May 2018.  These contain the recently collected color grids from mturk, and also
+is used as of May 2018.  These contain the recently collected color grids 
+from mturk, and also
 merged with the colors data set from Monroe et al (2017).  
-In *games/json/colorGrids*, there are json versions of the color grid data collected from mturk 
-(sanitized and annotated under *clean_nlp*), and also merged with
-the color data from Monroe et al (2017) color data (under *merged*).  
-Directories named *sua_speaker* contain the state-utterance-action 
-format of the data described in the [data pre-processing](#how-to-preprocess-reference-game-data-for-modeling) sections of the README below.  
+In [games/json/colorGrids](https://github.com/forkunited/ltprg/tree/master/examples/games/json/colorGrids), 
+there are json versions of the color grid data collected from mturk 
+(sanitized and annotated under 
+[clean_nlp](https://github.com/forkunited/ltprg/tree/master/examples/games/json/colorGrids/clean_nlp)), 
+and also merged with
+the color data from Monroe et al (2017) color data (under 
+[merged](https://github.com/forkunited/ltprg/tree/master/examples/games/json/colorGrids/merged)).  
+Directories named 
+[sua_speaker](https://github.com/forkunited/ltprg/tree/master/examples/games/json/colorGrids/merged/sua_speaker) 
+contain the state-utterance-action 
+format of the data described in the [data pre-processing](#how-to-preprocess-reference-game-data-for-modeling) 
+sections of the README below.  
 The full merged data set used for training all color grid and color RSA models 
-(as of May 2018) is in *games/json/colorGrids/merged/sua_speaker*.
-The split for all this data is in *games/splits/colorGrids_merged*
+(as of May 2018) is in 
+[games/json/colorGrids/merged/sua_speaker](https://github.com/forkunited/ltprg/tree/master/examples/games/json/colorGrids/merged/sua_speaker).
+The split for all this data is in 
+[games/splits/colorGrids_merged](https://github.com/forkunited/ltprg/blob/master/examples/games/splits/colorGrids_merged)
 (which represents a 34/33/33 train/dev/test split of the original colors data merged with a  
 80/10/10 train/dev/test split of the color grid data).
 
 ### Python modules
 
-The Python libraries in *src/main/py/ltprg* are organized into the following modules:
+The Python libraries in 
+[src/main/py/ltprg](https://github.com/forkunited/ltprg/tree/master/src/main/py/ltprg)
+are organized into the following modules:
 
 #### Experiment configuration parsing 
 
-* *ltprg.config.rsa* - Functions for parsing configuration files (in *config*) into 
-PyTorch RSA modules and evaluations (from *ltprg.model.rsa*)
+* [ltprg.config.rsa](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/rsa.py) - 
+Functions for parsing configuration files (in 
+[config](https://github.com/forkunited/ltprg/tree/master/config)) into 
+PyTorch RSA modules and evaluations (from 
+[ltprg.model.rsa](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/rsa.py))
 
-* *ltprg.config.seq* - Functions for parsing configuration files (in *config*) into
-PyTorch sequence model modules (from *ltprg.model.seq*)
+* [ltprg.config.seq](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/seq.py) - 
+Functions for parsing configuration 
+files (in [config](https://github.com/forkunited/ltprg/tree/master/config)) into
+PyTorch sequence model modules (from 
+[ltprg.model.seq](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/config/seq.py))
 
 #### Data manipulation and pre-processing
 
-* *ltprg.data.curriculum* - Functions for re-ordering data sets according to 
+* [ltprg.data.curriculum](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/data/curriculum.py) - 
+Functions for re-ordering data sets according to 
 training curricula (e.g. ordering of game rounds according to the lengths of speaker 
 utterances)
 
-* *ltprg.data.feature_helpers* - Helper functions for computing vectorized views
+* [ltprg.data.feature_helpers](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/data/feature_helpers.py) - 
+Helper functions for computing vectorized views
 of the reference game JSON data.  These vectorized views are used as inputs to the 
 learning models.
 
-* *ltprg.data.feature* - Feature classes used by *ltprg.data.feature_helpers* to compute
+* [ltprg.data.feature](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/data/feature.py) - 
+Feature classes used by 
+[ltprg.data.feature_helpers](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/data/feature_helpers.py) 
+to compute
 vectorized views of the reference game JSON data.
 
 #### Modules specific to particular reference games
 
-* *ltprg.game.color.properties* - Some helper functions for manipulating data from the
+* [ltprg.game.color.properties](https://github.com/forkunited/ltprg/tree/master/src/main/py/ltprg/game/color/properties) - 
+Some helper functions for manipulating data from the
 color reference game (this was imported from another library, and was never fully 
 integrated into this one, but a few of the functions here are used by the data 
 preprocessing code). 
 
-* *ltprg.game.color.eval* - Model evaluations specific to the color reference game 
+* [ltprg.game.color.eval](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/game/color/eval.py) - 
+Model evaluations specific to the color reference game 
 (e.g. for outputting visualizations of learned meaning functions computed over 
 *Hue x Saturation* color space)
 
-* *ltprg.game.color.util* - Utilities specific to color games
+* [ltprg.game.color.util](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/game/color/util.py) - 
+Utilities specific to color games
 
 #### Model components
 
-* *ltprg.model.dist* - Represenations of probability distributions
+* [ltprg.model.dist](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/dist.py) - 
+Represenations of probability distributions
 
-* *ltprg.model.meaning* - Modules for computing RSA meaning functions
+* [ltprg.model.meaning](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/meaning.py) - 
+Modules for computing RSA meaning functions
 
-* *ltprg.model.obs* - Modules to compute over observations within RSA
+* [ltprg.model.obs](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/obs.py) - 
+Modules to compute over observations within RSA
 when prior to conditioning the world and utterance priors (these are used within
-*ltprg.model.rsa* as *observation_fns*, especially for SNLI RSA models and others
+[ltprg.model.rsa](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py)
+ as *observation_fns*, especially for SNLI RSA models and others
 that condition the priors on embeddings from observed sequences)
 
-* *ltprg.model.prior* - Modules for computing utterance and world priors within
+* [ltprg.model.prior](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/prior.py) - 
+Modules for computing utterance and world priors within
 RSA models
 
-* *ltprg.model.rsa* - RSA modeling and evaluation modules
+* [ltprg.model.rsa](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py) - 
+RSA modeling and evaluation modules
 
-* *ltprg.model.seq_heuristic* - Heuristics to guide sequence model sampling and 
+* [ltprg.model.seq_heuristic](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq_heuristic.py) - 
+Heuristics to guide sequence model sampling and 
 search procedures (e.g. used for sampling utterance prior supports that contain 
 utterances which score highly according to literal listeners)
 
-* *ltprg.model.seq* - Sequence model modules
+* [ltprg.model.seq](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq.py) - 
+Sequence model modules
 
 #### Miscellaneous utilities
 
-* *ltprg.util.file* - Utilities for managing file I/O
+* [ltprg.util.file](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/util/file.py) - 
+Utilities for managing file I/O
 
-* *ltprg.util.img* - Utitilities for manipulating images
+* [ltprg.util.img](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/util/img.py) - 
+Utitilities for manipulating images
 
 ### Python scripts
 
-Some scripts in *src/test/py* are:
+Some scripts in 
+[src/test/py](https://github.com/forkunited/ltprg/tree/master/src/test/py) 
+are:
 
 #### Data manipulation and pre-processing
 
-* *ltprg/data/make_game_csv_to_json.py* - Take games from mturk in csv 
-format and convert them to JSON objects (see *examples/games/csv* and 
-*examples/games/json* for examples)
+* [ltprg/data/make_game_csv_to_json.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/data/make_game_csv_to_json.py) - 
+Take games from mturk in csv 
+format and convert them to JSON objects (see 
+[examples/games/csv](https://github.com/forkunited/ltprg/tree/master/examples/games/csv) 
+and 
+[examples/games/json](https://github.com/forkunited/ltprg/tree/master/examples/games/json) 
+for examples)
 
-* *ltprg/data/annotate_json_nlp.py* - Process utterances from
+* [ltprg/data/annotate_json_nlp.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/data/annotate_json_nlp.py) - 
+Process utterances from
 games (in JSON format) to produce annotations with NLP tools (e.g. tokenize, 
 lemmatize, etc), and output new annotated games in JSON format
 
-* *ltprg/data/make_sua.py* - Transform reference games in JSON format (with
+* [ltprg/data/make_sua.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/data/make_sua.py) - 
+Transform reference games in JSON format (with
 one JSON object per game) into a data set with one state-utterance-action JSON 
 object per round (representing single training examples for learning models)
 
-* *ltprg/data/compute_utt_length_distribution.py* - Compute distribution
+* [ltprg/data/compute_utt_length_distribution.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/data/compute_utt_length_distribution.py) - 
+Compute distribution
 of utterance lengths across games
 
-* *ltprg/data/make_wv_feature_lookup.py* - Builds and save a numpy matrix from 
+* [ltprg/data/make_wv_feature_lookup.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/data/make_wv_feature_lookup.py) - 
+Builds and save a numpy matrix from 
 word vectors stored in a feature set (this was useful for initializing sequence 
 models with GLoVe embeddings for SNLI)
 
 #### Scripts specific to color grid (and merged colors) reference games
 
-The *ltprg/game/colorGrids* directory contains Python scripts particular to the 
+The 
+[ltprg/game/colorGrids](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids) 
+directory contains Python scripts particular to the 
 color grids data set (and also the colors data set that has been converted
 and merged into this same format).  There are older scripts specific to other 
-reference games in other subdirectories of *ltprg/game*, but currently 
-(as of May 2018), the only actively used scripts are the *colorGrids* ones.
+reference games in other subdirectories of 
+[ltprg/game](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/), 
+but currently 
+(as of May 2018), the only actively used scripts are the 
+[colorGrids](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids) 
+ones.
 They are as follows:
 
 ##### Data pre-processing
 
-* *ltprg/game/colorGrids/data/annotate_with_targets.py* - Annotate the data 
+* [ltprg/game/colorGrids/data/annotate_with_targets.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/annotate_with_targets.py) - 
+Annotate the data 
 with explicit representations of the target objects for each round that can
 be easily featurized (this script is a bit of a hack).  Data that has been
 run through this script contains *targetObj* fields containing representations
 of the target objects.
 
-* *ltprg/game/colorGrids/data/compute_stats.py* - Compute various statistics
+* [ltprg/game/colorGrids/data/compute_stats.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/compute_stats.py) - 
+Compute various statistics
 over the data (e.g. human listener accuracy)
 
-* *ltprg/game/colorGrids/data/convert_from_color.py* - Convert the Monroe et
+* [ltprg/game/colorGrids/data/convert_from_color.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/convert_from_color.py) - 
+Convert the Monroe et
 al (2017) color data set into the same format as the color grid data.
 
-* *ltprg/game/colorGrids/data/featurize_sua.py* - Compute vectorized 
+* [ltprg/game/colorGrids/data/featurize_sua.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/featurize_sua.py) - 
+Compute vectorized 
 representations of the data for use within learning models.
 
-* *ltprg/game/colorGrids/data/make_syn_split.py* - Make train/dev/test 
+* [ltprg/game/colorGrids/data/make_syn_split.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/make_syn_split.py) - 
+Make train/dev/test 
 partitions of the data
 
-* *ltprg/game/colorGrids/data/merge_data.py* - Merge various data sets into a
+* [ltprg/game/colorGrids/data/merge_data.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/data/merge_data.py) - 
+Merge various data sets into a
 single data set (e.g. merge the Monroe et al. (2017) color data with the
 newer color grids data)
 
 ##### Modeling
 
-* *ltprg/game/colorGrids/model/learn_RSA.py* - Train RSA models
+* [ltprg/game/colorGrids/model/learn_RSA.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py) - 
+Train RSA models
 
-* *ltprg/game/colorGrids/model/learn_SRSA.py* - Train RSA models that use
+* [ltprg/game/colorGrids/model/learn_SRSA.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/model/learn_SRSA.py) - 
+Train RSA models that use
 the same sequence model for both their meaning functions and utterance 
 priors (this was an idea pursued briefly, and may be worthwhile to look
 at again in the future)
 
-* *ltprg/game/colorGrids/model/learn_S.py* - Train sequence models (i.e.
+* [ltprg/game/colorGrids/model/learn_S.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/model/learn_S.py) - 
+Train sequence models (i.e.
 vanilla language models and S0 models)
 
-* *ltprg/game/colorGrids/model/test_prior.py* - Compute examples of 
+* [ltprg/game/colorGrids/model/test_prior.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/model/test_prior.py) - 
+Compute examples of 
 utterance priors under various settings to visualized and evaluate 
 qualitatively
 
 #### Results post-processing
 
-* *ltprg/results/aggregate.py* - Take result files output by several 
+* [ltprg/results/aggregate.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/results/aggregate.py) - 
+Take result files output by several 
 training/evaluation jobs (e.g. under different seeds and hyper-parameter 
-settings with a script like *ltprg/game/colorGrids/model/learn_RSA.py*), 
+settings with a script like 
+[ltprg/game/colorGrids/model/learn_RSA.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py)), 
 and merge them into a single tsv file.
 
 #### Visualization and investigation of learned meaning functions
 
-* *ltprg/meaning/* - This directory will eventually contain several 
+* [ltprg/meaning/](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/meaning) - 
+This directory contains 
 scripts and tools for investigating learned meanings
 
 #### Tests
 
-* *ltprg/model/test_rsa.py* - Contains a test for the RSA PyTorch module
+* [ltprg/model/test_rsa.py](https://github.com/forkunited/ltprg/tree/master/src/test/py/ltprg/model/test_rsa.py) - 
+Contains a test for the RSA PyTorch module
 
 ### Other stuff (e.g. game visualization)
 
-The directory *src/test/html/viewData/* contains web pages used to visualize the 
+The directory 
+[src/test/html/viewData/](https://github.com/forkunited/ltprg/tree/master/src/test/html/viewData) 
+contains web pages used to visualize the 
 data set.  Specifically, the color and colorGrids data, and also utterance 
-priors output by *ltprg/game/colorGrids/model/test_prior.py* can be visualized 
-using *src/test/html/viewData/colorGrids/view.html* (by just opening this file in a
+priors output by 
+[ltprg/game/colorGrids/model/test_prior.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/test_prior.py) 
+can be visualized 
+using 
+[src/test/html/viewData/colorGrids/view.html](https://github.com/forkunited/ltprg/tree/master/src/test/html/viewData/colorGrids/view.html) 
+(by just opening this file in a
 browser, and using the form to select a JSON file representing a game or 
 the utterance prior output)
 
@@ -835,10 +945,10 @@ several specific RNN extensions of this module.  The *SequenceModel* class imple
 model methods (e.g. for sampling, beam search, etc), and the extensions implement specific network architectures.
 
 The sequence models generally assume that the input data examples consist of sequences (abbreviated *seq*) along with
- non-sequential inputs referred to as *input* (but some sequence models do not have this additional input).  The 
- sequences are represented as 
+ non-sequential inputs referred to as *input* (but some sequence models do not have this additional non-sequential input).  
+ The sequences are represented as 
 (Max sequence length x Batch size) tensors of indices into a token vocabulary or (Max sequence length x Batch size x Vector size)
 tensors containing batches of sequences of vectors.  These sequences also come with a vector of size (Batch size) 
-containing the sequence lengths, and the possible *inputs* have size (Batch size x Input vector size).
+containing the sequence lengths, and the possible non-sequential *inputs* have size (Batch size x Input vector size).
 Given these inputs, the sequence models produce sequential output tensors of size (Sequence length x Batch size x Vector size) 
 where the output "Vector size" is the same as the input vector (or token vocabulary) size.  
