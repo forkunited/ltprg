@@ -251,10 +251,10 @@ scripts and tools for investigating learned meanings
 
 ### Other stuff (e.g. game visualization)
 
-The directory *src/html/viewData/* contains web pages used to visualize the 
+The directory *src/test/html/viewData/* contains web pages used to visualize the 
 data set.  Specifically, the color and colorGrids data, and also utterance 
 priors output by *ltprg/game/colorGrids/model/test_prior.py* can be visualized 
-using *src/html/viewData/colorGrids/view.html* (by just opening this file in a
+using *src/test/html/viewData/colorGrids/view.html* (by just opening this file in a
 browser, and using the form to select a JSON file representing a game or 
 the utterance prior output)
 
@@ -739,18 +739,106 @@ also several RSA specific evaluations at the end of
 
 ### Training and evaluation output
 
-FIXME
+The Python training scripts,
+[learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py) 
+and [learn_S.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_S.py)),
+create new directories in which to store their output.  The output conists of:
+
+* *log* - A log tsv file giving training evaluations at regular intervals
+during training
+
+* *config.json* - A JSON file storing all the configurations and arguments that were 
+used to run the training.
+
+* *model* - The stored trained model which can be reloaded into memory later for
+further training or evaluation
+
+* *results* - A tsv file containing a single line of final evaluations of the final
+model on the dev set
+
+* *test_results* - A tsv file containing a single line of final evaluation of the final 
+model on the test set.  This is only output by the training scripts if explicitly specified 
+(to avoid unnecessary test set evaluations)
+
+Note that the final results in *result* and *test_results* just containing a single
+line of evaluations of a single model.  Typically, it's useful to gather the results 
+for many model trainings into a single tsv file.  The [aggregate.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/results/aggregate.py) script
+is useful for aggregating the *results* files from many training runs into a single 
+tsv (possibly averaging over some runs, like if running under the same hyper-parameters
+with multiple random seeds).
+
+Training RSA modules can also produce an evaluation for utterance priors which outputs
+a directory containing JSON files storing the utterance prior supports at 
+successive iterations of training for a subset of example contexts. These output 
+priors can be visualized for the color grid and color games using web page visualization 
+[src/test/html/viewData/colorGrids/view.html](https://github.com/forkunited/ltprg/blob/master/src/test/html/viewData/colorGrids/view.html).
 
 ### Design for RSA models
 
-FIXME
-%	- Note at top of RSA about how the recursion makes things a bit complicated, in that
-%	  S and L work both in cases where given world/utt supports and just single worlds or
-%	  utterances
-%	- Hacks
-%		- In rsa, observation_fn sort of tacked on.  May be incomplete in some cases
-%			- Especially when calling with top-level speaker
+The RSA module [rsa.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py) 
+trained using the 
+[learn_RSA.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_RSA.py) 
+script produces listener RSA distributions (it can also produce speakers, but it has mostly been used
+for listeners up until now (May 2018)).  A forward pass of the listener module (referred to briefly as "L" 
+within the code) assumes that data examples contain listener "observations", speaker "utterances", and world 
+"targets".  An observation consists of a context observable to the listener upon hearing 
+the speaker's utterance, and the target is the referent that the listener should infer within that context.  
+So, the listener's forward pass computes an RSA distribution over targets given observations and 
+speaker utterances.  The computation is batched, and so the module takes observations of shape 
+(Batch size x Observation), utterances of shape (Batch size x Utterance), and produces batches of 
+distributions of shape (Batch size x Support size) stored in distribution batch objects from 
+[dist.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/prior.py).  
+Internally, the RSA distributions are computed using  
+an utterance prior, a world prior, and a meaning function.  The RSA listener module in [rsa.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/rsa.py) 
+computes these components using sub-modules from:
+
+* [prior.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/prior.py) -
+PyTorch sub-modules which take (Batch size x Observation) batches of observations, and produce 
+(Batch size x Support size) prior distributions over utterances and worlds.  
+
+* [meaning.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/meaning.py) -
+PyTorch sub-modules which take (Batch size x Utterance prior support size) batches of utterance 
+prior supports and (Batch size x World prior support size), and produce batches of meaning matrices
+of shape (Batch size x Utterance prior support size x World prior support size). 
+
+Many of the sub-modules in [prior.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/prior.py) 
+produce distributions over sequences, and sub-modules in 
+[meaning.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/meaning.py) compute
+meanings over sequential utterance inputs.  The architectures for operating over these sequential 
+inputs are defined by the SequenceModel sub-modules from 
+[seq.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/prior.py).
+
+Note that the listener RSA module is also overloaded to operate as an internal distribution within
+the RSA recursion (e.g. as an L0 computed within an L1).  
+This means that it can optionally take (Batch size x Utterance prior support size x Utterance) 
+inputs from the utterance prior supports of a higher level pragmatic speaker (instead of the simpler top-level
+(Batch size x Utterance) utterance batches), and produce (Batch size x Utterance prior support size x World distributions).
+This makes the code a bit more difficult to understand, but if you're only interested in using the 
+module (not editing it), you can ignore this detail, and treat the listener module as though it just overates 
+over (Batch size x Utterance) batches and produces batches of world distributions.
+
+Also, note that the RSA modules can take an optional "observation_fn" which computes some function
+over observations before they are fed into the utterance and world prior modules.  This is especially useful 
+when the observed context is a sequence (e.g. a premise sentence in SNLI), and it makes sense to compute 
+embeddings of this sequnce to use as "worlds" in the supports of the world priors.  However, note that this 
+functionality was tacked on in a hacky way, and is not completely implemented for the case of computing top-level
+speaker distributions.
 
 ### Design for sequence models
 
-FIXME
+The sequence modeling modules in [seq.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq.py) 
+are used as sub-modules within RSA (for computing utterance priors and meaning functions), and also can be trained
+on their own (e.g. for language modeling) using using the Python script 
+ [learn_S.py](https://github.com/forkunited/ltprg/blob/master/src/test/py/ltprg/game/colorGrids/model/learn_S.py).
+There is a generic *SequenceModel* PyTorch module defined near the top of [seq.py](https://github.com/forkunited/ltprg/blob/master/src/main/py/ltprg/model/seq.py), and below it there are 
+several specific RNN extensions of this module.  The *SequenceModel* class implements several generic sequence 
+model methods (e.g. for sampling, beam search, etc), and the extensions implement specific network architectures.
+
+The sequence models generally assume that the input data examples consist of sequences (abbreviated *seq*) along with
+ non-sequential inputs referred to as *input* (but some sequence models do not have this additional input).  The 
+ sequences are represented as 
+(Max sequence length x Batch size) tensors of indices into a token vocabulary or (Max sequence length x Batch size x Vector size)
+tensors containing batches of sequences of vectors.  These sequences also come with a vector of size (Batch size) 
+containing the sequence lengths, and the possible *inputs* have size (Batch size x Input vector size).
+Given these inputs, the sequence models produce sequential output tensors of size (Sequence length x Batch size x Vector size) 
+where the output "Vector size" is the same as the input vector (or token vocabulary) size.  
