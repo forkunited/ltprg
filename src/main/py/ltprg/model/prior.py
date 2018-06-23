@@ -239,3 +239,89 @@ class SequenceSamplingPriorFn(nn.Module):
             if self.on_gpu():
                 seq = seq.cuda()
             self.set_fixed_seq(seq=Variable(seq), length=length)
+
+
+
+class EditSamplingPriorFn(nn.Module):
+    def __init__(self, model, input_size, samples_per_input=1, seq_length=15, dist_type=DistributionType.S, heuristic=None, n_before_heuristic=20):
+        super(EditSamplingPriorFn, self).__init__()
+        self._model = model
+        self._input_size = input_size
+        self._samples_per_input = samples_per_input
+        self._seq_length = seq_length
+
+        self._fixed_seq = None
+        self._dist_type = dist_type
+        self._heuristic = heuristic
+        self._n_before_heuristic = n_before_heuristic
+
+    def on_gpu(self):
+        return next(self.parameters()).is_cuda
+
+    def set_samples_per_input(self, samples_per_input):
+        self._samples_per_input = samples_per_input
+
+    def set_fixed_seq(self, seq=None, length=None):
+        if seq is None or length is None:
+            self._fixed_seq = None
+        else:
+            self._fixed_seq = (seq.transpose(0,1), length)
+
+    def forward(self, observation):
+        batch_size = observation.size(0)
+        inputs_per_observation = observation.size(1)/self._input_size
+        
+        all_input_indices = None
+        all_contexts = None
+        all_inputs = observation.view(batch_size*inputs_per_observation, self._input_size)
+        if self._heuristic is not None:
+            all_input_indices = torch.arange(0, inputs_per_observation).unsqueeze(0).expand(batch_size, inputs_per_observation).contiguous().view(-1).long()
+            all_contexts = observation.unsqueeze(1).expand(batch_size,inputs_per_observation,observation.size(1)).contiguous().view(batch_size*inputs_per_observation, observation.size(1))
+            if self.on_gpu():
+                all_input_indices = all_input_indices.cuda()
+        
+        samples = self._model.sample(self.fixed_seq[0].transpose(0,1), self._fixed_seq[1], n_per_input=self._samples_per_input, \
+                                        input=all_inputs, heuristic=self._heuristic, \
+                                        context=(all_contexts, all_input_indices), n_before_heuristic=self._n_before_heuristic)
+
+        seq_supp_batch = Variable(torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + 1, self._seq_length).long(), requires_grad=False)
+        length_supp_batch = torch.zeros(batch_size, self._samples_per_input * inputs_per_observation + 1).long()
+
+        if self.on_gpu():
+            seq_supp_batch = seq_supp_batch.cuda()
+
+        for i in range(batch_size):
+            if self._fixed_seq is not None:
+                seq_supp_batch[i,0,:] = self._fixed_seq[0][i]
+                length_supp_batch[i,0] = self._fixed_seq[1][i]
+
+            for j in range(inputs_per_observation):
+                seqs, lengths, _ = samples[i*inputs_per_observation+j]
+                seqs = Variable(seqs)
+                seq_supp_batch[i, (1+j*self._samples_per_input):(1+(j+1)*self._samples_per_input), 0:seqs.size(0)] = seqs.transpose(0,1)
+                length_supp_batch[i, (1+j*self._samples_per_input):(1+(j+1)*self._samples_per_input)] = lengths
+
+        return Categorical((seq_supp_batch, length_supp_batch), on_gpu=self.on_gpu())
+
+    def get_index(self, seq_with_len, observation, support, preset_batch=False):
+        if preset_batch:
+            index = torch.zeros(seq_with_len[0].size(0)).long()
+            if self.on_gpu():
+                index = index.cuda()
+            return index, False, None
+        else:
+            return Categorical.get_support_index(seq_with_len, support)
+
+    def set_data_batch(self, batch, data_parameters):
+        seqType = DataParameter.UTTERANCE
+        if self._dist_type == DistributionType.L:
+            seqType == DataParameter.WORLD
+
+        # NOTE: If dist type != mode, this means that
+        # for example, the L model is running with an utterance prior
+        # that should include the observed utterance
+        if self.training or self._dist_type != data_parameters.get_mode():
+            seq, length, = batch[data_parameters[seqType]]
+            if self.on_gpu():
+                seq = seq.cuda()
+            self.set_fixed_seq(seq=Variable(seq), length=length)

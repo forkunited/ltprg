@@ -983,7 +983,6 @@ class SequenceModelInputEmbedded(SequenceModel):
 
         return SequenceModelInputEmbedded(name, seq_size, input_size, embedding_size, rnn_size, rnn_layers, rnn_type=rnn_type, dropout=dropout, bidir=bidir, freeze_embedding=freeze_embedding, non_emb=non_emb)
 
-
 class SequenceModelNoInput(SequenceModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size,
                  rnn_layers, rnn_type=RNNType.GRU, dropout=0.5, bidir=False,
