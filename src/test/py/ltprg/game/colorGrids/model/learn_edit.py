@@ -130,12 +130,14 @@ if eval_test:
 
 # Get and output samples
 seq_data = data_sets["train"][data_parameter["seq"]]
-seq, seq_length, _ = seq_data.get_random_batch(10)
+seq, seq_length, _ = seq_data.get_batch(0,10)
 
 samples = best_model.sample(seq, seq_length, n_per_input=20)
 sample_strs = strs_for_scored_samples(samples, seq_data)
 samples_output = "Samples:\n"
-samples_output += "\n".join(sample_strs[0])
+for i in range(len(sample_strs)):
+    samples_output += "\n".join(sample_strs[i])
+    samples_output += "\n"
 
 with open(samples_path, "w") as samples_file:
     samples_file.write(samples_output)

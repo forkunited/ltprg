@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.nn as nn
 import torch.nn.init as init
 from ltprg.model.seq import VariableLengthNLLLoss, RNNType, DataParameter
@@ -10,8 +11,12 @@ class EditType:
 
 class EditModel(nn.Module):
 
-    def __init__(self):
+    def __init__(self, name):
         super(EditModel, self).__init__()
+        self._name = name
+
+    def get_name(self):
+        return self._name
 
     def sample(self, seq, seq_length, n_per_input=10, input=None, heuristic=None, context=None, n_before_heuristic=100):
         n = 1
@@ -33,8 +38,10 @@ class EditModel(nn.Module):
 
         input_count = seq.size(1)
         n = seq.size(1) * samples_per_input
-        seq = seq.repeat(samples_per_input, 1).view(seq.size(0), n)
-        seq_length = seq_length.repeat(samples_per_input).view(n)
+
+        seq = seq.unsqueeze(2).repeat(1,1,samples_per_input).view(seq.size(0), n).long()
+        seq_length = seq_length.unsqueeze(1).repeat(1,samples_per_input).view(n)
+        
         if isinstance(seq, Variable):
             seq = seq.data
         
@@ -45,28 +52,31 @@ class EditModel(nn.Module):
         if self.on_gpu():
             seq_part = seq_part.cuda()
 
-        dist = self.forward(seq, seq_length, edit_type=EditType.REPLACE, input=input)
+        dist = self.forward(Variable(seq), seq_length, edit_type=EditType.REPLACE, input=input)
         # Add zeros so that tokens in seq align with dists
-        zs = torch.zeros(dist.size(1), dist.size(2))
-        dist = torch.cat((zs, dist, zs), dim=0) 
+        zs = torch.zeros(1,dist.size(1), dist.size(2))
+        dist = torch.cat((zs, dist.data, zs), dim=0) 
 
         L, B, V = dist.size()
         dist = dist.view(L*B, V).exp()
 
         # Zero input tokens out of distributions (so they aren't sampled)
-        dist[seq.view(L*B)] = 0.0
+        zero_indices = seq[:L].view(L*B)
+        for i in range(L*B):
+            dist[i, zero_indices[i]] = 0.0
 
         # Draw sample tokens
-        sample_tokens = torch.multinomial(dist, num_samples=1).data
+        sample_tokens = torch.multinomial(dist, num_samples=1)
         sample_tokens = sample_tokens.view(L, B)
 
         # Build resulting sequences (delete UNCs and replace others)
-        for b in range(0:B):
-            edit_index = # FIXME Sample index between 1 and seq_length[b]
-            edit_token = sample_tokens[edit_index]
+        for b in range(0, B):
+            edit_index = np.random.randint(1, high=seq_length[b]-1) # Sample index between 1 and seq_length[b]
+            edit_token = sample_tokens[edit_index,0]
             if edit_token == 0: # Deletion
                 for i in range(edit_index, seq_length[b]):
                     seq[i,b] = seq[i+1, b]
+                seq_length[b] -= 1
             else: # Replacement
                 seq[edit_index, b] = edit_token 
 
@@ -86,7 +96,7 @@ class EditModel(nn.Module):
                 seq_in = seq_in.transpose(0,1)[top_indices].transpose(0,1)
                 seq_length_in = seq_length_in[top_indices.cpu()]
 
-            ret_samples.append((sample_in, seq_length_in, 0.0))            
+            ret_samples.append((seq_in, seq_length_in, 0.0))            
         return ret_samples
 
     def forward(self, seq, seq_length, edit_type=EditType.REPLACE, input=None):
@@ -114,8 +124,8 @@ class EditModel(nn.Module):
                 else:
                     input = input.cuda()
 
-        replace_out = self(seq, seq_length, edit_type=EditType.REPLACE, input=input)
-        delete_out = self(seq, seq_length, edit_type=EditType.DELETE, input=input)
+        replace_out = self(seq_in, length, edit_type=EditType.REPLACE, input=input)
+        delete_out = self(seq_in, length, edit_type=EditType.DELETE, input=input)
         return replace_out, delete_out
 
     def loss(self, batch, data_parameters, loss_criterion):
@@ -126,7 +136,7 @@ class EditModel(nn.Module):
         replace_mask = mask[:, 1:(replace_out.size(0)+1)]
         replace_length = length - 2
         
-        delete_target_out = Variable().long()
+        delete_target_out = Variable(torch.zeros(seq.size(0)-1, seq.size(1))).long()
         delete_mask = mask[:, 1:(delete_out.size(0)+1)]
         delete_length = length - 1
 
@@ -136,8 +146,8 @@ class EditModel(nn.Module):
             replace_target_out = replace_target_out.cuda()
             replace_mask = replace_mask.cuda()
 
-        replace_loss = loss_criterion(replace_out, replace_target_out, Variable(replace_mask))
-        delete_loss = loss_criterion(delete_out, delete_target_out, Variable(delete_mask))
+        replace_loss = loss_criterion(replace_out, replace_target_out[:replace_out.size(0)], Variable(replace_mask))
+        delete_loss = loss_criterion(delete_out, delete_target_out[:delete_out.size(0)], Variable(delete_mask))
         return replace_loss + delete_loss
 
     def on_gpu(self):
@@ -167,7 +177,7 @@ class EditModel(nn.Module):
 
 class EditModelSequentialNoInput(EditModel):
     def __init__(self, name, seq_size, embedding_size, rnn_size, rnn_type=RNNType.GRU, dropout=0.5):
-        super(EditModelSequentialNoInput, self).__init__()
+        super(EditModelSequentialNoInput, self).__init__(name)
 
         self._init_params = dict()
         self._init_params["name"] = name
@@ -185,7 +195,7 @@ class EditModelSequentialNoInput(EditModel):
 
         self._emb = nn.Embedding(seq_size, embedding_size)
         self._rnn = getattr(nn, rnn_type)(embedding_size, rnn_size, 1, dropout=dropout, bidirectional=True)
-        self._decoder = nn.Linear(rnn_size*self._directions, seq_size)
+        self._decoder = nn.Linear(rnn_size*2, seq_size)
         self._softmax = nn.LogSoftmax()
         self._drop = nn.Dropout(dropout)
 
@@ -213,19 +223,19 @@ class EditModelSequentialNoInput(EditModel):
         # output : L x B x H*2
         output, _ = nn.utils.rnn.pad_packed_sequence(output, batch_first=False)
         L, B, H2 = output.size()
-        H = H/2
+        H = H2/2
 
         if edit_type == EditType.DELETE:
             out_forward = output[0:(output.size(0)-1),:,0:H]
             out_backward = output[1:output.size(0),:,H:H2]
             out = torch.cat((out_forward, out_backward), dim=2)
-            output_dist = self._softmax(self._decoder(out.view(-1, H2))
-            return  output_dist.view(L-1, B, output_dist.size(1))
+            output_dist = self._softmax(self._decoder(out.view(-1, H2)))
+            return output_dist.view(L-1, B, output_dist.size(1))
         elif edit_type == EditType.REPLACE: 
             out_forward = output[0:(output.size(0)-2),:,0:H]
             out_backward = output[2:output.size(0),:,H:H2]
             out = torch.cat((out_forward, out_backward), dim=2)
-            output_dist = self._softmax(self._decoder(out.view(-1, H2))
+            output_dist = self._softmax(self._decoder(out.view(-1, H2)))
             return  output_dist.view(L-2, B, output_dist.size(1))
 
     def _init_weights(self):
