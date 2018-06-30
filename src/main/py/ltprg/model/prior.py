@@ -279,8 +279,11 @@ class EditSamplingPriorFn(nn.Module):
             all_contexts = observation.unsqueeze(1).expand(batch_size,inputs_per_observation,observation.size(1)).contiguous().view(batch_size*inputs_per_observation, observation.size(1))
             if self.on_gpu():
                 all_input_indices = all_input_indices.cuda()
-        
-        samples = self._model.sample(self.fixed_seq[0].transpose(0,1), self._fixed_seq[1], n_per_input=self._samples_per_input, \
+
+        seq = self._fixed_seq[0].transpose(0,1).unsqueeze(2).repeat(1,1,inputs_per_observation).view(self._fixed_seq[0].size(1), -1)
+        seq_length = self._fixed_seq[1].unsqueeze(1).repeat(1,inputs_per_observation).view(-1)
+
+        samples = self._model.sample(seq, seq_length, n_per_input=self._samples_per_input, \
                                         input=all_inputs, heuristic=self._heuristic, \
                                         context=(all_contexts, all_input_indices), n_before_heuristic=self._n_before_heuristic)
 
@@ -321,7 +324,7 @@ class EditSamplingPriorFn(nn.Module):
         # for example, the L model is running with an utterance prior
         # that should include the observed utterance
         if self.training or self._dist_type != data_parameters.get_mode():
-            seq, length, = batch[data_parameters[seqType]]
+            seq, length, _ = batch[data_parameters[seqType]]
             if self.on_gpu():
                 seq = seq.cuda()
             self.set_fixed_seq(seq=Variable(seq), length=length)

@@ -50,11 +50,14 @@ class EditModel(nn.Module):
                        context[1].unsqueeze(0).expand(samples_per_input, context[1].size(0)).transpose(0,1).contiguous().view(n, 1))
 
         if self.on_gpu():
-            seq_part = seq_part.cuda()
+            seq = seq.cuda()
 
         dist = self.forward(Variable(seq), seq_length, edit_type=EditType.REPLACE, input=input)
+        
         # Add zeros so that tokens in seq align with dists
         zs = torch.zeros(1,dist.size(1), dist.size(2))
+        if self.on_gpu():
+            zs = zs.cuda()
         dist = torch.cat((zs, dist.data, zs), dim=0) 
 
         L, B, V = dist.size()
@@ -72,10 +75,13 @@ class EditModel(nn.Module):
         # Build resulting sequences (delete UNCs and replace others)
         for b in range(0, B):
             edit_index = np.random.randint(1, high=seq_length[b]-1) # Sample index between 1 and seq_length[b]
-            edit_token = sample_tokens[edit_index,0]
+            edit_token = sample_tokens[edit_index,b]
             if edit_token == 0: # Deletion
                 for i in range(edit_index, seq_length[b]):
-                    seq[i,b] = seq[i+1, b]
+                    if i == seq.size(0) - 1:
+                        seq[i,b] = 0
+                    else:
+                        seq[i,b] = seq[i+1, b]
                 seq_length[b] -= 1
             else: # Replacement
                 seq[edit_index, b] = edit_token 
