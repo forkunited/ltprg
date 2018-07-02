@@ -712,6 +712,10 @@ class PriorView(Evaluation):
 
         H = torch.sum(-p_0*torch.log(p_0))
 
+        # Run model over batch to get its predictions
+        dist_model = model.forward_batch(batch, self._data_parameters)
+        _, preds = torch.max(dist_model.p(), 1)
+
         t = 0
         for i in range(observation.size(0)):
             round_i = { "roundNum" : indices[i], "events" : [] }
@@ -741,6 +745,8 @@ class PriorView(Evaluation):
                 round_i["events"].append(utt_event)
                 t += 1
 
+            round_i["pred"] = torch.max(preds[i])
+
             batch_result.append(round_i)
 
         return (batch_result, H)
@@ -757,7 +763,7 @@ class PriorView(Evaluation):
             t += 1
 
             round_events.append({ "eventType": "action", "time": t, "mouseY": -1,
-                                  "mouseX": -1, "lClicked": state["listenerOrder"].index(state["target"]), "type": "Action",
+                                  "mouseX": -1, "lClicked": state["listenerOrder"].index(batch_result[0][i]["pred"]), "type": "Action",
                                   "condition": state["condition"] })
         
         agg[0]["records"].extend(batch_result[0])
