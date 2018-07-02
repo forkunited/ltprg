@@ -62,5 +62,5 @@ python ${ROOT_DIR}/src/test/py/ltprg/game/colorGrids/data/annotate_with_targets.
 python ${ROOT_DIR}/src/test/py/ltprg/data/make_split.py ${JSON_MERGED_NLP_DATA_DIR} ${PARTITION_FILE} 0.8 0.1 0.1 --maintain_partition_file ${OLD_PARTITION_FILE}
 
 # Featurize
-python ${FEATURIZE_SUA_SCRIPT} ${SUA_DATA_DIR} ${FEATURE_DIR} ${PARTITION_FILE}
+python ${FEATURIZE_SUA_SCRIPT} ${SUA_DATA_DIR} ${FEATURE_DIR} ${PARTITION_FILE} 3
 

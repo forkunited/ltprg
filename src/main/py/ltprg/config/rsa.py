@@ -1,10 +1,11 @@
 from torch.nn import NLLLoss
 from mung.torch_ext.eval import Loss
 from ltprg.model.rsa import DataParameter, DistributionType, RSA, RSADistributionAccuracy, PriorView
-from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn
+from ltprg.model.prior import UniformIndexPriorFn, SequenceSamplingPriorFn, EditSamplingPriorFn
 from ltprg.model.meaning import MeaningModel, MeaningModelIndexedWorldSequentialUtterance, MeaningModelIndexedWorldSpeaker, SequentialUtteranceInputType
 from ltprg.model.obs import ObservationModel, ObservationModelReorderedSequential
 from ltprg.model.seq import SequenceModel, SequenceModelNoInput, SequenceModelAttendedInput, SequenceModelInputToHidden
+from ltprg.model.edit import EditModel
 from ltprg.model.seq_heuristic import HeuristicL0, HeuristicL0H
 
 
@@ -21,6 +22,7 @@ from ltprg.model.seq_heuristic import HeuristicL0, HeuristicL0H
 #   },
 #   utterance_prior : {
 #     (Optional) seq_model_path : [PATH TO STORED UTTERANCE PRIOR SEQUENCE MODEL (meaning_fn.seq_model used if not provided)]
+#     (Optional) edit_model_path : [PATH TO STORED UTTERANCE PRIOR EDIT MODEL]
 #     heuristic : [NAME OF HEURISTIC FOR GUIDING UTTERANCE SAMPLING (L0|L0H|None)]
 #     parameters : {
 #       training_mode : [SAMPLING MODE DURING TRAINING (FORWARD|BEAM|SMC)] 
@@ -153,14 +155,22 @@ def load_rsa_model(config, D, gpu=False):
     elif config["utterance_prior"]["heuristic"] == "L0H":
         heuristic = HeuristicL0H(world_prior_fn, meaning_fn)
 
-    seq_prior_model = meaning_fn.get_seq_model()
-    if "seq_model_path" in config["utterance_prior"]:
-        seq_prior_model = SequenceModel.load(config["utterance_prior"]["seq_model_path"])
+    utterance_prior_fn = None
+    if "edit_model_path" in config["utterance_prior"]:
+        edit_prior_model = EditModel.load(config["utterance_prior"]["edit_model_path"])
+        utterance_prior_params = dict(config["utterance_prior"]["parameters"])
+        utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set().get_size()
+        utterance_prior_params["heuristic"] = heuristic
+        utterance_prior_fn = EditSamplingPriorFn(edit_prior_model, world_input_size, **utterance_prior_params)
+    else:
+        seq_prior_model = meaning_fn.get_seq_model()
+        if "seq_model_path" in config["utterance_prior"]:
+            seq_prior_model = SequenceModel.load(config["utterance_prior"]["seq_model_path"])
 
-    utterance_prior_params = dict(config["utterance_prior"]["parameters"])
-    utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set().get_size()
-    utterance_prior_params["heuristic"] = heuristic
-    utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, **utterance_prior_params)
+        utterance_prior_params = dict(config["utterance_prior"]["parameters"])
+        utterance_prior_params["seq_length"] = D[utterance_field].get_feature_seq_set().get_size()
+        utterance_prior_params["heuristic"] = heuristic
+        utterance_prior_fn = SequenceSamplingPriorFn(seq_prior_model, world_input_size, **utterance_prior_params)
     
     rsa_model = RSA.make(data_parameter.get_mode() + "_" + str(config["training_level"]), \
                 data_parameter.get_mode(), config["training_level"], meaning_fn, world_prior_fn, 
