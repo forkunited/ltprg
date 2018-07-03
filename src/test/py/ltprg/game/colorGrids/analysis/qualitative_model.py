@@ -24,7 +24,7 @@ parser.add_argument('id', action="store")
 parser.add_argument('env', action="store")
 parser.add_argument('data', action="store")
 parser.add_argument('model', action="store")
-parser.add_argument('subset', action="subset")
+parser.add_argument('subset', action="store")
 parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
@@ -35,7 +35,6 @@ args, extra_env_args = parser.parse_known_args()
 id = args.id
 gpu = bool(args.gpu)
 seed = args.seed
-eval_test = bool(args.eval_test)
 output_dir = args.output_dir
 output_path = make_indexed_dir(path.join(output_dir, str(id) + "_seed" + str(seed)))
 
@@ -79,15 +78,22 @@ colors = construct_color_space(n_per_dim=COLORS_PER_DIM)
 world_idx = torch.arange(0, colors.size(0)).long().unsqueeze(0)
 if gpu:
     world_idx = world_idx.cuda()
-    colors = colors.cuda()()
+    colors = colors.cuda()
 
 meaning_fn = rsa_model.get_meaning_fn()
 
 # Compute meanings over color space
 # Gives tensor of dim utterance count x color count
-meanings = meaning_fn((Variable(D["utterance"][0].unsqueeze(0)), D["utterance"][1].unsqueeze(0)), \
+meanings = torch.zeros(D.get_size(), world_idx.size(1))
+for i in range(D.get_size()/10):
+    batch = D.get_batch(i, 10)
+    seq,seq_len,_ = batch["utterance"]
+    if gpu:
+        seq = seq.cuda()
+    meanings_i = meaning_fn((Variable(seq.transpose(0,1).long().unsqueeze(0)), seq_len.unsqueeze(0)), \
                     Variable(world_idx), \
                     Variable(colors.view(1,colors.size(0)*colors.size(1)))).squeeze().data
+    meanings[i*10:((i+1)*10)] = meanings_i
 
 def make_img(mng):
     # mng = normalize(mng, dim=0) # meaning is dim num_colors
@@ -99,4 +105,4 @@ meaning_imgs = [make_img(meanings[u]) for u in range(meanings.size(0))]
 
 # Save meaning imgs
 for u, img in enumerate(meaning_imgs):
-    img.save(output_path + "/" + D.get(u).get("id") + ".png")
+    img.save(output_path + "/" + D.get_data().get(u).get("id") + ".png")

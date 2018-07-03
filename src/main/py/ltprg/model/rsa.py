@@ -745,7 +745,7 @@ class PriorView(Evaluation):
                 round_i["events"].append(utt_event)
                 t += 1
 
-            round_i["pred"] = torch.max(preds[i])
+            round_i["pred"] = torch.max(preds[i]).data[0]
 
             batch_result.append(round_i)
 
