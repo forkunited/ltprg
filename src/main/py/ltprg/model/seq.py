@@ -788,9 +788,10 @@ class SequenceModelInputToHidden(SequenceModel):
             if self._input_layers > 1:
                 hidden = self._encoder_0_nl(self._encoder_0(hidden))
         else:
-            input = input.unsqueeze(1)
-            hidden = self._encoder_pool(self._encoder_nl(self._encoder(input)))
-      
+            hidden = self._encoder_nl(self._encoder(input.unsqueeze(1)))
+            if hidden.size(2) > 1:
+                hidden = self._encoder_pool(hidden)      
+
         hidden = hidden.view(hidden.size()[0], self._rnn_layers*self._directions, self.get_hidden_size()).transpose(0,1).contiguous()
 
         if self._rnn_type == RNNType.GRU:

@@ -15,7 +15,7 @@ HSL_L_CONSTANT = 50.0
 
 # H: [0-360]
 # S: [0-100]
-def construct_color_space(n_per_dim=50, rgb=False):
+def construct_color_space(n_per_dim=50, rgb=False, standardized=False):
     colors = torch.zeros(n_per_dim*n_per_dim, 3)
     color_idx = 0
     for h_i in range(n_per_dim):
@@ -30,8 +30,14 @@ def construct_color_space(n_per_dim=50, rgb=False):
                 colors[color_idx,2] = rgb_values[2]
             else:
                 cielab = rgb2lab([[[rgb_values]]])[0][0][0]
+                if standardized:
+                    cielab[0] = (cielab[0]*2.0 - 100.0)/100.0
+                    cielab[1] = cielab[1]/128.0
+                    cielab[2] = cielab[2]/128.0
                 colors[color_idx,0] = cielab[0]
                 colors[color_idx,1] = cielab[1]
                 colors[color_idx,2] = cielab[2]
+
             color_idx += 1
+
     return colors

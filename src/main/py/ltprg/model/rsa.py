@@ -718,7 +718,7 @@ class PriorView(Evaluation):
 
         t = 0
         for i in range(observation.size(0)):
-            round_i = { "roundNum" : indices[i], "events" : [] }
+            round_i = { "roundNum" : indices[i], "events" : [], "id" : self._data.get_data().get(indices[i]).get_id() }
             obj_order = self._data.get_data().get(indices[i]).get("state.state")["listenerOrder"]
 
             # Add true utt

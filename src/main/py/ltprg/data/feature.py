@@ -74,7 +74,7 @@ register_feature_type(FeatureVisualEmbeddingType)
 
 class FeatureCielabEmbeddingType(FeatureType):
     # stimulus embeddings in CIELAB color space (3 coordinates)
-    def __init__(self, name, paths, include_positions=False, position_count=1, row_count=1):
+    def __init__(self, name, paths, include_positions=False, position_count=1, row_count=1, standardize=False):
         FeatureType.__init__(self)
         # paths is a list of lists of HSLs, e.g. [[H1, S1, L1], [H2, S2, L2]]
         self._name = name
@@ -82,6 +82,7 @@ class FeatureCielabEmbeddingType(FeatureType):
         self._include_positions = include_positions
         self._position_count = position_count
         self._row_count = row_count
+        self._standardize = standardize
 
     def get_name(self):
         return self._name
@@ -92,6 +93,12 @@ class FeatureCielabEmbeddingType(FeatureType):
             hsl = [datum.get(dim) for dim in color]
             rgb = np.array(hsls_to_rgbs([map(int, hsl)]))[0]
             lab = np.array(rgbs_to_labs([rgb]))[0]
+            
+            if self._standardize:  # Range from -1 to 1
+                lab[0] = ((lab[0] * 2.0) - 100.0)/100.0
+                lab[1] = lab[1] / 128.0
+                lab[2] = lab[2] / 128.0
+
             output.extend(lab)
 
             if self._include_positions:
@@ -149,6 +156,7 @@ class FeatureCielabEmbeddingType(FeatureType):
         obj["include_positions"] = self._include_positions
         obj["position_count"] = self._position_count
         obj["row_count"] = self._row_count
+        obj["standardize"] = self._standardize 
 
         with open(file_path, 'w') as fp:
             pickle.dump(obj, fp)
@@ -163,16 +171,22 @@ class FeatureCielabEmbeddingType(FeatureType):
     def from_dict(obj):
         name = obj["name"]
         paths = obj["paths"]
+
         include_positions = False
         position_count = 1
         row_count = 1
+        standardize = False
+
         if "include_positions" in obj:
             include_positions = obj["include_positions"]
             position_count = obj["position_count"]
             if "row_count" in obj:
                 row_count = obj["row_count"]
 
+        if "standardize" in obj:
+            standardize = obj["standardize"]
+
         return FeatureCielabEmbeddingType(name, paths, include_positions=include_positions, \
-            position_count=position_count, row_count=row_count)
+            position_count=position_count, row_count=row_count, standardize=standardize)
 
 register_feature_type(FeatureCielabEmbeddingType)

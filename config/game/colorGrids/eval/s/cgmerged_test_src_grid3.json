@@ -8,6 +8,22 @@
             "name" : "Test Grid3 Loss",
             "type" : "VariableLengthNLLLoss",
             "data" : "test_src_grid3_cleanutts"
+        },
+        {
+            "name" : "Test Grid3 Close Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_src_grid3_dist_close_cleanutts"
+        },
+        {
+            "name" : "Test Grid3 Split Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_src_grid3_dist_split_cleanutts"
+        },
+        {
+            "name" : "Test Grid3 Far Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "test_src_grid3_dist_far_cleanutts"
         }
+
     ]
 }

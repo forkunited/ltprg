@@ -1,0 +1,12 @@
+{
+    "data_parameter" : {
+        "seq" : "utterance",
+        "input" : "world"
+    },
+    "name" : "Edit",
+    "arch_type" : "EditModelSequentialNoInput",
+    "dropout" : 0.5,
+    "rnn_size" : 100,
+    "embedding_size" : 100,
+    "rnn_type" : "LSTM"
+}

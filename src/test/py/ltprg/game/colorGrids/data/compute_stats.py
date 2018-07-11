@@ -1,4 +1,5 @@
 import sys
+import operator
 from mung.data import DataSet, Partition
 
 input_sua_dir = sys.argv[1]
@@ -50,7 +51,26 @@ def compute_stats(D_full, data_name):
         total_count = 0.0
         total_correct = 0.0
         missing_action = 0.0
+        utt_len_dist = dict()
+        utt_str_dist = dict()
         for d in D:
+            utt_len = 0
+            utt_str = ""
+            for utt in d.get("utterances"):
+                if utt["sender"] == "speaker":
+                    utt_len += len(utt["nlp"]["token_strs"]["strs"])
+                    utt_str += " ".join(utt["nlp"]["token_strs"]["strs"]) + " | "
+                utt_len += 1 # Add one for break between utts
+            utt_len -= 1
+
+            if utt_len not in utt_len_dist:
+                utt_len_dist[utt_len] = 0.0
+            utt_len_dist[utt_len] += 1.0         
+
+            if utt_str not in utt_str_dist:
+               utt_str_dist[utt_str] = 0.0
+            utt_str_dist[utt_str] += 1.0
+
             lClicked = d.get("action.action.lClicked")
             if lClicked is None:
                 missing_action += 1.0
@@ -66,7 +86,19 @@ def compute_stats(D_full, data_name):
             total_correct += correct
             total_count += 1.0
         print key + ": " + str(total_correct/total_count) + "(" + str(total_correct) + "/" + str(total_count) + ") [" + str(missing_action) + "]"
-    print "\n\n\n"
+        len_dist_str = "Utterance lengths\n"
+        for key, value in utt_len_dist.iteritems():
+            len_dist_str += str(key) + "\t" + str(value) + "\t" + str(value/total_count) + "\n"
+        print len_dist_str + "\n\n"
+
+        utt_dist_str = "Utterances\n"
+        sorted_utt_strs = sorted(utt_str_dist.items(), key=operator.itemgetter(1))
+        final_str = len(sorted_utt_strs) - 1
+        for i in range(10):
+            utt_dist_str += str(sorted_utt_strs[final_str-i][0]) + "\t" + str(sorted_utt_strs[final_str-i][1]) + "\n"
+        print utt_dist_str + "\n\n"
+
+    print "\n\n\n\n"
 
 compute_stats(D, "Full")
 compute_stats(D_parts["train"], "Train")

@@ -24,11 +24,17 @@ parser.add_argument('id', action="store")
 parser.add_argument('env', action="store")
 parser.add_argument('data', action="store")
 parser.add_argument('model', action="store")
+parser.add_argument('other_model', action="store")
 parser.add_argument('subset', action="store")
 parser.add_argument('output_dir', action="store")
 parser.add_argument('--seed', action='store', dest='seed', type=int, default=1)
 parser.add_argument('--gpu', action='store', dest='gpu', type=int, default=1)
 parser.add_argument('--grid', action='store', dest='grid', type=bool, default=False)
+parser.add_argument('--only_model_diffs', action='store', dest='only_model_diffs', type=bool, default=True)
+parser.add_argument('--max_examples', action='store', dest='max_examples', type=int, default=300)
+parser.add_argument('--model_name', action='store', dest='model_name', type=str, default="Default")
+parser.add_argument('--other_model_name', action='store', dest='other_model_name', type=str, default="Other")
+
 args, extra_env_args = parser.parse_known_args()
 
 # Initalize current run parameters
@@ -38,6 +44,9 @@ seed = args.seed
 output_dir = args.output_dir
 output_path = make_indexed_dir(path.join(output_dir, str(id) + "_seed" + str(seed)))
 
+only_model_diffs = args.only_model_diffs
+max_examples = args.max_examples
+
 extra_env = Config.load_from_dict({ "output_path" : output_path })
 extra_env = Config.load_from_list(extra_env_args).merge(extra_env)
 
@@ -45,64 +54,57 @@ extra_env = Config.load_from_list(extra_env_args).merge(extra_env)
 env = Config.load(args.env).merge(extra_env)
 data_config = Config.load(args.data, environment=env)
 model_config = Config.load(args.model, environment=env)
+other_model_config = Config.load(args.other_model, environment=env)
 
-# Random seed
-if gpu:
-    torch.cuda.manual_seed(seed)
-torch.manual_seed(seed)
-np.random.seed(seed)
+
+def set_seed(s):
+    # Random seed
+    if gpu:
+        torch.cuda.manual_seed(s)
+    torch.manual_seed(s)
+    np.random.seed(s)
+
+set_seed(seed)
 
 # Setup data, model, and evaluations
 _, data_sets = cfeature.load_mvdata(data_config)
 data_parameter, rsa_model = crsa.load_rsa_model(model_config, data_sets["train"], gpu=gpu)
+other_data_parameter, other_rsa_model = crsa.load_rsa_model(other_model_config, data_sets["train"], gpu=gpu)
 
 D = data_sets[args.subset]
 
+set_seed(seed)
+
+if only_model_diffs:
+    batch_size = 128
+    dis_ids = set()   
+    for i in range(D.get_num_batches(batch_size)):
+        batch,indices = D.get_batch(i, batch_size,return_indices=True)
+        dist = rsa_model.forward_batch(batch, data_parameter)
+        other_dist = other_rsa_model.forward_batch(batch, other_data_parameter)
+        _, pred = torch.max(dist.p(), 1)
+        _, other_pred = torch.max(other_dist.p(), 1)
+        disagreements = pred != other_pred
+        for j in range(disagreements.size(0)):
+            if disagreements[j].data[0]:
+               dis_ids.add(D.get_data().get(indices[j]).get_id())
+    D = D.filter(lambda d : d.get_id() in dis_ids) 
+
+if D.get_size() > max_examples:
+    D = D.get_subset(0,max_examples)
+
+print "Data size: " + str(D.get_size())
+
 # Run prior evaluations
+set_seed(seed)
 evaluations = []
-priorv = PriorView("Prior", D, data_parameter, output_path)
+priorv = PriorView(args.model_name + "Prior", D, data_parameter, output_path)
 evaluations.append(priorv)
 Evaluation.run_all(evaluations, rsa_model) # Returns results, but don't need
 
-if args.grid:
-    exit()
+set_seed(seed)
+evaluations = []
+priorv = PriorView(args.other_model_name + "Prior", D, other_data_parameter, output_path)
+evaluations.append(priorv)
+Evaluation.run_all(evaluations, other_rsa_model) # Returns results, but don't need
 
-# Compute color meaning function visualizations
-COLORS_PER_DIM=50 # Number of values per dimensions H x S of color to compute meanings over
-COLOR_IMG_WIDTH=140
-COLOR_IMG_HEIGHT=140
-
-# Make color space over which to compute meanings
-# This consists of colors with varying H and S dimensions of HSL
-colors = construct_color_space(n_per_dim=COLORS_PER_DIM)
-world_idx = torch.arange(0, colors.size(0)).long().unsqueeze(0)
-if gpu:
-    world_idx = world_idx.cuda()
-    colors = colors.cuda()
-
-meaning_fn = rsa_model.get_meaning_fn()
-
-# Compute meanings over color space
-# Gives tensor of dim utterance count x color count
-meanings = torch.zeros(D.get_size(), world_idx.size(1))
-for i in range(D.get_size()/10):
-    batch = D.get_batch(i, 10)
-    seq,seq_len,_ = batch["utterance"]
-    if gpu:
-        seq = seq.cuda()
-    meanings_i = meaning_fn((Variable(seq.transpose(0,1).long().unsqueeze(0)), seq_len.unsqueeze(0)), \
-                    Variable(world_idx), \
-                    Variable(colors.view(1,colors.size(0)*colors.size(1)))).squeeze().data
-    meanings[i*10:((i+1)*10)] = meanings_i
-
-def make_img(mng):
-    # mng = normalize(mng, dim=0) # meaning is dim num_colors
-    meaning_reshaped = mng.contiguous().view(COLORS_PER_DIM,COLORS_PER_DIM).cpu().numpy()
-    return make_gray_img(meaning_reshaped, width=COLOR_IMG_WIDTH,height=COLOR_IMG_HEIGHT)
-
-# Make image representations of meanings
-meaning_imgs = [make_img(meanings[u]) for u in range(meanings.size(0))]
-
-# Save meaning imgs
-for u, img in enumerate(meaning_imgs):
-    img.save(output_path + "/" + D.get_data().get(u).get("id") + ".png")

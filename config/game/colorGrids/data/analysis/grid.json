@@ -338,14 +338,13 @@
           "state.state.condition.numDiffs" : 4
         }
       },
-      ,
       {
         "name" : "example_game",
         "superset" : "test",
+        "type" : "FILTER",
         "filter" : {
           "gameid" : "1844-2a44d690-09ff-49c9-8091-82d3b9b89a85"
         }
       }
     ]
-  }
-  
+} 

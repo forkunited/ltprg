@@ -8,6 +8,21 @@
             "name" : "Dev Grid3 Loss",
             "type" : "VariableLengthNLLLoss",
             "data" : "dev_src_grid3_cleanutts"
+        },
+        {
+            "name" : "Dev Grid3 Close Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3_dist_close_cleanutts"
+        },
+        {
+            "name" : "Dev Grid3 Split Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3_dist_split_cleanutts"
+        },
+        {
+            "name" : "Dev Grid3 Far Loss",
+            "type" : "VariableLengthNLLLoss",
+            "data" : "dev_src_grid3_dist_far_cleanutts"
         }
     ]
 }

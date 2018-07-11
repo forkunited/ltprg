@@ -20,7 +20,7 @@ del sys.argv[1]
 np.random.seed(1)
 
 class FeaturizeSUA(unittest.TestCase):
-
+    """
     # Constructs sequences of integer indices representing uncleaned utterances
     def test_utterance_unclean_indices_short(self):
         print "Featurizing utterance unclean indices (short)"
@@ -227,6 +227,51 @@ class FeaturizeSUA(unittest.TestCase):
             include_positions=True,
             position_count=9)
 
+    def test_colors_pos_stand(self):
+        print "Featurizing speaker objs colors with positions (cielab, standard)"
+        num_objs = 3
+        dims = []
+        for i in range(num_objs):
+            for j in range(grid_dim*grid_dim):
+                dims.append(["state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[0]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[1]", \
+                            "state.state.objs[" + str(i) + "].shapes[" + str(j) + "].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_pos_stand"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors_pos_stand",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9,
+            standardize=True)
+
+    def test_target_color_pos_stand(self):
+        print "Featurizing speaker obj target color with position (cielab, standard)"
+        dims = []
+        for j in range(grid_dim*grid_dim):
+            dims.append(["state.state.targetObj.shapes[" + str(j) + "].color[0]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[1]", \
+                            "state.state.targetObj.shapes[" + str(j) + "].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "target_color_pos_stand"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "target_color_pos_stand",
+            dims,
+            # "fc-6",
+            "cielab",
+            include_positions=True,
+            position_count=9,
+            standardize=True)
 
     def test_colors_coords(self):
         print "Featurizing speaker objs colors with coords (cielab)"
@@ -289,7 +334,7 @@ class FeaturizeSUA(unittest.TestCase):
             partition_file,
             lambda d : d.get("gameid"),
             # "context_fc_embedding",
-            "colors",
+            "colors_first",
             dims,
             # "fc-6",
             "cielab")
@@ -312,7 +357,50 @@ class FeaturizeSUA(unittest.TestCase):
                 dims,
                 # "fc-6",
                 "cielab")
+    """
 
+    def test_colors_first_stand(self):
+        print "Featurizing speaker objs colors first (cielab, standard)"
+        num_objs = 3
+        dims = []
+        for i in range(num_objs):
+            dims.append(["state.state.objs[" + str(i) + "].shapes[0].color[0]", \
+                             "state.state.objs[" + str(i) + "].shapes[0].color[1]", \
+                             "state.state.objs[" + str(i) + "].shapes[0].color[2]"])
+
+        ltprg.data.feature_helpers.featurize_embeddings(
+            input_data_dir,
+            join(output_feature_dir, "colors_first_stand"),
+            partition_file,
+            lambda d : d.get("gameid"),
+            # "context_fc_embedding",
+            "colors_first_stand",
+            dims,
+            # "fc-6",
+            "cielab",
+            standardize=True)
+
+    def test_target_color_first_stand(self):
+            print "Featurizing speaker obj target color first (cielab, standard)"
+            dims = []
+
+            dims.append(["state.state.targetObj.shapes[0].color[0]", \
+                         "state.state.targetObj.shapes[0].color[1]", \
+                         "state.state.targetObj.shapes[0].color[2]"])
+
+            ltprg.data.feature_helpers.featurize_embeddings(
+                input_data_dir,
+                join(output_feature_dir, "target_color_first_stand"),
+                partition_file,
+                lambda d : d.get("gameid"),
+                # "context_fc_embedding",
+                "target_color_first_stand",
+                dims,
+                # "fc-6",
+                "cielab",
+                standardize=True)
+
+    """
     def test_colors_corner(self):
         print "Featurizing speaker objs colors corner (cielab)"
         num_objs = 3
@@ -344,6 +432,6 @@ class FeaturizeSUA(unittest.TestCase):
             lambda d : d.get("gameid"),
             "target_idx",
             ["state.state.target"])
-
+    """
 if __name__ == '__main__':
     unittest.main()

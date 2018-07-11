@@ -1,0 +1,37 @@
+{
+    "data_parameter" : {
+        "utterance" : "utterance", 
+        "L_world" : "target", 
+        "L_observation" : "observation",
+        "S_world" : "target", 
+        "S_observation" : "observation", 
+        "mode" : "L",
+        "utterance_seq" : true
+    },
+    "utterance_prior" : {
+        "edit_model_path" : "$!{edit_model}",
+        "heuristic" : "L0",
+        "parameters" : {
+            "samples_per_input" : 10,
+            "n_before_heuristic" : 20
+        }
+    },
+    "world_prior" : {
+        "support_size" : 3
+    },
+    "meaning_fn" : {
+        "seq_model" : {
+            "bidirectional" : true,
+            "dropout" : 0.0,
+            "rnn_layers" : 1,
+            "rnn_size" : 100,
+            "embedding_size" : 100,
+            "rnn_type" : "LSTM",
+            "conv_input" : 1,
+            "conv_kernel" : 12,
+            "conv_stride" : 12
+        }
+    },
+    "training_level" : 1,
+    "alpha" : 8.0
+}
