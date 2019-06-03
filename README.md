@@ -1,6 +1,6 @@
 # ltprg
 
-This repository contains code for learning to play reference games.  
+This repository contains code and data for learning to play reference games.
 The code relies on the [mungpy](https://github.com/forkunited/mungpy)
 repository for generic utilities to munge the reference game data into a JSON 
 format, vectorize this JSON into several tensor views of the data, and run 
